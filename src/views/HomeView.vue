@@ -1,13 +1,13 @@
 <script setup>
 import { computed, ref, onMounted } from "vue";
 import { useMainStore } from "@/stores/main";
+import { useUserStore } from "@/stores/user";
 import {
   mdiAccountMultiple,
-  mdiCartOutline,
+  mdiAccountSchoolOutline,
   mdiChartTimelineVariant,
   mdiMonitorCellphone,
   mdiReload,
-  mdiGithub,
   mdiChartPie,
 } from "@mdi/js";
 import * as chartConfig from "@/components/Charts/chart.config.js";
@@ -24,21 +24,42 @@ import LayoutAuthenticated from "@/layouts/LayoutAuthenticated.vue";
 import SectionTitleLineWithButton from "@/components/SectionTitleLineWithButton.vue";
 import SectionBannerStarOnGitHub from "@/components/SectionBannerStarOnGitHub.vue";
 
+import BpmnDiagram from "@/components/BPMN/BpmnDiagram.vue";
+
+import axios from "axios";
+
+const bpmn_model = ref(null);
 const chartData = ref(null);
 
 const fillChartData = () => {
   chartData.value = chartConfig.sampleChartData();
 };
 
-onMounted(() => {
+onMounted(async () => {
   fillChartData();
+  bpmn_model.value = await fetchXML();
 });
 
 const mainStore = useMainStore();
+const userStore = useUserStore();
+userStore.fetchCurrentUser();
 
 const clientBarItems = computed(() => mainStore.clients.slice(0, 4));
 
 const transactionBarItems = computed(() => mainStore.history);
+
+async function fetchXML() {
+  try {
+    // Make sure to set the responseType to 'text' since we're reading the XML as a string.
+    const response = await axios.get("/bpmn_xml/strucna_praksa.xml", {
+      responseType: "text",
+    });
+
+    return response.data;
+  } catch (error) {
+    console.error("Failed to fetch XML:", error);
+  }
+}
 </script>
 
 <template>
@@ -46,37 +67,31 @@ const transactionBarItems = computed(() => mainStore.history);
     <SectionMain>
       <SectionTitleLineWithButton
         :icon="mdiChartTimelineVariant"
-        title="Overview"
+        title="Pregled"
         main
       >
-        <BaseButton
-          href="https://github.com/justboil/admin-one-vue-tailwind"
-          target="_blank"
-          :icon="mdiGithub"
-          label="Star on GitHub"
-          color="contrast"
-          rounded-full
-          small
-        />
       </SectionTitleLineWithButton>
+
+      <div>
+        <BpmnDiagram v-if="bpmn_model" :xml="bpmn_model" />
+      </div>
 
       <div class="grid grid-cols-1 gap-6 lg:grid-cols-3 mb-6">
         <CardBoxWidget
           trend="12%"
           trend-type="up"
           color="text-emerald-500"
-          :icon="mdiAccountMultiple"
+          :icon="mdiAccountSchoolOutline"
           :number="512"
-          label="Clients"
+          label="Uspješno odrađenih praksi"
         />
         <CardBoxWidget
           trend="12%"
           trend-type="down"
           color="text-blue-500"
-          :icon="mdiCartOutline"
-          :number="7770"
-          prefix="$"
-          label="Sales"
+          :icon="mdiAccountMultiple"
+          :number="47"
+          label="Studenti na praksi"
         />
         <CardBoxWidget
           trend="Overflow"
@@ -130,7 +145,10 @@ const transactionBarItems = computed(() => mainStore.history);
         </div>
       </CardBox>
 
-      <SectionTitleLineWithButton :icon="mdiAccountMultiple" title="Clients" />
+      <SectionTitleLineWithButton
+        :icon="mdiAccountMultiple"
+        title="Studenti na praksi"
+      />
 
       <NotificationBar color="info" :icon="mdiMonitorCellphone">
         <b>Responsive table.</b> Collapses on mobile

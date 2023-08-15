@@ -1,6 +1,6 @@
 <script setup>
 import { computed, ref } from "vue";
-import { useMainStore } from "@/stores/main";
+import { useUserStore } from "@/stores/user";
 import { mdiCheckDecagram } from "@mdi/js";
 import BaseLevel from "@/components/BaseLevel.vue";
 import UserAvatarCurrentUser from "@/components/UserAvatarCurrentUser.vue";
@@ -8,9 +8,9 @@ import CardBox from "@/components/CardBox.vue";
 import FormCheckRadio from "@/components/FormCheckRadio.vue";
 import PillTag from "@/components/PillTag.vue";
 
-const mainStore = useMainStore();
+const userStore = useUserStore();
 
-const userName = computed(() => mainStore.userName);
+const userName = computed(() => userStore.currentUser.username);
 
 const userSwitchVal = ref(false);
 </script>
@@ -25,16 +25,17 @@ const userSwitchVal = ref(false);
             v-model="userSwitchVal"
             name="notifications-switch"
             type="switch"
-            label="Notifications"
+            label="Obavijesti"
             :input-value="true"
           />
         </div>
         <h1 class="text-2xl">
-          Howdy, <b>{{ userName }}</b
+          Hej, <b>{{ userName }}</b
           >!
         </h1>
-        <p>Last login <b>12 mins ago</b> from <b>127.0.0.1</b></p>
+        <p>Zadnja prijava <b>12 mins ago</b> s IP adrese <b>127.0.0.1</b></p>
         <div class="flex justify-center md:block">
+          <PillTag label="Admin" color="danger" :icon="mdiCheckDecagram" />
           <PillTag label="Verified" color="info" :icon="mdiCheckDecagram" />
         </div>
       </div>

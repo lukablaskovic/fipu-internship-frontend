@@ -1,12 +1,14 @@
 import { defineStore } from "pinia";
+import { Auth } from "@/services/gateway_api";
+
 import axios from "axios";
+import router from "@/router";
 
 export const useMainStore = defineStore("main", {
   state: () => ({
     /* User */
-    userName: null,
-    userEmail: null,
-    userAvatar: null,
+    access_token: JSON.parse(localStorage.getItem("main")) || null,
+    returnURL: null,
 
     /* Field focus with ctrl+k (to register only once) */
     isFieldFocusRegistered: false,
@@ -15,7 +17,31 @@ export const useMainStore = defineStore("main", {
     clients: [],
     history: [],
   }),
+  getters: {
+    isLoggedIn() {
+      return Boolean(this.access_token);
+    },
+  },
   actions: {
+    async login(email, password) {
+      try {
+        const loginResult = await Auth.login({ email, password });
+        console.log(loginResult);
+
+        this.access_token = loginResult.access_token;
+
+        router.push(this.returnURL || "/");
+      } catch (error) {
+        console.log(error);
+      }
+    },
+
+    logout() {
+      this.token = null;
+      localStorage.removeItem("access_token");
+      router.push("/login");
+    },
+
     setUser(payload) {
       if (payload.name) {
         this.userName = payload.name;
@@ -41,4 +67,5 @@ export const useMainStore = defineStore("main", {
         });
     },
   },
+  persist: true,
 });

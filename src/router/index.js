@@ -1,21 +1,20 @@
 import { createRouter, createWebHashHistory } from "vue-router";
-import Style from "@/views/StyleView.vue";
+import { useMainStore } from "@/stores/main";
 import Home from "@/views/HomeView.vue";
 
 const routes = [
   {
     meta: {
-      title: "Select style",
+      title: "",
+      requiresAuth: false,
     },
     path: "/",
-    name: "style",
-    component: Style,
+    name: "default",
   },
   {
-    // Document title tag
-    // We combine it with defaultDocumentTitle set in `src/main.js` on router.afterEach hook
     meta: {
       title: "Dashboard",
+      requiresAuth: true,
     },
     path: "/dashboard",
     name: "dashboard",
@@ -64,6 +63,7 @@ const routes = [
   {
     meta: {
       title: "Login",
+      requiresAuth: false,
     },
     path: "/login",
     name: "login",
@@ -79,12 +79,32 @@ const routes = [
   },
 ];
 
+//temporary
+let isAdminUser = false;
+
 const router = createRouter({
   history: createWebHashHistory(),
   routes,
   scrollBehavior(to, from, savedPosition) {
     return savedPosition || { top: 0 };
   },
+});
+
+router.beforeEach((to, from, next) => {
+  const mainStore = useMainStore();
+  console.log(mainStore.access_token);
+  const requiresAuth = to.matched.some((record) => record.meta.requiresAuth);
+  const isAdmin = to.matched.some((record) => record.meta.isAdmin);
+
+  if (requiresAuth && !mainStore.isLoggedIn) {
+    next("/login");
+  } else if (to.path === "/" && mainStore.isLoggedIn) {
+    next("/dashboard");
+  } else if (isAdmin && !isAdminUser) {
+    next("/error");
+  } else {
+    next();
+  }
 });
 
 export default router;

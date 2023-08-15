@@ -1,18 +1,13 @@
 import {
-  mdiMenu,
-  mdiClockOutline,
-  mdiCloud,
-  mdiCrop,
   mdiAccount,
   mdiCogOutline,
   mdiEmail,
   mdiLogout,
   mdiThemeLightDark,
-  mdiGithub,
-  mdiReact,
 } from "@mdi/js";
 
 export default [
+  /*
   {
     icon: mdiMenu,
     label: "Sample menu",
@@ -34,28 +29,29 @@ export default [
       },
     ],
   },
+  */
   {
     isCurrentUser: true,
     menu: [
       {
         icon: mdiAccount,
-        label: "My Profile",
+        label: "Moj profil",
         to: "/profile",
       },
       {
         icon: mdiCogOutline,
-        label: "Settings",
+        label: "Postavke",
       },
       {
         icon: mdiEmail,
-        label: "Messages",
+        label: "Poruke",
       },
       {
         isDivider: true,
       },
       {
         icon: mdiLogout,
-        label: "Log Out",
+        label: "Odjava",
         isLogout: true,
       },
     ],
@@ -66,6 +62,7 @@ export default [
     isDesktopNoLabel: true,
     isToggleLightDark: true,
   },
+  /*
   {
     icon: mdiGithub,
     label: "GitHub",
@@ -73,13 +70,7 @@ export default [
     href: "https://github.com/justboil/admin-one-vue-tailwind",
     target: "_blank",
   },
-  {
-    icon: mdiReact,
-    label: "React version",
-    isDesktopNoLabel: true,
-    href: "https://github.com/justboil/admin-one-react-tailwind",
-    target: "_blank",
-  },
+  */
   {
     icon: mdiLogout,
     label: "Log out",

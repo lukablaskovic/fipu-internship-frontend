@@ -15,7 +15,7 @@ const props = defineProps({
     default: "avataaars",
   },
 });
-
+/*
 const avatar = computed(
   () =>
     props.avatar ??
@@ -24,6 +24,7 @@ const avatar = computed(
       "-"
     )}.svg`
 );
+*/
 
 const username = computed(() => props.username);
 </script>

@@ -11,6 +11,9 @@ module.exports = {
       gray: "gray",
     },
     extend: {
+      backgroundColor: {
+        light: "#74d4f4",
+      },
       zIndex: {
         "-1": "-1",
       },

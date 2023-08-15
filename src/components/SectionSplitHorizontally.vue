@@ -32,6 +32,6 @@ const colorClass = computed(() => {
     class="flex min-h-screen items-center justify-center"
     :class="colorClass"
   >
-    <slot card-class="shadow-2xl m-2" />
+    <slot card-class="shadow-2xl" />
   </div>
 </template>

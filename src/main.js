@@ -5,12 +5,16 @@ import App from "./App.vue";
 import router from "./router";
 import { useMainStore } from "@/stores/main.js";
 import { useStyleStore } from "@/stores/style.js";
+import { useUserStore } from "@/stores/user.js";
 import { darkModeKey, styleKey } from "@/config.js";
 
 import "./css/main.css";
 
+import piniaPluginPersistedstate from "pinia-plugin-persistedstate";
+
 /* Init Pinia */
 const pinia = createPinia();
+pinia.use(piniaPluginPersistedstate);
 
 /* Create Vue app */
 createApp(App).use(router).use(pinia).mount("#app");
@@ -18,6 +22,7 @@ createApp(App).use(router).use(pinia).mount("#app");
 /* Init Pinia stores */
 const mainStore = useMainStore(pinia);
 const styleStore = useStyleStore(pinia);
+const userStore = useUserStore(pinia);
 
 /* Fetch sample data */
 mainStore.fetch("clients");
@@ -36,7 +41,7 @@ if (
 }
 
 /* Default title tag */
-const defaultDocumentTitle = "Admin One Vue 3 Tailwind";
+const defaultDocumentTitle = "FIPU Internship App";
 
 /* Set document title from route meta */
 router.afterEach((to) => {

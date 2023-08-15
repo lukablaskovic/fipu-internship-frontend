@@ -11,9 +11,9 @@ import LayoutGuest from "@/layouts/LayoutGuest.vue";
     <SectionFullScreen v-slot="{ cardClass }" bg="pinkRed">
       <CardBox :class="cardClass">
         <div class="space-y-3">
-          <h1 class="text-2xl">Unhandled exception</h1>
+          <h1 class="text-2xl">Nešto se zeznulo. Sorry!</h1>
 
-          <p>An Error Occurred</p>
+          <p>Greška!</p>
         </div>
 
         <template #footer>
