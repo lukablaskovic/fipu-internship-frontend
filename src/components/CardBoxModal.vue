@@ -21,7 +21,7 @@ const props = defineProps({
   },
   hasCancel: Boolean,
   modelValue: {
-    type: [String, Number, Boolean],
+    type: [String, Number, Boolean, Object],
     default: null,
   },
 });
@@ -57,12 +57,12 @@ window.addEventListener("keydown", (e) => {
       is-modal
     >
       <CardBoxComponentTitle :title="title"> </CardBoxComponentTitle>
-
+      <slot :assignment="modelValue"></slot>
       <BaseButtons class="justify-center">
         <BaseButton :label="buttonLabel" :color="button" @click="confirm" />
         <BaseButton
           v-if="hasCancel"
-          label="Cancel"
+          label="Natrag"
           :color="button"
           outline
           @click="cancel"

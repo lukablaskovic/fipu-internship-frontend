@@ -1,31 +1,36 @@
 <script setup>
-import { computed, ref } from "vue";
+import { computed, ref, reactive, onMounted } from "vue";
 import { useMainStore } from "@/stores/main";
-import { mdiEye, mdiTrashCan } from "@mdi/js";
+import { useGuestStore } from "@/stores/guest";
+import { mdiEye } from "@mdi/js";
 import CardBoxModal from "@/components/CardBoxModal.vue";
 import TableCheckboxCell from "@/components/TableCheckboxCell.vue";
 import BaseLevel from "@/components/BaseLevel.vue";
 import BaseButtons from "@/components/BaseButtons.vue";
 import BaseButton from "@/components/BaseButton.vue";
-import UserAvatar from "@/components/UserAvatar.vue";
 
 defineProps({
   checkable: Boolean,
 });
 
 const mainStore = useMainStore();
+const guestStore = useGuestStore();
+//const items = computed(() => mainStore.clients);
 
-const items = computed(() => mainStore.clients);
-
-const isModalActive = ref(false);
-
-const isModalDangerActive = ref(false);
+const isModalActive = ref(null);
 
 const perPage = ref(5);
 
 const currentPage = ref(0);
 
-const checkedRows = ref([]);
+const checkedRows = reactive([]);
+
+const items = ref([]);
+
+onMounted(async () => {
+  items.value = await guestStore.fetchAvailableAssignments();
+  console.log(items.value);
+});
 
 const itemsPaginated = computed(() =>
   items.value.slice(
@@ -60,32 +65,28 @@ const remove = (arr, cb) => {
   return newArr;
 };
 
-const checked = (isChecked, client) => {
+const checked = (isChecked, assignment) => {
   if (isChecked) {
-    checkedRows.value.push(client);
+    checkedRows.value.push(assignment);
   } else {
     checkedRows.value = remove(
       checkedRows.value,
-      (row) => row.id === client.id
+      (row) => row.id === assignment.id
     );
   }
 };
 </script>
 
 <template>
-  <CardBoxModal v-model="isModalActive" title="Sample modal">
-    <p>Lorem ipsum dolor sit amet <b>adipiscing elit</b></p>
-    <p>This is sample modal</p>
-  </CardBoxModal>
-
   <CardBoxModal
-    v-model="isModalDangerActive"
-    title="Please confirm"
-    button="danger"
+    v-if="isModalActive"
+    v-model="isModalActive"
+    title="ID Zadatka"
     has-cancel
+    @cancel="mainStore.activateLogoutModal(false)"
   >
-    <p>Lorem ipsum dolor sit amet <b>adipiscing elit</b></p>
-    <p>This is sample modal</p>
+    <div>{{ isModalActive["ID Zadatka"] }}</div>
+    <div>{{ isModalActive["Kontakt email"] }}</div>
   </CardBoxModal>
 
   <div v-if="checkedRows.length" class="p-3 bg-gray-100/50 dark:bg-slate-800">
@@ -102,65 +103,45 @@ const checked = (isChecked, client) => {
     <thead>
       <tr>
         <th v-if="checkable" />
-        <th />
-        <th>Ime i prezime</th>
-        <th>JMBAG</th>
-        <th>Firma</th>
-        <th>Napredak</th>
-        <th>Prijavljen</th>
+
+        <th>ID Zadatka</th>
+        <th>Kontakt email</th>
+        <th>Preferirane tehnologije</th>
+        <th>Trajanje (sati)</th>
+        <th>Lokacija</th>
         <th />
       </tr>
     </thead>
     <tbody>
-      <tr v-for="client in itemsPaginated" :key="client.id">
+      <tr v-for="assignment in itemsPaginated" :key="assignment.id">
         <TableCheckboxCell
           v-if="checkable"
-          @checked="checked($event, client)"
+          @checked="checked($event, assignment)"
         />
-        <td class="border-b-0 lg:w-6 before:hidden">
-          <UserAvatar
-            :username="client.name"
-            class="w-24 h-24 mx-auto lg:w-6 lg:h-6"
-          />
+
+        <td data-label="ID Zadatka">
+          {{ assignment["ID Zadatka"] }}
         </td>
-        <td data-label="Name">
-          {{ client.name }}
+        <td data-label="Kontakt email">
+          {{ assignment["Kontakt email"] }}
         </td>
-        <td data-label="Company">
-          {{ client.company }}
+        <td data-label="Preferirane tehnologije">
+          {{ assignment["Preferirane tehnologije"] }}
         </td>
-        <td data-label="City">
-          {{ client.city }}
+        <td data-label="Trajanje (sati)">
+          {{ assignment["Trajanje (sati)"] }}
         </td>
-        <td data-label="Progress" class="lg:w-32">
-          <progress
-            class="flex w-2/5 self-center lg:w-full"
-            max="100"
-            :value="client.progress"
-          >
-            {{ client.progress }}
-          </progress>
+        <td data-label="Lokacija">
+          {{ assignment["Lokacija"] }}
         </td>
-        <td data-label="Created" class="lg:w-1 whitespace-nowrap">
-          <small
-            class="text-gray-500 dark:text-slate-400"
-            :title="client.created"
-            >{{ client.created }}</small
-          >
-        </td>
+
         <td class="before:hidden lg:w-1 whitespace-nowrap">
           <BaseButtons type="justify-start lg:justify-end" no-wrap>
             <BaseButton
               color="info"
               :icon="mdiEye"
               small
-              @click="isModalActive = true"
-            />
-            <BaseButton
-              color="danger"
-              :icon="mdiTrashCan"
-              small
-              @click="isModalDangerActive = true"
+              @click="isModalActive = assignment"
             />
           </BaseButtons>
         </td>
@@ -180,7 +161,7 @@ const checked = (isChecked, client) => {
           @click="currentPage = page"
         />
       </BaseButtons>
-      <small>Page {{ currentPageHuman }} of {{ numPages }}</small>
+      <small>Stranica {{ currentPageHuman }} od {{ numPages }}</small>
     </BaseLevel>
   </div>
 </template>

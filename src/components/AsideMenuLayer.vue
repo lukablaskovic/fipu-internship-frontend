@@ -15,7 +15,7 @@
           <img
             src="fipu_hr.png"
             alt=""
-            class="w-full max-h-12 object-contain"
+            class="w-full max-h-12 object-contain mr-2"
           />
         </div>
         <div
