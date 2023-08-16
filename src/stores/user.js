@@ -5,11 +5,15 @@ export const useUserStore = defineStore("user", {
   state: () => ({
     currentUser: {
       id: "",
+      name: "",
+      surname: "",
+      jmbag: "",
+      email: "",
+      year_of_study: "",
       avatar: "",
       username: "",
-      ime_prezime: "",
-      email: "",
-      profile_type: "",
+      baserow_id: null,
+      type: "",
     },
   }),
   actions: {

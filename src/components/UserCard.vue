@@ -1,7 +1,7 @@
 <script setup>
 import { computed, ref } from "vue";
 import { useUserStore } from "@/stores/user";
-import { mdiCheckDecagram } from "@mdi/js";
+import { mdiCheckDecagram, mdiSchool, mdiShieldAccount } from "@mdi/js";
 import BaseLevel from "@/components/BaseLevel.vue";
 import UserAvatarCurrentUser from "@/components/UserAvatarCurrentUser.vue";
 import CardBox from "@/components/CardBox.vue";
@@ -10,7 +10,10 @@ import PillTag from "@/components/PillTag.vue";
 
 const userStore = useUserStore();
 
-const userName = computed(() => userStore.currentUser.username);
+const accountType = computed(() => userStore.currentUser.type);
+
+const username = computed(() => userStore.currentUser.username);
+const name = computed(() => userStore.currentUser.name);
 
 const userSwitchVal = ref(false);
 </script>
@@ -30,12 +33,23 @@ const userSwitchVal = ref(false);
           />
         </div>
         <h1 class="text-2xl">
-          Hej, <b>{{ userName }}</b
+          Hej, <b>{{ username || name }}</b
           >!
         </h1>
         <p>Zadnja prijava <b>12 mins ago</b> s IP adrese <b>127.0.0.1</b></p>
         <div class="flex justify-center md:block">
-          <PillTag label="Admin" color="danger" :icon="mdiCheckDecagram" />
+          <PillTag
+            v-if="accountType == 'admin'"
+            label="Admin"
+            color="danger"
+            :icon="mdiShieldAccount"
+          />
+          <PillTag
+            v-if="accountType == 'student'"
+            label="Student"
+            color="success"
+            :icon="mdiSchool"
+          />
           <PillTag label="Verified" color="info" :icon="mdiCheckDecagram" />
         </div>
       </div>

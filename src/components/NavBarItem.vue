@@ -50,7 +50,8 @@ const componentClass = computed(() => {
 
 const itemLabel = computed(() =>
   props.item.isCurrentUser
-    ? useUserStore().currentUser.username
+    ? useUserStore().currentUser.username ||
+      `${useUserStore().currentUser.name} ${useUserStore().currentUser.surname}`
     : props.item.label
 );
 

@@ -1,4 +1,8 @@
-import AxiosWrapper from "@/helpers/axios-wrapper"; // Adjust the path to where your AxiosWrapper is located.
+import createAxiosInstance from "@/helpers/axios-wrapper";
+
+const AxiosWrapper = createAxiosInstance(
+  import.meta.env.VITE_BPMN_ENGINE_API_URL
+);
 
 const Model = {
   async get(id) {

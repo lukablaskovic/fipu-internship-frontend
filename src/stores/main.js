@@ -8,6 +8,7 @@ export const useMainStore = defineStore("main", {
   state: () => ({
     /* User */
     access_token: JSON.parse(localStorage.getItem("main")) || null,
+    logoutModalActive: false,
     returnURL: null,
 
     /* Field focus with ctrl+k (to register only once) */
@@ -18,11 +19,14 @@ export const useMainStore = defineStore("main", {
     history: [],
   }),
   getters: {
-    isLoggedIn() {
+    userAuthenticated() {
       return Boolean(this.access_token);
     },
   },
   actions: {
+    activateLogoutModal(state) {
+      this.logoutModalActive = state;
+    },
     async login(email, password) {
       try {
         const loginResult = await Auth.login({ email, password });
@@ -37,8 +41,10 @@ export const useMainStore = defineStore("main", {
     },
 
     logout() {
-      this.token = null;
-      localStorage.removeItem("access_token");
+      this.access_token = null;
+      this.logoutModalActive = false;
+      localStorage.removeItem("main");
+      localStorage.removeItem("user");
       router.push("/login");
     },
 

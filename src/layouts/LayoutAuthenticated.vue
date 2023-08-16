@@ -1,25 +1,28 @@
 <script setup>
 import { mdiForwardburger, mdiBackburger, mdiMenu } from "@mdi/js";
-import { ref } from "vue";
+import { ref, computed } from "vue";
 import { useRouter } from "vue-router";
 import menuAside from "@/menuAside.js";
 import menuNavBar from "@/menuNavBar.js";
 import { useStyleStore } from "@/stores/style.js";
+import { useMainStore } from "@/stores/main.js";
 import BaseIcon from "@/components/BaseIcon.vue";
 import FormControl from "@/components/FormControl.vue";
 import NavBar from "@/components/NavBar.vue";
 import NavBarItemPlain from "@/components/NavBarItemPlain.vue";
 import AsideMenu from "@/components/AsideMenu.vue";
 import FooterBar from "@/components/FooterBar.vue";
-
+import CardBoxModal from "@/components/CardBoxModal.vue";
 const layoutAsidePadding = "xl:pl-60";
 
 const styleStore = useStyleStore();
-
+const mainStore = useMainStore();
 const router = useRouter();
 
 const isAsideMobileExpanded = ref(false);
 const isAsideLgActive = ref(false);
+
+const logoutModalActive = computed(() => mainStore.logoutModalActive);
 
 router.beforeEach(() => {
   isAsideMobileExpanded.value = false;
@@ -32,7 +35,7 @@ const menuClick = (event, item) => {
   }
 
   if (item.isLogout) {
-    //
+    mainStore.activateLogoutModal(true);
   }
 };
 </script>
@@ -88,6 +91,15 @@ const menuClick = (event, item) => {
         @aside-lg-close-click="isAsideLgActive = false"
       />
       <slot />
+      <CardBoxModal
+        v-model="logoutModalActive"
+        title="Jeste li sigurni da se želite odjaviti?"
+        button-label="Odjava"
+        has-cancel
+        @cancel="mainStore.activateLogoutModal(false)"
+        @confirm="mainStore.logout()"
+      >
+      </CardBoxModal>
       <FooterBar
         ><br />Made with <span style="color: #e25555">&#9829;</span> at
         FIPU.lab</FooterBar

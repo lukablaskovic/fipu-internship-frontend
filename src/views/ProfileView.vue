@@ -8,6 +8,8 @@ import {
   mdiMail,
   mdiAsterisk,
   mdiFormTextboxPassword,
+  mdiCardAccountDetails,
+  mdiSchool,
 } from "@mdi/js";
 
 import SectionMain from "@/components/SectionMain.vue";
@@ -26,8 +28,12 @@ const mainStore = useMainStore();
 const userStore = useUserStore();
 
 const profileForm = reactive({
-  userName: userStore.currentUser.username,
-  realName: userStore.currentUser.ime_prezime,
+  username: userStore.currentUser.username,
+  name: userStore.currentUser.name,
+  surname: userStore.currentUser.surname,
+  jmbag: userStore.currentUser.jmbag,
+  type: userStore.currentUser.type,
+  year_of_study: userStore.currentUser.year_of_study,
   email: userStore.currentUser.email,
 });
 
@@ -64,24 +70,34 @@ const submitPass = () => {
             <FormFilePicker label="Prenesi" />
           </FormField>
           <FormField
+            v-if="profileForm.type != 'student'"
             label="Korisničko ime"
             help="Obavezno. Vaše korisničko ime"
           >
             <FormControl
-              v-model="profileForm.userName"
+              v-model="profileForm.username"
               :icon="mdiAccount"
               name="userName"
               required
               autocomplete="userName"
             />
           </FormField>
-          <FormField label="Ime i prezime" help="Obavezno. Vaše ime i prezime">
+          <FormField label="Ime" help="Obavezno. Vaše ime">
             <FormControl
-              v-model="profileForm.realName"
+              v-model="profileForm.name"
               :icon="mdiAccount"
-              name="realName"
+              name="name"
               required
-              autocomplete="realName"
+              autocomplete="name"
+            />
+          </FormField>
+          <FormField label="Prezime" help="Obavezno. Vaše prezime">
+            <FormControl
+              v-model="profileForm.surname"
+              :icon="mdiAccount"
+              name="prezime"
+              required
+              autocomplete="prezime"
             />
           </FormField>
           <FormField label="E-mail" help="Obavezno. Vaša e-mail adresa">
@@ -95,18 +111,38 @@ const submitPass = () => {
             />
           </FormField>
 
-          <template #footer>
-            <BaseButtons>
-              <BaseButton color="info" type="submit" label="Ažuriraj!" />
-              <BaseButton color="info" label="Dodatno" outline />
-            </BaseButtons>
-          </template>
+          <FormField label="JMBAG" help="Obavezno. Vaš JMBAG">
+            <FormControl
+              v-model="profileForm.jmbag"
+              :icon="mdiCardAccountDetails"
+              type="jmbag"
+              name="jmbag"
+              required
+              autocomplete="jmbag"
+            />
+          </FormField>
+
+          <FormField label="Godina studija" help="Obavezno. Godina studija">
+            <FormControl
+              v-model="profileForm.year_of_study"
+              :icon="mdiSchool"
+              type="year_of_study"
+              name="year_of_study"
+              required
+              autocomplete="year_of_study"
+            />
+          </FormField>
+
+          <BaseButtons>
+            <BaseButton color="info" type="submit" label="Ažuriraj!" />
+            <BaseButton color="info" label="Dodatno" outline />
+          </BaseButtons>
         </CardBox>
 
         <CardBox is-form @submit.prevent="submitPass">
           <FormField
             label="Trenutna lozinka"
-            help="Required. Vaša trenutna lozinka"
+            help="Obavezno. Vaša trenutna lozinka"
           >
             <FormControl
               v-model="passwordForm.password_current"
@@ -145,12 +181,10 @@ const submitPass = () => {
             />
           </FormField>
 
-          <template #footer>
-            <BaseButtons>
-              <BaseButton type="submit" color="info" label="Ažuriraj!" />
-              <BaseButton color="info" label="Dodatno" outline />
-            </BaseButtons>
-          </template>
+          <BaseButtons>
+            <BaseButton type="submit" color="info" label="Ažuriraj!" />
+            <BaseButton color="info" label="Dodatno" outline />
+          </BaseButtons>
         </CardBox>
       </div>
     </SectionMain>

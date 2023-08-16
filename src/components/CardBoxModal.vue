@@ -1,6 +1,5 @@
 <script setup>
 import { computed } from "vue";
-import { mdiClose } from "@mdi/js";
 import BaseButton from "@/components/BaseButton.vue";
 import BaseButtons from "@/components/BaseButtons.vue";
 import CardBox from "@/components/CardBox.vue";
@@ -57,33 +56,18 @@ window.addEventListener("keydown", (e) => {
       class="shadow-lg max-h-modal w-11/12 md:w-3/5 lg:w-2/5 xl:w-4/12 z-50"
       is-modal
     >
-      <CardBoxComponentTitle :title="title">
+      <CardBoxComponentTitle :title="title"> </CardBoxComponentTitle>
+
+      <BaseButtons class="justify-center">
+        <BaseButton :label="buttonLabel" :color="button" @click="confirm" />
         <BaseButton
           v-if="hasCancel"
-          :icon="mdiClose"
-          color="whiteDark"
-          small
-          rounded-full
-          @click.prevent="cancel"
+          label="Cancel"
+          :color="button"
+          outline
+          @click="cancel"
         />
-      </CardBoxComponentTitle>
-
-      <div class="space-y-3">
-        <slot />
-      </div>
-
-      <template #footer>
-        <BaseButtons>
-          <BaseButton :label="buttonLabel" :color="button" @click="confirm" />
-          <BaseButton
-            v-if="hasCancel"
-            label="Cancel"
-            :color="button"
-            outline
-            @click="cancel"
-          />
-        </BaseButtons>
-      </template>
+      </BaseButtons>
     </CardBox>
   </OverlayLayer>
 </template>

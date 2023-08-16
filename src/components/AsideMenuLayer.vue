@@ -43,20 +43,28 @@
         <AsideMenuList :menu="menu" @menu-click="menuClick" />
       </div>
 
-      <ul>
+      <ul v-if="userAuthenticated">
         <AsideMenuItem :item="logoutItem" @menu-click="menuClick" />
+      </ul>
+      <ul v-else>
+        <AsideMenuItem :item="loginItem" @menu-click="menuClick" />
       </ul>
     </div>
   </aside>
 </template>
 
 <script setup>
-import { mdiLogout, mdiClose } from "@mdi/js";
+import { mdiLogout, mdiLogin, mdiClose } from "@mdi/js";
 import { computed } from "vue";
 import { useStyleStore } from "@/stores/style.js";
+import { useMainStore } from "@/stores/main";
 import AsideMenuList from "@/components/AsideMenuList.vue";
 import AsideMenuItem from "@/components/AsideMenuItem.vue";
 import BaseIcon from "@/components/BaseIcon.vue";
+
+import { useRouter } from "vue-router";
+
+const router = useRouter();
 
 defineProps({
   menu: {
@@ -68,15 +76,33 @@ defineProps({
 const emit = defineEmits(["menu-click", "aside-lg-close-click"]);
 
 const styleStore = useStyleStore();
+const mainStore = useMainStore();
+
+const userAuthenticated = computed(() => mainStore.userAuthenticated);
 
 const logoutItem = computed(() => ({
   label: "Odjava",
   icon: mdiLogout,
   color: "info",
-  isLogout: true,
+  logoutModalActive: true,
+}));
+
+const loginItem = computed(() => ({
+  label: "Prijava",
+  icon: mdiLogin,
+  color: "info",
 }));
 
 const menuClick = (event, item) => {
+  if (item.logoutModalActive) {
+    mainStore.activateLogoutModal(true);
+    return;
+  }
+  if (item.label == "Prijava") {
+    router.push("/login");
+    return;
+  }
+
   emit("menu-click", event, item);
 };
 

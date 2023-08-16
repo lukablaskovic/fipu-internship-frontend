@@ -1,9 +1,10 @@
-import AxiosWrapper from "@/helpers/axios-wrapper"; // Adjust the path to where your AxiosWrapper is located.
+import createAxiosInstance from "@/helpers/axios-wrapper";
 
+const AxiosWrapper = createAxiosInstance(import.meta.env.VITE_GATEWAY_API_URL);
 const Auth = {
   async register(userData) {
     try {
-      let result = await AxiosWrapper.post("/users/", userData);
+      let result = await AxiosWrapper.post("/students", userData);
       return result;
     } catch (e) {
       return null;
@@ -32,8 +33,16 @@ const Auth = {
 const User = {
   async getCurrent() {
     try {
-      let result = await AxiosWrapper.get("/users/me");
+      let result = await AxiosWrapper.get("/students/me");
       console.log(result);
+      return result;
+    } catch (e) {
+      return null;
+    }
+  },
+  async getStudents() {
+    try {
+      let result = await AxiosWrapper.get("/users/students");
       return result;
     } catch (e) {
       return null;

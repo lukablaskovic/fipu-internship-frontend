@@ -1,15 +1,15 @@
 import { createRouter, createWebHashHistory } from "vue-router";
 import { useMainStore } from "@/stores/main";
-import Home from "@/views/HomeView.vue";
 
 const routes = [
   {
     meta: {
-      title: "",
-      requiresAuth: false,
+      title: "Dashboard",
+      requiresAuth: true,
     },
     path: "/",
     name: "default",
+    component: () => import("@/views/DashboardView.vue"),
   },
   {
     meta: {
@@ -18,7 +18,7 @@ const routes = [
     },
     path: "/dashboard",
     name: "dashboard",
-    component: Home,
+    component: () => import("@/views/DashboardView.vue"),
   },
   {
     meta: {
@@ -27,6 +27,24 @@ const routes = [
     path: "/tables",
     name: "tables",
     component: () => import("@/views/TablesView.vue"),
+  },
+  {
+    meta: {
+      title: "Moja praksa",
+      requiresAuth: true,
+    },
+    path: "/moja-praksa",
+    name: "moja praksa",
+    component: () => import("@/views/MojaPraksaView.vue"),
+  },
+  {
+    meta: {
+      title: "Dostupni zadaci",
+      requiresAuth: false,
+    },
+    path: "/dostupni-zadaci",
+    name: "dostupni-zadaci",
+    component: () => import("@/views/DostupniZadaciView.vue"),
   },
   {
     meta: {
@@ -39,26 +57,11 @@ const routes = [
   {
     meta: {
       title: "Profile",
+      requiresAuth: true,
     },
     path: "/profile",
     name: "profile",
     component: () => import("@/views/ProfileView.vue"),
-  },
-  {
-    meta: {
-      title: "Ui",
-    },
-    path: "/ui",
-    name: "ui",
-    component: () => import("@/views/UiView.vue"),
-  },
-  {
-    meta: {
-      title: "Responsive layout",
-    },
-    path: "/responsive",
-    name: "responsive",
-    component: () => import("@/views/ResponsiveView.vue"),
   },
   {
     meta: {
@@ -68,14 +71,6 @@ const routes = [
     path: "/login",
     name: "login",
     component: () => import("@/views/LoginView.vue"),
-  },
-  {
-    meta: {
-      title: "Error",
-    },
-    path: "/error",
-    name: "error",
-    component: () => import("@/views/ErrorView.vue"),
   },
 ];
 
@@ -92,13 +87,13 @@ const router = createRouter({
 
 router.beforeEach((to, from, next) => {
   const mainStore = useMainStore();
-  console.log(mainStore.access_token);
+  console.log("mainStore.userAuthenticated", mainStore.userAuthenticated);
   const requiresAuth = to.matched.some((record) => record.meta.requiresAuth);
   const isAdmin = to.matched.some((record) => record.meta.isAdmin);
 
-  if (requiresAuth && !mainStore.isLoggedIn) {
+  if (requiresAuth && !mainStore.userAuthenticated) {
     next("/login");
-  } else if (to.path === "/" && mainStore.isLoggedIn) {
+  } else if (to.path === "/login" && mainStore.userAuthenticated) {
     next("/dashboard");
   } else if (isAdmin && !isAdminUser) {
     next("/error");
