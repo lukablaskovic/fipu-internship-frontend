@@ -1,5 +1,5 @@
 <script setup>
-import { computed, ref, reactive, onMounted } from "vue";
+import { computed, ref, onMounted, watch } from "vue";
 import { useMainStore } from "@/stores/main";
 import { useGuestStore } from "@/stores/guest";
 import { mdiEye } from "@mdi/js";
@@ -13,9 +13,10 @@ defineProps({
   checkable: Boolean,
 });
 
+const MAX_NUM_ASSIGNMENTS = 3;
+
 const mainStore = useMainStore();
 const guestStore = useGuestStore();
-//const items = computed(() => mainStore.clients);
 
 const isModalActive = ref(null);
 
@@ -23,24 +24,24 @@ const perPage = ref(5);
 
 const currentPage = ref(0);
 
-const checkedRows = reactive([]);
+const allAvailableAssignments = ref([]);
 
-const items = ref([]);
+let checkedAssignments = computed(() => guestStore.checkedAssignments);
 
 onMounted(async () => {
-  items.value = await guestStore.fetchAvailableAssignments();
-  console.log(items.value);
+  allAvailableAssignments.value = await guestStore.fetchAvailableAssignments();
 });
 
-const itemsPaginated = computed(() =>
-  items.value.slice(
+const assignmentsPaginated = computed(() =>
+  allAvailableAssignments.value.slice(
     perPage.value * currentPage.value,
     perPage.value * (currentPage.value + 1)
   )
 );
 
-const numPages = computed(() => Math.ceil(items.value.length / perPage.value));
-
+const numPages = computed(() =>
+  Math.ceil(allAvailableAssignments.value.length / perPage.value)
+);
 const currentPageHuman = computed(() => currentPage.value + 1);
 
 const pagesList = computed(() => {
@@ -53,26 +54,38 @@ const pagesList = computed(() => {
   return pagesList;
 });
 
-const remove = (arr, cb) => {
-  const newArr = [];
+const assignmentCheckedStates = ref({});
 
-  arr.forEach((item) => {
-    if (!cb(item)) {
-      newArr.push(item);
-    }
+const disableUnchecked = computed(() => {
+  return checkedAssignments.value.length >= MAX_NUM_ASSIGNMENTS;
+});
+
+watch(checkedAssignments, (newVals) => {
+  newVals.forEach((assignment) => {
+    assignmentCheckedStates.value[assignment["ID Zadatka"]] = false;
   });
+});
 
-  return newArr;
+const isCheckedAssignment = (assignment) => {
+  return checkedAssignments.value.some(
+    (a) => a["ID Zadatka"] === assignment["ID Zadatka"]
+  );
 };
 
-const checked = (isChecked, assignment) => {
-  if (isChecked) {
-    checkedRows.value.push(assignment);
-  } else {
-    checkedRows.value = remove(
-      checkedRows.value,
-      (row) => row.id === assignment.id
-    );
+const checked = (value, assignment) => {
+  // When checking
+  if (value) {
+    if (checkedAssignments.value.length >= MAX_NUM_ASSIGNMENTS) {
+      alert("You can only select a maximum of 3 assignments.");
+      assignmentCheckedStates[assignment["ID Zadatka"]] = false;
+      return;
+    }
+    guestStore.addAssignment(assignment);
+  }
+
+  // When unchecking
+  else {
+    guestStore.removeAssignment(assignment);
   }
 };
 </script>
@@ -81,28 +94,54 @@ const checked = (isChecked, assignment) => {
   <CardBoxModal
     v-if="isModalActive"
     v-model="isModalActive"
-    title="ID Zadatka"
-    has-cancel
+    :title="isModalActive['ID Zadatka']"
+    button-label="Zatvori"
+    has-cancel:false
     @cancel="mainStore.activateLogoutModal(false)"
   >
-    <div>{{ isModalActive["ID Zadatka"] }}</div>
-    <div>{{ isModalActive["Kontakt email"] }}</div>
-  </CardBoxModal>
+    <hr />
+    <div><b>Zadatak studenta:</b> {{ isModalActive["Zadatak studenta"] }}</div>
+    <div><b>Poduzeće: </b>{{ isModalActive["Poduzeće"][0].value }}</div>
+    <div>
+      <b>Preferirane tehnologije:</b>
+      {{ isModalActive["Preferirane tehnologije"] }}
+    </div>
 
-  <div v-if="checkedRows.length" class="p-3 bg-gray-100/50 dark:bg-slate-800">
-    <span
-      v-for="checkedRow in checkedRows"
-      :key="checkedRow.id"
-      class="inline-block px-2 py-1 rounded-sm mr-2 text-sm bg-gray-100 dark:bg-slate-700"
-    >
-      {{ checkedRow.name }}
-    </span>
-  </div>
+    <div>
+      <b>Preferencije za studenta: </b>
+      {{ isModalActive["Preferencije za studenta"] }}
+    </div>
+
+    <div>
+      <b>Potrebno imati: </b>
+      {{ isModalActive["Potrebno imati"] }}
+    </div>
+    <div>
+      <b>Trajanje (sati): </b>
+      {{ isModalActive["Trajanje (sati)"] }}
+    </div>
+
+    <div>
+      <b>Željeno okvirno vrijeme početka: </b>
+      {{ isModalActive["Željeno okvirno vrijeme početka"] }}
+    </div>
+    <div>
+      <b>Angažman FIPU: </b>
+      {{ isModalActive["Angažman FIPU"] }}
+    </div>
+    <div><b>Kontakt email: </b>{{ isModalActive["Kontakt email"] }}</div>
+    <div><b>Lokacija: </b>{{ isModalActive["Lokacija"] }}</div>
+    <div>
+      <b>Napomena</b>
+      {{ isModalActive["Napomena"] }}
+    </div>
+    <br />
+  </CardBoxModal>
 
   <table>
     <thead>
       <tr>
-        <th v-if="checkable" />
+        <th v-if="checkable"></th>
 
         <th>ID Zadatka</th>
         <th>Kontakt email</th>
@@ -113,9 +152,19 @@ const checked = (isChecked, assignment) => {
       </tr>
     </thead>
     <tbody>
-      <tr v-for="assignment in itemsPaginated" :key="assignment.id">
+      <tr
+        v-for="assignment in assignmentsPaginated"
+        :key="assignment['ID Zadatka']"
+      >
         <TableCheckboxCell
           v-if="checkable"
+          v-model="assignmentCheckedStates[assignment['ID Zadatka']]"
+          :assignment-data="assignment"
+          :disabled="
+            disableUnchecked &&
+            !assignmentCheckedStates[assignment['ID Zadatka']] &&
+            !isCheckedAssignment(assignment)
+          "
           @checked="checked($event, assignment)"
         />
 
@@ -148,6 +197,7 @@ const checked = (isChecked, assignment) => {
       </tr>
     </tbody>
   </table>
+
   <div class="p-3 lg:px-6 border-t border-gray-100 dark:border-slate-800">
     <BaseLevel>
       <BaseButtons>

@@ -4,6 +4,7 @@ import { Guest } from "@/services/baserow_client_api.js";
 export const useGuestStore = defineStore("guest", {
   state: () => ({
     assignments: [],
+    checkedAssignments: [],
     isLoading: false,
     error: null,
   }),
@@ -22,6 +23,19 @@ export const useGuestStore = defineStore("guest", {
         this.isLoading = false;
       }
     },
+    addAssignment(assignment) {
+      const assignmentExists = this.checkedAssignments.some(
+        (a) => a["ID Zadatka"] === assignment["ID Zadatka"]
+      );
+      if (!assignmentExists) {
+        this.checkedAssignments.push(assignment);
+      }
+    },
+
+    removeAssignment(assignment) {
+      this.checkedAssignments = this.checkedAssignments.filter(
+        (a) => a["ID Zadatka"] !== assignment["ID Zadatka"]
+      );
+    },
   },
-  persist: true,
 });

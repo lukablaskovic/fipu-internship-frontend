@@ -11,6 +11,7 @@ import NavBarItemPlain from "@/components/NavBarItemPlain.vue";
 import AsideMenu from "@/components/AsideMenu.vue";
 import FooterBar from "@/components/FooterBar.vue";
 import menuNavBarGuest from "@/menuNavBarGuest";
+
 const layoutAsidePadding = "xl:pl-60";
 
 const styleStore = useStyleStore();

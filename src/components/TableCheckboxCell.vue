@@ -6,6 +6,7 @@ defineProps({
     type: String,
     default: "td",
   },
+  disabled: Boolean,
 });
 
 const emit = defineEmits(["checked"]);
@@ -19,8 +20,8 @@ watch(checked, (newVal) => {
 
 <template>
   <component :is="type" class="lg:w-1">
-    <label class="checkbox">
-      <input v-model="checked" type="checkbox" />
+    <label :class="{ 'opacity-50': disabled }" class="checkbox">
+      <input v-model="checked" type="checkbox" :disabled="disabled" />
       <span class="check" />
     </label>
   </component>
