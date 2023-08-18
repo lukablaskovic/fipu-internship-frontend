@@ -1,21 +1,28 @@
 <script setup>
 import { ref, computed, onMounted } from "vue";
 
-import { mdiClipboardCheckOutline, mdiLaptop } from "@mdi/js";
+import {
+  mdiClipboardCheckOutline,
+  mdiClipboardTextOutline,
+  mdiLaptop,
+} from "@mdi/js";
 import * as chartConfig from "@/components/Charts/chart.config.js";
 import SectionMain from "@/components/SectionMain.vue";
 
 import CardBox from "@/components/CardBox.vue";
-
+import BaseButtons from "@/components/BaseButtons.vue";
+import BaseButton from "@/components/BaseButton.vue";
 import SectionTitleLineWithButton from "@/components/SectionTitleLineWithButton.vue";
 import LayoutGuest from "@/layouts/LayoutGuest.vue";
 import TableDostupniZadaci from "@/components/TableDostupniZadaci.vue";
 import draggable from "vuedraggable";
-
+import CardBoxModal from "@/components/CardBoxModal.vue";
 import { useGuestStore } from "@/stores/guest";
+import { useUserStore } from "@/stores/user";
 const guestStore = useGuestStore();
-
+const userStore = useUserStore();
 const checkedAssignments = computed(() => guestStore.checkedAssignments);
+const modalConfirmPreferences = ref(false);
 
 const enabled = ref(true);
 const dragging = ref(false);
@@ -29,6 +36,10 @@ const fillChartData = () => {
 function checkMove(e) {
   window.console.log("Future index: " + e.draggedContext.futureIndex);
 }
+
+const registerAssignments = () => {
+  userStore.registerAssignments(checkedAssignments.value, "I love BigMacs");
+};
 
 onMounted(async () => {
   fillChartData();
@@ -46,13 +57,13 @@ onMounted(async () => {
       <hr />
       <br />
       <SectionTitleLineWithButton
-        :icon="mdiClipboardCheckOutline"
+        :icon="mdiClipboardTextOutline"
         main
         title="Dostupni zadaci za praksu"
       ></SectionTitleLineWithButton>
       <p>
         Pogledajte zanimljive slobodne zadatke te odaberite i rasporedite 3
-        najdraža (1. odabir | 2. odabir | 3. odabir).
+        najdraža - (1. odabir | 2. odabir | 3. odabir).
       </p>
       <p>
         <b>Napomena:</b> Da biste prijavili preferencije, morate se prijaviti u
@@ -69,7 +80,10 @@ onMounted(async () => {
         main
         title="Odabrani zadaci"
       ></SectionTitleLineWithButton>
-      <div class="flex justify-center items-center">
+      <div
+        v-if="checkedAssignments.length"
+        class="flex justify-center items-center"
+      >
         <div class="flex flex-row text-center">
           <draggable
             :list="checkedAssignments"
@@ -83,7 +97,7 @@ onMounted(async () => {
           >
             <template #item="{ element, index }">
               <div
-                class="list-group-item flex-shrink-0 w-40 h-40 bg-gray-200 rounded-lg shadow-lg flex flex-col items-center justify-center text-lg p-4"
+                class="list-group-item flex-shrink-0 w-60 h-30 bg-fipu_light_blue dark:bg-fipu_blue rounded-lg shadow-lg flex flex-col items-center justify-center text-lg p-4"
                 :class="{ 'not-draggable': !enabled, 'cursor-move': enabled }"
               >
                 <span class="mb-2 font-bold">{{ index + 1 }}. odabir</span>
@@ -93,6 +107,34 @@ onMounted(async () => {
           </draggable>
         </div>
       </div>
+      <div v-else>Niste odabrali ni jedan zadatak.</div>
+      <div v-if="checkedAssignments.length == 3">
+        <BaseButtons class="space-y-2 mt-12 mb-16 justify-center items-center">
+          <BaseButton
+            type="submit"
+            color="fipu_light_blue"
+            label="Prijavi preferencije"
+            @click="modalConfirmPreferences = true"
+          />
+        </BaseButtons>
+      </div>
+      <CardBoxModal
+        v-model="modalConfirmPreferences"
+        title="Molimo potvrdite vaš odabir"
+        button-label="Potvrđujem"
+        has-cancel
+        @confirm="registerAssignments()"
+      >
+        <p>Provjerite još jednom odabrane zadatke i njihov redoslijed:</p>
+        <br />
+        <p
+          v-for="(assignment, index) in checkedAssignments"
+          :key="assignment['ID Zadatka']"
+        >
+          <b>Odabir {{ index + 1 }}: </b>{{ assignment["ID Zadatka"] }}
+        </p>
+        <br />
+      </CardBoxModal>
     </SectionMain>
   </LayoutGuest>
 </template>

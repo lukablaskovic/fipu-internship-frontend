@@ -1,9 +1,9 @@
-import { mdiButtonPointer } from "@mdi/js";
+import { mdiClipboardTextOutline } from "@mdi/js";
 
 export default [
   {
     to: "/dostupni-zadaci",
-    icon: mdiButtonPointer,
+    icon: mdiClipboardTextOutline,
     label: "Zadaci",
   },
 ];

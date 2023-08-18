@@ -1,5 +1,6 @@
 import { defineStore } from "pinia";
 import { User } from "@/services/gateway_api";
+import { Student } from "@/services/baserow_client_api";
 
 export const useUserStore = defineStore("user", {
   state: () => ({
@@ -23,6 +24,22 @@ export const useUserStore = defineStore("user", {
         this.currentUser = response;
       } catch (error) {
         console.log("Error fetching current user:", error);
+      }
+    },
+    async registerAssignments(assignmentsData, note) {
+      let postData = {
+        JMBAG: "0303088177",
+        Student: ["0303088177"],
+        "Prvi odabir": [assignmentsData[0]["ID Zadatka"]],
+        "Drugi odabir": [assignmentsData[1]["ID Zadatka"]],
+        "Treći odabir": [assignmentsData[2]["ID Zadatka"]],
+        Napomena: note,
+      };
+      try {
+        const response = await Student.registerAssignments(postData);
+        return response;
+      } catch (error) {
+        console.log("Error:", error);
       }
     },
   },

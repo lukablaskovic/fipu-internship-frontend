@@ -14,4 +14,19 @@ const Guest = {
   },
 };
 
-export { Guest };
+const Student = {
+  async registerAssignments(assignmentsData) {
+    try {
+      let result = await AxiosWrapper.post(
+        "/prijava-preferencija",
+        assignmentsData
+      );
+      return result;
+    } catch (e) {
+      console.log(e);
+      return null;
+    }
+  },
+};
+
+export { Guest, Student };

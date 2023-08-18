@@ -13,7 +13,7 @@ const props = defineProps({
   },
   button: {
     type: String,
-    default: "info",
+    default: "fipu_blue",
   },
   buttonLabel: {
     type: String,

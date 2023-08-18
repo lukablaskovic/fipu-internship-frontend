@@ -11,9 +11,11 @@ module.exports = {
       gray: "gray",
     },
     extend: {
-      backgroundColor: {
-        light: "#74d4f4",
+      colors: {
+        fipu_blue: "#74d4f4",
+        fipu_light_blue: "#9de0f7",
       },
+
       zIndex: {
         "-1": "-1",
       },
@@ -64,11 +66,11 @@ module.exports = {
                 height: "8px",
               },
               "&::-webkit-scrollbar-track": {
-                backgroundColor: theme(`colors.${color}.${track}`),
+                fipu_blue: theme(`colors.${color}.${track}`),
               },
               "&::-webkit-scrollbar-thumb": {
                 borderRadius: "0.25rem",
-                backgroundColor: theme(`colors.${color}.${thumb}`),
+                fipu_blue: theme(`colors.${color}.${thumb}`),
               },
             };
           },

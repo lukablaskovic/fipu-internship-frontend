@@ -83,14 +83,14 @@ const userAuthenticated = computed(() => mainStore.userAuthenticated);
 const logoutItem = computed(() => ({
   label: "Odjava",
   icon: mdiLogout,
-  color: "info",
+  color: "fipu_blue",
   logoutModalActive: true,
 }));
 
 const loginItem = computed(() => ({
   label: "Prijava",
   icon: mdiLogin,
-  color: "info",
+  color: "fipu_blue",
 }));
 
 const menuClick = (event, item) => {

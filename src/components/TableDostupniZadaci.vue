@@ -96,6 +96,7 @@ const checked = (value, assignment) => {
     v-model="isModalActive"
     :title="isModalActive['ID Zadatka']"
     button-label="Zatvori"
+    button="fipu_blue"
     has-cancel:false
     @cancel="mainStore.activateLogoutModal(false)"
   >
@@ -187,7 +188,7 @@ const checked = (value, assignment) => {
         <td class="before:hidden lg:w-1 whitespace-nowrap">
           <BaseButtons type="justify-start lg:justify-end" no-wrap>
             <BaseButton
-              color="info"
+              color="fipu_blue"
               :icon="mdiEye"
               small
               @click="isModalActive = assignment"
