@@ -5,28 +5,39 @@ import { colorsBgLight, colorsOutline } from "@/colors.js";
 import BaseLevel from "@/components/BaseLevel.vue";
 import BaseIcon from "@/components/BaseIcon.vue";
 import BaseButton from "@/components/BaseButton.vue";
-
+import Utils from "@/utils.js";
 const props = defineProps({
+  color: {
+    type: String,
+    required: true,
+  },
   icon: {
     type: String,
     default: null,
   },
   outline: Boolean,
-  color: {
-    type: String,
-    required: true,
-  },
 });
 
 const componentClass = computed(() =>
   props.outline ? colorsOutline[props.color] : colorsBgLight[props.color]
 );
 
-const isDismissed = ref(false);
+const isDismissed = ref(true);
 
 const dismiss = () => {
   isDismissed.value = true;
 };
+
+async function show() {
+  isDismissed.value = false;
+  await Utils.wait(3);
+  dismiss();
+}
+
+defineExpose({
+  show,
+  dismiss,
+});
 
 const slots = useSlots();
 

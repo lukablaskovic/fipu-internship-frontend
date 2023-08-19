@@ -37,6 +37,7 @@ export const useUserStore = defineStore("user", {
       };
       try {
         const response = await Student.registerAssignments(postData);
+        console.log("user pinia", response);
         return response;
       } catch (error) {
         console.log("Error:", error);

@@ -9,15 +9,18 @@ import { useUserStore } from "@/stores/user.js";
 import { darkModeKey, styleKey } from "@/config.js";
 
 import "./css/main.css";
-
+import "animate.css";
 import piniaPluginPersistedstate from "pinia-plugin-persistedstate";
+import NotificationBar from "@/components/NotificationBar.vue";
 
 /* Init Pinia */
 const pinia = createPinia();
 pinia.use(piniaPluginPersistedstate);
 
-/* Create Vue app */
-createApp(App).use(router).use(pinia).mount("#app");
+const APP = createApp(App);
+APP.use(router).use(pinia);
+APP.component("NotificationBar", NotificationBar);
+APP.mount("#app");
 
 /* Init Pinia stores */
 const mainStore = useMainStore(pinia);

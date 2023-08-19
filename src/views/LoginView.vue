@@ -56,7 +56,7 @@ async function onSubmit() {
           prijavili zadatke. Ukoliko želite samo pregledati dostupne zadatke i
           poduzeća, molimo nastavite kao gost
           <a
-            class="text-sky-600 cursor-pointer"
+            class="text-fipu_blue cursor-pointer"
             @click="router.push('/dostupni-zadaci')"
             >ovdje</a
           >.
@@ -93,10 +93,10 @@ async function onSubmit() {
             :input-value="true"
           />
 
-          <BaseButtons class="space-y-2">
+          <BaseButtons class="space-y-2 mt-8">
             <BaseButton
               type="submit"
-              color="info"
+              color="fipu_light_blue"
               label="Prijavi se"
               class="w-full"
             />

@@ -6,7 +6,7 @@ const Guest = {
   async fetchAvailableAssignments() {
     try {
       let result = await AxiosWrapper.get("/zadaci-za-odabir");
-      return result;
+      return result.data;
     } catch (e) {
       console.log(e);
       return null;
@@ -21,6 +21,7 @@ const Student = {
         "/prijava-preferencija",
         assignmentsData
       );
+      console.log("baserow_client_api.js", result);
       return result;
     } catch (e) {
       console.log(e);
