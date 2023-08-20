@@ -34,7 +34,6 @@ const User = {
   async getCurrentUser() {
     try {
       let result = await AxiosWrapper.get("/users/me");
-      console.log(result);
       return result;
     } catch (e) {
       return null;

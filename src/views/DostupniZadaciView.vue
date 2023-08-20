@@ -21,7 +21,7 @@ import BaseButtons from "@/components/BaseButtons.vue";
 import BaseButton from "@/components/BaseButton.vue";
 import SectionTitleLineWithButton from "@/components/SectionTitleLineWithButton.vue";
 
-import TableDostupniZadaci from "@/components/TableDostupniZadaci.vue";
+import TableAvailableAssignments from "@/components/TableAvailableAssignments.vue";
 import FormField from "@/components/FormField.vue";
 import FormControl from "@/components/FormControl.vue";
 
@@ -133,7 +133,7 @@ function showNotificationBar(type) {
       </p>
       <br />
       <CardBox has-table>
-        <TableDostupniZadaci checkable />
+        <TableAvailableAssignments checkable />
       </CardBox>
       <hr />
       <br />

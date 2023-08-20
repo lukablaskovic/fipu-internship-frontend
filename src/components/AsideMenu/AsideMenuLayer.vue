@@ -58,8 +58,8 @@ import { mdiLogout, mdiLogin, mdiClose } from "@mdi/js";
 import { computed } from "vue";
 import { useStyleStore } from "@/stores/style_store.js";
 import { useMainStore } from "@/stores/main_store.js";
-import AsideMenuList from "@/components/AsideMenuList.vue";
-import AsideMenuItem from "@/components/AsideMenuItem.vue";
+import AsideMenuList from "@/components/AsideMenu/AsideMenuList.vue";
+import AsideMenuItem from "@/components/AsideMenu/AsideMenuItem.vue";
 import BaseIcon from "@/components/BaseIcon.vue";
 
 import { useRouter } from "vue-router";

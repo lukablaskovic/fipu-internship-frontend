@@ -4,13 +4,13 @@ import { useMainStore } from "@/stores/main_store.js";
 const routes = [
   {
     meta: {
-      title: "Moja praksa",
+      title: "Dashboard",
       requiresAuth: true,
       requiresAdmin: false,
     },
     path: "/",
     name: "default",
-    component: () => import("@/views/MojaPraksaView.vue"),
+    component: () => import("@/views/DashboardView.vue"),
   },
   {
     meta: {
@@ -94,6 +94,33 @@ const routes = [
     name: "register",
     component: () => import("@/views/RegisterView.vue"),
   },
+  {
+    meta: {
+      title: "BPMN - Models",
+      requiresAuth: false,
+    },
+    path: "/bpmn/models",
+    name: "bpmn_models",
+    component: () => import("@/views/BPMN_ENGINE/ModelsView.vue"),
+  },
+  {
+    meta: {
+      title: "BPMN - Microservices",
+      requiresAuth: false,
+    },
+    path: "/bpmn/microservices",
+    name: "bpmn_microservices",
+    component: () => import("@/views/BPMN_ENGINE/ModelsView.vue"),
+  },
+  {
+    meta: {
+      title: "BPMN - Modeler",
+      requiresAuth: false,
+    },
+    path: "/bpmn/modeler",
+    name: "bpmn_modeler",
+    component: () => import("@/views/BPMN_ENGINE/ModelerView.vue"),
+  },
 ];
 
 const router = createRouter({
@@ -109,8 +136,7 @@ router.beforeEach((to, from, next) => {
 
   let userAuthenticated = mainStore.userAuthenticated;
   let userAdmin = mainStore.userAdmin;
-  console.log("userAuthenticated", userAuthenticated);
-  console.log("userAdmin", userAdmin);
+
   const requiresAuth = to.matched.some((record) => record.meta.requiresAuth);
   const requiresAdmin = to.matched.some((record) => record.meta.requiresAdmin);
 

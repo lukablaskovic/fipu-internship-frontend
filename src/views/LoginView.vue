@@ -23,7 +23,7 @@ const router = useRouter();
 
 async function onSubmit() {
   let result = await mainStore.login(form.email, form.password);
-  if (result) router.push("/");
+  if (result) router.push("/dashboard");
 }
 </script>
 

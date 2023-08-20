@@ -1,4 +1,4 @@
-import { mdiMonitor, mdiSquareEditOutline, mdiTable } from "@mdi/js";
+import { mdiMonitor, mdiAccount, mdiEngine } from "@mdi/js";
 
 export default [
   {
@@ -7,13 +7,31 @@ export default [
     label: "Nadzorna ploča",
   },
   {
-    to: "/tables",
-    label: "Servisi",
-    icon: mdiTable,
+    to: "/students",
+    icon: mdiAccount,
+    label: "Studenti",
   },
+
   {
-    to: "/forms",
-    label: "PDF Builder",
-    icon: mdiSquareEditOutline,
+    label: "BPMN Engine",
+    icon: mdiEngine,
+    menu: [
+      {
+        to: "/bpmn/models",
+        label: "Modeli",
+      },
+      {
+        to: "/bpmn/microservices",
+
+        label: "Mikroservisi",
+      },
+      {
+        to: "/bpmn/modeler",
+        label: "Modeler",
+      },
+      {
+        label: "PDF Generator",
+      },
+    ],
   },
 ];

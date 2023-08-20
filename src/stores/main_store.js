@@ -19,10 +19,11 @@ export const useMainStore = defineStore("main", {
       baserow_id: null,
       type: "" || null,
     },
+
     access_token: JSON.parse(localStorage.getItem("main")) || null,
+
     logoutModalActive: false,
     returnURL: null,
-
     isFieldFocusRegistered: false,
 
     clients: [],

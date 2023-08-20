@@ -64,7 +64,7 @@ const submitPass = () => {
 
       <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <CardBox is-form @submit.prevent="submitProfile">
-          <FormField label="Slika profila" help="Max 500kb">
+          <FormField label="Avatar" help="Max 500kb">
             <FormFilePicker label="Prenesi" />
           </FormField>
           <FormField
