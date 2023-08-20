@@ -1,6 +1,6 @@
 <script setup>
 import { computed } from "vue";
-import { useStyleStore } from "@/stores/style";
+import { useStyleStore } from "@/stores/style_store.js";
 import { gradientBgBlue, gradientBgDark, gradientBgPinkRed } from "@/colors";
 
 const props = defineProps({

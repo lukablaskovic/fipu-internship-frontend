@@ -1,5 +1,5 @@
 import axios from "axios";
-import { useMainStore } from "@/stores/main";
+import { useMainStore } from "@/stores/main_store.js";
 
 function createAxiosInstance(API_URL) {
   const AxiosInstance = axios.create({

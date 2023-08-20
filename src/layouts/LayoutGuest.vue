@@ -3,7 +3,7 @@ import { mdiForwardburger, mdiBackburger, mdiMenu } from "@mdi/js";
 import { ref } from "vue";
 import { useRouter } from "vue-router";
 import menuAsideGuest from "@/menuAsideGuest.js";
-import { useStyleStore } from "@/stores/style.js";
+import { useStyleStore } from "@/stores/style_store.js";
 import BaseIcon from "@/components/BaseIcon.vue";
 import FormControl from "@/components/FormControl.vue";
 import NavBar from "@/components/NavBar.vue";

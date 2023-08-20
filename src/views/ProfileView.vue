@@ -1,7 +1,6 @@
 <script setup>
 import { reactive } from "vue";
-import { useMainStore } from "@/stores/main";
-import { useUserStore } from "@/stores/user";
+import { useMainStore } from "@/stores/main_store.js";
 
 import {
   mdiAccount,
@@ -25,16 +24,15 @@ import LayoutAuthenticated from "@/layouts/LayoutAuthenticated.vue";
 import SectionTitleLineWithButton from "@/components/SectionTitleLineWithButton.vue";
 
 const mainStore = useMainStore();
-const userStore = useUserStore();
 
 const profileForm = reactive({
-  username: userStore.currentUser.username,
-  name: userStore.currentUser.name,
-  surname: userStore.currentUser.surname,
-  jmbag: userStore.currentUser.jmbag,
-  type: userStore.currentUser.type,
-  year_of_study: userStore.currentUser.year_of_study,
-  email: userStore.currentUser.email,
+  username: mainStore.currentUser.username,
+  name: mainStore.currentUser.name,
+  surname: mainStore.currentUser.surname,
+  jmbag: mainStore.currentUser.jmbag,
+  type: mainStore.currentUser.type,
+  year_of_study: mainStore.currentUser.year_of_study,
+  email: mainStore.currentUser.email,
 });
 
 const passwordForm = reactive({

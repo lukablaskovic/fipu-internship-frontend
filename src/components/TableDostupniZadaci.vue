@@ -1,7 +1,7 @@
 <script setup>
 import { computed, ref, onMounted, watch } from "vue";
-import { useMainStore } from "@/stores/main";
-import { useGuestStore } from "@/stores/guest";
+import { useMainStore } from "@/stores/main_store.js";
+import { useGuestStore } from "@/stores/guest_store.js";
 import { mdiEye } from "@mdi/js";
 import CardBoxModal from "@/components/CardBoxModal.vue";
 import TableCheckboxCell from "@/components/TableCheckboxCell.vue";
@@ -19,11 +19,6 @@ const mainStore = useMainStore();
 const guestStore = useGuestStore();
 
 const isModalActive = ref(null);
-
-const perPage = ref(5);
-
-const currentPage = ref(0);
-
 const allAvailableAssignments = ref([]);
 
 let checkedAssignments = computed(() => guestStore.checkedAssignments);
@@ -32,6 +27,8 @@ onMounted(async () => {
   allAvailableAssignments.value = await guestStore.fetchAvailableAssignments();
 });
 
+const perPage = ref(5);
+const currentPage = ref(0);
 const assignmentsPaginated = computed(() =>
   allAvailableAssignments.value.slice(
     perPage.value * currentPage.value,

@@ -1,7 +1,6 @@
 <script setup>
 import { computed, ref, onMounted } from "vue";
-import { useMainStore } from "@/stores/main";
-import { useUserStore } from "@/stores/user";
+import { useMainStore } from "@/stores/main_store.js";
 import {
   mdiAccountMultiple,
   mdiAccountSchoolOutline,
@@ -25,8 +24,6 @@ import CardBoxClient from "@/components/CardBoxClient.vue";
 import LayoutAuthenticated from "@/layouts/LayoutAuthenticated.vue";
 import SectionTitleLineWithButton from "@/components/SectionTitleLineWithButton.vue";
 import SectionBannerStarOnGitHub from "@/components/SectionBannerStarOnGitHub.vue";
-//import CardBoxModal from "@/components/CardBoxModal.vue";
-//import BpmnDiagram from "@/components/BPMN/BpmnDiagram.vue";
 
 import axios from "axios";
 const bpmn_model = ref(null);
@@ -42,8 +39,7 @@ onMounted(async () => {
 });
 
 const mainStore = useMainStore();
-const userStore = useUserStore();
-userStore.fetchCurrentUser();
+mainStore.fetchCurrentUser();
 
 const clientBarItems = computed(() => mainStore.clients.slice(0, 4));
 const userAuthenticated = computed(() => mainStore.userAuthenticated);

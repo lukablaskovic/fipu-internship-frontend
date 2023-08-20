@@ -1,16 +1,14 @@
 <script setup>
-import { useMainStore } from "@/stores/main";
-import { useUserStore } from "@/stores/user";
+import { useMainStore } from "@/stores/main_store.js";
 import UserAvatar from "@/components/UserAvatar.vue";
 
 const mainStore = useMainStore();
-const userStore = useUserStore();
 </script>
 
 <template>
   <UserAvatar
-    :username="userStore.currentUser.username"
-    :avatar="userStore.currentUser.avatar"
+    :username="mainStore.currentUser.username"
+    :avatar="mainStore.currentUser.avatar"
   >
     <slot />
   </UserAvatar>

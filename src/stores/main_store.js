@@ -1,20 +1,30 @@
 import { defineStore } from "pinia";
 import { Auth } from "@/services/gateway_api";
+import { User } from "@/services/gateway_api";
 
 import axios from "axios";
 import router from "@/router";
 
 export const useMainStore = defineStore("main", {
   state: () => ({
-    /* User */
+    currentUser: {
+      id: "",
+      name: "",
+      surname: "",
+      username: "",
+      jmbag: "",
+      email: "",
+      year_of_study: "",
+      avatar: "",
+      baserow_id: null,
+      type: "" || null,
+    },
     access_token: JSON.parse(localStorage.getItem("main")) || null,
     logoutModalActive: false,
     returnURL: null,
 
-    /* Field focus with ctrl+k (to register only once) */
     isFieldFocusRegistered: false,
 
-    /* Sample data (commonly used) */
     clients: [],
     history: [],
   }),
@@ -22,11 +32,20 @@ export const useMainStore = defineStore("main", {
     userAuthenticated() {
       return Boolean(this.access_token);
     },
+    userAdmin() {
+      return this.currentUser && this.currentUser.type === "admin";
+    },
   },
   actions: {
-    activateLogoutModal(state) {
-      this.logoutModalActive = state;
+    async fetchCurrentUser() {
+      try {
+        const response = await User.getCurrentUser();
+        this.currentUser = response;
+      } catch (error) {
+        console.log("Error fetching current user:", error);
+      }
     },
+
     async login(email, password) {
       try {
         const loginResult = await Auth.login({ email, password });
@@ -44,7 +63,6 @@ export const useMainStore = defineStore("main", {
       this.access_token = null;
       this.logoutModalActive = false;
       localStorage.removeItem("main");
-      localStorage.removeItem("user");
       router.push("/login");
     },
 
@@ -71,6 +89,10 @@ export const useMainStore = defineStore("main", {
         .catch((error) => {
           alert(error.message);
         });
+    },
+
+    activateLogoutModal(state) {
+      this.logoutModalActive = state;
     },
   },
   persist: true,

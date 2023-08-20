@@ -1,6 +1,6 @@
 <script setup>
 import { computed, ref } from "vue";
-import { useUserStore } from "@/stores/user";
+import { useMainStore } from "@/stores/main_store.js";
 import { mdiCheckDecagram, mdiSchool, mdiShieldAccount } from "@mdi/js";
 import BaseLevel from "@/components/BaseLevel.vue";
 import UserAvatarCurrentUser from "@/components/UserAvatarCurrentUser.vue";
@@ -8,12 +8,12 @@ import CardBox from "@/components/CardBox.vue";
 import FormCheckRadio from "@/components/FormCheckRadio.vue";
 import PillTag from "@/components/PillTag.vue";
 
-const userStore = useUserStore();
+const mainStore = useMainStore();
 
-const accountType = computed(() => userStore.currentUser.type);
+const accountType = computed(() => mainStore.currentUser.type);
 
-const username = computed(() => userStore.currentUser.username);
-const name = computed(() => userStore.currentUser.name);
+const username = computed(() => mainStore.currentUser.username);
+const name = computed(() => mainStore.currentUser.name);
 
 const userSwitchVal = ref(false);
 </script>

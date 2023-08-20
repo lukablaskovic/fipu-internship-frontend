@@ -1,6 +1,6 @@
 <script setup>
 import { ref, computed, useSlots } from "vue";
-import { mdiClose } from "@mdi/js";
+import { mdiClose, mdiAlertCircle } from "@mdi/js";
 import { colorsBgLight, colorsOutline } from "@/colors.js";
 import BaseLevel from "@/components/BaseLevel.vue";
 import BaseIcon from "@/components/BaseIcon.vue";
@@ -10,10 +10,11 @@ const props = defineProps({
   color: {
     type: String,
     required: true,
+    default: "primary",
   },
   icon: {
     type: String,
-    default: null,
+    default: mdiAlertCircle,
   },
   outline: Boolean,
 });

@@ -15,22 +15,32 @@ import SectionMain from "@/components/SectionMain.vue";
 import CardBox from "@/components/CardBox.vue";
 import CardBoxModal from "@/components/CardBoxModal.vue";
 
+import LayoutAuthenticated from "@/layouts/LayoutAuthenticated.vue";
+import LayoutGuest from "@/layouts/LayoutGuest.vue";
 import BaseButtons from "@/components/BaseButtons.vue";
 import BaseButton from "@/components/BaseButton.vue";
 import SectionTitleLineWithButton from "@/components/SectionTitleLineWithButton.vue";
-import LayoutGuest from "@/layouts/LayoutGuest.vue";
+
 import TableDostupniZadaci from "@/components/TableDostupniZadaci.vue";
 import FormField from "@/components/FormField.vue";
 import FormControl from "@/components/FormControl.vue";
 
 import router from "@/router";
 import Utils from "@/utils.js";
-import { useGuestStore } from "@/stores/guest";
-import { useUserStore } from "@/stores/user";
-import { useMainStore } from "@/stores/main";
+import { useGuestStore } from "@/stores/guest_store.js";
+import { useStudentStore } from "@/stores/student_store.js";
+import { useMainStore } from "@/stores/main_store.js";
+
+const Layout = computed(() => {
+  if (userAuthenticated.value) {
+    return LayoutAuthenticated;
+  } else {
+    return LayoutGuest;
+  }
+});
 
 const guestStore = useGuestStore();
-const userStore = useUserStore();
+const studentStore = useStudentStore();
 const mainStore = useMainStore();
 
 const userAuthenticated = computed(() => mainStore.userAuthenticated);
@@ -46,7 +56,7 @@ const registerAssignments = async () => {
     showNotificationBar("warning");
     return;
   } else {
-    let result = await userStore.registerAssignments(
+    let result = await studentStore.registerAssignments(
       checkedAssignments.value,
       note.value
     );
@@ -93,7 +103,6 @@ function showNotificationBar(type) {
       notificationStatus.value = "Greška!";
       notificationMessage.value =
         "Preferencije nisu prijavljene. Molimo pokušajte ponovno ili kontaktirajte profesora.";
-
       break;
   }
   notificationBar.value.show();
@@ -101,7 +110,7 @@ function showNotificationBar(type) {
 </script>
 
 <template>
-  <LayoutGuest>
+  <component :is="Layout">
     <SectionMain>
       <SectionTitleLineWithButton :icon="mdiLaptop" title="Stručna praksa" main>
       </SectionTitleLineWithButton>
@@ -219,7 +228,7 @@ function showNotificationBar(type) {
         <br />
       </CardBoxModal>
     </SectionMain>
-  </LayoutGuest>
+  </component>
 </template>
 <style scoped>
 .ghost {

@@ -2,6 +2,7 @@
 import { reactive } from "vue";
 import { useRouter } from "vue-router";
 import { mdiAccount, mdiAsterisk } from "@mdi/js";
+
 import SectionSplitHorizontally from "@/components/SectionSplitHorizontally.vue";
 
 import CardBox from "@/components/CardBox.vue";
@@ -11,28 +12,31 @@ import FormControl from "@/components/FormControl.vue";
 import BaseButton from "@/components/BaseButton.vue";
 import BaseButtons from "@/components/BaseButtons.vue";
 
-import { useMainStore } from "@/stores/main";
+import { mainStore } from "@/main";
 
 const form = reactive({
-  email: "lukablaskovic2000@gmail.com",
+  email: "admin@fipu.hr",
   password: "123456",
   remember: true,
 });
 const router = useRouter();
 
 async function onSubmit() {
-  const mainStore = useMainStore();
   let result = await mainStore.login(form.email, form.password);
-  if (result) router.push("/dashboard");
+  if (result) router.push("/");
 }
 </script>
 
 <template>
   <SectionSplitHorizontally bg="blue">
-    <div class="flex flex-row overflow-hidden rounded-lg p-36">
+    <div class="flex flex-row overflow-hidden rounded-lg p-12 h-screen">
       <CardBox class="flex-1 rounded-l-lg justify-center items-center">
         <div>
-          <img src="login_art.jpg" alt="" class="" />
+          <img
+            src="login_art.jpg"
+            alt="Login graphics"
+            class="max-w-full h-auto"
+          />
         </div>
       </CardBox>
 
@@ -48,7 +52,7 @@ async function onSubmit() {
             class="w-36 h-36 object-cover mx-auto"
           />
         </div>
-        <h2 class="text-4xl font-bold mb-4 mt-4">
+        <h2 class="text-4xl text-center font-bold mb-4 mt-4">
           Dobrodošli na FIPU Internship Dashboard
         </h2>
         <h2 class="mb-4 text-center">
@@ -93,11 +97,26 @@ async function onSubmit() {
             :input-value="true"
           />
 
-          <BaseButtons class="space-y-2 mt-8">
+          <BaseButtons class="space-y-2 mt-6">
             <BaseButton
               type="submit"
-              color="fipu_light_blue"
+              color="fipu_blue"
               label="Prijavi se"
+              class="w-full"
+            />
+          </BaseButtons>
+          <!-- Separator between social media sign in and email/password sign in -->
+          <div
+            class="my-4 flex items-center before:mt-0.5 before:flex-1 before:border-t before:border-neutral-300 after:mt-0.5 after:flex-1 after:border-t after:border-neutral-300"
+          >
+            <p class="mx-4 mb-0 text-center dark:text-white">ili</p>
+          </div>
+          <BaseButtons class="space-y-2 mt-6">
+            <BaseButton
+              color="fipu_blue"
+              outline
+              to="/register"
+              label="Registriraj se"
               class="w-full"
             />
           </BaseButtons>

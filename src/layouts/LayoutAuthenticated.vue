@@ -1,11 +1,12 @@
 <script setup>
 import { mdiForwardburger, mdiBackburger, mdiMenu } from "@mdi/js";
-import { ref, computed } from "vue";
+import { ref, onMounted, computed } from "vue";
 import { useRouter } from "vue-router";
-import menuAside from "@/menuAside.js";
+import menuAsideAdmin from "@/menuAsideAdmin.js";
+import menuAsideStudent from "@/menuAsideStudent.js";
 import menuNavBar from "@/menuNavBar.js";
-import { useStyleStore } from "@/stores/style.js";
-import { useMainStore } from "@/stores/main.js";
+import { useStyleStore } from "@/stores/style_store.js";
+import { useMainStore } from "@/stores/main_store.js";
 import BaseIcon from "@/components/BaseIcon.vue";
 import FormControl from "@/components/FormControl.vue";
 import NavBar from "@/components/NavBar.vue";
@@ -24,10 +25,20 @@ const isAsideLgActive = ref(false);
 
 const logoutModalActive = computed(() => mainStore.logoutModalActive);
 
-router.beforeEach(() => {
-  isAsideMobileExpanded.value = false;
-  isAsideLgActive.value = false;
-});
+const userAdmin = computed(() => mainStore.userAdmin);
+let menuAside = ref([]);
+onMounted(() => {
+  if (userAdmin.value) {
+    menuAside.value = menuAsideAdmin;
+  }
+  if (!userAdmin.value) {
+    menuAside.value = menuAsideStudent;
+  }
+}),
+  router.beforeEach(() => {
+    isAsideMobileExpanded.value = false;
+    isAsideLgActive.value = false;
+  });
 
 const menuClick = (event, item) => {
   if (item.isToggleLightDark) {

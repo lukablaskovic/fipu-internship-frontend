@@ -1,5 +1,6 @@
 import { defineStore } from "pinia";
 import { Guest } from "@/services/baserow_client_api.js";
+import { Auth } from "@/services/gateway_api.js";
 
 export const useGuestStore = defineStore("guest", {
   state: () => ({
@@ -10,6 +11,14 @@ export const useGuestStore = defineStore("guest", {
   }),
   getters: {},
   actions: {
+    async registerStudent(postData) {
+      try {
+        const response = await Auth.register(postData);
+        return response;
+      } catch (error) {
+        console.log("Error:", error);
+      }
+    },
     async fetchAvailableAssignments() {
       this.isLoading = true;
       this.error = null;

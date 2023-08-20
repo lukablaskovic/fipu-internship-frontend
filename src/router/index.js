@@ -1,25 +1,38 @@
 import { createRouter, createWebHashHistory } from "vue-router";
-import { useMainStore } from "@/stores/main";
+import { useMainStore } from "@/stores/main_store.js";
 
 const routes = [
   {
     meta: {
-      title: "Dashboard",
+      title: "Moja praksa",
       requiresAuth: true,
+      requiresAdmin: false,
     },
     path: "/",
     name: "default",
-    component: () => import("@/views/DashboardView.vue"),
+    component: () => import("@/views/MojaPraksaView.vue"),
+  },
+  {
+    meta: {
+      title: "Moja praksa",
+      requiresAuth: true,
+      requiresAdmin: false,
+    },
+    path: "/moja-praksa",
+    name: "moja praksa",
+    component: () => import("@/views/MojaPraksaView.vue"),
   },
   {
     meta: {
       title: "Dashboard",
       requiresAuth: true,
+      requiresAdmin: true,
     },
     path: "/dashboard",
     name: "dashboard",
     component: () => import("@/views/DashboardView.vue"),
   },
+
   {
     meta: {
       title: "Tables",
@@ -65,17 +78,23 @@ const routes = [
   },
   {
     meta: {
-      title: "Login",
+      title: "Prijava",
       requiresAuth: false,
     },
     path: "/login",
     name: "login",
     component: () => import("@/views/LoginView.vue"),
   },
+  {
+    meta: {
+      title: "Registracija",
+      requiresAuth: false,
+    },
+    path: "/register",
+    name: "register",
+    component: () => import("@/views/RegisterView.vue"),
+  },
 ];
-
-//temporary
-let isAdminUser = false;
 
 const router = createRouter({
   history: createWebHashHistory(),
@@ -87,16 +106,22 @@ const router = createRouter({
 
 router.beforeEach((to, from, next) => {
   const mainStore = useMainStore();
-  console.log("mainStore.userAuthenticated", mainStore.userAuthenticated);
-  const requiresAuth = to.matched.some((record) => record.meta.requiresAuth);
-  const isAdmin = to.matched.some((record) => record.meta.isAdmin);
 
-  if (requiresAuth && !mainStore.userAuthenticated) {
+  let userAuthenticated = mainStore.userAuthenticated;
+  let userAdmin = mainStore.userAdmin;
+  console.log("userAuthenticated", userAuthenticated);
+  console.log("userAdmin", userAdmin);
+  const requiresAuth = to.matched.some((record) => record.meta.requiresAuth);
+  const requiresAdmin = to.matched.some((record) => record.meta.requiresAdmin);
+
+  if (requiresAuth && !userAuthenticated) {
     next("/login");
-  } else if (to.path === "/login" && mainStore.userAuthenticated) {
+  } else if (to.path === "/login" && userAuthenticated && !userAdmin) {
+    next("/moja-praksa");
+  } else if (to.path === "/login" && userAuthenticated && userAdmin) {
     next("/dashboard");
-  } else if (isAdmin && !isAdminUser) {
-    next("/error");
+  } else if (requiresAdmin && !userAdmin && userAuthenticated) {
+    next("/moja-praksa");
   } else {
     next();
   }
