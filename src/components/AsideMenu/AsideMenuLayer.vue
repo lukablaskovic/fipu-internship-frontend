@@ -56,8 +56,7 @@
 <script setup>
 import { mdiLogout, mdiLogin, mdiClose } from "@mdi/js";
 import { computed } from "vue";
-import { useStyleStore } from "@/stores/style_store.js";
-import { useMainStore } from "@/stores/main_store.js";
+import { mainStore, styleStore } from "@/main.js";
 import AsideMenuList from "@/components/AsideMenu/AsideMenuList.vue";
 import AsideMenuItem from "@/components/AsideMenu/AsideMenuItem.vue";
 import BaseIcon from "@/components/BaseIcon.vue";
@@ -74,9 +73,6 @@ defineProps({
 });
 
 const emit = defineEmits(["menu-click", "aside-lg-close-click"]);
-
-const styleStore = useStyleStore();
-const mainStore = useMainStore();
 
 const userAuthenticated = computed(() => mainStore.userAuthenticated);
 

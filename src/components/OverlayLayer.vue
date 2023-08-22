@@ -1,5 +1,5 @@
 <script setup>
-import { useStyleStore } from "@/stores/style_store.js";
+import { styleStore } from "@/main.js";
 
 defineProps({
   zIndex: {
@@ -17,8 +17,6 @@ const emit = defineEmits(["overlay-click"]);
 const overlayClick = (event) => {
   emit("overlay-click", event);
 };
-
-const styleStore = useStyleStore();
 </script>
 
 <template>

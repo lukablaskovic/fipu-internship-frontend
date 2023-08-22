@@ -1,6 +1,6 @@
 <script setup>
 import { computed, ref, onMounted } from "vue";
-import { useMainStore } from "@/stores/main_store.js";
+import { adminStore, mainStore } from "@/main.js";
 import {
   mdiAccountMultiple,
   mdiAccountSchoolOutline,
@@ -8,7 +8,7 @@ import {
   mdiMonitorCellphone,
   mdiReload,
   mdiChartPie,
-  mdiChartBar,
+  mdiViewDashboard,
   mdiCommentProcessing,
 } from "@mdi/js";
 import * as chartConfig from "@/components/Charts/chart.config.js";
@@ -38,7 +38,6 @@ onMounted(async () => {
   bpmn_model.value = await fetchXML();
 });
 
-const mainStore = useMainStore();
 mainStore.fetchCurrentUser();
 
 const clientBarItems = computed(() => mainStore.clients.slice(0, 4));
@@ -57,13 +56,21 @@ async function fetchXML() {
     console.error("Failed to fetch XML:", error);
   }
 }
+onMounted(async () => {
+  let data = await adminStore.getStudents();
+  console.log(data);
+});
 </script>
 
 <template>
   <div>
     <LayoutAuthenticated v-if="userAuthenticated">
       <SectionMain>
-        <SectionTitleLineWithButton :icon="mdiChartBar" title="Statistika" main>
+        <SectionTitleLineWithButton
+          :icon="mdiViewDashboard"
+          title="Nadzorna ploča"
+          main
+        >
         </SectionTitleLineWithButton>
         <!--
       <div>
@@ -88,13 +95,12 @@ async function fetchXML() {
             label="Studenti u procesu prakse"
           />
           <CardBoxWidget
-            trend="Overflow"
+            trend="Upozorenje"
             trend-type="alert"
             color="text-red-500"
             :icon="mdiChartTimelineVariant"
-            :number="256"
-            suffix="%"
-            label="Performance"
+            :number="10"
+            label="Studenti koji čekaju alokaciju"
           />
         </div>
         <SectionTitleLineWithButton
@@ -128,8 +134,6 @@ async function fetchXML() {
             />
           </div>
         </div>
-
-        <SectionBannerStarOnGitHub class="mt-6 mb-6" />
 
         <SectionTitleLineWithButton :icon="mdiChartPie" title="Trends overview">
           <BaseButton

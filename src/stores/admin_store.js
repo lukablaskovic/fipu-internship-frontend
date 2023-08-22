@@ -1,21 +1,16 @@
 import { defineStore } from "pinia";
-import { Student } from "@/services/baserow_client_api";
+import { User } from "@/services/gateway_api";
 
 export const useAdminStore = defineStore("admin", {
-  state: () => ({}),
+  state: () => ({
+    students: [],
+  }),
   actions: {
-    async registerAssignments(assignmentsData, note) {
-      let postData = {
-        JMBAG: "0303088177",
-        Student: ["0303088177"],
-        "Prvi odabir": [assignmentsData[0]["ID Zadatka"]],
-        "Drugi odabir": [assignmentsData[1]["ID Zadatka"]],
-        "Treći odabir": [assignmentsData[2]["ID Zadatka"]],
-        Napomena: note,
-      };
+    async getStudents() {
       try {
-        const response = await Student.registerAssignments(postData);
-        console.log("user pinia", response);
+        const response = await User.getStudents();
+        this.students = response;
+        console.log("students", response);
         return response;
       } catch (error) {
         console.log("Error:", error);

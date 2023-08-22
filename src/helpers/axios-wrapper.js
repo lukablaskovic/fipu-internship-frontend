@@ -1,5 +1,5 @@
 import axios from "axios";
-import { useMainStore } from "@/stores/main_store.js";
+import { mainStore } from "@/main.js";
 
 function createAxiosInstance(API_URL) {
   const AxiosInstance = axios.create({
@@ -11,7 +11,7 @@ function createAxiosInstance(API_URL) {
 
   AxiosInstance.interceptors.request.use(
     (config) => {
-      const token = useMainStore().access_token;
+      const token = mainStore.access_token;
       if (token) {
         config.headers["Authorization"] = "Bearer " + token;
       }

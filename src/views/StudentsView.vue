@@ -1,13 +1,15 @@
 <script setup>
 import { computed, ref, onMounted } from "vue";
-import { useMainStore } from "@/stores/main_store.js";
-import { mdiChartBar } from "@mdi/js";
+import { adminStore, mainStore } from "@/main.js";
+import { mdiMonitorCellphone, mdiViewDashboard } from "@mdi/js";
 import * as chartConfig from "@/components/Charts/chart.config.js";
 import SectionMain from "@/components/SectionMain.vue";
+import CardBox from "@/components/CardBox.vue";
+import NotificationBar from "@/components/NotificationBar.vue";
+
 import LayoutAuthenticated from "@/layouts/LayoutAuthenticated.vue";
 import SectionTitleLineWithButton from "@/components/SectionTitleLineWithButton.vue";
-import BpmnDiagram from "@/components/BPMN/BpmnDiagram.vue";
-
+import TableAllStudents from "@/components/TableAllStudents.vue";
 import axios from "axios";
 const bpmn_model = ref(null);
 const chartData = ref(null);
@@ -21,7 +23,6 @@ onMounted(async () => {
   bpmn_model.value = await fetchXML();
 });
 
-const mainStore = useMainStore();
 mainStore.fetchCurrentUser();
 
 const userAuthenticated = computed(() => mainStore.userAuthenticated);
@@ -38,6 +39,10 @@ async function fetchXML() {
     console.error("Failed to fetch XML:", error);
   }
 }
+onMounted(async () => {
+  let data = await adminStore.getStudents();
+  console.log(data);
+});
 </script>
 
 <template>
@@ -45,15 +50,19 @@ async function fetchXML() {
     <LayoutAuthenticated v-if="userAuthenticated">
       <SectionMain>
         <SectionTitleLineWithButton
-          :icon="mdiChartBar"
-          title="Moja praksa"
+          :icon="mdiViewDashboard"
+          title="Popis prijavljenih studenata"
           main
         >
         </SectionTitleLineWithButton>
 
-        <div>
-          <BpmnDiagram v-if="bpmn_model" :xml="bpmn_model" />
-        </div>
+        <NotificationBar color="info" :icon="mdiMonitorCellphone">
+          <b>Responsive table.</b> Collapses on mobile
+        </NotificationBar>
+
+        <CardBox has-table>
+          <TableAllStudents />
+        </CardBox>
       </SectionMain>
     </LayoutAuthenticated>
   </div>

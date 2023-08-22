@@ -1,6 +1,6 @@
 <script setup>
 import { computed, ref } from "vue";
-import { useMainStore } from "@/stores/main_store.js";
+import { mainStore } from "@/mainStore.js";
 import { mdiEye, mdiTrashCan } from "@mdi/js";
 import CardBoxModal from "@/components/CardBoxModal.vue";
 import TableCheckboxCell from "@/components/TableCheckboxCell.vue";
@@ -12,8 +12,6 @@ import UserAvatar from "@/components/UserAvatar.vue";
 defineProps({
   checkable: Boolean,
 });
-
-const mainStore = useMainStore();
 
 const items = computed(() => mainStore.clients);
 

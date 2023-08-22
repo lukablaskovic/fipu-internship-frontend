@@ -1,7 +1,6 @@
 <script setup>
 import { computed, ref, onMounted, watch } from "vue";
-import { useMainStore } from "@/stores/main_store.js";
-import { useGuestStore } from "@/stores/guest_store.js";
+
 import { mdiEye } from "@mdi/js";
 import CardBoxModal from "@/components/CardBoxModal.vue";
 import TableCheckboxCell from "@/components/TableCheckboxCell.vue";
@@ -9,14 +8,13 @@ import BaseLevel from "@/components/BaseLevel.vue";
 import BaseButtons from "@/components/BaseButtons.vue";
 import BaseButton from "@/components/BaseButton.vue";
 
+import { mainStore, guestStore } from "@/main.js";
+
 defineProps({
   checkable: Boolean,
 });
 
 const MAX_NUM_ASSIGNMENTS = 3;
-
-const mainStore = useMainStore();
-const guestStore = useGuestStore();
 
 const isModalActive = ref(null);
 const allAvailableAssignments = ref([]);

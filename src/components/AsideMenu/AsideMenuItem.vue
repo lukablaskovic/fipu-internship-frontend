@@ -1,7 +1,7 @@
 <script setup>
 import { ref, computed } from "vue";
 import { RouterLink } from "vue-router";
-import { useStyleStore } from "@/stores/style_store.js";
+import { styleStore } from "@/main.js";
 import { mdiMinus, mdiPlus } from "@mdi/js";
 import { getButtonColor } from "@/colors.js";
 import BaseIcon from "@/components/BaseIcon.vue";
@@ -16,8 +16,6 @@ const props = defineProps({
 });
 
 const emit = defineEmits(["menu-click"]);
-
-const styleStore = useStyleStore();
 
 const hasColor = computed(() => props.item && props.item.color);
 

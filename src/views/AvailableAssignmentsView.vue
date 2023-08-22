@@ -27,9 +27,7 @@ import FormControl from "@/components/FormControl.vue";
 
 import router from "@/router";
 import Utils from "@/utils.js";
-import { useGuestStore } from "@/stores/guest_store.js";
-import { useStudentStore } from "@/stores/student_store.js";
-import { useMainStore } from "@/stores/main_store.js";
+import { mainStore, guestStore, studentStore } from "@/main.js";
 
 const Layout = computed(() => {
   if (userAuthenticated.value) {
@@ -38,10 +36,6 @@ const Layout = computed(() => {
     return LayoutGuest;
   }
 });
-
-const guestStore = useGuestStore();
-const studentStore = useStudentStore();
-const mainStore = useMainStore();
 
 const userAuthenticated = computed(() => mainStore.userAuthenticated);
 

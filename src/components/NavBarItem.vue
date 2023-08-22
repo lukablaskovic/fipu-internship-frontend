@@ -2,8 +2,7 @@
 import { mdiChevronUp, mdiChevronDown } from "@mdi/js";
 import { RouterLink } from "vue-router";
 import { computed, ref, onMounted, onBeforeUnmount } from "vue";
-import { useStyleStore } from "@/stores/style_store.js";
-import { useMainStore } from "@/stores/main_store.js";
+import { mainStore, styleStore } from "@/main.js";
 import BaseIcon from "@/components/BaseIcon.vue";
 import UserAvatarCurrentUser from "@/components/UserAvatarCurrentUser.vue";
 import NavBarMenuList from "@/components/NavBarMenuList.vue";
@@ -30,8 +29,6 @@ const is = computed(() => {
   return "div";
 });
 
-const styleStore = useStyleStore();
-
 const componentClass = computed(() => {
   const base = [
     isDropdownActive.value
@@ -49,8 +46,8 @@ const componentClass = computed(() => {
 
 const itemLabel = computed(() =>
   props.item.isCurrentUser
-    ? useMainStore().currentUser.username ||
-      `${useMainStore().currentUser.name} ${useMainStore().currentUser.surname}`
+    ? mainStore.currentUser.username ||
+      `${mainStore.currentUser.name} ${mainStore.currentUser.surname}`
     : props.item.label
 );
 

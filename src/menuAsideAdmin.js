@@ -1,4 +1,4 @@
-import { mdiMonitor, mdiAccount, mdiEngine } from "@mdi/js";
+import { mdiMonitor, mdiAccount, mdiEngine, mdiDomain } from "@mdi/js";
 
 export default [
   {
@@ -10,6 +10,11 @@ export default [
     to: "/students",
     icon: mdiAccount,
     label: "Studenti",
+  },
+  {
+    to: "/companies",
+    icon: mdiDomain,
+    label: "Poduzeća",
   },
 
   {

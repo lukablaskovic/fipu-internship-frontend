@@ -1,5 +1,5 @@
 <script setup>
-import { useStyleStore } from "@/stores/style_store";
+import { styleStore } from "@/main";
 
 defineProps({
   display: {
@@ -8,8 +8,6 @@ defineProps({
   },
   useMargin: Boolean,
 });
-
-const styleStore = useStyleStore();
 </script>
 
 <template>

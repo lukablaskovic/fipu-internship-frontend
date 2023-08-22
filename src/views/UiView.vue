@@ -1,6 +1,6 @@
 <script setup>
 import { ref, computed } from "vue";
-import { useStyleStore } from "@/stores/style_store.js";
+import { styleStore } from "@/main.js";
 import {
   mdiContrastCircle,
   mdiInformation,
@@ -71,8 +71,6 @@ const pillsSmall = computed(
 const pillsIcon = computed(() =>
   pillsSettingsModel.value.indexOf("icon") > -1 ? mdiTrendingUp : null
 );
-
-const styleStore = useStyleStore();
 </script>
 
 <template>

@@ -1,5 +1,5 @@
 import { createRouter, createWebHashHistory } from "vue-router";
-import { useMainStore } from "@/stores/main_store.js";
+import { mainStore } from "@/main.js";
 
 const routes = [
   {
@@ -14,13 +14,23 @@ const routes = [
   },
   {
     meta: {
+      title: "Students",
+      requiresAuth: true,
+      requiresAdmin: true,
+    },
+    path: "/students",
+    name: "students",
+    component: () => import("@/views/StudentsView.vue"),
+  },
+  {
+    meta: {
       title: "Moja praksa",
       requiresAuth: true,
       requiresAdmin: false,
     },
     path: "/moja-praksa",
     name: "moja praksa",
-    component: () => import("@/views/MojaPraksaView.vue"),
+    component: () => import("@/views/MyInternship.vue"),
   },
   {
     meta: {
@@ -48,7 +58,7 @@ const routes = [
     },
     path: "/moja-praksa",
     name: "moja praksa",
-    component: () => import("@/views/MojaPraksaView.vue"),
+    component: () => import("@/views/MyInternshipView.vue"),
   },
   {
     meta: {
@@ -57,7 +67,7 @@ const routes = [
     },
     path: "/dostupni-zadaci",
     name: "dostupni-zadaci",
-    component: () => import("@/views/DostupniZadaciView.vue"),
+    component: () => import("@/views/AvailableAssignmentsView.vue"),
   },
   {
     meta: {
@@ -132,8 +142,6 @@ const router = createRouter({
 });
 
 router.beforeEach((to, from, next) => {
-  const mainStore = useMainStore();
-
   let userAuthenticated = mainStore.userAuthenticated;
   let userAdmin = mainStore.userAdmin;
 

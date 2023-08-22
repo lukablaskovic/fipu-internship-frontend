@@ -1,6 +1,6 @@
 <script setup>
 import { computed } from "vue";
-import { useMainStore } from "@/stores/main_store.js";
+import { mainStore } from "@/main.js";
 import { mdiFileXmlBox } from "@mdi/js";
 import SectionMain from "@/components/SectionMain.vue";
 import CardBox from "@/components/CardBox.vue";
@@ -10,7 +10,6 @@ import SectionTitleLineWithButton from "@/components/SectionTitleLineWithButton.
 import TableModels from "@/components/TableModels.vue";
 import FormField from "@/components/FormField.vue";
 import FormFilePicker from "@/components/FormFilePicker.vue";
-const mainStore = useMainStore();
 mainStore.fetchCurrentUser();
 
 const userAuthenticated = computed(() => mainStore.userAuthenticated);

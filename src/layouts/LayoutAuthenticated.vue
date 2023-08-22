@@ -5,8 +5,7 @@ import { useRouter } from "vue-router";
 import menuAsideAdmin from "@/menuAsideAdmin.js";
 import menuAsideStudent from "@/menuAsideStudent.js";
 import menuNavBar from "@/menuNavBar.js";
-import { useStyleStore } from "@/stores/style_store.js";
-import { useMainStore } from "@/stores/main_store.js";
+import { mainStore, styleStore } from "@/main.js";
 import BaseIcon from "@/components/BaseIcon.vue";
 import FormControl from "@/components/FormControl.vue";
 import NavBar from "@/components/NavBar.vue";
@@ -16,8 +15,6 @@ import FooterBar from "@/components/FooterBar.vue";
 import CardBoxModal from "@/components/CardBoxModal.vue";
 const layoutAsidePadding = "xl:pl-60";
 
-const styleStore = useStyleStore();
-const mainStore = useMainStore();
 const router = useRouter();
 
 const isAsideMobileExpanded = ref(false);

@@ -1,6 +1,6 @@
 <script setup>
 import { computed, ref, onMounted } from "vue";
-import { useMainStore } from "@/stores/main_store.js";
+import { mainStore } from "@/main.js";
 import {
   mdiAccountMultiple,
   mdiAccountSchoolOutline,
@@ -38,7 +38,6 @@ onMounted(async () => {
   bpmn_model.value = await fetchXML();
 });
 
-const mainStore = useMainStore();
 mainStore.fetchCurrentUser();
 
 const clientBarItems = computed(() => mainStore.clients.slice(0, 4));

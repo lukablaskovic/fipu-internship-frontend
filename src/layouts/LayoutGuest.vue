@@ -2,8 +2,9 @@
 import { mdiForwardburger, mdiBackburger, mdiMenu } from "@mdi/js";
 import { ref } from "vue";
 import { useRouter } from "vue-router";
+import { styleStore } from "@/main.js";
+
 import menuAsideGuest from "@/menuAsideGuest.js";
-import { useStyleStore } from "@/stores/style_store.js";
 import BaseIcon from "@/components/BaseIcon.vue";
 import FormControl from "@/components/FormControl.vue";
 import NavBar from "@/components/NavBar.vue";
@@ -14,7 +15,6 @@ import menuNavBarGuest from "@/menuNavBarGuest";
 
 const layoutAsidePadding = "xl:pl-60";
 
-const styleStore = useStyleStore();
 const router = useRouter();
 
 const isAsideMobileExpanded = ref(false);

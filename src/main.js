@@ -5,7 +5,7 @@ import { createApp } from "vue";
 import { createPinia } from "pinia";
 import App from "./App.vue";
 import router from "./router";
-
+/* Pinia global stores */
 import { useMainStore } from "@/stores/main_store.js";
 import { useStyleStore } from "@/stores/style_store.js";
 import { useGuestStore } from "@/stores/guest_store.js";
@@ -19,12 +19,14 @@ import NotificationBar from "@/components/NotificationBar.vue";
 
 /* Init Pinia */
 const pinia = createPinia();
+/* Init Pinia Persisted state plugin */
 pinia.use(piniaPluginPersistedstate);
 
-const APP = createApp(App);
-APP.use(router).use(pinia);
-APP.component("NotificationBar", NotificationBar);
-APP.mount("#app");
+const app = createApp(App);
+app.use(router).use(pinia);
+app.component("NotificationBar", NotificationBar);
+
+app.mount("#app");
 
 /* Init Pinia stores */
 const mainStore = useMainStore(pinia);

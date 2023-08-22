@@ -1,6 +1,6 @@
 <script setup>
 import { reactive } from "vue";
-import { useMainStore } from "@/stores/main_store.js";
+import { mainStore } from "@/main.js";
 
 import {
   mdiAccount,
@@ -22,8 +22,6 @@ import BaseButtons from "@/components/BaseButtons.vue";
 import UserCard from "@/components/UserCard.vue";
 import LayoutAuthenticated from "@/layouts/LayoutAuthenticated.vue";
 import SectionTitleLineWithButton from "@/components/SectionTitleLineWithButton.vue";
-
-const mainStore = useMainStore();
 
 const profileForm = reactive({
   username: mainStore.currentUser.username,

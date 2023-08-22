@@ -1,6 +1,7 @@
 import createAxiosInstance from "@/helpers/axios-wrapper";
 
 const AxiosWrapper = createAxiosInstance(import.meta.env.VITE_GATEWAY_API_URL);
+
 const Auth = {
   async register(postData) {
     try {
@@ -41,7 +42,7 @@ const User = {
   },
   async getStudents() {
     try {
-      let result = await AxiosWrapper.get("/users/students");
+      let result = await AxiosWrapper.get("/admin/students");
       return result;
     } catch (e) {
       return null;
