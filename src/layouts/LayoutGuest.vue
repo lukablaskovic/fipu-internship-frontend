@@ -1,5 +1,5 @@
 <script setup>
-import { mdiForwardburger, mdiBackburger, mdiMenu } from "@mdi/js";
+import { mdiForwardburger, mdiBackburger, mdiMenu, mdiMagnify } from "@mdi/js";
 import { ref } from "vue";
 import { useRouter } from "vue-router";
 import { styleStore } from "@/main.js";
@@ -70,6 +70,7 @@ const menuClick = (event, item) => {
           <FormControl
             placeholder="Pretraži zadatke (ctrl+k)"
             ctrl-k-focus
+            :icon="mdiMagnify"
             transparent
             borderless
           />

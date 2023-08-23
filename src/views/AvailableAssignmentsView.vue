@@ -21,7 +21,7 @@ import BaseButtons from "@/components/BaseButtons.vue";
 import BaseButton from "@/components/BaseButton.vue";
 import SectionTitleLineWithButton from "@/components/SectionTitleLineWithButton.vue";
 
-import TableAvailableAssignments from "@/components/TableAvailableAssignments.vue";
+import TableAvailableAssignments from "@/components/Tables/TableAvailableAssignments.vue";
 import FormField from "@/components/FormField.vue";
 import FormControl from "@/components/FormControl.vue";
 

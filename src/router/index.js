@@ -20,17 +20,17 @@ const routes = [
     },
     path: "/students",
     name: "students",
-    component: () => import("@/views/StudentsView.vue"),
+    component: () => import("@/views/StudentsInternshipView.vue"),
   },
   {
     meta: {
-      title: "Moja praksa",
+      title: "Companies",
       requiresAuth: true,
-      requiresAdmin: false,
+      requiresAdmin: true,
     },
-    path: "/moja-praksa",
-    name: "moja praksa",
-    component: () => import("@/views/MyInternship.vue"),
+    path: "/companies",
+    name: "companies",
+    component: () => import("@/views/CompaniesView.vue"),
   },
   {
     meta: {
@@ -42,22 +42,14 @@ const routes = [
     name: "dashboard",
     component: () => import("@/views/DashboardView.vue"),
   },
-
-  {
-    meta: {
-      title: "Tables",
-    },
-    path: "/tables",
-    name: "tables",
-    component: () => import("@/views/TablesView.vue"),
-  },
   {
     meta: {
       title: "Moja praksa",
       requiresAuth: true,
+      requiresAdmin: false,
     },
     path: "/moja-praksa",
-    name: "moja praksa",
+    name: "moja-praksa",
     component: () => import("@/views/MyInternshipView.vue"),
   },
   {
@@ -79,7 +71,7 @@ const routes = [
   },
   {
     meta: {
-      title: "Profile",
+      title: "Korisnički profil",
       requiresAuth: true,
     },
     path: "/profile",
@@ -107,29 +99,40 @@ const routes = [
   {
     meta: {
       title: "BPMN - Models",
-      requiresAuth: false,
+      requiresAuth: true,
+      requiresAdmin: true,
     },
     path: "/bpmn/models",
-    name: "bpmn_models",
-    component: () => import("@/views/BPMN_ENGINE/ModelsView.vue"),
+    name: "bpmn-models",
+    component: () => import("@/views/bpmn/ModelsView.vue"),
   },
   {
     meta: {
       title: "BPMN - Microservices",
-      requiresAuth: false,
+      requiresAuth: true,
+      requiresAdmin: true,
     },
     path: "/bpmn/microservices",
-    name: "bpmn_microservices",
-    component: () => import("@/views/BPMN_ENGINE/ModelsView.vue"),
+    name: "bpmn-microservices",
+    component: () => import("@/views/bpmn/MicroservicesView.vue"),
   },
   {
     meta: {
       title: "BPMN - Modeler",
-      requiresAuth: false,
+      requiresAuth: true,
+      requiresAdmin: true,
     },
     path: "/bpmn/modeler",
-    name: "bpmn_modeler",
-    component: () => import("@/views/BPMN_ENGINE/ModelerView.vue"),
+    name: "bpmn-modeler",
+    component: () => import("@/views/bpmn/ModelerView.vue"),
+  },
+  {
+    meta: {
+      title: "Tables",
+    },
+    path: "/tables",
+    name: "tables",
+    component: () => import("@/views/TablesView.vue"),
   },
 ];
 
@@ -147,7 +150,6 @@ router.beforeEach((to, from, next) => {
 
   const requiresAuth = to.matched.some((record) => record.meta.requiresAuth);
   const requiresAdmin = to.matched.some((record) => record.meta.requiresAdmin);
-
   if (requiresAuth && !userAuthenticated) {
     next("/login");
   } else if (to.path === "/login" && userAuthenticated && !userAdmin) {

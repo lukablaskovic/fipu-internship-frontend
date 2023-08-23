@@ -1,5 +1,5 @@
 <script setup>
-import { mdiForwardburger, mdiBackburger, mdiMenu } from "@mdi/js";
+import { mdiForwardburger, mdiBackburger, mdiMenu, mdiMagnify } from "@mdi/js";
 import { ref, onMounted, computed } from "vue";
 import { useRouter } from "vue-router";
 import menuAsideAdmin from "@/menuAsideAdmin.js";
@@ -84,9 +84,10 @@ const menuClick = (event, item) => {
         </NavBarItemPlain>
         <NavBarItemPlain use-margin>
           <FormControl
-            placeholder="Pretraži (ctrl+k)"
+            placeholder="Pretraži... (ctrl+k)"
             ctrl-k-focus
-            transparent
+            :icon="mdiMagnify"
+            search-bar
             borderless
           />
         </NavBarItemPlain>

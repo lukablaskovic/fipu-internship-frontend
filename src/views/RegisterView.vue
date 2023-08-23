@@ -13,7 +13,7 @@ import FormControl from "@/components/FormControl.vue";
 import BaseButton from "@/components/BaseButton.vue";
 import BaseButtons from "@/components/BaseButtons.vue";
 
-import { mainStore, guestStore } from "@/main";
+import { guestStore } from "@/main";
 
 const router = useRouter();
 
@@ -26,24 +26,29 @@ const selectYearOfStudy = [
 let data_confirmed = ref(false);
 
 const form = reactive({
-  name: "",
-  surname: "",
-  email: "",
-  jmbag: "",
+  name: "Pero",
+  surname: "Peric",
+  email: "peric@unipu.hr",
+  jmbag: "03030088",
   year_of_study: selectYearOfStudy[0],
-  password: "",
+  password: "123456",
 });
 
 let passwordConfirm = "";
 
 async function onSubmit() {
+  let instanceCreationResult = await guestStore.createInternshipInstance();
   let postData = {
     ...form,
     year_of_study: form.year_of_study.dbLabel,
+    process_instance_id: instanceCreationResult.id,
   };
-  console.log("postData", postData);
-  let result = await guestStore.registerStudent(postData);
-  if (result) router.push("/login");
+
+  let registrationResult = await guestStore.registerStudent(postData);
+
+  if (instanceCreationResult && registrationResult) {
+    router.push("/login");
+  }
 }
 </script>
 

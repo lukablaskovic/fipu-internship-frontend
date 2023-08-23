@@ -36,7 +36,7 @@ const adminStore = useAdminStore(pinia);
 const styleStore = useStyleStore(pinia);
 
 /* App style */
-styleStore.setStyle(localStorage[styleKey] ?? "basic");
+styleStore.setStyle(localStorage[styleKey] ?? "white");
 
 /* Dark mode */
 if (

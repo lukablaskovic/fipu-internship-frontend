@@ -13,6 +13,7 @@ const props = defineProps({
     type: String,
     default: null,
   },
+
   iconSize: {
     type: [String, Number],
     default: null,

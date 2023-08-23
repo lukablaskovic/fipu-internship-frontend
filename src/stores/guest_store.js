@@ -1,5 +1,6 @@
 import { defineStore } from "pinia";
 import { Guest } from "@/services/baserow_client_api.js";
+import { ProcessInstance } from "@/services/bpmn_engine_api.js";
 import { Auth } from "@/services/gateway_api.js";
 
 export const useGuestStore = defineStore("guest", {
@@ -14,6 +15,14 @@ export const useGuestStore = defineStore("guest", {
     async registerStudent(postData) {
       try {
         const response = await Auth.register(postData);
+        return response;
+      } catch (error) {
+        console.log("Error:", error);
+      }
+    },
+    async createInternshipInstance() {
+      try {
+        const response = await ProcessInstance.create("strucna_praksa.bpmn");
         return response;
       } catch (error) {
         console.log("Error:", error);

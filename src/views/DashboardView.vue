@@ -4,39 +4,21 @@ import { adminStore, mainStore } from "@/main.js";
 import {
   mdiAccountMultiple,
   mdiAccountSchoolOutline,
-  mdiChartTimelineVariant,
-  mdiMonitorCellphone,
+  mdiPlayPause,
   mdiReload,
   mdiChartPie,
   mdiViewDashboard,
   mdiCommentProcessing,
 } from "@mdi/js";
-import * as chartConfig from "@/components/Charts/chart.config.js";
 import LineChart from "@/components/Charts/LineChart.vue";
 import SectionMain from "@/components/SectionMain.vue";
 import CardBoxWidget from "@/components/CardBoxWidget.vue";
 import CardBox from "@/components/CardBox.vue";
-import TableSampleClients from "@/components/TableSampleClients.vue";
-import NotificationBar from "@/components/NotificationBar.vue";
 import BaseButton from "@/components/BaseButton.vue";
 import CardBoxTransaction from "@/components/CardBoxTransaction.vue";
 import CardBoxClient from "@/components/CardBoxClient.vue";
 import LayoutAuthenticated from "@/layouts/LayoutAuthenticated.vue";
 import SectionTitleLineWithButton from "@/components/SectionTitleLineWithButton.vue";
-import SectionBannerStarOnGitHub from "@/components/SectionBannerStarOnGitHub.vue";
-
-import axios from "axios";
-const bpmn_model = ref(null);
-const chartData = ref(null);
-
-const fillChartData = () => {
-  chartData.value = chartConfig.sampleChartData();
-};
-
-onMounted(async () => {
-  fillChartData();
-  bpmn_model.value = await fetchXML();
-});
 
 mainStore.fetchCurrentUser();
 
@@ -44,18 +26,6 @@ const clientBarItems = computed(() => mainStore.clients.slice(0, 4));
 const userAuthenticated = computed(() => mainStore.userAuthenticated);
 const transactionBarItems = computed(() => mainStore.history);
 
-async function fetchXML() {
-  try {
-    // Make sure to set the responseType to 'text' since we're reading the XML as a string.
-    const response = await axios.get("/bpmn_xml/strucna_praksa.xml", {
-      responseType: "text",
-    });
-
-    return response.data;
-  } catch (error) {
-    console.error("Failed to fetch XML:", error);
-  }
-}
 onMounted(async () => {
   let data = await adminStore.getStudents();
   console.log(data);
@@ -72,11 +42,6 @@ onMounted(async () => {
           main
         >
         </SectionTitleLineWithButton>
-        <!--
-      <div>
-        <BpmnDiagram v-if="bpmn_model" :xml="bpmn_model" />
-      </div>
-      -->
         <div class="grid grid-cols-1 gap-6 lg:grid-cols-3 mb-6">
           <CardBoxWidget
             trend="12%"
@@ -98,7 +63,7 @@ onMounted(async () => {
             trend="Upozorenje"
             trend-type="alert"
             color="text-red-500"
-            :icon="mdiChartTimelineVariant"
+            :icon="mdiPlayPause"
             :number="10"
             label="Studenti koji čekaju alokaciju"
           />
@@ -135,31 +100,10 @@ onMounted(async () => {
           </div>
         </div>
 
-        <SectionTitleLineWithButton :icon="mdiChartPie" title="Trends overview">
-          <BaseButton
-            :icon="mdiReload"
-            color="whiteDark"
-            @click="fillChartData"
-          />
-        </SectionTitleLineWithButton>
-
         <CardBox class="mb-6">
           <div v-if="chartData">
             <line-chart :data="chartData" class="h-96" />
           </div>
-        </CardBox>
-
-        <SectionTitleLineWithButton
-          :icon="mdiAccountMultiple"
-          title="Studenti u procesu prakse"
-        />
-
-        <NotificationBar color="info" :icon="mdiMonitorCellphone">
-          <b>Responsive table.</b> Collapses on mobile
-        </NotificationBar>
-
-        <CardBox has-table>
-          <TableSampleClients />
         </CardBox>
       </SectionMain>
     </LayoutAuthenticated>

@@ -1,13 +1,13 @@
 <script setup>
-import { computed, ref, onMounted, watch } from "vue";
+import { computed, ref, onMounted } from "vue";
 
 import { mdiEye } from "@mdi/js";
-import TableCheckboxCell from "@/components/TableCheckboxCell.vue";
+import TableCheckboxCell from "@/components/Tables/TableCheckboxCell.vue";
 import BaseLevel from "@/components/BaseLevel.vue";
 import BaseButtons from "@/components/BaseButtons.vue";
 import BaseButton from "@/components/BaseButton.vue";
-import LoadingOverlay from "./LoadingOverlay.vue";
-import { mainStore, guestStore, adminStore } from "@/main.js";
+import LoadingOverlay from "../LoadingOverlay.vue";
+import { adminStore } from "@/main.js";
 
 const year_of_study = [
   { id: 1, label: "3. prijediplomski", dbLabel: "3_prijediplomski" },
@@ -24,41 +24,44 @@ defineProps({
   checkable: Boolean,
 });
 
-const isModalActive = ref(null);
-const allStudents = ref([]);
+const students = ref([]);
+
+const emit = defineEmits(["show-student-diagram"]);
+
+function showDiagram(student) {
+  adminStore.showSelectedStudent(student);
+  emit("show-student-diagram", student);
+}
 
 onMounted(async () => {
-  allStudents.value = await adminStore.getStudents();
+  students.value = await adminStore.getStudents();
 });
 
 const perPage = ref(5);
 const currentPage = ref(0);
 const studentsPaginated = computed(() =>
-  allStudents.value.slice(
+  students.value.slice(
     perPage.value * currentPage.value,
     perPage.value * (currentPage.value + 1)
   )
 );
 
 const numPages = computed(() =>
-  Math.ceil(allStudents.value.length / perPage.value)
+  Math.ceil(students.value.length / perPage.value)
 );
 const currentPageHuman = computed(() => currentPage.value + 1);
-
 const pagesList = computed(() => {
   const pagesList = [];
-
   for (let i = 0; i < numPages.value; i++) {
     pagesList.push(i);
   }
-
   return pagesList;
 });
 </script>
 
 <template>
   <LoadingOverlay
-    :is-active="!allStudents.length"
+    :is-active="!students.length"
     title="Učitavanje..."
     description="Može potrajati nekoliko sekundi, molimo ne zatvarajte stranicu."
   >
@@ -100,7 +103,7 @@ const pagesList = computed(() => {
               color="fipu_blue"
               :icon="mdiEye"
               small
-              @click="isModalActive = student"
+              @click="showDiagram(student)"
             />
           </BaseButtons>
         </td>

@@ -44,6 +44,7 @@ const props = defineProps({
     type: [String, Number, Boolean, Array, Object],
     default: "",
   },
+  searchBar: Boolean,
   required: Boolean,
   borderless: Boolean,
   transparent: Boolean,
@@ -59,6 +60,10 @@ const computedValue = computed({
   },
 });
 
+const searchBarClasses = computed(() => {
+  return props.searchBar ? "rounded-full h-8 w-24 " : "";
+});
+
 const inputElClass = computed(() => {
   const base = [
     "px-3 py-2 max-w-full focus:ring focus:outline-none border-gray-700 rounded w-full",
@@ -66,6 +71,7 @@ const inputElClass = computed(() => {
     computedType.value === "textarea" ? "h-24" : "h-12",
     props.borderless ? "border-0" : "border",
     props.transparent ? "bg-transparent" : "bg-white dark:bg-slate-800",
+    searchBarClasses.value,
   ];
 
   if (props.icon) {
@@ -77,8 +83,9 @@ const inputElClass = computed(() => {
 
 const computedType = computed(() => (props.options ? "select" : props.type));
 
-const controlIconH = computed(() =>
-  props.type === "textarea" ? "h-full" : "h-12"
+const controlIconH = computed(
+  () =>
+    props.type === "textarea" ? "h-full" : props.searchBar ? "h-8" : "h-12" // Conditional height
 );
 
 const selectEl = ref(null);
@@ -164,6 +171,11 @@ if (props.ctrlKFocus) {
       :type="computedType"
       :class="inputElClass"
     />
-    <FormControlIcon v-if="icon" :icon="icon" :h="controlIconH" />
+    <FormControlIcon
+      v-if="icon"
+      :icon="icon"
+      :h="controlIconH"
+      class="align-middle"
+    />
   </div>
 </template>

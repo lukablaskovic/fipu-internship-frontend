@@ -11,38 +11,58 @@ let props = defineProps({
     type: String,
     required: true,
   },
+  highlightColor: {
+    type: String,
+    default: "#79d4f2",
+  },
+  highlightElementId: {
+    type: String,
+    default: "",
+  },
 });
 
 const canvas = ref(null);
 
-onMounted(() => {
+onMounted(async () => {
   const viewer = new BpmnViewer({
     container: canvas.value,
   });
+  try {
+    const result = await viewer.importXML(props.xml);
+    const { warnings } = result;
 
-  viewer
-    .importXML(props.xml)
-    .then(function (result) {
-      const { warnings } = result;
+    console.log("success !", warnings);
 
-      console.log("success !", warnings);
+    const canvasInstance = viewer.get("canvas");
+    canvasInstance.zoom("fit-viewport");
+  } catch (err) {
+    const { warnings, message } = err;
 
-      viewer.get("canvas").zoom("fit-viewport");
-    })
-    .catch(function (err) {
-      const { warnings, message } = err;
+    console.log("something went wrong:", warnings, message);
+  }
 
-      console.log("something went wrong:", warnings, message);
-    });
+  const canvasInstance = viewer.get("canvas");
+  canvasInstance.zoom("fit-viewport");
+  if (props.highlightElementId) {
+    canvasInstance.addMarker(props.highlightElementId, "highlight");
+  }
+  // Dynamically add styles
+  const style = document.createElement("style");
+  style.innerHTML = `
+    .highlight:not(.djs-connection) .djs-visual > :nth-child(1) {
+      fill: ${props.highlightColor} !important;
+    }
+  `;
+  document.head.appendChild(style);
 });
 </script>
+
 <style scoped>
-/* Home View's CSS or SCSS */
 div.bpmn-container {
   display: flex;
-  justify-content: center; /* centers horizontally */
-  align-items: center; /* centers vertically */
-  height: 50vh; /* adjust as needed, 100vh makes it full viewport height */
-  width: 100%; /* adjust as needed */
+  justify-content: center;
+  align-items: center;
+  height: 50vh;
+  width: 100%;
 }
 </style>

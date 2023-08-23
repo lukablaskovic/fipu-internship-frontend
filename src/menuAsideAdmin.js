@@ -1,4 +1,4 @@
-import { mdiMonitor, mdiAccount, mdiEngine, mdiDomain } from "@mdi/js";
+import { mdiMonitor, mdiAccountMultiple, mdiEngine, mdiDomain } from "@mdi/js";
 
 export default [
   {
@@ -8,7 +8,7 @@ export default [
   },
   {
     to: "/students",
-    icon: mdiAccount,
+    icon: mdiAccountMultiple,
     label: "Studenti",
   },
   {
@@ -23,11 +23,10 @@ export default [
     menu: [
       {
         to: "/bpmn/models",
-        label: "Modeli",
+        label: "Models",
       },
       {
         to: "/bpmn/microservices",
-
         label: "Mikroservisi",
       },
       {

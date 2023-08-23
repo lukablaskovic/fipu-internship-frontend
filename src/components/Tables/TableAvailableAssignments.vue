@@ -3,11 +3,11 @@ import { computed, ref, onMounted, watch } from "vue";
 
 import { mdiEye } from "@mdi/js";
 import CardBoxModal from "@/components/CardBoxModal.vue";
-import TableCheckboxCell from "@/components/TableCheckboxCell.vue";
+import TableCheckboxCell from "@/components/Tables/TableCheckboxCell.vue";
 import BaseLevel from "@/components/BaseLevel.vue";
 import BaseButtons from "@/components/BaseButtons.vue";
 import BaseButton from "@/components/BaseButton.vue";
-
+import LoadingOverlay from "@/components/LoadingOverlay.vue";
 import { mainStore, guestStore } from "@/main.js";
 
 defineProps({
@@ -86,6 +86,12 @@ const checked = (value, assignment) => {
 </script>
 
 <template>
+  <LoadingOverlay
+    :is-active="!allAvailableAssignments.length"
+    title="Učitavanje..."
+    description="Može potrajati nekoliko sekundi, molimo ne zatvarajte stranicu."
+  >
+  </LoadingOverlay>
   <CardBoxModal
     v-if="isModalActive"
     v-model="isModalActive"

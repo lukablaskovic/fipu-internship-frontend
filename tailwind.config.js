@@ -14,6 +14,7 @@ module.exports = {
       colors: {
         fipu_blue: "#74d4f4",
         fipu_light_blue: "#9de0f7",
+        search_bar: "#c7c8c9",
       },
 
       zIndex: {
