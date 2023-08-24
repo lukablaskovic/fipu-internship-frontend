@@ -10,7 +10,7 @@ export default [
 
   {
     icon: mdiLogin,
-    label: "Log in",
+    label: "Prijava",
     isDesktopNoLabel: true,
   },
 ];

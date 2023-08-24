@@ -29,6 +29,9 @@ const menuClick = (event, item) => {
   if (item.isToggleLightDark) {
     styleStore.setDarkMode();
   }
+  if (item.label == "Prijava") {
+    router.push("/login");
+  }
 };
 </script>
 

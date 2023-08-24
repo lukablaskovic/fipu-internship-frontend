@@ -1,5 +1,5 @@
 <script setup>
-import { ref, computed } from "vue";
+import { ref, computed, onMounted } from "vue";
 import draggable from "vuedraggable";
 import {
   mdiClipboardCheckOutline,
@@ -38,12 +38,12 @@ const Layout = computed(() => {
 });
 
 const userAuthenticated = computed(() => mainStore.userAuthenticated);
+let note = ref(null);
 
 const checkedAssignments = computed(() => guestStore.checkedAssignments);
 const modalConfirmPreferences = ref(false);
-let note = ref(null);
 const enabled = ref(true);
-const dragging = ref(false);
+const vueDraggableDragging = ref(false);
 
 const registerAssignments = async () => {
   if (!userAuthenticated.value) {
@@ -57,25 +57,25 @@ const registerAssignments = async () => {
     if (result && result.status_code == 200) {
       showNotificationBar("success");
     } else {
-      showNotificationBar("error");
+      showNotificationBar("danger");
     }
     await Utils.wait(3);
-    router.go();
+    //router.go();
   }
 };
-const notificationBar = ref({
-  color: "success",
-  icon: mdiCheckCircle,
-});
-
+const notificationBar = ref(null);
 let notificationStatus = ref();
 let notificationMessage = ref();
 
+onMounted(() => {
+  console.log(notificationBar.value);
+});
+
 const notificationSettingsModel = ref([]);
+
 const notificationsOutline = computed(
   () => notificationSettingsModel.value.indexOf("outline") > -1
 );
-
 function showNotificationBar(type) {
   switch (type) {
     case "success":
@@ -83,23 +83,26 @@ function showNotificationBar(type) {
       notificationBar.value.icon = mdiCheckCircle;
       notificationStatus.value = "To je to!";
       notificationMessage.value = " Uspješno ste prijavili svoje preferencije.";
+      console.log(notificationMessage.value);
       break;
     case "warning":
       notificationBar.value.color = "warning";
       notificationBar.value.icon = mdiAlert;
-
       notificationStatus.value = "Upozorenje.";
       notificationMessage.value =
         "Morate biti prijavljeni da biste prijavili preferencije.";
+      console.log(notificationMessage.value);
       break;
-    case "error":
+    case "danger":
       notificationBar.value.color = "danger";
       notificationBar.value.icon = mdiAlertCircle;
       notificationStatus.value = "Greška!";
       notificationMessage.value =
         "Preferencije nisu prijavljene. Molimo pokušajte ponovno ili kontaktirajte profesora.";
+      console.log(notificationMessage.value);
       break;
   }
+  console.log("notificationBar", notificationBar.value);
   notificationBar.value.show();
 }
 </script>
@@ -148,8 +151,8 @@ function showNotificationBar(type) {
             item-key="id"
             class="list-group flex flex-row space-x-4"
             ghost-class="ghost"
-            @start="dragging = true"
-            @end="dragging = false"
+            @start="vueDraggableDragging = true"
+            @end="vueDraggableDragging = false"
           >
             <template #item="{ element, index }">
               <div
@@ -187,10 +190,7 @@ function showNotificationBar(type) {
       </div>
       <div>
         <NotificationBar
-          v-if="notificationBar"
           ref="notificationBar"
-          :color="notificationBar.color"
-          :icon="notificationBar.icon"
           class="animate__animated animate__fadeInUp"
           :outline="notificationsOutline"
         >

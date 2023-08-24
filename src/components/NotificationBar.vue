@@ -1,30 +1,25 @@
 <script setup>
 import { ref, computed, useSlots } from "vue";
-import { mdiClose, mdiAlertCircle } from "@mdi/js";
+import { mdiClose } from "@mdi/js";
 import { colorsBgLight, colorsOutline } from "@/colors.js";
 import BaseLevel from "@/components/BaseLevel.vue";
 import BaseIcon from "@/components/BaseIcon.vue";
 import BaseButton from "@/components/BaseButton.vue";
 import Utils from "@/helpers/utils.js";
 
+const color = ref("");
+const icon = ref(null);
+const isDismissed = ref(true);
+
 const props = defineProps({
-  color: {
-    type: String,
-    required: true,
-    default: "success",
-  },
-  icon: {
-    type: String,
-    default: mdiAlertCircle,
-  },
   outline: Boolean,
 });
 
-const componentClass = computed(() =>
-  props.outline ? colorsOutline[props.color] : colorsBgLight[props.color]
-);
-
-const isDismissed = ref(true);
+const componentClass = computed(() => {
+  return props.outline
+    ? colorsOutline[color.value]
+    : colorsBgLight[color.value];
+});
 
 const dismiss = () => {
   isDismissed.value = true;
@@ -37,6 +32,8 @@ async function show() {
 }
 
 defineExpose({
+  color,
+  icon,
   show,
   dismiss,
 });

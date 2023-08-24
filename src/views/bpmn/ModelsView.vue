@@ -29,7 +29,7 @@ const userAuthenticated = computed(() => mainStore.userAuthenticated);
 async function fetchXML() {
   try {
     // Make sure to set the responseType to 'text' since we're reading the XML as a string.
-    const response = await axios.get("/bpmn_xml/strucna_praksa.xml", {
+    const response = await axios.get("/bpmn_xml/strucna_praksa_edited.xml", {
       responseType: "text",
     });
 

@@ -25,7 +25,7 @@ const Model = {
 
 const ProcessInstance = {
   async create(bpmn_model) {
-    if (!bpmn_model) bpmn_model = "strucna_praksa.bpmn";
+    if (!bpmn_model) bpmn_model = "strucna_praksa_edited.bpmn";
     try {
       let result = await AxiosWrapper.post(`/model/${bpmn_model}/instance`);
       return result;

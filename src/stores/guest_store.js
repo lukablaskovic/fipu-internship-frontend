@@ -22,7 +22,9 @@ export const useGuestStore = defineStore("guest", {
     },
     async createInternshipInstance() {
       try {
-        const response = await ProcessInstance.create("strucna_praksa.bpmn");
+        const response = await ProcessInstance.create(
+          "strucna_praksa_edited.bpmn"
+        );
         return response;
       } catch (error) {
         console.log("Error:", error);
