@@ -12,15 +12,34 @@ export const useAdminStore = defineStore("admin", {
     showSelectedStudent(student) {
       this.selectedStudent = student;
     },
-    async getStudents() {
+    async getProcessInstanceData(student) {
       try {
-        const response = await User.getStudents();
-        this.students = response;
+        const response = await ProcessInstance.get(student.process_instance_id);
         return response;
       } catch (error) {
         console.log("Error:", error);
       }
     },
+    async getStudents() {
+      try {
+        const students = await User.getStudents();
+        console.log(students);
+
+        const promises = students.map(async (student) => {
+          const data = await this.getProcessInstanceData(student);
+          student.process_instance_data = data;
+        });
+
+        await Promise.all(promises);
+
+        console.log(students);
+        this.students = students;
+        return students;
+      } catch (error) {
+        console.log("Error:", error);
+      }
+    },
+
     async getCompanies() {
       try {
         const response = await User.getCompanies();
@@ -33,16 +52,6 @@ export const useAdminStore = defineStore("admin", {
     async searchModels() {
       try {
         const response = await Model.search();
-        return response;
-      } catch (error) {
-        console.log("Error:", error);
-      }
-    },
-    async getProcessInstanceData() {
-      try {
-        const response = await ProcessInstance.get(
-          this.selectedStudent.process_instance_id
-        );
         return response;
       } catch (error) {
         console.log("Error:", error);

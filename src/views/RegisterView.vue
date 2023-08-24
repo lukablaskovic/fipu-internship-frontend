@@ -13,6 +13,8 @@ import FormControl from "@/components/FormControl.vue";
 import BaseButton from "@/components/BaseButton.vue";
 import BaseButtons from "@/components/BaseButtons.vue";
 
+import { StudentMappings } from "@/helpers/maps";
+
 import { guestStore } from "@/main";
 
 const router = useRouter();

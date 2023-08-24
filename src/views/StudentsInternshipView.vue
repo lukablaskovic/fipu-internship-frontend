@@ -30,7 +30,9 @@ async function fetchXML() {
 }
 
 async function handleProcessDiagram() {
-  process_instance_data.value = await adminStore.getProcessInstanceData();
+  process_instance_data.value = await adminStore.getProcessInstanceData(
+    adminStore.selectedStudent
+  );
 }
 
 onMounted(async () => {

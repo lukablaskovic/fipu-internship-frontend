@@ -45,12 +45,12 @@ const modalConfirmPreferences = ref(false);
 const enabled = ref(true);
 const vueDraggableDragging = ref(false);
 
-const registerAssignments = async () => {
+const registerPreferences = async () => {
   if (!userAuthenticated.value) {
     showNotificationBar("warning");
     return;
   } else {
-    let result = await studentStore.registerAssignments(
+    let result = await studentStore.registerPreferences(
       checkedAssignments.value,
       note.value
     );
@@ -211,7 +211,7 @@ function showNotificationBar(type) {
         title="Molimo potvrdite vaš odabir"
         button-label="Potvrđujem"
         has-cancel
-        @confirm="registerAssignments()"
+        @confirm="registerPreferences()"
       >
         <p>Provjerite još jednom odabrane zadatke i njihov redoslijed:</p>
         <br />

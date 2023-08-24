@@ -16,7 +16,26 @@ export const useMainStore = defineStore("main", {
       avatar: "",
       baserow_id: null,
       type: "" || null,
-      process_instance_id: null,
+
+      internship_process: {
+        id: null,
+        pending_user_task: null,
+      },
+
+      reset() {
+        this.id = "";
+        this.name = "";
+        this.surname = "";
+        this.username = "";
+        this.jmbag = "";
+        this.email = "";
+        this.year_of_study = "";
+        this.avatar = "";
+        this.baserow_id = null;
+        this.type = "" || null;
+        this.internship_process.id = null;
+        this.internship_process.pending_user_task = null;
+      },
     },
 
     access_token: null,
@@ -64,19 +83,7 @@ export const useMainStore = defineStore("main", {
     },
     clearCurrentUser() {
       this.access_token = null;
-      this.currentUser = {
-        id: "",
-        name: "",
-        surname: "",
-        username: "",
-        jmbag: "",
-        email: "",
-        year_of_study: "",
-        avatar: "",
-        baserow_id: null,
-        type: "" || null,
-        process_instance_id: null,
-      };
+      this.currentUser.reset();
       localStorage.removeItem("main");
     },
 

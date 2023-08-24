@@ -1,5 +1,5 @@
 <script setup>
-import { computed, ref, onMounted } from "vue";
+import { computed, ref, onBeforeMount } from "vue";
 
 import { mdiEye } from "@mdi/js";
 import TableCheckboxCell from "@/components/Tables/TableCheckboxCell.vue";
@@ -8,17 +8,7 @@ import BaseButtons from "@/components/BaseButtons.vue";
 import BaseButton from "@/components/BaseButton.vue";
 import LoadingOverlay from "../LoadingOverlay.vue";
 import { adminStore } from "@/main.js";
-
-const year_of_study = [
-  { id: 1, label: "3. prijediplomski", dbLabel: "3_prijediplomski" },
-  { id: 2, label: "1. diplomski", dbLabel: "1_diplomski" },
-  { id: 3, label: "2. diplomski", dbLabel: "2_diplomski" },
-];
-
-const getYearOfStudyLabel = (dbLabel) => {
-  const year = year_of_study.find((year) => year.dbLabel === dbLabel);
-  return year ? year.label : dbLabel;
-};
+import { StudentMappings, UserTaskMappings } from "@/helpers/maps";
 
 defineProps({
   checkable: Boolean,
@@ -27,13 +17,13 @@ defineProps({
 const students = ref([]);
 
 const emit = defineEmits(["show-student-diagram"]);
-
 function showDiagram(student) {
+  console.log(student);
   adminStore.showSelectedStudent(student);
   emit("show-student-diagram", student);
 }
 
-onMounted(async () => {
+onBeforeMount(async () => {
   students.value = await adminStore.getStudents();
 });
 
@@ -74,6 +64,7 @@ const pagesList = computed(() => {
         <th>Prezime</th>
         <th>Email</th>
         <th>Godina studija</th>
+        <th>Stanje</th>
         <th />
       </tr>
     </thead>
@@ -94,7 +85,18 @@ const pagesList = computed(() => {
           {{ student["Email"] }}
         </td>
         <td data-label="Godina studija">
-          {{ getYearOfStudyLabel(student["Godina studija"]["value"]) }}
+          {{
+            StudentMappings.getYearOfStudyLabel(
+              student["Godina studija"]["value"]
+            )
+          }}
+        </td>
+        <td data-label="Stanje">
+          {{
+            UserTaskMappings.getTaskName(
+              student["process_instance_data"]["pending"][0]
+            )
+          }}
         </td>
 
         <td class="before:hidden lg:w-1 whitespace-nowrap">

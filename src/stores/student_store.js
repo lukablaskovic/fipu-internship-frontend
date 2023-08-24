@@ -1,13 +1,12 @@
 import { defineStore } from "pinia";
 import { mainStore } from "@/main";
-import { Student } from "@/services/baserow_client_api";
 import { ProcessInstance } from "@/services/bpmn_engine_api";
 
 export const useStudentStore = defineStore("student", {
   state: () => ({}),
   actions: {
-    async registerAssignments(assignmentsData, note) {
-      let postData = {
+    async registerPreferences(assignmentsData, note) {
+      let post_data = {
         JMBAG: mainStore.currentUser["jmbag"],
         Student: [mainStore.currentUser["jmbag"]],
         "Prvi odabir": [assignmentsData[0]["ID Zadatka"]],
@@ -16,7 +15,15 @@ export const useStudentStore = defineStore("student", {
         Napomena: note,
       };
       try {
-        const response = await Student.registerAssignments(postData);
+        let process_instance_id =
+          mainStore.currentUser["internship_process"]["id"];
+        let pending_user_task =
+          mainStore.currentUser["internship_process"]["pending_user_task"];
+        const response = await ProcessInstance.submitForm(
+          process_instance_id,
+          pending_user_task,
+          post_data
+        );
         console.log(`%c ${response}`, "background: #222; color: #bada55");
         return response;
       } catch (error) {
@@ -27,6 +34,21 @@ export const useStudentStore = defineStore("student", {
       try {
         const response = await ProcessInstance.get(process_instance_id);
         return response;
+      } catch (error) {
+        console.log("Error:", error);
+      }
+    },
+    async getPendingUserTask(process_instance_id) {
+      try {
+        const response = await this.getInstanceInfo(process_instance_id);
+        let pendingUserTask = null;
+        if (response.pending && response.pending.length) {
+          pendingUserTask = response.pending[0];
+          mainStore.currentUser["pending_user_task"] = pendingUserTask;
+          return pendingUserTask;
+        } else {
+          console.log("No pending tasks found.");
+        }
       } catch (error) {
         console.log("Error:", error);
       }

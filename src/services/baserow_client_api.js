@@ -14,19 +14,6 @@ const Guest = {
   },
 };
 
-const Student = {
-  async registerAssignments(assignmentsData) {
-    try {
-      let result = await AxiosWrapper.post(
-        "/prijava-preferencija",
-        assignmentsData
-      );
-      return result;
-    } catch (error) {
-      console.log("Error:", error);
-      return null;
-    }
-  },
-};
+const Student = {};
 
 export { Guest, Student };

@@ -1,5 +1,5 @@
 <script setup>
-import { ref, computed, onMounted } from "vue";
+import { ref, computed, onMounted, onBeforeMount } from "vue";
 import { mainStore, studentStore } from "@/main.js";
 import LoadingOverlay from "@/components/LoadingOverlay.vue";
 
@@ -8,28 +8,19 @@ import ChooseAvailableAssignments from "@/components/Internship/ChooseAvailableA
 const userAuthenticated = computed(() => mainStore.userAuthenticated);
 
 const processInstance = ref(null);
-const processInstanceInfo = ref(null);
 const pendingProcessTask = ref(null);
 const error = ref(null);
 
-onMounted(async () => {
+onBeforeMount(async () => {
   if (userAuthenticated.value) {
     try {
-      processInstance.value = mainStore.currentUser.process_instance_id;
-      processInstanceInfo.value = await studentStore.getInstanceInfo(
+      processInstance.value = mainStore.currentUser.internship_process.id;
+      pendingProcessTask.value = await studentStore.getPendingUserTask(
         processInstance.value
       );
-      if (
-        processInstanceInfo.value.pending &&
-        processInstanceInfo.value.pending.length
-      ) {
-        pendingProcessTask.value = processInstanceInfo.value.pending[0];
-      } else {
-        error.value = "No pending tasks found.";
-      }
-    } catch (err) {
+    } catch (error) {
       error.value = "An error occurred while fetching instance info.";
-      console.error(err); // Log the error for debugging.
+      console.error(error);
     }
   }
 });
