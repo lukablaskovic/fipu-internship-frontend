@@ -54,7 +54,7 @@ const registerPreferences = async () => {
       checkedAssignments.value,
       note.value
     );
-    if (result && result.status_code == 200) {
+    if (result && result.status == "OK") {
       showNotificationBar("success");
     } else {
       showNotificationBar("danger");
@@ -66,10 +66,6 @@ const registerPreferences = async () => {
 const notificationBar = ref(null);
 let notificationStatus = ref();
 let notificationMessage = ref();
-
-onMounted(() => {
-  console.log(notificationBar.value);
-});
 
 const notificationSettingsModel = ref([]);
 
@@ -83,7 +79,6 @@ function showNotificationBar(type) {
       notificationBar.value.icon = mdiCheckCircle;
       notificationStatus.value = "To je to!";
       notificationMessage.value = " Uspješno ste prijavili svoje preferencije.";
-      console.log(notificationMessage.value);
       break;
     case "warning":
       notificationBar.value.color = "warning";
@@ -91,7 +86,6 @@ function showNotificationBar(type) {
       notificationStatus.value = "Upozorenje.";
       notificationMessage.value =
         "Morate biti prijavljeni da biste prijavili preferencije.";
-      console.log(notificationMessage.value);
       break;
     case "danger":
       notificationBar.value.color = "danger";
@@ -99,7 +93,6 @@ function showNotificationBar(type) {
       notificationStatus.value = "Greška!";
       notificationMessage.value =
         "Preferencije nisu prijavljene. Molimo pokušajte ponovno ili kontaktirajte profesora.";
-      console.log(notificationMessage.value);
       break;
   }
   console.log("notificationBar", notificationBar.value);
@@ -149,7 +142,7 @@ function showNotificationBar(type) {
             :list="checkedAssignments"
             :disabled="!enabled"
             item-key="id"
-            class="list-group flex flex-row space-x-4"
+            class="list-group flex flex-col md:flex-row space-y-4 md:space-y-0 md:space-x-4"
             ghost-class="ghost"
             @start="vueDraggableDragging = true"
             @end="vueDraggableDragging = false"

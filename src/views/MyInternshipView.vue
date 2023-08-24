@@ -1,5 +1,5 @@
 <script setup>
-import { ref, computed, onMounted, onBeforeMount } from "vue";
+import { ref, computed, onBeforeMount } from "vue";
 import { mainStore, studentStore } from "@/main.js";
 import LoadingOverlay from "@/components/LoadingOverlay.vue";
 
@@ -15,6 +15,7 @@ onBeforeMount(async () => {
   if (userAuthenticated.value) {
     try {
       processInstance.value = mainStore.currentUser.internship_process.id;
+      console.log(processInstance.value);
       pendingProcessTask.value = await studentStore.getPendingUserTask(
         processInstance.value
       );

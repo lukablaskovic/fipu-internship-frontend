@@ -58,7 +58,11 @@ export const useMainStore = defineStore("main", {
     async fetchCurrentUser() {
       try {
         const response = await User.getCurrentUser();
-        this.currentUser = response;
+        if (response.process_instance_id !== undefined) {
+          this.currentUser.internship_process.id = response.process_instance_id;
+          delete response.process_instance_id;
+        }
+        this.currentUser = { ...this.currentUser, ...response };
       } catch (error) {
         console.log("Error fetching current user:", error);
       }
@@ -85,6 +89,7 @@ export const useMainStore = defineStore("main", {
       this.access_token = null;
       this.currentUser.reset();
       localStorage.removeItem("main");
+      localStorage.removeItem("admin");
     },
 
     logout() {

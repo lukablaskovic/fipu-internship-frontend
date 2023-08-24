@@ -36,7 +36,7 @@ async function handleProcessDiagram() {
 }
 
 onMounted(async () => {
-  let data = await adminStore.getStudents();
+  await adminStore.getStudents();
   bpmn_model.value = await fetchXML();
 });
 </script>

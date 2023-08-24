@@ -14,7 +14,7 @@ defineProps({
   checkable: Boolean,
 });
 
-const students = ref([]);
+const students = computed(() => adminStore.students);
 
 const emit = defineEmits(["show-student-diagram"]);
 function showDiagram(student) {
@@ -24,7 +24,7 @@ function showDiagram(student) {
 }
 
 onBeforeMount(async () => {
-  students.value = await adminStore.getStudents();
+  await adminStore.getStudents();
 });
 
 const perPage = ref(5);

@@ -15,16 +15,22 @@ export const useStudentStore = defineStore("student", {
         Napomena: note,
       };
       try {
-        let process_instance_id =
-          mainStore.currentUser["internship_process"]["id"];
+        let process_instance_id = mainStore.currentUser.internship_process.id;
         let pending_user_task =
-          mainStore.currentUser["internship_process"]["pending_user_task"];
+          mainStore.currentUser.internship_process.pending_user_task;
+        console.log(pending_user_task);
+        console.log(post_data);
         const response = await ProcessInstance.submitForm(
           process_instance_id,
           pending_user_task,
           post_data
         );
-        console.log(`%c ${response}`, "background: #222; color: #bada55");
+        console.log(
+          `%c ADMIN_STORE.registerPreferences: ProcessInstance.submitForm ${JSON.stringify(
+            response
+          )}`,
+          "background: #222; color: #bada55"
+        );
         return response;
       } catch (error) {
         console.log("Error:", error);
@@ -44,7 +50,8 @@ export const useStudentStore = defineStore("student", {
         let pendingUserTask = null;
         if (response.pending && response.pending.length) {
           pendingUserTask = response.pending[0];
-          mainStore.currentUser["pending_user_task"] = pendingUserTask;
+          mainStore.currentUser.internship_process.pending_user_task =
+            pendingUserTask;
           return pendingUserTask;
         } else {
           console.log("No pending tasks found.");

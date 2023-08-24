@@ -51,7 +51,6 @@ export const useGuestStore = defineStore("guest", {
         this.checkedAssignments.push(assignment);
       }
     },
-
     removeAssignment(assignment) {
       this.checkedAssignments = this.checkedAssignments.filter(
         (a) => a["ID Zadatka"] !== assignment["ID Zadatka"]

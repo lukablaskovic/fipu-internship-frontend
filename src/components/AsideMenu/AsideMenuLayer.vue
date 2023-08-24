@@ -7,31 +7,32 @@
       :class="styleStore.asideStyle"
       class="lg:rounded-2xl flex-1 flex flex-col overflow-hidden dark:bg-slate-900"
     >
-      <div
-        :class="styleStore.asideBrandStyle"
-        class="flex flex-row h-14 items-center justify-between dark:bg-slate-900"
-      >
-        <div>
-          <img
-            src="fipu_hr.png"
-            alt=""
-            class="w-full max-h-12 object-contain mr-2"
-          />
-        </div>
+      <router-link to="/">
         <div
-          class="text-center flex-1 lg:text-left lg:pl-6 xl:text-center xl:pl-0"
+          :class="styleStore.asideBrandStyle"
+          class="flex flex-row h-14 items-center justify-between dark:bg-slate-900"
         >
-          <b class="font-black"> Internship Dashboard</b>
+          <div>
+            <img
+              src="fipu_hr.png"
+              alt=""
+              class="w-full max-h-12 object-contain mr-2"
+            />
+          </div>
+          <div
+            class="text-center flex-1 lg:text-left lg:pl-6 xl:text-center xl:pl-0"
+          >
+            <b class="font-black"> Internship Dashboard</b>
+          </div>
+
+          <button
+            class="hidden lg:inline-block xl:hidden p-3"
+            @click.prevent="asideLgCloseClick"
+          >
+            <BaseIcon :path="mdiClose" />
+          </button>
         </div>
-
-        <button
-          class="hidden lg:inline-block xl:hidden p-3"
-          @click.prevent="asideLgCloseClick"
-        >
-          <BaseIcon :path="mdiClose" />
-        </button>
-      </div>
-
+      </router-link>
       <div
         :class="
           styleStore.darkMode

@@ -1,5 +1,5 @@
 <script setup>
-import { computed, onMounted } from "vue";
+import { ref, computed, onMounted } from "vue";
 import { adminStore, mainStore } from "@/main.js";
 import {
   mdiAccountMultiple,
@@ -19,8 +19,15 @@ const clientBarItems = computed(() => mainStore.clients.slice(0, 4));
 const userAuthenticated = computed(() => mainStore.userAuthenticated);
 const transactionBarItems = computed(() => mainStore.history);
 
+const ongoing_internships = ref(0);
+const waiting_for_allocation = ref(0);
+
 onMounted(async () => {
-  let data = await adminStore.getStudents();
+  await adminStore.getStudents();
+  await adminStore.searchModels();
+  ongoing_internships.value = adminStore.dashboard_data.ongoing_internships;
+  waiting_for_allocation.value =
+    adminStore.dashboard_data.waiting_for_allocation;
 });
 </script>
 
@@ -48,7 +55,7 @@ onMounted(async () => {
             trend-type="down"
             color="text-blue-500"
             :icon="mdiAccountMultiple"
-            :number="47"
+            :number="ongoing_internships"
             label="Studenti u procesu prakse"
           />
           <CardBoxWidget
@@ -56,7 +63,7 @@ onMounted(async () => {
             trend-type="alert"
             color="text-red-500"
             :icon="mdiPlayPause"
-            :number="10"
+            :number="waiting_for_allocation"
             label="Studenti koji čekaju alokaciju"
           />
         </div>

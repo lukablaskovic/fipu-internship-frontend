@@ -16,7 +16,7 @@ const Model = {
   async search(query) {
     try {
       let result = await AxiosWrapper.get("/model", { q: query });
-      return result.results;
+      return result;
     } catch (e) {
       return [];
     }
