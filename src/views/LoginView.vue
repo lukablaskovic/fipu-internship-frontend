@@ -22,8 +22,7 @@ const form = reactive({
 const router = useRouter();
 
 async function onSubmit() {
-  let result = await mainStore.login(form.email, form.password);
-  if (result) router.push("/dashboard");
+  await mainStore.login(form.email, form.password);
 }
 </script>
 
@@ -61,7 +60,7 @@ async function onSubmit() {
           poduzeća, molimo nastavite kao gost
           <a
             class="text-fipu_blue cursor-pointer"
-            @click="router.push('/dostupni-zadaci')"
+            @click="router.push('/moja-praksa')"
             >ovdje</a
           >.
         </h2>

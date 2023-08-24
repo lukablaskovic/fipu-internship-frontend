@@ -1,59 +1,63 @@
 <script setup>
-import { computed, ref, onMounted } from "vue";
-import { mainStore } from "@/main.js";
-import { mdiChartBar } from "@mdi/js";
-import * as chartConfig from "@/components/Charts/chart.config.js";
-import SectionMain from "@/components/SectionMain.vue";
-import LayoutAuthenticated from "@/layouts/LayoutAuthenticated.vue";
-import SectionTitleLineWithButton from "@/components/SectionTitleLineWithButton.vue";
-import BpmnDiagram from "@/components/BPMN/BpmnDiagram.vue";
+import { ref, computed, onMounted } from "vue";
+import { mainStore, studentStore } from "@/main.js";
+import LoadingOverlay from "@/components/LoadingOverlay.vue";
 
-import axios from "axios";
-const bpmn_model = ref(null);
-const chartData = ref(null);
-
-const fillChartData = () => {
-  chartData.value = chartConfig.sampleChartData();
-};
-
-onMounted(async () => {
-  fillChartData();
-  bpmn_model.value = await fetchXML();
-});
-
-mainStore.fetchCurrentUser();
+import ChooseAvailableAssignments from "@/components/Internship/ChooseAvailableAssignments.vue";
 
 const userAuthenticated = computed(() => mainStore.userAuthenticated);
 
-async function fetchXML() {
-  try {
-    // Make sure to set the responseType to 'text' since we're reading the XML as a string.
-    const response = await axios.get("/bpmn_xml/strucna_praksa.xml", {
-      responseType: "text",
-    });
+const processInstance = ref(null);
+const processInstanceInfo = ref(null);
+const pendingProcessTask = ref(null);
+const error = ref(null);
 
-    return response.data;
-  } catch (error) {
-    console.error("Failed to fetch XML:", error);
+onMounted(async () => {
+  if (userAuthenticated.value) {
+    try {
+      processInstance.value = mainStore.currentUser.process_instance_id;
+      processInstanceInfo.value = await studentStore.getInstanceInfo(
+        processInstance.value
+      );
+      if (
+        processInstanceInfo.value.pending &&
+        processInstanceInfo.value.pending.length
+      ) {
+        pendingProcessTask.value = processInstanceInfo.value.pending[0];
+      } else {
+        error.value = "No pending tasks found.";
+      }
+    } catch (err) {
+      error.value = "An error occurred while fetching instance info.";
+      console.error(err); // Log the error for debugging.
+    }
   }
-}
+});
+
+const componentMap = {
+  odabiranje_zadatka_student: ChooseAvailableAssignments,
+};
+
+const currentRenderingComponent = computed(() => {
+  if (error.value) {
+    console.log(error.value);
+    return null;
+  }
+
+  if (!userAuthenticated.value) {
+    return ChooseAvailableAssignments;
+  }
+
+  return componentMap[pendingProcessTask.value] || LoadingOverlay;
+});
 </script>
 
 <template>
-  <div>
-    <LayoutAuthenticated v-if="userAuthenticated">
-      <SectionMain>
-        <SectionTitleLineWithButton
-          :icon="mdiChartBar"
-          title="Moja praksa"
-          main
-        >
-        </SectionTitleLineWithButton>
+  <Suspense>
+    <!-- main content -->
+    <component :is="currentRenderingComponent"></component>
 
-        <div>
-          <BpmnDiagram v-if="bpmn_model" :xml="bpmn_model" />
-        </div>
-      </SectionMain>
-    </LayoutAuthenticated>
-  </div>
+    <!-- loading state -->
+    <template #fallback> <LoadingOverlay></LoadingOverlay> </template>
+  </Suspense>
 </template>

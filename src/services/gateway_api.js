@@ -51,7 +51,6 @@ const User = {
   async getCompanies() {
     try {
       let result = await AxiosWrapper.get("/admin/companies");
-      console.log(result);
       return result;
     } catch (e) {
       return null;

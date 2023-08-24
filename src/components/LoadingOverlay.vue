@@ -2,15 +2,15 @@
 defineProps({
   title: {
     type: String,
-    required: true,
+    default: "Učitavanje...",
   },
   description: {
     type: String,
-    required: true,
+    default: "Može potrajati nekoliko sekundi, molimo ne zatvarajte stranicu.",
   },
   isActive: {
     type: Boolean,
-    default: false,
+    default: true,
   },
 });
 </script>

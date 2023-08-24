@@ -26,7 +26,7 @@ import FormField from "@/components/FormField.vue";
 import FormControl from "@/components/FormControl.vue";
 
 import router from "@/router";
-import Utils from "@/utils.js";
+import Utils from "@/helpers/utils.js";
 import { mainStore, guestStore, studentStore } from "@/main.js";
 
 const Layout = computed(() => {
@@ -67,6 +67,7 @@ const notificationBar = ref({
   color: "success",
   icon: mdiCheckCircle,
 });
+
 let notificationStatus = ref();
 let notificationMessage = ref();
 
@@ -186,6 +187,7 @@ function showNotificationBar(type) {
       </div>
       <div>
         <NotificationBar
+          v-if="notificationBar"
           ref="notificationBar"
           :color="notificationBar.color"
           :icon="notificationBar.icon"
@@ -220,7 +222,8 @@ function showNotificationBar(type) {
           <b>Odabir {{ index + 1 }}: </b>{{ assignment["ID Zadatka"] }}
         </p>
         <br />
-      </CardBoxModal>
+        <p><b>Napomena:</b> {{ note }}</p></CardBoxModal
+      >
     </SectionMain>
   </component>
 </template>

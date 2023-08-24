@@ -1,9 +1,9 @@
-import { mdiClipboardTextOutline } from "@mdi/js";
+import { mdiLaptop } from "@mdi/js";
 
 export default [
   {
-    to: "/dostupni-zadaci",
-    icon: mdiClipboardTextOutline,
-    label: "Zadaci",
+    to: "/moja-praksa",
+    icon: mdiLaptop,
+    label: "Moja praksa",
   },
 ];

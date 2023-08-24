@@ -1,26 +1,19 @@
 <script setup>
-import { computed, ref, onMounted } from "vue";
+import { computed, onMounted } from "vue";
 import { adminStore, mainStore } from "@/main.js";
 import {
   mdiAccountMultiple,
   mdiAccountSchoolOutline,
   mdiPlayPause,
-  mdiReload,
-  mdiChartPie,
   mdiViewDashboard,
   mdiCommentProcessing,
 } from "@mdi/js";
-import LineChart from "@/components/Charts/LineChart.vue";
 import SectionMain from "@/components/SectionMain.vue";
 import CardBoxWidget from "@/components/CardBoxWidget.vue";
-import CardBox from "@/components/CardBox.vue";
-import BaseButton from "@/components/BaseButton.vue";
 import CardBoxTransaction from "@/components/CardBoxTransaction.vue";
 import CardBoxClient from "@/components/CardBoxClient.vue";
 import LayoutAuthenticated from "@/layouts/LayoutAuthenticated.vue";
 import SectionTitleLineWithButton from "@/components/SectionTitleLineWithButton.vue";
-
-mainStore.fetchCurrentUser();
 
 const clientBarItems = computed(() => mainStore.clients.slice(0, 4));
 const userAuthenticated = computed(() => mainStore.userAuthenticated);
@@ -28,7 +21,6 @@ const transactionBarItems = computed(() => mainStore.history);
 
 onMounted(async () => {
   let data = await adminStore.getStudents();
-  console.log(data);
 });
 </script>
 
@@ -99,12 +91,6 @@ onMounted(async () => {
             />
           </div>
         </div>
-
-        <CardBox class="mb-6">
-          <div v-if="chartData">
-            <line-chart :data="chartData" class="h-96" />
-          </div>
-        </CardBox>
       </SectionMain>
     </LayoutAuthenticated>
   </div>

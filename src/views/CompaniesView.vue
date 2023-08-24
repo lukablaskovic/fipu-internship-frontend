@@ -11,8 +11,6 @@ import SectionTitleLineWithButton from "@/components/SectionTitleLineWithButton.
 
 import TableAllCompanies from "@/components/Tables/TableAllCompanies.vue";
 
-mainStore.fetchCurrentUser();
-
 const userAuthenticated = computed(() => mainStore.userAuthenticated);
 </script>
 

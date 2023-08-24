@@ -1,9 +1,7 @@
 import { defineStore } from "pinia";
 import { Auth } from "@/services/gateway_api";
 import { User } from "@/services/gateway_api";
-
 import axios from "axios";
-import router from "@/router";
 
 export const useMainStore = defineStore("main", {
   state: () => ({
@@ -18,12 +16,12 @@ export const useMainStore = defineStore("main", {
       avatar: "",
       baserow_id: null,
       type: "" || null,
+      process_instance_id: null,
     },
 
-    access_token: JSON.parse(localStorage.getItem("main")) || null,
-
+    access_token: null,
     logoutModalActive: false,
-    returnURL: null,
+
     isFieldFocusRegistered: false,
 
     clients: [],
@@ -50,33 +48,42 @@ export const useMainStore = defineStore("main", {
     async login(email, password) {
       try {
         const loginResult = await Auth.login({ email, password });
-        console.log(loginResult);
-
-        this.access_token = loginResult.access_token;
-
-        router.push(this.returnURL || "/");
+        if (loginResult.access_token != null) {
+          console.log("logging in...");
+          this.access_token = loginResult.access_token;
+          await this.fetchCurrentUser();
+        }
+        if (this.currentUser.type == "student") {
+          this.router.push("/moja-praksa");
+        } else if (this.currentUser.type == "admin") {
+          this.router.push("/dashboard");
+        }
       } catch (error) {
         console.log(error);
       }
     },
-
-    logout() {
+    clearCurrentUser() {
       this.access_token = null;
-      this.logoutModalActive = false;
+      this.currentUser = {
+        id: "",
+        name: "",
+        surname: "",
+        username: "",
+        jmbag: "",
+        email: "",
+        year_of_study: "",
+        avatar: "",
+        baserow_id: null,
+        type: "" || null,
+        process_instance_id: null,
+      };
       localStorage.removeItem("main");
-      router.push("/login");
     },
 
-    setUser(payload) {
-      if (payload.name) {
-        this.userName = payload.name;
-      }
-      if (payload.email) {
-        this.userEmail = payload.email;
-      }
-      if (payload.avatar) {
-        this.userAvatar = payload.avatar;
-      }
+    logout() {
+      this.clearCurrentUser();
+      this.logoutModalActive = false;
+      this.router.go();
     },
 
     fetch(sampleDataKey) {

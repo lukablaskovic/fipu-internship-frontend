@@ -3,14 +3,13 @@ import { mainStore } from "@/main.js";
 
 const routes = [
   {
-    meta: {
-      title: "Dashboard",
-      requiresAuth: true,
-      requiresAdmin: false,
-    },
     path: "/",
-    name: "default",
-    component: () => import("@/views/DashboardView.vue"),
+    redirect: () => {
+      if (mainStore.userAuthenticated) {
+        return mainStore.userAdmin ? "/dashboard" : "/moja-praksa";
+      }
+      return "/login";
+    },
   },
   {
     meta: {
@@ -45,21 +44,12 @@ const routes = [
   {
     meta: {
       title: "Moja praksa",
-      requiresAuth: true,
+      requiresAuth: false,
       requiresAdmin: false,
     },
     path: "/moja-praksa",
     name: "moja-praksa",
     component: () => import("@/views/MyInternshipView.vue"),
-  },
-  {
-    meta: {
-      title: "Dostupni zadaci",
-      requiresAuth: false,
-    },
-    path: "/dostupni-zadaci",
-    name: "dostupni-zadaci",
-    component: () => import("@/views/AvailableAssignmentsView.vue"),
   },
   {
     meta: {
@@ -145,22 +135,30 @@ const router = createRouter({
 });
 
 router.beforeEach((to, from, next) => {
-  let userAuthenticated = mainStore.userAuthenticated;
-  let userAdmin = mainStore.userAdmin;
+  const userAuthenticated = mainStore.userAuthenticated;
+  const userAdmin = mainStore.userAdmin;
 
   const requiresAuth = to.matched.some((record) => record.meta.requiresAuth);
   const requiresAdmin = to.matched.some((record) => record.meta.requiresAdmin);
+
+  // If route requires authentication and user is not authenticated
   if (requiresAuth && !userAuthenticated) {
-    next("/login");
-  } else if (to.path === "/login" && userAuthenticated && !userAdmin) {
-    next("/moja-praksa");
-  } else if (to.path === "/login" && userAuthenticated && userAdmin) {
-    next("/dashboard");
-  } else if (requiresAdmin && !userAdmin && userAuthenticated) {
-    next("/moja-praksa");
-  } else {
-    next();
+    return next("/login");
   }
+
+  // If route requires admin role but user isn't admin
+  if (requiresAdmin && !userAdmin) {
+    return next("/moja-praksa");
+  }
+
+  // If user is trying to access login page but is already authenticated
+  if (to.path === "/login" && userAuthenticated) {
+    // Send admins to the dashboard, others to "moja-praksa"
+    return next(userAdmin ? "/dashboard" : "/moja-praksa");
+  }
+
+  // For any other case, simply proceed
+  next();
 });
 
 export default router;

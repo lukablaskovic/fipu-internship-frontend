@@ -13,6 +13,7 @@ import NavBarItemPlain from "@/components/NavBarItemPlain.vue";
 import AsideMenu from "@/components/AsideMenu/AsideMenu.vue";
 import FooterBar from "@/components/FooterBar.vue";
 import CardBoxModal from "@/components/CardBoxModal.vue";
+
 const layoutAsidePadding = "xl:pl-60";
 
 const router = useRouter();
@@ -22,9 +23,11 @@ const isAsideLgActive = ref(false);
 
 const logoutModalActive = computed(() => mainStore.logoutModalActive);
 
-const userAdmin = computed(() => mainStore.userAdmin);
+const userAdmin = ref(false);
+
 let menuAside = ref([]);
 onMounted(() => {
+  userAdmin.value = mainStore.userAdmin;
   if (userAdmin.value) {
     menuAside.value = menuAsideAdmin;
   }

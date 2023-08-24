@@ -15,8 +15,6 @@ import axios from "axios";
 const bpmn_model = ref(null);
 const process_instance_data = ref(null);
 
-mainStore.fetchCurrentUser();
-
 const userAuthenticated = computed(() => mainStore.userAuthenticated);
 
 async function fetchXML() {
@@ -33,13 +31,11 @@ async function fetchXML() {
 
 async function handleProcessDiagram() {
   process_instance_data.value = await adminStore.getProcessInstanceData();
-  console.log(process_instance_data.value);
 }
 
 onMounted(async () => {
   let data = await adminStore.getStudents();
   bpmn_model.value = await fetchXML();
-  console.log(data);
 });
 </script>
 

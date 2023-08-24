@@ -1,6 +1,6 @@
 <script setup>
 import { computed, ref, onMounted } from "vue";
-import { adminStore, mainStore } from "@/main.js";
+import { mainStore } from "@/main.js";
 import { mdiMonitorCellphone, mdiFileTree } from "@mdi/js";
 import * as chartConfig from "@/components/Charts/chart.config.js";
 import SectionMain from "@/components/SectionMain.vue";
@@ -23,8 +23,6 @@ onMounted(async () => {
   fillChartData();
   bpmn_model.value = await fetchXML();
 });
-
-mainStore.fetchCurrentUser();
 
 const userAuthenticated = computed(() => mainStore.userAuthenticated);
 

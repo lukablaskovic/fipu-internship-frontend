@@ -5,12 +5,13 @@ import { colorsBgLight, colorsOutline } from "@/colors.js";
 import BaseLevel from "@/components/BaseLevel.vue";
 import BaseIcon from "@/components/BaseIcon.vue";
 import BaseButton from "@/components/BaseButton.vue";
-import Utils from "@/utils.js";
+import Utils from "@/helpers/utils.js";
+
 const props = defineProps({
   color: {
     type: String,
     required: true,
-    default: "primary",
+    default: "success",
   },
   icon: {
     type: String,

@@ -1,6 +1,7 @@
 import { defineStore } from "pinia";
 
 import { Student } from "@/services/baserow_client_api";
+import { ProcessInstance } from "@/services/bpmn_engine_api";
 
 export const useStudentStore = defineStore("student", {
   state: () => ({}),
@@ -16,7 +17,14 @@ export const useStudentStore = defineStore("student", {
       };
       try {
         const response = await Student.registerAssignments(postData);
-        console.log("user pinia", response);
+        return response;
+      } catch (error) {
+        console.log("Error:", error);
+      }
+    },
+    async getInstanceInfo(process_instance_id) {
+      try {
+        const response = await ProcessInstance.get(process_instance_id);
         return response;
       } catch (error) {
         console.log("Error:", error);

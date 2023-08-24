@@ -1,7 +1,7 @@
 import "./css/main.css";
 import "animate.css";
 
-import { createApp } from "vue";
+import { createApp, markRaw } from "vue";
 import { createPinia } from "pinia";
 import App from "./App.vue";
 import router from "./router";
@@ -21,19 +21,23 @@ import NotificationBar from "@/components/NotificationBar.vue";
 const pinia = createPinia();
 /* Init Pinia Persisted state plugin */
 pinia.use(piniaPluginPersistedstate);
+pinia.use(({ store }) => {
+  store.router = markRaw(router);
+});
 
 const app = createApp(App);
-app.use(router).use(pinia);
 app.component("NotificationBar", NotificationBar);
+app.use(pinia);
 
-app.mount("#app");
-
-/* Init Pinia stores */
+/* Init Pinia stores BEFORE setting up the router */
 const mainStore = useMainStore(pinia);
 const studentStore = useStudentStore(pinia);
 const guestStore = useGuestStore(pinia);
 const adminStore = useAdminStore(pinia);
 const styleStore = useStyleStore(pinia);
+
+app.use(router);
+app.mount("#app");
 
 /* App style */
 styleStore.setStyle(localStorage[styleKey] ?? "white");

@@ -38,8 +38,6 @@ onMounted(async () => {
   bpmn_model.value = await fetchXML();
 });
 
-mainStore.fetchCurrentUser();
-
 const clientBarItems = computed(() => mainStore.clients.slice(0, 4));
 const userAuthenticated = computed(() => mainStore.userAuthenticated);
 const transactionBarItems = computed(() => mainStore.history);
