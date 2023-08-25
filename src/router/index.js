@@ -19,7 +19,7 @@ const routes = [
     },
     path: "/students",
     name: "students",
-    component: () => import("@/views/StudentsInternshipView.vue"),
+    component: () => import("@/views/admin/StudentsInternshipView.vue"),
   },
   {
     meta: {
@@ -29,7 +29,7 @@ const routes = [
     },
     path: "/companies",
     name: "companies",
-    component: () => import("@/views/CompaniesView.vue"),
+    component: () => import("@/views/admin/CompaniesView.vue"),
   },
   {
     meta: {
@@ -39,7 +39,7 @@ const routes = [
     },
     path: "/dashboard",
     name: "dashboard",
-    component: () => import("@/views/DashboardView.vue"),
+    component: () => import("@/views/admin/DashboardView.vue"),
   },
   {
     meta: {
@@ -49,7 +49,7 @@ const routes = [
     },
     path: "/moja-praksa",
     name: "moja-praksa",
-    component: () => import("@/views/MyInternshipView.vue"),
+    component: () => import("@/views/student/MyInternshipView.vue"),
   },
   {
     meta: {
@@ -57,7 +57,7 @@ const routes = [
     },
     path: "/forms",
     name: "forms",
-    component: () => import("@/views/FormsView.vue"),
+    component: () => import("@/views/common/FormsView.vue"),
   },
   {
     meta: {
@@ -66,7 +66,7 @@ const routes = [
     },
     path: "/profile",
     name: "profile",
-    component: () => import("@/views/ProfileView.vue"),
+    component: () => import("@/views/common/ProfileView.vue"),
   },
   {
     meta: {
@@ -75,7 +75,7 @@ const routes = [
     },
     path: "/login",
     name: "login",
-    component: () => import("@/views/LoginView.vue"),
+    component: () => import("@/views/common/LoginView.vue"),
   },
   {
     meta: {
@@ -84,7 +84,7 @@ const routes = [
     },
     path: "/register",
     name: "register",
-    component: () => import("@/views/RegisterView.vue"),
+    component: () => import("@/views/common/RegisterView.vue"),
   },
   {
     meta: {
@@ -94,7 +94,7 @@ const routes = [
     },
     path: "/bpmn/models",
     name: "bpmn-models",
-    component: () => import("@/views/bpmn/ModelsView.vue"),
+    component: () => import("@/views/admin/bpmn/ModelsView.vue"),
   },
   {
     meta: {
@@ -104,7 +104,7 @@ const routes = [
     },
     path: "/bpmn/microservices",
     name: "bpmn-microservices",
-    component: () => import("@/views/bpmn/MicroservicesView.vue"),
+    component: () => import("@/views/admin/bpmn/MicroservicesView.vue"),
   },
   {
     meta: {
@@ -114,7 +114,7 @@ const routes = [
     },
     path: "/bpmn/modeler",
     name: "bpmn-modeler",
-    component: () => import("@/views/bpmn/ModelerView.vue"),
+    component: () => import("@/views/admin/bpmn/ModelerView.vue"),
   },
   {
     meta: {
@@ -122,7 +122,7 @@ const routes = [
     },
     path: "/tables",
     name: "tables",
-    component: () => import("@/views/TablesView.vue"),
+    component: () => import("@/views/common/TablesView.vue"),
   },
 ];
 

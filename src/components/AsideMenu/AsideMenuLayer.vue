@@ -60,7 +60,7 @@ import { computed } from "vue";
 import { mainStore, styleStore } from "@/main.js";
 import AsideMenuList from "@/components/AsideMenu/AsideMenuList.vue";
 import AsideMenuItem from "@/components/AsideMenu/AsideMenuItem.vue";
-import BaseIcon from "@/components/BaseIcon.vue";
+import BaseIcon from "@/components/Base/BaseIcon.vue";
 
 import { useRouter } from "vue-router";
 

@@ -2,17 +2,17 @@
 import { mdiForwardburger, mdiBackburger, mdiMenu, mdiMagnify } from "@mdi/js";
 import { ref, onMounted, computed } from "vue";
 import { useRouter } from "vue-router";
-import menuAsideAdmin from "@/menuAsideAdmin.js";
-import menuAsideStudent from "@/menuAsideStudent.js";
-import menuNavBar from "@/menuNavBar.js";
+import menuAsideAdmin from "@/menus/menuAsideAdmin.js";
+import menuAsideStudent from "@/menus/menuAsideStudent.js";
+import menuNavBar from "@/menus/menuNavBar.js";
 import { mainStore, styleStore } from "@/main.js";
-import BaseIcon from "@/components/BaseIcon.vue";
-import FormControl from "@/components/FormControl.vue";
-import NavBar from "@/components/NavBar.vue";
-import NavBarItemPlain from "@/components/NavBarItemPlain.vue";
+import BaseIcon from "@/components/Base/BaseIcon.vue";
+import FormControl from "@/components/Form/FormControl.vue";
+import NavBar from "@/components/Navbar/NavBar.vue";
+import NavBarItemPlain from "@/components/Navbar/NavBarItemPlain.vue";
 import AsideMenu from "@/components/AsideMenu/AsideMenu.vue";
 import FooterBar from "@/components/FooterBar.vue";
-import CardBoxModal from "@/components/CardBoxModal.vue";
+import CardBoxModal from "@/components/Cardbox/CardBoxModal.vue";
 
 const layoutAsidePadding = "xl:pl-60";
 

@@ -1,6 +1,6 @@
 <script setup>
 import { containerMaxW } from "@/config.js";
-import BaseLevel from "@/components/BaseLevel.vue";
+import BaseLevel from "@/components/Base/BaseLevel.vue";
 
 const year = new Date().getFullYear();
 </script>

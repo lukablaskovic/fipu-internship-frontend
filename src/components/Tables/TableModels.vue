@@ -3,9 +3,9 @@ import { computed, ref, onMounted } from "vue";
 
 import { mdiEye } from "@mdi/js";
 import TableCheckboxCell from "@/components/Tables/TableCheckboxCell.vue";
-import BaseLevel from "@/components/BaseLevel.vue";
-import BaseButtons from "@/components/BaseButtons.vue";
-import BaseButton from "@/components/BaseButton.vue";
+import BaseLevel from "@/components/Base/BaseLevel.vue";
+import BaseButtons from "@/components/Base/BaseButtons.vue";
+import BaseButton from "@/components/Base/BaseButton.vue";
 import LoadingOverlay from "../LoadingOverlay.vue";
 import { adminStore } from "@/main.js";
 

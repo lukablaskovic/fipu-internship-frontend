@@ -12,14 +12,14 @@ export const basic = {
 };
 
 export const white = {
-  aside: "bg-white",
+  aside: "bg-gray-100",
   asideScrollbars: "aside-scrollbars-light",
   asideBrand: "",
-  asideMenuItem: "text-blue-600 hover:text-black dark:text-white",
+  asideMenuItem: "text-fipu_text_blue hover:text-black dark:text-white",
   asideMenuItemActive: "font-bold text-black dark:text-white",
   asideMenuDropdown: "bg-gray-100/75",
-  navBarItemLabel: "text-blue-600",
-  navBarItemLabelHover: "hover:text-black",
-  navBarItemLabelActiveColor: "text-black",
+  navBarItemLabel: "text-fipu_gray",
+  navBarItemLabelHover: "hover:text-fipu_text_blue",
+  navBarItemLabelActiveColor: "text-fipu_text_blue",
   overlay: "from-white via-gray-100 to-white",
 };

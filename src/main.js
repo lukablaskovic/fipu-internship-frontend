@@ -16,7 +16,7 @@ import { useStudentStore } from "./stores/student_store";
 import { darkModeKey, styleKey } from "@/config.js";
 
 import piniaPluginPersistedstate from "pinia-plugin-persistedstate";
-import NotificationBar from "@/components/NotificationBar.vue";
+import NotificationBar from "@/components/Notification/NotificationBar.vue";
 
 /* Init Pinia */
 const pinia = createPinia();

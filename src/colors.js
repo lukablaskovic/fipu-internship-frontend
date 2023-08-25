@@ -11,6 +11,7 @@ export const colorsBgLight = {
   danger: "bg-red-500 border-red-500 text-white",
   warning: "bg-yellow-500 border-yellow-500 text-white",
   info: "bg-blue-500 border-blue-500 text-white",
+  fipu_blue: "bg-fipu_blue border-fipu_blue text-white",
 };
 
 export const colorsText = {
@@ -61,6 +62,8 @@ export const getButtonColor = (
       info: "bg-blue-700 dark:bg-blue-600",
       fipu_blue: "bg-fipu_blue dark:bg-fipu_light_blue",
       fipu_light_blue: "bg-fipu_light_blue dark:bg-fipu_blue",
+      fipu_dark_blue: "bg-fipu_dark_blue dark:bg-fipu_light_blue",
+      fipu_text_blue: "bg-fipu_text_blue text-white",
     },
     bg: {
       white: "bg-white text-black",
@@ -73,6 +76,8 @@ export const getButtonColor = (
       info: "bg-blue-600 dark:bg-blue-500 text-white",
       fipu_blue: "bg-fipu_blue text-white",
       fipu_light_blue: "bg-fipu_light_blue text-white",
+      fipu_dark_blue: "bg-fipu_dark_blue text-white",
+      fipu_text_blue: "bg-fipu_text_blue text-white",
     },
     bgHover: {
       white: "hover:bg-gray-100",
@@ -98,6 +103,8 @@ export const getButtonColor = (
       info: "border-blue-600 dark:border-blue-500",
       fipu_blue: "border-fipu_blue",
       fipu_light_blue: "border-fipu_light_blue",
+      fipu_dark_blue: "border-fipu_dark_blue",
+      fipu_text_blue: "border-fipu_text_blue",
     },
     text: {
       contrast: "dark:text-slate-100",
@@ -106,6 +113,8 @@ export const getButtonColor = (
       warning: "text-yellow-600 dark:text-yellow-500",
       info: "text-blue-600 dark:text-blue-500",
       fipu_blue: "text-fipu_blue",
+      fipu_dark_blue: "text-fipu_dark_blue",
+      fipu_text_blue: "text-fipu_text_blue",
     },
     outlineHover: {
       contrast:

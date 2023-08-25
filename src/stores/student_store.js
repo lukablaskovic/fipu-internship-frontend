@@ -3,7 +3,9 @@ import { mainStore } from "@/main";
 import { ProcessInstance } from "@/services/bpmn_engine_api";
 
 export const useStudentStore = defineStore("student", {
-  state: () => ({}),
+  state: () => ({
+    student_process_instance_data: {},
+  }),
   actions: {
     async registerPreferences(assignmentsData, note) {
       let post_data = {
@@ -18,8 +20,7 @@ export const useStudentStore = defineStore("student", {
         let process_instance_id = mainStore.currentUser.internship_process.id;
         let pending_user_task =
           mainStore.currentUser.internship_process.pending_user_task;
-        console.log(pending_user_task);
-        console.log(post_data);
+
         const response = await ProcessInstance.submitForm(
           process_instance_id,
           pending_user_task,
@@ -39,6 +40,8 @@ export const useStudentStore = defineStore("student", {
     async getInstanceInfo(process_instance_id) {
       try {
         const response = await ProcessInstance.get(process_instance_id);
+        this.student_process_instance_data = response;
+        console.log(this.student_process_instance_data);
         return response;
       } catch (error) {
         console.log("Error:", error);

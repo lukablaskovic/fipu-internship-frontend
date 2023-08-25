@@ -13,7 +13,10 @@ module.exports = {
     extend: {
       colors: {
         fipu_blue: "#74d4f4",
+        fipu_gray: "#212529",
         fipu_light_blue: "#9de0f7",
+        fipu_dark_blue: "#6EB9ED",
+        fipu_text_blue: "#6dd0f6",
         search_bar: "#c7c8c9",
       },
 

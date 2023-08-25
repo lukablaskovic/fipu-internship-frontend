@@ -7,6 +7,7 @@ export const useAdminStore = defineStore("admin", {
     students: [],
     selectedStudent: {},
     companies: [],
+    studentsFetched: false,
 
     dashboard_data: {
       finished_internships: 0,
@@ -28,6 +29,7 @@ export const useAdminStore = defineStore("admin", {
     },
     async getStudents() {
       try {
+        this.studentsFetched = false;
         const students = await User.getStudents();
         this.dashboard_data.waiting_for_allocation = 0;
         const promises = students.map(async (student) => {
@@ -45,6 +47,7 @@ export const useAdminStore = defineStore("admin", {
 
         console.log(students);
         this.students = students;
+        this.studentsFetched = true;
       } catch (error) {
         console.log("Error:", error);
       }

@@ -4,14 +4,14 @@ import { ref } from "vue";
 import { useRouter } from "vue-router";
 import { styleStore } from "@/main.js";
 
-import menuAsideGuest from "@/menuAsideGuest.js";
-import BaseIcon from "@/components/BaseIcon.vue";
-import FormControl from "@/components/FormControl.vue";
-import NavBar from "@/components/NavBar.vue";
-import NavBarItemPlain from "@/components/NavBarItemPlain.vue";
+import menuAsideGuest from "@/menus/menuAsideGuest.js";
+import BaseIcon from "@/components/Base/BaseIcon.vue";
+import FormControl from "@/components/Form/FormControl.vue";
+import NavBar from "@/components/Navbar/NavBar.vue";
+import NavBarItemPlain from "@/components/Navbar/NavBarItemPlain.vue";
 import AsideMenu from "@/components/AsideMenu/AsideMenu.vue";
 import FooterBar from "@/components/FooterBar.vue";
-import menuNavBarGuest from "@/menuNavBarGuest";
+import menuNavBarGuest from "@/menus/menuNavBarGuest";
 
 const layoutAsidePadding = "xl:pl-60";
 
