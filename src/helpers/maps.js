@@ -17,6 +17,7 @@ import Student_WaitingForAllocation from "@/components/Internship/Student_Waitin
 class UserTaskMappings {
   static tasks = [
     {
+      order: 1,
       _id: "odabiranje_zadatka_student",
       name: "Mora odabrati zadatke",
       form_title: "Odabrani zadaci",
@@ -24,23 +25,37 @@ class UserTaskMappings {
       component: Student_ChooseAvailableAssignments,
     },
     {
+      order: 2,
       _id: "potvrda_alociranja_profesor",
       name: "Čeka alokaciju",
       form_title: "Potvrda alokacije",
       bpmn_task_color: "#e25555",
       component: Student_WaitingForAllocation,
     },
-    { _id: "evaluacija_poslodavac", name: "Čeka evaluaciju poslodavca" },
     {
+      order: 3,
+      _id: "evaluacija_poslodavac",
+      name: "Čeka evaluaciju poslodavca",
+    },
+    {
+      order: 4,
       _id: "ispunjavanje_prijavnice_student",
       name: "Mora ispuniti prijavnicu",
     },
-    { _id: "predavanje_dnevnika_student", name: "Mora predati dnevnik prakse" },
+    {
+      order: 5,
+      _id: "predavanje_dnevnika_student",
+      name: "Mora predati dnevnik prakse",
+    },
   ];
 
   static getTaskName(taskId) {
     const task = this.tasks.find((task) => task._id === taskId);
     return task ? task.name : taskId;
+  }
+  static getTaskFormTitle(taskId) {
+    const task = this.tasks.find((task) => task._id === taskId);
+    return task ? task.form_title : taskId;
   }
   static getComponent(taskId) {
     const task = this.tasks.find((task) => task._id === taskId);
@@ -49,6 +64,10 @@ class UserTaskMappings {
   static getBpmnTaskColor(taskId) {
     const task = this.tasks.find((task) => task._id === taskId);
     return task ? task.bpmn_task_color : null;
+  }
+  static getCurrentOrder(taskId) {
+    const task = UserTaskMappings.tasks.find((task) => task._id === taskId);
+    return task ? task.order : -1;
   }
 }
 

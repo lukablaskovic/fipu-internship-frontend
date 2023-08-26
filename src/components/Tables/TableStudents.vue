@@ -67,7 +67,9 @@ const pagesList = computed(() => {
         <th>Prezime</th>
         <th>Email</th>
         <th>Godina studija</th>
-        <th>Stanje</th>
+        <th>Napredak</th>
+
+        <th>Trenutno stanje</th>
         <th />
       </tr>
     </thead>
@@ -98,6 +100,19 @@ const pagesList = computed(() => {
               student["Godina studija"]["value"]
             )
           }}
+        </td>
+        <td data-label="Progress" class="lg:w-32">
+          <progress
+            class="flex w-2/5 self-center lg:w-full"
+            max="5"
+            :value="
+              UserTaskMappings.getCurrentOrder(
+                student['process_instance_data']['pending'][0]
+              )
+            "
+          >
+            {{}}
+          </progress>
         </td>
         <td data-label="Stanje">
           {{

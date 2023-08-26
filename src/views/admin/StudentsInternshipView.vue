@@ -71,7 +71,9 @@ onMounted(async () => {
         <CardBoxModal
           v-if="modal_select_bpmn_task"
           v-model="modal_select_bpmn_task"
-          title="Task"
+          :title="
+            UserTaskMappings.getTaskFormTitle(process_instance_data.pending[0])
+          "
           button-label="Potvrda"
           has-cancel
         >
@@ -92,6 +94,9 @@ onMounted(async () => {
         v-if="bpmn_model && process_instance_data"
         :key="bpmnKey"
         :xml="bpmn_model"
+        :current-order="
+          UserTaskMappings.getCurrentOrder(process_instance_data.pending[0])
+        "
         :highlight-color="
           UserTaskMappings.getBpmnTaskColor(process_instance_data.pending[0])
         "

@@ -68,6 +68,6 @@
 
   .switch input[type="checkbox"]:checked + .check:before {
     transform: translate3d(110%, 0, 0);
-    @apply border-blue-600;
+    @apply border-fipu_gray;
   }
 }

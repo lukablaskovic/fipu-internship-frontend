@@ -5,6 +5,7 @@
 <script setup>
 import { ref, onMounted } from "vue";
 import BpmnViewer from "bpmn-js";
+import { UserTaskMappings } from "@/helpers/maps";
 
 const props = defineProps({
   xml: {
@@ -18,6 +19,10 @@ const props = defineProps({
   highlightElementId: {
     type: String,
     default: "",
+  },
+  currentOrder: {
+    type: Number,
+    required: true,
   },
 });
 
@@ -68,14 +73,25 @@ function handleElementClick(event, emitFunction) {
   console.log("Element clicked:", element);
 
   if (element && element.type === "bpmn:UserTask") {
-    console.log("Emitting openModal");
-    emitFunction("openModal", element);
+    const taskOrder = getTaskOrder(element.id);
+    if (taskOrder <= props.currentOrder) {
+      console.log("Emitting openModal");
+      emitFunction("openModal", element);
+    } else {
+      console.log("Task in the future. Not clickable.");
+    }
   }
+}
+
+function getTaskOrder(taskId) {
+  const task = UserTaskMappings.tasks.find((task) => task._id === taskId);
+  return task ? task.order : -1;
 }
 
 function applyCustomStyling(highlightColor, highlightElementId, viewer) {
   const canvasInstance = viewer.get("canvas");
   canvasInstance.zoom("fit-viewport");
+  canvasInstance.viewbox();
 
   if (highlightElementId) {
     canvasInstance.addMarker(highlightElementId, "highlight");
@@ -100,7 +116,8 @@ function handleError(err) {
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 50vh;
+  height: 62vh;
   width: 100%;
+  user-select: none;
 }
 </style>
