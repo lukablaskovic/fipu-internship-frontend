@@ -66,12 +66,13 @@ defineProps({
         </h3>
         <h1 class="text-3xl leading-tight font-semibold">
           <NumberDynamic
-            v-if="number"
+            v-if="text != '' && number !== null && number !== undefined"
             :value="number"
             :prefix="prefix"
             :suffix="suffix"
           />
-          <span v-else-if="text" class="text-2xl dark:text-slate-400">
+
+          <span v-else class="text-2xl dark:text-slate-400">
             {{ text }}
           </span>
         </h1>

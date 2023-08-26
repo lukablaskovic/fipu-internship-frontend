@@ -14,7 +14,7 @@ import CardBoxTransaction from "@/components/Cardbox/CardBoxTransaction.vue";
 import CardBoxClient from "@/components/Cardbox/CardBoxClient.vue";
 import LayoutAuthenticated from "@/layouts/LayoutAuthenticated.vue";
 import SectionTitleLineWithButton from "@/components/Section/SectionTitleLineWithButton.vue";
-
+import SkeletonLoader from "@/components/SkeletonLoader.vue";
 const clientBarItems = computed(() => mainStore.clients.slice(0, 4));
 const userAuthenticated = computed(() => mainStore.userAuthenticated);
 const transactionBarItems = computed(() => mainStore.history);
@@ -28,6 +28,7 @@ onMounted(async () => {
   ongoing_internships.value = adminStore.dashboard_data.ongoing_internships;
   waiting_for_allocation.value =
     adminStore.dashboard_data.waiting_for_allocation;
+  console.log(ongoing_internships.value);
 });
 </script>
 
@@ -43,6 +44,7 @@ onMounted(async () => {
         </SectionTitleLineWithButton>
         <div class="grid grid-cols-1 gap-6 lg:grid-cols-3 mb-6">
           <CardBoxWidget
+            v-if="adminStore.studentsFetched"
             trend="12%"
             trend-type="up"
             color="text-emerald-500"
@@ -50,7 +52,10 @@ onMounted(async () => {
             :number="512"
             label="Uspješno odrađenih praksi"
           />
+          <SkeletonLoader v-else></SkeletonLoader>
+
           <CardBoxWidget
+            v-if="adminStore.studentsFetched"
             trend="12%"
             trend-type="down"
             color="text-blue-500"
@@ -58,7 +63,9 @@ onMounted(async () => {
             :number="ongoing_internships"
             label="Studenti u procesu prakse"
           />
+          <SkeletonLoader v-else></SkeletonLoader>
           <CardBoxWidget
+            v-if="adminStore.studentsFetched"
             trend="Upozorenje"
             trend-type="alert"
             color="text-red-500"
@@ -66,6 +73,7 @@ onMounted(async () => {
             :number="waiting_for_allocation"
             label="Studenti koji čekaju alokaciju"
           />
+          <SkeletonLoader v-else></SkeletonLoader>
         </div>
         <SectionTitleLineWithButton
           :icon="mdiCommentProcessing"

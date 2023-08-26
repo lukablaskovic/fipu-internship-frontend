@@ -27,14 +27,29 @@ export const useAdminStore = defineStore("admin", {
         console.log("Error:", error);
       }
     },
+    async getTaskInfo(it, task) {
+      try {
+        const response = await ProcessInstance.getTaskInfo(it, task);
+        console.log(response);
+        return response;
+      } catch (error) {
+        console.log("Error:", error);
+      }
+    },
     async getStudents() {
       try {
         this.studentsFetched = false;
         const students = await User.getStudents();
+        console.log(students);
         this.dashboard_data.waiting_for_allocation = 0;
         const promises = students.map(async (student) => {
           const data = await this.getProcessInstanceData(student);
           student.process_instance_data = data;
+          student.process_instance_data.pending_task_info =
+            await this.getTaskInfo(
+              student.process_instance_id,
+              student.process_instance_data.pending[0]
+            );
           if (
             student.process_instance_data.pending[0] ==
             "potvrda_alociranja_profesor"
@@ -46,6 +61,7 @@ export const useAdminStore = defineStore("admin", {
         await Promise.all(promises);
 
         console.log(students);
+
         this.students = students;
         this.studentsFetched = true;
       } catch (error) {
@@ -79,5 +95,5 @@ export const useAdminStore = defineStore("admin", {
       }
     },
   },
-  persist: true,
+  persist: false,
 });

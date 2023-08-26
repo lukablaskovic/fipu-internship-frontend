@@ -15,11 +15,13 @@ defineProps({
 });
 
 const students = computed(() => adminStore.students);
+const selectedStudentJMBAG = ref(null);
+
 const studentsFetched = computed(() => adminStore.studentsFetched);
 const emit = defineEmits(["show-student-diagram"]);
 
 function showDiagram(student) {
-  console.log(student);
+  selectedStudentJMBAG.value = student["JMBAG"];
   adminStore.showSelectedStudent(student);
   emit("show-student-diagram", student);
 }
@@ -71,9 +73,13 @@ const pagesList = computed(() => {
     </thead>
 
     <tbody>
-      <tr v-for="student in studentsPaginated" :key="student['JMBAG']">
-        <TableCheckboxCell v-if="checkable" :assignment-data="student" />
-
+      <tr
+        v-for="student in studentsPaginated"
+        :key="student['JMBAG']"
+        :class="{
+          'selected-row': selectedStudentJMBAG === student['JMBAG'],
+        }"
+      >
         <td data-label="JMBAG">
           {{ student["JMBAG"] }}
         </td>

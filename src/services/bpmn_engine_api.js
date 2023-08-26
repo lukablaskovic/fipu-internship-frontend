@@ -46,6 +46,15 @@ const ProcessInstance = {
       return null;
     }
   },
+  async getTaskInfo(id, task) {
+    try {
+      let result = await AxiosWrapper.get(`/instance/${id}/task/${task}`);
+      return result;
+    } catch (error) {
+      console.log("Error:", error);
+      return null;
+    }
+  },
   async search(query) {
     try {
       let result = await AxiosWrapper.get("/instance", { q: query });

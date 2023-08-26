@@ -2,9 +2,7 @@
 import { ref, computed, onBeforeMount } from "vue";
 import { mainStore, studentStore } from "@/main.js";
 import LoadingOverlay from "@/components/LoadingOverlay.vue";
-
-import Student_ChooseAvailableAssignments from "@/components/Internship/Student_ChooseAvailableAssignments.vue";
-import Student_WaitingForAllocation from "@/components/Internship/Student_WaitingForAllocation.vue";
+import { UserTaskMappings } from "@/helpers/maps";
 const userAuthenticated = computed(() => mainStore.userAuthenticated);
 
 const processInstance = ref(null);
@@ -26,11 +24,6 @@ onBeforeMount(async () => {
   }
 });
 
-const componentMap = {
-  odabiranje_zadatka_student: Student_ChooseAvailableAssignments,
-  potvrda_alociranja_profesor: Student_WaitingForAllocation,
-};
-
 const currentRenderingComponent = computed(() => {
   if (error.value) {
     console.log(error.value);
@@ -38,10 +31,12 @@ const currentRenderingComponent = computed(() => {
   }
 
   if (!userAuthenticated.value) {
-    return Student_ChooseAvailableAssignments;
+    return UserTaskMappings.getComponent("odabiranje_zadatka_student");
   }
 
-  return componentMap[pendingProcessTask.value] || LoadingOverlay;
+  return (
+    UserTaskMappings.getComponent(pendingProcessTask.value) || LoadingOverlay
+  );
 });
 </script>
 

@@ -6,7 +6,7 @@
 import { ref, onMounted } from "vue";
 import BpmnViewer from "bpmn-js";
 
-let props = defineProps({
+const props = defineProps({
   xml: {
     type: String,
     required: true,
@@ -22,43 +22,81 @@ let props = defineProps({
 });
 
 const canvas = ref(null);
+const emit = defineEmits(["openModal"]);
 
 onMounted(async () => {
-  const viewer = new BpmnViewer({
-    container: canvas.value,
-  });
+  const viewer = initializeBpmnViewer(canvas.value);
+
   try {
-    const result = await viewer.importXML(props.xml);
-    const { warnings } = result;
-
-    console.log("success !", warnings);
-
-    const canvasInstance = viewer.get("canvas");
-    canvasInstance.zoom("fit-viewport");
+    await importBpmnDiagram(viewer, props.xml);
+    setupEventListeners(viewer);
+    applyCustomStyling(props.highlightColor, props.highlightElementId, viewer);
   } catch (err) {
-    const { warnings, message } = err;
-
-    console.log("something went wrong:", warnings, message);
+    handleError(err);
   }
+});
 
+function initializeBpmnViewer(container) {
+  return new BpmnViewer({ container });
+}
+
+async function importBpmnDiagram(viewer, xml) {
+  const result = await viewer.importXML(xml);
+  console.log("success !", result.warnings);
+}
+
+function setupEventListeners(viewer) {
+  const eventBus = viewer.get("eventBus");
+
+  eventBus.on("element.hover", (event) => {
+    handleElementHover(event, canvas.value);
+  });
+
+  viewer.on("element.click", (event) => {
+    handleElementClick(event, emit);
+  });
+}
+
+function handleElementHover(event, canvasElement) {
+  const element = event.element;
+  canvasElement.style.cursor =
+    element && element.type === "bpmn:UserTask" ? "pointer" : "default";
+}
+
+function handleElementClick(event, emitFunction) {
+  const element = event.element;
+  console.log("Element clicked:", element);
+
+  if (element && element.type === "bpmn:UserTask") {
+    console.log("Emitting openModal");
+    emitFunction("openModal", element);
+  }
+}
+
+function applyCustomStyling(highlightColor, highlightElementId, viewer) {
   const canvasInstance = viewer.get("canvas");
   canvasInstance.zoom("fit-viewport");
-  if (props.highlightElementId) {
-    canvasInstance.addMarker(props.highlightElementId, "highlight");
+
+  if (highlightElementId) {
+    canvasInstance.addMarker(highlightElementId, "highlight");
   }
-  // Dynamically add styles
+
   const style = document.createElement("style");
   style.innerHTML = `
     .highlight:not(.djs-connection) .djs-visual > :nth-child(1) {
-      fill: ${props.highlightColor} !important;
+      fill: ${highlightColor} !important;
     }
   `;
   document.head.appendChild(style);
-});
+}
+
+function handleError(err) {
+  console.log("something went wrong:", err.warnings, err.message);
+}
 </script>
 
 <style scoped>
-div.bpmn-container {
+.bpmn-container {
   display: flex;
   justify-content: center;
   align-items: center;

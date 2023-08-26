@@ -27,7 +27,6 @@ onMounted(async () => {
   let result = await studentStore.getInstanceInfo(
     mainStore.currentUser.internship_process.id
   );
-  console.log(result);
   prviOdabir.value = result.variables["Prvi odabir"][0];
   drugiOdabir.value = result.variables["Drugi odabir"][0];
   treciOdabir.value = result.variables["Treći odabir"][0];
@@ -73,18 +72,21 @@ const userAuthenticated = computed(() => mainStore.userAuthenticated);
         <CardBoxWidget
           color="text-fipu_blue"
           :icon="mdiNumeric1Circle"
+          :number="null"
           :text="prviOdabir"
           label="1. odabir"
         />
         <CardBoxWidget
           color="text-fipu_blue"
           :icon="mdiNumeric2CircleOutline"
+          :number="null"
           :text="drugiOdabir"
           label="2. odabir"
         />
         <CardBoxWidget
           color="text-fipu_blue"
           :icon="mdiNumeric3CircleOutline"
+          :number="null"
           :text="treciOdabir"
           label="3. odabir"
         />
