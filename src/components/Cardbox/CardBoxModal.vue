@@ -24,6 +24,10 @@ const props = defineProps({
     type: [String, Number, Boolean, Object],
     default: null,
   },
+  disabledCondition: {
+    type: Boolean,
+    default: false,
+  },
 });
 
 const emit = defineEmits(["update:modelValue", "cancel", "confirm"]);
@@ -53,13 +57,18 @@ window.addEventListener("keydown", (e) => {
   <OverlayLayer v-show="value" @overlay-click="cancel">
     <CardBox
       v-show="value"
-      class="shadow-lg max-h-modal w-11/12 md:w-3/5 lg:w-2/5 xl:w-4/12 z-50"
+      class="shadow-lg max-h-modal w-11/12 md:w-3/5 lg:w-2/5 xl:w-4/12 z-50 modal-scrollable"
       is-modal
     >
       <CardBoxComponentTitle :title="title"> </CardBoxComponentTitle>
       <slot :assignment="modelValue"></slot>
       <BaseButtons class="justify-center">
-        <BaseButton :label="buttonLabel" :color="button" @click="confirm" />
+        <BaseButton
+          :label="buttonLabel"
+          :color="button"
+          :disabled="disabledCondition"
+          @click="confirm"
+        />
         <BaseButton
           v-if="hasCancel"
           label="Natrag"
@@ -71,3 +80,10 @@ window.addEventListener("keydown", (e) => {
     </CardBox>
   </OverlayLayer>
 </template>
+
+<style scoped>
+.modal-scrollable {
+  max-height: 90vh;
+  overflow-y: auto;
+}
+</style>

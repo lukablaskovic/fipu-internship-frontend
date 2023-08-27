@@ -111,7 +111,11 @@ const pagesList = computed(() => {
               )
             "
           >
-            {{}}
+            {{
+              UserTaskMappings.getCurrentOrder(
+                student["process_instance_data"]["pending"][0]
+              )
+            }}
           </progress>
         </td>
         <td data-label="Stanje">

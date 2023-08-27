@@ -1,5 +1,5 @@
 <script setup>
-import { computed, ref, onMounted } from "vue";
+import { computed, ref, onMounted, watch } from "vue";
 import { adminStore, mainStore } from "@/main.js";
 import { mdiMonitorCellphone, mdiAccountMultiple, mdiTableOff } from "@mdi/js";
 import SectionMain from "@/components/Section/SectionMain.vue";
@@ -14,15 +14,22 @@ import BpmnDiagram from "@/components/BPMN/BpmnDiagram.vue";
 import axios from "axios";
 import CardBoxModal from "@/components/Cardbox/CardBoxModal.vue";
 import { UserTaskMappings } from "@/helpers/maps";
-
 const bpmnKey = ref(0);
 
 const bpmn_model = ref(null);
 const modal_select_bpmn_task = ref(false);
+const modal_past_bpmn_task = ref(false);
 
 const process_instance_data = ref(null);
 
 const userAuthenticated = computed(() => mainStore.userAuthenticated);
+const clickedTaskID = computed(() => adminStore.bpmn_diagram.clicked_task_id);
+
+const disabledCondition = ref(true);
+
+const updateDisabledCondition = (allFilled) => {
+  disabledCondition.value = !allFilled;
+};
 
 async function fetchXML() {
   try {
@@ -47,6 +54,24 @@ onMounted(async () => {
   await adminStore.getStudents();
   bpmn_model.value = await fetchXML();
 });
+
+watch(
+  () => modal_select_bpmn_task.value,
+  (newVal) => {
+    if (!newVal) {
+      // Reset any data specific to the current task modal
+    }
+  }
+);
+
+watch(
+  () => modal_past_bpmn_task.value,
+  (newVal) => {
+    if (!newVal) {
+      // Reset any data specific to the past task modal
+    }
+  }
+);
 </script>
 
 <template>
@@ -56,6 +81,7 @@ onMounted(async () => {
         <SectionTitleLineWithButton
           :icon="mdiAccountMultiple"
           title="Studenti u procesu prakse"
+          button-enabled
           main
         >
         </SectionTitleLineWithButton>
@@ -68,6 +94,7 @@ onMounted(async () => {
         >
           <CardBoxComponentEmpty />
         </CardBox>
+        <!-- Modal for the current task -->
         <CardBoxModal
           v-if="modal_select_bpmn_task"
           v-model="modal_select_bpmn_task"
@@ -76,8 +103,23 @@ onMounted(async () => {
           "
           button-label="Potvrda"
           has-cancel
+          :disabled-condition="disabledCondition"
         >
+          <p
+            v-if="
+              process_instance_data.pending[0] == 'odabiranje_zadatka_student'
+            "
+            class="mb-4"
+          >
+            {{
+              UserTaskMappings.getBpmnPendingInfoMsg(
+                adminStore.bpmn_diagram.clicked_task_id
+              )
+            }}
+          </p>
+
           <FormDynamic
+            v-else
             :form-fields="
               adminStore.selectedStudent.process_instance_data.pending_task_info
                 .form_fields
@@ -86,8 +128,26 @@ onMounted(async () => {
               adminStore.selectedStudent.process_instance_data.pending_task_info
                 .documentation
             "
-          >
-          </FormDynamic>
+            @all-fields-filled="updateDisabledCondition"
+          />
+        </CardBoxModal>
+
+        <!-- Modal for past tasks (without FormDynamic) -->
+        <CardBoxModal
+          v-if="modal_past_bpmn_task"
+          v-model="modal_past_bpmn_task"
+          :title="
+            UserTaskMappings.getTaskFormTitle(
+              adminStore.bpmn_diagram.clicked_task_id
+            )
+          "
+          button-label="Povratak"
+        >
+          <!-- Content for past tasks (this can be different from the current task modal) -->
+          <p>Ovaj zadatak je već obavljen.</p>
+          <component
+            :is="UserTaskMappings.getTaskCopmonent(clickedTaskID)"
+          ></component>
         </CardBoxModal>
       </SectionMain>
       <BpmnDiagram
@@ -101,7 +161,8 @@ onMounted(async () => {
           UserTaskMappings.getBpmnTaskColor(process_instance_data.pending[0])
         "
         :highlight-element-id="process_instance_data.pending[0]"
-        @open-modal="modal_select_bpmn_task = true"
+        @current-task-modal="modal_select_bpmn_task = true"
+        @past-task-modal="modal_past_bpmn_task = true"
       />
     </LayoutAuthenticated>
   </div>

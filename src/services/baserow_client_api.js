@@ -14,6 +14,17 @@ const Guest = {
   },
 };
 
-const Student = {};
-
-export { Guest, Student };
+const Admin = {
+  async getPreferencesDetailed(student_jmbag) {
+    try {
+      let result = await AxiosWrapper.get(
+        `/student-preferencije-detailed/${student_jmbag}`
+      );
+      return result.data;
+    } catch (error) {
+      console.log("Error:", error);
+      return null;
+    }
+  },
+};
+export { Guest, Admin };

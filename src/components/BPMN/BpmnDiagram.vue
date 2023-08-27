@@ -6,7 +6,7 @@
 import { ref, onMounted } from "vue";
 import BpmnViewer from "bpmn-js";
 import { UserTaskMappings } from "@/helpers/maps";
-
+import { adminStore } from "@/main";
 const props = defineProps({
   xml: {
     type: String,
@@ -27,7 +27,7 @@ const props = defineProps({
 });
 
 const canvas = ref(null);
-const emit = defineEmits(["openModal"]);
+const emit = defineEmits(["currentTaskModal", "pastTaskModal"]);
 
 onMounted(async () => {
   const viewer = initializeBpmnViewer(canvas.value);
@@ -47,7 +47,7 @@ function initializeBpmnViewer(container) {
 
 async function importBpmnDiagram(viewer, xml) {
   const result = await viewer.importXML(xml);
-  console.log("success !", result.warnings);
+  //console.log("success !", result.warnings);
 }
 
 function setupEventListeners(viewer) {
@@ -74,9 +74,14 @@ function handleElementClick(event, emitFunction) {
 
   if (element && element.type === "bpmn:UserTask") {
     const taskOrder = getTaskOrder(element.id);
-    if (taskOrder <= props.currentOrder) {
-      console.log("Emitting openModal");
-      emitFunction("openModal", element);
+    adminStore.bpmn_diagram.clicked_task_id = element.id;
+
+    if (taskOrder === props.currentOrder) {
+      console.log("Emitting currentTaskModal");
+      emitFunction("currentTaskModal", element);
+    } else if (taskOrder < props.currentOrder) {
+      console.log("Emitting pastTaskModal");
+      emitFunction("pastTaskModal", element);
     } else {
       console.log("Task in the future. Not clickable.");
     }
@@ -93,14 +98,32 @@ function applyCustomStyling(highlightColor, highlightElementId, viewer) {
   canvasInstance.zoom("fit-viewport");
   canvasInstance.viewbox();
 
+  // Highlight specific element if provided
   if (highlightElementId) {
     canvasInstance.addMarker(highlightElementId, "highlight");
   }
+
+  // Highlight all previous user tasks in green except the current one
+  const elements = viewer
+    .get("elementRegistry")
+    .filter((element) => element.type === "bpmn:UserTask");
+  elements.forEach((element) => {
+    const taskOrder = getTaskOrder(element.id);
+    if (
+      taskOrder < props.currentOrder ||
+      (taskOrder === props.currentOrder && element.id !== highlightElementId)
+    ) {
+      canvasInstance.addMarker(element.id, "highlight-previous");
+    }
+  });
 
   const style = document.createElement("style");
   style.innerHTML = `
     .highlight:not(.djs-connection) .djs-visual > :nth-child(1) {
       fill: ${highlightColor} !important;
+    }
+    .highlight-previous:not(.djs-connection) .djs-visual > :nth-child(1) {
+      fill: green !important;
     }
   `;
   document.head.appendChild(style);

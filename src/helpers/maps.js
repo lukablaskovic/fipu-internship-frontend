@@ -1,3 +1,8 @@
+function getMappedProperty(arr, key, keyValue, prop) {
+  const item = arr.find((item) => item[key] === keyValue);
+  return item ? item[prop] : keyValue;
+}
+
 class StudentMappings {
   static year_of_study = [
     { id: 1, label: "3. prijediplomski", dbLabel: "3_prijediplomski" },
@@ -14,6 +19,8 @@ class StudentMappings {
 import Student_ChooseAvailableAssignments from "@/components/Internship/Student_ChooseAvailableAssignments.vue";
 import Student_WaitingForAllocation from "@/components/Internship/Student_WaitingForAllocation.vue";
 
+import Task_odabiranje_zadatka_student from "@/components/BPMN/Task_odabiranje_zadatka_student.vue";
+
 class UserTaskMappings {
   static tasks = [
     {
@@ -21,8 +28,10 @@ class UserTaskMappings {
       _id: "odabiranje_zadatka_student",
       name: "Mora odabrati zadatke",
       form_title: "Odabrani zadaci",
+      bpmn_pending_info_msg: "Student još nije prijavio preferencije.",
       bpmn_task_color: "#79d4f2",
       component: Student_ChooseAvailableAssignments,
+      task_component: Task_odabiranje_zadatka_student,
     },
     {
       order: 2,
@@ -50,24 +59,35 @@ class UserTaskMappings {
   ];
 
   static getTaskName(taskId) {
-    const task = this.tasks.find((task) => task._id === taskId);
-    return task ? task.name : taskId;
+    return getMappedProperty(this.tasks, "_id", taskId, "name");
   }
+
   static getTaskFormTitle(taskId) {
-    const task = this.tasks.find((task) => task._id === taskId);
-    return task ? task.form_title : taskId;
+    return getMappedProperty(this.tasks, "_id", taskId, "form_title");
   }
+
   static getComponent(taskId) {
-    const task = this.tasks.find((task) => task._id === taskId);
-    return task ? task.component : null;
+    return getMappedProperty(this.tasks, "_id", taskId, "component");
   }
+
+  static getTaskCopmonent(taskId) {
+    return getMappedProperty(this.tasks, "_id", taskId, "task_component");
+  }
+
   static getBpmnTaskColor(taskId) {
-    const task = this.tasks.find((task) => task._id === taskId);
-    return task ? task.bpmn_task_color : null;
+    return getMappedProperty(this.tasks, "_id", taskId, "bpmn_task_color");
   }
+
   static getCurrentOrder(taskId) {
-    const task = UserTaskMappings.tasks.find((task) => task._id === taskId);
-    return task ? task.order : -1;
+    return getMappedProperty(this.tasks, "_id", taskId, "order");
+  }
+  static getBpmnPendingInfoMsg(taskId) {
+    return getMappedProperty(
+      this.tasks,
+      "_id",
+      taskId,
+      "bpmn_pending_info_msg"
+    );
   }
 }
 

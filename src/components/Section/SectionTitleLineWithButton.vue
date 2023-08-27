@@ -1,5 +1,5 @@
 <script setup>
-import { mdiCog } from "@mdi/js";
+import { mdiHelpCircleOutline } from "@mdi/js";
 import { useSlots, computed } from "vue";
 import BaseIcon from "@/components/Base/BaseIcon.vue";
 import BaseButton from "@/components/Base/BaseButton.vue";
@@ -15,6 +15,7 @@ defineProps({
     required: true,
   },
   main: Boolean,
+  buttonEnabled: Boolean,
 });
 
 const hasSlot = computed(() => useSlots().default);
@@ -39,5 +40,10 @@ const hasSlot = computed(() => useSlots().default);
       </h1>
     </div>
     <slot v-if="hasSlot" />
+    <BaseButton
+      v-if="buttonEnabled"
+      :icon="mdiHelpCircleOutline"
+      color="whiteDark"
+    />
   </section>
 </template>
