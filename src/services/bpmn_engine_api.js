@@ -21,6 +21,14 @@ const Model = {
       return [];
     }
   },
+  async getEvents() {
+    try {
+      let result = await AxiosWrapper.get("/events");
+      return result.results;
+    } catch (e) {
+      return [];
+    }
+  },
 };
 
 const ProcessInstance = {

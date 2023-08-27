@@ -13,6 +13,7 @@ export const useAdminStore = defineStore("admin", {
       finished_internships: 0,
       ongoing_internships: 0,
       waiting_for_allocation: 0,
+      events: [],
     },
 
     bpmn_diagram: {
@@ -98,6 +99,38 @@ export const useAdminStore = defineStore("admin", {
         }
 
         return response.results;
+      } catch (error) {
+        console.log("Error:", error);
+      }
+    },
+    async getEvents() {
+      try {
+        const response = await Model.getEvents();
+        response.forEach((event) => {
+          const student = this.students.find(
+            (stud) => stud.process_instance_id === event.instance_id
+          );
+          if (student) {
+            event.student_name = student["Ime"];
+            event.student_surname = student["Prezime"];
+            event.student_jmbag = student["JMBAG"];
+          }
+        });
+        this.events = response;
+        return this.events;
+      } catch (error) {
+        console.log("Error:", error);
+      }
+    },
+
+    async handleFormSubmit(instance_id, current_task, post_data) {
+      try {
+        const response = await ProcessInstance.submitForm(
+          instance_id,
+          current_task,
+          post_data
+        );
+        return response;
       } catch (error) {
         console.log("Error:", error);
       }

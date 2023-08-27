@@ -54,24 +54,6 @@ onMounted(async () => {
   await adminStore.getStudents();
   bpmn_model.value = await fetchXML();
 });
-
-watch(
-  () => modal_select_bpmn_task.value,
-  (newVal) => {
-    if (!newVal) {
-      // Reset any data specific to the current task modal
-    }
-  }
-);
-
-watch(
-  () => modal_past_bpmn_task.value,
-  (newVal) => {
-    if (!newVal) {
-      // Reset any data specific to the past task modal
-    }
-  }
-);
 </script>
 
 <template>
@@ -104,6 +86,13 @@ watch(
           button-label="Potvrda"
           has-cancel
           :disabled-condition="disabledCondition"
+          @confirm="
+            adminStore.handleFormSubmit(
+              process_instance_data.id,
+              process_instance_data.pending[0],
+              { potvrda_alociranja: true }
+            )
+          "
         >
           <p
             v-if="

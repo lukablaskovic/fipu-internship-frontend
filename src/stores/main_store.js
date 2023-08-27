@@ -42,9 +42,6 @@ export const useMainStore = defineStore("main", {
     logoutModalActive: false,
 
     isFieldFocusRegistered: false,
-
-    clients: [],
-    history: [],
   }),
   getters: {
     userAuthenticated() {

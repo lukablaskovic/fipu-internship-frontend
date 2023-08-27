@@ -1,6 +1,6 @@
 <template>
   <CardBox is-form @submit.prevent="submitForm">
-    <div>
+    <div class="mb-6">
       {{ documentation }}
     </div>
     <FormField v-for="(field, key) in formFields" :key="key">
