@@ -1,7 +1,12 @@
 <script setup>
-import { computed, ref, onMounted, watch } from "vue";
-import { adminStore, mainStore } from "@/main.js";
-import { mdiMonitorCellphone, mdiAccountMultiple, mdiTableOff } from "@mdi/js";
+import { computed, ref, onMounted } from "vue";
+import {
+  mdiNumeric1Circle,
+  mdiNumeric2CircleOutline,
+  mdiNumeric3CircleOutline,
+} from "@mdi/js";
+import { adminStore, mainStore, studentStore } from "@/main.js";
+import { mdiAccountMultiple } from "@mdi/js";
 import SectionMain from "@/components/Section/SectionMain.vue";
 import CardBox from "@/components/Cardbox/CardBox.vue";
 import NotificationBar from "@/components/Notification/NotificationBar.vue";
@@ -13,10 +18,13 @@ import TableStudents from "@/components/Tables/TableStudents.vue";
 import BpmnDiagram from "@/components/BPMN/BpmnDiagram.vue";
 import axios from "axios";
 import CardBoxModal from "@/components/Cardbox/CardBoxModal.vue";
+import CardBoxWidget from "@/components/Cardbox/CardBoxWidget.vue";
 import { UserTaskMappings } from "@/helpers/maps";
+
 const bpmnKey = ref(0);
 
 const bpmn_model = ref(null);
+let bpmn_diagram_active = ref(false);
 const modal_select_bpmn_task = ref(false);
 const modal_past_bpmn_task = ref(false);
 
@@ -31,6 +39,8 @@ const updateDisabledCondition = (allFilled) => {
   disabledCondition.value = !allFilled;
 };
 
+const formDynamicValues = ref({});
+
 async function fetchXML() {
   try {
     const response = await axios.get("/bpmn_xml/strucna_praksa_edited.xml", {
@@ -44,9 +54,11 @@ async function fetchXML() {
 }
 
 async function handleProcessDiagram() {
+  bpmn_diagram_active.value = true;
   process_instance_data.value = await adminStore.getProcessInstanceData(
     adminStore.selectedStudent
   );
+
   bpmnKey.value++;
 }
 
@@ -87,10 +99,10 @@ onMounted(async () => {
           has-cancel
           :disabled-condition="disabledCondition"
           @confirm="
-            adminStore.handleFormSubmit(
+            adminStore.handleNewInstance(
               process_instance_data.id,
               process_instance_data.pending[0],
-              { potvrda_alociranja: true }
+              formDynamicValues
             )
           "
         >
@@ -109,9 +121,13 @@ onMounted(async () => {
 
           <FormDynamic
             v-else
+            v-model="formDynamicValues"
             :form-fields="
               adminStore.selectedStudent.process_instance_data.pending_task_info
                 .form_fields
+            "
+            :variables="
+              adminStore.selectedStudent.process_instance_data.variables
             "
             :documentation="
               adminStore.selectedStudent.process_instance_data.pending_task_info
@@ -153,6 +169,97 @@ onMounted(async () => {
         @current-task-modal="modal_select_bpmn_task = true"
         @past-task-modal="modal_past_bpmn_task = true"
       />
+      <!--
+      <SectionMain v-if="bpmn_diagram_active">
+        <div>
+          <div class="grid grid-cols-1 gap-6 lg:grid-cols-3 mb-6">
+            <CardBoxWidget
+              :class="modalLoading ? 'cursor-wait' : 'cursor-pointer'"
+              color="text-fipu_blue"
+              hoverable
+              :icon="mdiNumeric1Circle"
+              :number="null"
+              :text="prviOdabir"
+              label="1. odabir"
+              @click="getAssignmentDetailsInModal(prviOdabir)"
+            />
+
+            <CardBoxWidget
+              :class="modalLoading ? 'cursor-wait' : 'cursor-pointer'"
+              color="text-fipu_blue"
+              hoverable
+              :icon="mdiNumeric2CircleOutline"
+              :number="null"
+              :text="drugiOdabir"
+              label="2. odabir"
+              @click="getAssignmentDetailsInModal(drugiOdabir)"
+            />
+            <CardBoxWidget
+              :class="modalLoading ? 'cursor-wait' : 'cursor-pointer'"
+              color="text-fipu_blue"
+              hoverable
+              :icon="mdiNumeric3CircleOutline"
+              :number="null"
+              :text="treciOdabir"
+              label="3. odabir"
+              @click="getAssignmentDetailsInModal(treciOdabir)"
+            />
+          </div>
+          <CardBoxModal
+            v-if="isModalActive"
+            v-model="isModalActive"
+            :title="isModalActive['ID Zadatka']"
+            button-label="Zatvori"
+            button="fipu_blue"
+            has-cancel:false
+          >
+            <hr />
+            <div>
+              <b>Zadatak studenta:</b> {{ isModalActive["Zadatak studenta"] }}
+            </div>
+            <div>
+              <b>Poslodavac: </b>{{ isModalActive["Poslodavac"][0].value }}
+            </div>
+            <div>
+              <b>Preferirane tehnologije:</b>
+              {{ isModalActive["Preferirane tehnologije"] }}
+            </div>
+
+            <div>
+              <b>Preferencije za studenta: </b>
+              {{ isModalActive["Preferencije za studenta"] }}
+            </div>
+
+            <div>
+              <b>Potrebno imati: </b>
+              {{ isModalActive["Potrebno imati"] }}
+            </div>
+            <div>
+              <b>Trajanje (sati): </b>
+              {{ isModalActive["Trajanje (sati)"] }}
+            </div>
+
+            <div>
+              <b>Željeno okvirno vrijeme početka: </b>
+              {{ isModalActive["Željeno okvirno vrijeme početka"] }}
+            </div>
+            <div>
+              <b>Angažman FIPU: </b>
+              {{ isModalActive["Angažman FIPU"] }}
+            </div>
+            <div>
+              <b>Kontakt email: </b>{{ isModalActive["Kontakt email"] }}
+            </div>
+            <div><b>Lokacija: </b>{{ isModalActive["Lokacija"] }}</div>
+            <div>
+              <b>Napomena</b>
+              {{ isModalActive["Napomena"] }}
+            </div>
+            <br />
+          </CardBoxModal>
+        </div>
+      </SectionMain>
+      -->
     </LayoutAuthenticated>
   </div>
 </template>

@@ -44,11 +44,17 @@ defineProps({
     type: String,
     default: null,
   },
+  hoverable: {
+    type: Boolean,
+    default: false,
+  },
 });
 </script>
 
 <template>
-  <CardBox>
+  <CardBox
+    :class="{ 'hover:border hover:ring hover:border-fipu_blue': hoverable }"
+  >
     <BaseLevel v-if="trend" class="mb-3" mobile>
       <PillTagTrend :trend="trend" :trend-type="trendType" small />
       <BaseButton

@@ -73,8 +73,8 @@ const ProcessInstance = {
       return [];
     }
   },
-  // Handle form - userTask
-  async submitForm(instance_id, current_task, post_data) {
+
+  async handleNewInstance(instance_id, current_task, post_data) {
     try {
       let result = await AxiosWrapper.post(
         `/instance/${instance_id}/task/${current_task}/form`,

@@ -19,25 +19,22 @@ class StudentMappings {
 import Student_ChooseAvailableAssignments from "@/components/Internship/Student_ChooseAvailableAssignments.vue";
 import Student_WaitingForAllocation from "@/components/Internship/Student_WaitingForAllocation.vue";
 
-import Task_odabiranje_zadatka_student from "@/components/BPMN/Task_odabiranje_zadatka_student.vue";
-
 class UserTaskMappings {
   static tasks = [
     {
       order: 1,
       _id: "odabiranje_zadatka_student",
       name: "Mora odabrati zadatke",
-      form_title: "Odabrani zadaci",
+      form_title: "Prijavljene preferencije",
       bpmn_pending_info_msg: "Student još nije prijavio preferencije.",
       bpmn_task_color: "#79d4f2",
       component: Student_ChooseAvailableAssignments,
-      task_component: Task_odabiranje_zadatka_student,
     },
     {
       order: 2,
-      _id: "potvrda_alociranja_profesor",
+      _id: "alociranje_profesor",
       name: "Čeka alokaciju",
-      form_title: "Potvrda alokacije",
+      form_title: "Alokacija studenta",
       bpmn_task_color: "#e25555",
       component: Student_WaitingForAllocation,
     },
@@ -45,7 +42,6 @@ class UserTaskMappings {
       order: 3,
       _id: "evaluacija_poslodavac",
       component: Student_WaitingForEvaluation,
-
       name: "Čeka evaluaciju poslodavca",
     },
     {
@@ -97,7 +93,7 @@ import {
   mdiRayStartArrow,
   mdiThumbsUpDownOutline,
   mdiContentSaveCheckOutline,
-  mdiClipboardCheck,
+  mdiAlertBox,
   mdiCheckAll,
 } from "@mdi/js";
 import Student_WaitingForEvaluation from "@/components/Internship/Student_WaitingForEvaluation.vue";
@@ -117,22 +113,10 @@ class ActivityEventMappings {
       message: "Prijava zadataka",
     },
     {
-      activity_id: "studentske_pref",
-      icon: mdiContentSaveCheckOutline,
-      type: "success",
-      message: "Preference spremljene",
-    },
-    {
-      activity_id: "alociranje_profesor",
-      icon: mdiClipboardCheck,
-      type: "info",
-      message: "Ručna alokacija",
-    },
-    {
-      activity_id: "potvrda_alociranja_profesor",
-      icon: mdiCheckAll,
-      type: "info",
-      message: "Profesor potvrdio alokaciju",
+      activity_id: "spremanje-preferencije",
+      icon: mdiAlertBox,
+      type: "danger",
+      message: "Čeka alokaciju",
     },
   ];
   static getEvent(activityId) {

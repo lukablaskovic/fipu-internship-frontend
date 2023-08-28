@@ -9,6 +9,8 @@ import {
   mdiNumeric3CircleOutline,
 } from "@mdi/js";
 
+const isModalActive = ref(null);
+
 import SectionMain from "@/components/Section/SectionMain.vue";
 
 import LayoutAuthenticated from "@/layouts/LayoutAuthenticated.vue";
@@ -16,12 +18,16 @@ import LayoutGuest from "@/layouts/LayoutGuest.vue";
 
 import SectionTitleLineWithButton from "@/components/Section/SectionTitleLineWithButton.vue";
 import CardBoxWidget from "@/components/Cardbox/CardBoxWidget.vue";
-
+import BaseButtons from "@/components/Base/BaseButtons.vue";
+import BaseButton from "@/components/Base/BaseButton.vue";
+import CardBoxModal from "@/components/Cardbox/CardBoxModal.vue";
 import { mainStore, studentStore } from "@/main.js";
 
 const prviOdabir = ref(null);
 const drugiOdabir = ref(null);
 const treciOdabir = ref(null);
+
+let modalLoading = ref(false);
 
 onMounted(async () => {
   let result = await studentStore.getInstanceInfo(
@@ -40,13 +46,20 @@ const Layout = computed(() => {
   }
 });
 
+async function getAssignmentDetailsInModal(assignment_id) {
+  modalLoading.value = true;
+  let assignment = await studentStore.getAssignmentDetails(assignment_id);
+  isModalActive.value = assignment.data.results[0];
+  modalLoading.value = false;
+}
+
 const userAuthenticated = computed(() => mainStore.userAuthenticated);
 </script>
 
 <template>
   <component :is="Layout">
     <SectionMain>
-      <SectionTitleLineWithButton :icon="mdiLaptop" title="Stručna praksa" main>
+      <SectionTitleLineWithButton :icon="mdiLaptop" title="Moja praksa" main>
       </SectionTitleLineWithButton>
       <p><b>Akademska godina:</b> 2023/2024</p>
       <p><b>Voditelj:</b> doc. dr. sc. Nikola Tanković</p>
@@ -70,27 +83,85 @@ const userAuthenticated = computed(() => mainStore.userAuthenticated);
 
       <div class="grid grid-cols-1 gap-6 lg:grid-cols-3 mb-6">
         <CardBoxWidget
+          :class="modalLoading ? 'cursor-wait' : 'cursor-pointer'"
           color="text-fipu_blue"
+          hoverable
           :icon="mdiNumeric1Circle"
           :number="null"
           :text="prviOdabir"
           label="1. odabir"
+          @click="getAssignmentDetailsInModal(prviOdabir)"
         />
+
         <CardBoxWidget
+          :class="modalLoading ? 'cursor-wait' : 'cursor-pointer'"
           color="text-fipu_blue"
+          hoverable
           :icon="mdiNumeric2CircleOutline"
           :number="null"
           :text="drugiOdabir"
           label="2. odabir"
+          @click="getAssignmentDetailsInModal(drugiOdabir)"
         />
         <CardBoxWidget
+          :class="modalLoading ? 'cursor-wait' : 'cursor-pointer'"
           color="text-fipu_blue"
+          hoverable
           :icon="mdiNumeric3CircleOutline"
           :number="null"
           :text="treciOdabir"
           label="3. odabir"
+          @click="getAssignmentDetailsInModal(treciOdabir)"
         />
       </div>
+      <CardBoxModal
+        v-if="isModalActive"
+        v-model="isModalActive"
+        :title="isModalActive['ID Zadatka']"
+        button-label="Zatvori"
+        button="fipu_blue"
+        has-cancel:false
+      >
+        <hr />
+        <div>
+          <b>Zadatak studenta:</b> {{ isModalActive["Zadatak studenta"] }}
+        </div>
+        <div><b>Poslodavac: </b>{{ isModalActive["Poslodavac"][0].value }}</div>
+        <div>
+          <b>Preferirane tehnologije:</b>
+          {{ isModalActive["Preferirane tehnologije"] }}
+        </div>
+
+        <div>
+          <b>Preferencije za studenta: </b>
+          {{ isModalActive["Preferencije za studenta"] }}
+        </div>
+
+        <div>
+          <b>Potrebno imati: </b>
+          {{ isModalActive["Potrebno imati"] }}
+        </div>
+        <div>
+          <b>Trajanje (sati): </b>
+          {{ isModalActive["Trajanje (sati)"] }}
+        </div>
+
+        <div>
+          <b>Željeno okvirno vrijeme početka: </b>
+          {{ isModalActive["Željeno okvirno vrijeme početka"] }}
+        </div>
+        <div>
+          <b>Angažman FIPU: </b>
+          {{ isModalActive["Angažman FIPU"] }}
+        </div>
+        <div><b>Kontakt email: </b>{{ isModalActive["Kontakt email"] }}</div>
+        <div><b>Lokacija: </b>{{ isModalActive["Lokacija"] }}</div>
+        <div>
+          <b>Napomena</b>
+          {{ isModalActive["Napomena"] }}
+        </div>
+        <br />
+      </CardBoxModal>
     </SectionMain>
   </component>
 </template>

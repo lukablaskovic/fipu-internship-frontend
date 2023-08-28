@@ -24,6 +24,16 @@ const Student = {
       return null;
     }
   },
+  async getAssignmentDetails(queryParams = {}) {
+    try {
+      let result = await AxiosWrapper.get("/zadaci-za-odabir", queryParams);
+      console.log(result);
+      return result;
+    } catch (error) {
+      console.log("Error:", error);
+      return null;
+    }
+  },
 };
 
 const Admin = {

@@ -11,6 +11,7 @@ export const useStudentStore = defineStore("student", {
       let post_data = {
         JMBAG: mainStore.currentUser["jmbag"],
         Student: [mainStore.currentUser["jmbag"]],
+
         "Prvi odabir": [assignmentsData[0]["ID Zadatka"]],
         "Drugi odabir": [assignmentsData[1]["ID Zadatka"]],
         "Treći odabir": [assignmentsData[2]["ID Zadatka"]],
@@ -21,13 +22,13 @@ export const useStudentStore = defineStore("student", {
         let pending_user_task =
           mainStore.currentUser.internship_process.pending_user_task;
 
-        const response = await ProcessInstance.submitForm(
+        const response = await ProcessInstance.handleNewInstance(
           process_instance_id,
           pending_user_task,
           post_data
         );
         console.log(
-          `%c ADMIN_STORE.registerPreferences: ProcessInstance.submitForm ${JSON.stringify(
+          `%c ADMIN_STORE.registerPreferences: ProcessInstance.handleNewInstance ${JSON.stringify(
             response
           )}`,
           "background: #222; color: #bada55"
@@ -66,6 +67,17 @@ export const useStudentStore = defineStore("student", {
     async getAllocationsPublic() {
       try {
         let result = await Student.getAllocationsPublic();
+        return result;
+      } catch (error) {
+        console.log("Error:", error);
+        return null;
+      }
+    },
+    async getAssignmentDetails(assignment_id) {
+      try {
+        let result = await Student.getAssignmentDetails({
+          search: assignment_id,
+        });
         return result;
       } catch (error) {
         console.log("Error:", error);

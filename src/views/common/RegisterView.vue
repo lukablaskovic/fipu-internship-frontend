@@ -31,7 +31,7 @@ const form = reactive({
   name: "Pero",
   surname: "Peric",
   email: "peric@unipu.hr",
-  jmbag: "03030088",
+  jmbag: "0303088177",
   year_of_study: selectYearOfStudy[0],
   password: "123456",
 });
@@ -140,7 +140,10 @@ async function onSubmit() {
           <!-- Column 2 -->
           <div class="lg:w-1/2 px-2 lg:flex lg:flex-col lg:justify-between">
             <div>
-              <FormField label="Godina studija">
+              <FormField
+                label="Godina studija"
+                help="Odaberite vašu nastavnu godinu"
+              >
                 <FormControl
                   v-model="form.year_of_study"
                   :options="selectYearOfStudy"

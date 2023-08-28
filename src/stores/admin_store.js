@@ -23,7 +23,11 @@ export const useAdminStore = defineStore("admin", {
   actions: {
     showSelectedStudent(student) {
       this.selectedStudent = student;
-      console.log(this.selectedStudent);
+      console.log(
+        "%cadmin_store: showSelectedStudent() - this.selectedStudent",
+        "color: green;",
+        this.selectedStudent
+      );
     },
     async getProcessInstanceData(student) {
       try {
@@ -55,8 +59,7 @@ export const useAdminStore = defineStore("admin", {
               student.process_instance_data.pending[0]
             );
           if (
-            student.process_instance_data.pending[0] ==
-            "potvrda_alociranja_profesor"
+            student.process_instance_data.pending[0] == "alociranje_profesor"
           ) {
             this.dashboard_data.waiting_for_allocation++;
           }
@@ -113,10 +116,10 @@ export const useAdminStore = defineStore("admin", {
         console.log("Error:", error);
       }
     },
-
-    async handleFormSubmit(instance_id, current_task, post_data) {
+    //POST handle_new_instance
+    async handleNewInstance(instance_id, current_task, post_data) {
       try {
-        const response = await ProcessInstance.submitForm(
+        const response = await ProcessInstance.handleNewInstance(
           instance_id,
           current_task,
           post_data

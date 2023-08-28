@@ -70,20 +70,27 @@ function handleElementHover(event, canvasElement) {
 
 function handleElementClick(event, emitFunction) {
   const element = event.element;
-  console.log("Element clicked:", element);
+  console.log("%cBPMNDiagram.vue: Element clicked:", "color: red;", element);
 
   if (element && element.type === "bpmn:UserTask") {
     const taskOrder = getTaskOrder(element.id);
     adminStore.bpmn_diagram.clicked_task_id = element.id;
 
     if (taskOrder === props.currentOrder) {
-      console.log("Emitting currentTaskModal");
+      console.log(
+        "%cBPMNDiagram.vue: Emitting currentTaskModal",
+        "color: red;"
+      );
+
       emitFunction("currentTaskModal", element);
     } else if (taskOrder < props.currentOrder) {
-      console.log("Emitting pastTaskModal");
+      console.log("%cBPMNDiagram.vue: Emitting pastTaskModal", "color: red;");
       emitFunction("pastTaskModal", element);
     } else {
-      console.log("Task in the future. Not clickable.");
+      console.log(
+        "%cBPMNDiagram.vue: Task in the future. Not clickable.",
+        "color: red;"
+      );
     }
   }
 }
@@ -130,7 +137,12 @@ function applyCustomStyling(highlightColor, highlightElementId, viewer) {
 }
 
 function handleError(err) {
-  console.log("something went wrong:", err.warnings, err.message);
+  console.log(
+    "%cBPMNDiagram.vue: something went wrong!",
+    "color: red;",
+    err.warnings,
+    err.message
+  );
 }
 </script>
 

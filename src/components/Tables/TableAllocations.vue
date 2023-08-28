@@ -14,6 +14,13 @@ defineProps({
 
 const allocations = ref([]);
 
+const filteredAllocations = computed(() => {
+  return allocations.value.filter(
+    (allocation) =>
+      allocation["Alocirani zadatak"] && allocation["Opis zadatka"]
+  );
+});
+
 onMounted(async () => {
   allocations.value = await studentStore.getAllocationsPublic();
   console.log(allocations.value);
@@ -22,7 +29,7 @@ onMounted(async () => {
 const perPage = ref(5);
 const currentPage = ref(0);
 const allocationsPaginated = computed(() =>
-  allocations.value.slice(
+  filteredAllocations.value.slice(
     perPage.value * currentPage.value,
     perPage.value * (currentPage.value + 1)
   )
