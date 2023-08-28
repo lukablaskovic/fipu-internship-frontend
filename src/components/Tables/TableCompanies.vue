@@ -1,24 +1,27 @@
 <script setup>
 import { computed, ref, onMounted } from "vue";
 
-import { mdiEye } from "@mdi/js";
+import { mdiWeb } from "@mdi/js";
 import TableCheckboxCell from "@/components/Tables/TableCheckboxCell.vue";
 import BaseLevel from "@/components/Base/BaseLevel.vue";
 import BaseButtons from "@/components/Base/BaseButtons.vue";
 import BaseButton from "@/components/Base/BaseButton.vue";
 import LoadingOverlay from "../LoadingOverlay.vue";
-import { adminStore } from "@/main.js";
+import { mainStore } from "@/main.js";
 
 defineProps({
   checkable: Boolean,
 });
 
-const isModalActive = ref(null);
 const allCompanies = ref([]);
 
 onMounted(async () => {
-  allCompanies.value = await adminStore.getCompanies();
+  allCompanies.value = await mainStore.getCompanies();
 });
+
+const goToCompanyWeb = (url) => {
+  window.open(url, "_blank");
+};
 
 const perPage = ref(5);
 const currentPage = ref(0);
@@ -56,7 +59,7 @@ const pagesList = computed(() => {
     <thead>
       <tr>
         <th>Naziv</th>
-        <th>Web</th>
+        <th>Web mjesto</th>
         <th />
       </tr>
     </thead>
@@ -77,9 +80,9 @@ const pagesList = computed(() => {
           <BaseButtons type="justify-start lg:justify-end" no-wrap>
             <BaseButton
               color="fipu_blue"
-              :icon="mdiEye"
+              :icon="mdiWeb"
               small
-              @click="isModalActive = company"
+              @click="goToCompanyWeb(company['Web'])"
             />
           </BaseButtons>
         </td>

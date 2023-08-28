@@ -1,36 +1,35 @@
 <script setup>
 import { computed, ref, onMounted } from "vue";
 
-import { mdiEye } from "@mdi/js";
 import TableCheckboxCell from "@/components/Tables/TableCheckboxCell.vue";
 import BaseLevel from "@/components/Base/BaseLevel.vue";
 import BaseButtons from "@/components/Base/BaseButtons.vue";
 import BaseButton from "@/components/Base/BaseButton.vue";
 import LoadingOverlay from "../LoadingOverlay.vue";
-import { adminStore } from "@/main.js";
+import { studentStore } from "@/main.js";
 
 defineProps({
   checkable: Boolean,
 });
 
-const isModalActive = ref(null);
-const allCompanies = ref([]);
+const allocations = ref([]);
 
 onMounted(async () => {
-  allCompanies.value = await adminStore.getCompanies();
+  allocations.value = await studentStore.getAllocationsPublic();
+  console.log(allocations.value);
 });
 
 const perPage = ref(5);
 const currentPage = ref(0);
-const companiesPaginated = computed(() =>
-  allCompanies.value.slice(
+const allocationsPaginated = computed(() =>
+  allocations.value.slice(
     perPage.value * currentPage.value,
     perPage.value * (currentPage.value + 1)
   )
 );
 
 const numPages = computed(() =>
-  Math.ceil(allCompanies.value.length / perPage.value)
+  Math.ceil(allocations.value.length / perPage.value)
 );
 const currentPageHuman = computed(() => currentPage.value + 1);
 
@@ -47,7 +46,7 @@ const pagesList = computed(() => {
 
 <template>
   <LoadingOverlay
-    :is-active="!allCompanies.length"
+    :is-active="!allocations.length"
     title="Učitavanje..."
     description="Može potrajati nekoliko sekundi, molimo ne zatvarajte stranicu."
   >
@@ -55,33 +54,43 @@ const pagesList = computed(() => {
   <table>
     <thead>
       <tr>
-        <th>Naziv</th>
-        <th>Web</th>
-        <th />
+        <th>JMBAG</th>
+        <th>Alocirani zadatak</th>
+        <th>Opis zadatka</th>
+        <th>Kontakt</th>
+        <th>Prijavnica ispunjena</th>
+        <th>Dnevnik prakse predan</th>
       </tr>
     </thead>
     <tbody>
-      <tr v-for="company in companiesPaginated" :key="company['JMBAG']">
+      <tr v-for="allocation in allocationsPaginated" :key="allocation['JMBAG']">
         <TableCheckboxCell v-if="checkable" :assignment-data="company" />
 
-        <td data-label="Naziv">
-          {{ company["Naziv"] }}
+        <td data-label="JMBAG">
+          {{ allocation["JMBAG"] }}
         </td>
-        <td data-label="Web mjesto">
-          <a class="underline" :href="company['Web']" target="_blank">{{
-            company["Web"]
-          }}</a>
+        <td data-label="Alocirani zadatak">
+          {{ allocation["Alocirani zadatak"] }}
+        </td>
+        <td data-label="Opis zadatka">
+          {{ allocation["Opis zadatka"] }}
         </td>
 
-        <td class="before:hidden lg:w-1 whitespace-nowrap">
-          <BaseButtons type="justify-start lg:justify-end" no-wrap>
-            <BaseButton
-              color="fipu_blue"
-              :icon="mdiEye"
-              small
-              @click="isModalActive = company"
-            />
-          </BaseButtons>
+        <td data-label="Kontakt">
+          {{ allocation["Kontakt"] }}
+        </td>
+
+        <td data-label="Prijavnica ispunjena">
+          <TableCheckboxCell
+            readonly
+            :value="allocation['prijavnica_ispunjena']"
+          />
+        </td>
+        <td data-label="Prijavnica ispunjena">
+          <TableCheckboxCell
+            readonly
+            :value="allocation['predan_dnevnik_prakse']"
+          />
         </td>
       </tr>
     </tbody>

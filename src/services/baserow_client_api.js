@@ -14,6 +14,18 @@ const Guest = {
   },
 };
 
+const Student = {
+  async getAllocationsPublic() {
+    try {
+      let result = await AxiosWrapper.get("/alokacije/public");
+      return result;
+    } catch (error) {
+      console.log("Error:", error);
+      return null;
+    }
+  },
+};
+
 const Admin = {
   async getPreferencesDetailed(student_jmbag) {
     try {
@@ -27,4 +39,4 @@ const Admin = {
     }
   },
 };
-export { Guest, Admin };
+export { Guest, Admin, Student };

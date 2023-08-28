@@ -12,9 +12,9 @@ export default [
     label: "Studenti",
   },
   {
-    to: "/companies",
+    to: "/poslodavci",
     icon: mdiDomain,
-    label: "Poduzeća",
+    label: "Poslodavci",
   },
 
   {

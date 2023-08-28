@@ -44,6 +44,8 @@ class UserTaskMappings {
     {
       order: 3,
       _id: "evaluacija_poslodavac",
+      component: Student_WaitingForEvaluation,
+
       name: "Čeka evaluaciju poslodavca",
     },
     {
@@ -91,4 +93,51 @@ class UserTaskMappings {
   }
 }
 
-export { StudentMappings, UserTaskMappings };
+import {
+  mdiRayStartArrow,
+  mdiThumbsUpDownOutline,
+  mdiContentSaveCheckOutline,
+  mdiClipboardCheck,
+  mdiCheckAll,
+} from "@mdi/js";
+import Student_WaitingForEvaluation from "@/components/Internship/Student_WaitingForEvaluation.vue";
+
+class ActivityEventMappings {
+  static events = [
+    {
+      activity_id: "start_event_student",
+      icon: mdiRayStartArrow,
+      type: "success",
+      message: "Pokrenut proces prakse",
+    },
+    {
+      activity_id: "odabiranje_zadatka_student",
+      icon: mdiThumbsUpDownOutline,
+      type: "info",
+      message: "Prijava zadataka",
+    },
+    {
+      activity_id: "studentske_pref",
+      icon: mdiContentSaveCheckOutline,
+      type: "success",
+      message: "Preference spremljene",
+    },
+    {
+      activity_id: "alociranje_profesor",
+      icon: mdiClipboardCheck,
+      type: "info",
+      message: "Ručna alokacija",
+    },
+    {
+      activity_id: "potvrda_alociranja_profesor",
+      icon: mdiCheckAll,
+      type: "info",
+      message: "Profesor potvrdio alokaciju",
+    },
+  ];
+  static getEvent(activityId) {
+    return this.events.find((event) => event.activity_id === activityId);
+  }
+}
+
+export { StudentMappings, UserTaskMappings, ActivityEventMappings };

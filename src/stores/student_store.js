@@ -1,7 +1,7 @@
 import { defineStore } from "pinia";
 import { mainStore } from "@/main";
 import { ProcessInstance } from "@/services/bpmn_engine_api";
-
+import { Student } from "@/services/baserow_client_api";
 export const useStudentStore = defineStore("student", {
   state: () => ({
     student_process_instance_data: {},
@@ -61,6 +61,15 @@ export const useStudentStore = defineStore("student", {
         }
       } catch (error) {
         console.log("Error:", error);
+      }
+    },
+    async getAllocationsPublic() {
+      try {
+        let result = await Student.getAllocationsPublic();
+        return result;
+      } catch (error) {
+        console.log("Error:", error);
+        return null;
       }
     },
   },

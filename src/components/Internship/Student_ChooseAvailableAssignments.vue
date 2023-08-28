@@ -1,5 +1,5 @@
 <script setup>
-import { ref, computed, onMounted } from "vue";
+import { ref, computed } from "vue";
 import draggable from "vuedraggable";
 import {
   mdiClipboardCheckOutline,
@@ -60,7 +60,7 @@ const registerPreferences = async () => {
       showNotificationBar("danger");
     }
     await Utils.wait(3);
-    //router.go();
+    router.go();
   }
 };
 const notificationBar = ref(null);
@@ -119,8 +119,8 @@ function showNotificationBar(type) {
         najdraža - (1. odabir | 2. odabir | 3. odabir).
       </p>
       <p>
-        <b>Napomena:</b> Da biste prijavili preferencije, morate se prijaviti u
-        aplikaciji.
+        <b>Napomena:</b> Da biste prijavili preferencije, morate biti
+        prijavljeni u aplikaciji!
       </p>
       <br />
       <CardBox has-table>

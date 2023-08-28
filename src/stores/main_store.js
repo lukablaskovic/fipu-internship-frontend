@@ -111,6 +111,15 @@ export const useMainStore = defineStore("main", {
     activateLogoutModal(state) {
       this.logoutModalActive = state;
     },
+    async getCompanies() {
+      try {
+        const response = await User.getCompanies();
+        this.companies = response;
+        return response;
+      } catch (error) {
+        console.log("Error:", error);
+      }
+    },
   },
   persist: true,
 });

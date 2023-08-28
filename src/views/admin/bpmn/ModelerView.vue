@@ -19,7 +19,7 @@ import CardBox from "@/components/Cardbox/CardBox.vue";
 import TableSampleClients from "@/components/Tables/TableSampleClients.vue";
 import NotificationBar from "@/components/Notification/NotificationBar.vue";
 import BaseButton from "@/components/Base/BaseButton.vue";
-import CardBoxTransaction from "@/components/Cardbox/CardBoxTransaction.vue";
+import CardBoxEvents from "@/components/Cardbox/CardBoxEvents.vue";
 import CardBoxClient from "@/components/Cardbox/CardBoxClient.vue";
 import LayoutAuthenticated from "@/layouts/LayoutAuthenticated.vue";
 import SectionTitleLineWithButton from "@/components/Section/SectionTitleLineWithButton.vue";
@@ -103,7 +103,7 @@ async function fetchXML() {
 
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
           <div class="flex flex-col justify-between">
-            <CardBoxTransaction
+            <CardBoxEvents
               v-for="(transaction, index) in transactionBarItems"
               :key="index"
               :amount="transaction.amount"

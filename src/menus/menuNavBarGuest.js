@@ -1,6 +1,11 @@
-import { mdiLogin, mdiThemeLightDark } from "@mdi/js";
+import { mdiLogin, mdiThemeLightDark, mdiHelpBoxOutline } from "@mdi/js";
 
 export default [
+  {
+    icon: mdiHelpBoxOutline,
+    label: "Pomoć",
+    isDesktopNoLabel: true,
+  },
   {
     icon: mdiThemeLightDark,
     label: "Light/Dark",

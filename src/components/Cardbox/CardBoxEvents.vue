@@ -1,17 +1,11 @@
 <script setup>
 import { computed } from "vue";
-import {
-  mdiRayStartArrow,
-  mdiThumbsUpDownOutline,
-  mdiContentSaveCheckOutline,
-  mdiClipboardCheck,
-  mdiCreditCardOutline,
-} from "@mdi/js";
+import { mdiCreditCardOutline } from "@mdi/js";
 import CardBox from "@/components/Cardbox/CardBox.vue";
 import BaseLevel from "@/components/Base/BaseLevel.vue";
 import PillTag from "@/components/PillTag/PillTag.vue";
 import IconRounded from "@/components/IconRounded.vue";
-
+import { ActivityEventMappings } from "@/helpers/maps";
 import moment from "@/moment-setup";
 
 const props = defineProps({
@@ -31,10 +25,6 @@ const props = defineProps({
     type: String,
     required: true,
   },
-  account: {
-    type: String,
-    required: true,
-  },
 });
 
 const momentDate = computed(() => {
@@ -43,25 +33,12 @@ const momentDate = computed(() => {
 });
 
 const icon = computed(() => {
-  if (props.type === "start_event_student") {
+  const eventMapping = ActivityEventMappings.getEvent(props.type);
+
+  if (eventMapping) {
     return {
-      icon: mdiRayStartArrow,
-      type: "danger",
-    };
-  } else if (props.type === "odabiranje_zadatka_student") {
-    return {
-      icon: mdiThumbsUpDownOutline,
-      type: "success",
-    };
-  } else if (props.type === "studentske_pref") {
-    return {
-      icon: mdiContentSaveCheckOutline,
-      type: "warning",
-    };
-  } else if (props.type === "alociranje_profesor") {
-    return {
-      icon: mdiClipboardCheck,
-      type: "warning",
+      icon: eventMapping.icon,
+      type: eventMapping.type,
     };
   }
 
@@ -89,7 +66,11 @@ const icon = computed(() => {
           {{ momentDate }}
         </p>
         <div>
-          <PillTag :color="icon.type" :label="type" small />
+          <PillTag
+            :color="icon.type"
+            :label="ActivityEventMappings.getEvent(type).message"
+            small
+          />
         </div>
       </div>
     </BaseLevel>

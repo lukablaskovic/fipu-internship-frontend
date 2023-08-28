@@ -70,15 +70,6 @@ export const useAdminStore = defineStore("admin", {
         console.log("Error:", error);
       }
     },
-    async getCompanies() {
-      try {
-        const response = await User.getCompanies();
-        this.companies = response;
-        return response;
-      } catch (error) {
-        console.log("Error:", error);
-      }
-    },
     async getPreferencesDetailed(student_jmbag) {
       try {
         const response = await Admin.getPreferencesDetailed(student_jmbag);

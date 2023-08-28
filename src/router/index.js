@@ -23,13 +23,23 @@ const routes = [
   },
   {
     meta: {
-      title: "Companies",
+      title: "Poslodavci",
       requiresAuth: true,
-      requiresAdmin: true,
+      requiresAdmin: false,
     },
-    path: "/companies",
-    name: "companies",
-    component: () => import("@/views/admin/CompaniesView.vue"),
+    path: "/poslodavci",
+    name: "poslodavci",
+    component: () => import("@/views/common/CompaniesView.vue"),
+  },
+  {
+    meta: {
+      title: "Alokacije - Javno",
+      requiresAuth: true,
+      requiresAdmin: false,
+    },
+    path: "/alokacije-javno",
+    name: "alokacije",
+    component: () => import("@/views/student/AllocationsPublicView.vue"),
   },
   {
     meta: {

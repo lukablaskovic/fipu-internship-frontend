@@ -7,7 +7,7 @@ import CardBoxModal from "@/components/Cardbox/CardBoxModal.vue";
 import BaseButtons from "@/components/Base/BaseButtons.vue";
 import BaseButton from "@/components/Base/BaseButton.vue";
 import LoadingOverlay from "@/components/LoadingOverlay.vue";
-import { mainStore, adminStore } from "@/main.js";
+import { adminStore } from "@/main.js";
 
 defineProps({
   checkable: Boolean,
@@ -56,7 +56,7 @@ onMounted(async () => {
   >
     <hr />
     <div><b>Zadatak studenta:</b> {{ isModalActive["Zadatak studenta"] }}</div>
-    <div><b>Poduzeće: </b>{{ isModalActive["Poduzeće"][0].value }}</div>
+    <div><b>Poslodavac: </b>{{ isModalActive["Poslodavac"][0].value }}</div>
     <div>
       <b>Preferirane tehnologije:</b>
       {{ isModalActive["Preferirane tehnologije"] }}

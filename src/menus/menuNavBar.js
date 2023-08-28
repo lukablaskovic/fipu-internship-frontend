@@ -4,6 +4,7 @@ import {
   mdiEmail,
   mdiLogout,
   mdiThemeLightDark,
+  mdiHelpBoxOutline,
 } from "@mdi/js";
 
 export default [
@@ -32,6 +33,11 @@ export default [
         isLogout: true,
       },
     ],
+  },
+  {
+    icon: mdiHelpBoxOutline,
+    label: "Pomoć",
+    isDesktopNoLabel: true,
   },
   {
     icon: mdiThemeLightDark,

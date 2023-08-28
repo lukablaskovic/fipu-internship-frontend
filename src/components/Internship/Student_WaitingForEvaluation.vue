@@ -55,17 +55,22 @@ const userAuthenticated = computed(() => mainStore.userAuthenticated);
       <SectionTitleLineWithButton
         :icon="mdiProgressClock"
         main
-        title="U procesu alokacije"
+        title="U procesu evaluacije"
       ></SectionTitleLineWithButton>
+      <p>Alocirani ste na zadatak {{ zadatak }}.</p>
       <p>
-        Zadatak vam još nije dodijeljen. Ako čekate više od 10 dana, javite se
-        profesoru.
+        Potrebno je kontaktirati mentora sa zadatka na koji ste alocirani.
+        Predstavite se i recite da ste dobili zadatak.
+      </p>
+      <p>
+        Ukoliko je potrebno morate obaviti intervju ili proces selekcije, ako
+        poslodavac to traži od vas.
       </p>
       <br />
       <SectionTitleLineWithButton
         :icon="mdiClipboardCheckOutline"
         main
-        title="Vaš odabir"
+        title="Alocirani zadatak"
       ></SectionTitleLineWithButton>
 
       <div class="grid grid-cols-1 gap-6 lg:grid-cols-3 mb-6">
