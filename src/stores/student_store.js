@@ -11,7 +11,10 @@ export const useStudentStore = defineStore("student", {
       let post_data = {
         JMBAG: mainStore.currentUser["jmbag"],
         Student: [mainStore.currentUser["jmbag"]],
-
+        student_email: mainStore.currentUser["email"],
+        student_ime: mainStore.currentUser["name"],
+        student_prezime: mainStore.currentUser["surname"],
+        student_godina_studija: mainStore.currentUser["year_of_study"],
         "Prvi odabir": [assignmentsData[0]["ID Zadatka"]],
         "Drugi odabir": [assignmentsData[1]["ID Zadatka"]],
         "Treći odabir": [assignmentsData[2]["ID Zadatka"]],
