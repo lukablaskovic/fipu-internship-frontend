@@ -40,6 +40,7 @@ export const useMainStore = defineStore("main", {
 
     access_token: null,
     logoutModalActive: false,
+    helpModalActive: false,
 
     isFieldFocusRegistered: false,
   }),
@@ -109,6 +110,9 @@ export const useMainStore = defineStore("main", {
 
     activateLogoutModal(state) {
       this.logoutModalActive = state;
+    },
+    activateHelpModal(state) {
+      this.helpModalActive = state;
     },
     async getCompanies() {
       try {

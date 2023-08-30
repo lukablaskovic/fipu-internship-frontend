@@ -1,6 +1,5 @@
 import {
   mdiAccount,
-  mdiCogOutline,
   mdiEmail,
   mdiLogout,
   mdiThemeLightDark,
@@ -34,6 +33,7 @@ export default [
     icon: mdiHelpBoxOutline,
     label: "Pomoć",
     isDesktopNoLabel: true,
+    isHelp: true,
   },
   {
     icon: mdiThemeLightDark,
@@ -45,5 +45,6 @@ export default [
     icon: mdiLogout,
     label: "Odjava",
     isDesktopNoLabel: true,
+    isLogout: true,
   },
 ];

@@ -1,10 +1,10 @@
 <script setup>
-import { reactive } from "vue";
+import { reactive, onMounted } from "vue";
 import { mainStore } from "@/main.js";
 
 import {
   mdiAccount,
-  mdiMail,
+  mdiEmail,
   mdiAsterisk,
   mdiFormTextboxPassword,
   mdiCardAccountDetails,
@@ -22,6 +22,7 @@ import BaseButtons from "@/components/Base/BaseButtons.vue";
 import UserCard from "@/components/User/UserCard.vue";
 import LayoutAuthenticated from "@/layouts/LayoutAuthenticated.vue";
 import SectionTitleLineWithButton from "@/components/Section/SectionTitleLineWithButton.vue";
+import { StudentMappings } from "@/helpers/maps.js";
 
 const profileForm = reactive({
   username: mainStore.currentUser.username,
@@ -38,14 +39,6 @@ const passwordForm = reactive({
   password: "",
   password_confirmation: "",
 });
-
-const submitProfile = () => {
-  mainStore.setUser(profileForm);
-};
-
-const submitPass = () => {
-  //
-};
 </script>
 
 <template>
@@ -98,7 +91,7 @@ const submitPass = () => {
           <FormField label="E-mail">
             <FormControl
               v-model="profileForm.email"
-              :icon="mdiMail"
+              :icon="mdiEmail"
               type="email"
               name="email"
               readonly
@@ -119,7 +112,9 @@ const submitPass = () => {
 
           <FormField label="Godina studija">
             <FormControl
-              v-model="profileForm.year_of_study"
+              :v-model="
+                StudentMappings.getYearOfStudyLabel(profileForm.year_of_study)
+              "
               :icon="mdiSchool"
               type="year_of_study"
               name="year_of_study"

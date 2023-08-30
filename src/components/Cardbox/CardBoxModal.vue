@@ -1,5 +1,5 @@
 <script setup>
-import { computed } from "vue";
+import { computed, onMounted } from "vue";
 import BaseButton from "@/components/Base/BaseButton.vue";
 import BaseButtons from "@/components/Base/BaseButtons.vue";
 import CardBox from "@/components/Cardbox/CardBox.vue";
@@ -27,6 +27,10 @@ const props = defineProps({
   disabledCondition: {
     type: Boolean,
     default: false,
+  },
+  hasConfirm: {
+    type: Boolean,
+    default: true,
   },
 });
 
@@ -64,6 +68,7 @@ window.addEventListener("keydown", (e) => {
       <slot :assignment="modelValue"></slot>
       <BaseButtons class="justify-center">
         <BaseButton
+          v-if="hasConfirm"
           :label="buttonLabel"
           :color="button"
           :disabled="disabledCondition"

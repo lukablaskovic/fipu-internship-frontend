@@ -1,5 +1,12 @@
 <script setup>
-import { mdiForwardburger, mdiBackburger, mdiMenu, mdiMagnify } from "@mdi/js";
+import {
+  mdiForwardburger,
+  mdiBackburger,
+  mdiMenu,
+  mdiMagnify,
+  mdiLaptop,
+  mdiEmail,
+} from "@mdi/js";
 import { ref, onMounted, computed } from "vue";
 import { useRouter } from "vue-router";
 import menuAsideAdmin from "@/menus/menuAsideAdmin.js";
@@ -13,6 +20,7 @@ import NavBarItemPlain from "@/components/Navbar/NavBarItemPlain.vue";
 import AsideMenu from "@/components/AsideMenu/AsideMenu.vue";
 import FooterBar from "@/components/FooterBar.vue";
 import CardBoxModal from "@/components/Cardbox/CardBoxModal.vue";
+import BaseDivider from "@/components/Base/BaseDivider.vue";
 
 const layoutAsidePadding = "xl:pl-60";
 
@@ -22,6 +30,7 @@ const isAsideMobileExpanded = ref(false);
 const isAsideLgActive = ref(false);
 
 const logoutModalActive = computed(() => mainStore.logoutModalActive);
+const helpModalActive = computed(() => mainStore.helpModalActive);
 
 const userAdmin = ref(false);
 
@@ -48,10 +57,14 @@ const menuClick = (event, item) => {
   if (item.isLogout) {
     mainStore.activateLogoutModal(true);
   }
+
+  if (item.isHelp) {
+    mainStore.activateHelpModal(true);
+  }
 };
 </script>
 
-<template>
+<template name="fade">
   <div
     :class="{
       dark: styleStore.darkMode,
@@ -112,6 +125,120 @@ const menuClick = (event, item) => {
         @confirm="mainStore.logout()"
       >
       </CardBoxModal>
+
+      <CardBoxModal
+        v-model="helpModalActive"
+        title="ℹ️ Upute za izvođenje prakse"
+        button-label="Povratak"
+        has-cancel
+        :has-confirm="false"
+        @cancel="mainStore.activateHelpModal(false)"
+      >
+        <BaseDivider></BaseDivider>
+        <div class="text-xl mb-2">O kolegiju</div>
+        <div>
+          Cilj kolegija <b>Stručna praksa</b> je omogućiti studentima praktični
+          rad u IT poduzećima na projektima oblikovanja i implementacije
+          programske podrške; usvajanja stručnih kompetencija iz područja
+          djelovanja organizacije u kojoj se praksa provodi te razvijanje
+          osjećaja odgovornosti i timskoga rada unutar zadanoga radnoga
+          okruženja.
+        </div>
+        <BaseDivider></BaseDivider>
+        <div class="text-xl mb-2">Prijava na praksu</div>
+
+        <ol class="list-decimal ml-4">
+          <li>
+            Studenti se prijavljuju na praksu putem sustava
+            <em>Fipu Praksa</em> u kojem prvo odabiru 3 zadatka koja bi željeli
+            raditi.
+          </li>
+          <li>
+            Nakon što vas se alocira na jedan od prijavljenih zadataka, morate
+            kontaktirati mentora. Predstavite se i recite da ste dobili zadatak.
+            Poslodavac može zatražiti intervju ili provesti selekciju.
+          </li>
+        </ol>
+        <BaseDivider></BaseDivider>
+        <div class="text-xl mb-2">Izvođenje prakse</div>
+        <ol class="list-decimal ml-4">
+          <li>
+            Potrebno je s mentorom dogovoriti datum počekta izvođenja prakse.
+            Kada sve finalno dogovorite s mentorom popunite Prijavnicu prije
+            početka izvođenja prakse
+          </li>
+          <li>
+            Na mail ćete vi i mentor dobiti praznu Potvrdu o obavljenoj praksi.
+            Mora ju ispuniti <b>mentor</b>.
+          </li>
+          <li>
+            Uživajte u izvođenju prakse 🙂! Have fun i učite! Nemojte zaboraviti
+            svakodnevno voditi dnevnik!
+          </li>
+        </ol>
+        <BaseDivider></BaseDivider>
+        <div class="text-xl mb-2">Završetak prakse i prijava ispita</div>
+        <ol class="list-decimal ml-4">
+          <li>
+            Nakon što završite sa stručnom praksu potrebno je predati dnevnik.
+          </li>
+          <li>
+            Za kraj, potrebno je prijaviti ispit preko Studomata. Na ispit
+            <b>ne morate</b> dolaziti, samo ga prijavite.
+          </li>
+        </ol>
+        <BaseDivider></BaseDivider>
+        <div class="text-xl mb-2">Sustav <em>Fipu praksa</em></div>
+        <ol class="list-decimal ml-4">
+          <li>
+            Sve radnje (uključujući komunikaciju) vezane uz praksu obavljaju se
+            isključivo putem sustava
+            <em>Fipu praksa</em>.
+          </li>
+          <li>
+            <div class="flex flex-wrap text-base">
+              Ovisno o stanju vaše prakse,
+              <span
+                class="text-fipu_blue cursor-pointer inline-flex whitespace-normal items-center"
+                @click="router.push('/moja-praksa')"
+              >
+                <BaseIcon
+                  :path="mdiLaptop"
+                  class="flex-none align-middle"
+                  :size="18"
+                ></BaseIcon>
+
+                Moja praksa
+              </span>
+              &nbsp;se ažurira automatski.
+            </div>
+          </li>
+          <li>
+            Putem iste poveznice predajete dnevnik prakse, dok prijavnicu
+            dobivate na mail.
+          </li>
+          <li>
+            <div class="flex flex-wrap text-base">
+              Komunikaciju s profesorom vršite putem
+              <span
+                class="text-fipu_blue cursor-pointer inline-flex whitespace-normal items-center"
+                @click="router.push('/moja-praksa')"
+              >
+                <BaseIcon
+                  :path="mdiEmail"
+                  class="flex-none align-middle"
+                  :size="18"
+                ></BaseIcon>
+
+                Poruke </span
+              >.
+            </div>
+          </li>
+        </ol>
+
+        <BaseDivider></BaseDivider>
+      </CardBoxModal>
+
       <FooterBar
         ><br />Made with <span style="color: #e25555">&#9829;</span> at
         FIPU.lab</FooterBar

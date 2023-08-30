@@ -14,9 +14,11 @@ import CardBoxEvents from "@/components/Cardbox/CardBoxEvents.vue";
 import LayoutAuthenticated from "@/layouts/LayoutAuthenticated.vue";
 import SectionTitleLineWithButton from "@/components/Section/SectionTitleLineWithButton.vue";
 import SkeletonLoader from "@/components/SkeletonLoader.vue";
+import SkeletonLoaderEvent from "@/components/SkeletonLoaderEvent.vue";
 import BaseLevel from "@/components/Base/BaseLevel.vue";
 import BaseButtons from "@/components/Base/BaseButtons.vue";
 import BaseButton from "@/components/Base/BaseButton.vue";
+
 const userAuthenticated = computed(() => mainStore.userAuthenticated);
 
 const ongoing_internships = ref(0);
@@ -117,7 +119,10 @@ const pagesList = computed(() => {
         >
         </SectionTitleLineWithButton>
 
-        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+        <div
+          v-if="events.length > 0"
+          class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6"
+        >
           <div class="flex flex-col">
             <CardBoxEvents
               v-for="(event, index) in leftItems"
@@ -139,6 +144,18 @@ const pagesList = computed(() => {
               :jmbag="event.student_jmbag"
               class="rounded-lg"
             />
+          </div>
+        </div>
+        <div v-else class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+          <div class="flex flex-col">
+            <SkeletonLoaderEvent />
+            <SkeletonLoaderEvent />
+            <SkeletonLoaderEvent />
+          </div>
+          <div class="flex flex-col">
+            <SkeletonLoaderEvent />
+            <SkeletonLoaderEvent />
+            <SkeletonLoaderEvent />
           </div>
         </div>
         <div class="p-3 lg:px-6 border-t border-gray-100 dark:border-slate-800">
