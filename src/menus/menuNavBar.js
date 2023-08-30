@@ -17,10 +17,6 @@ export default [
         to: "/profile",
       },
       {
-        icon: mdiCogOutline,
-        label: "Postavke",
-      },
-      {
         icon: mdiEmail,
         label: "Poruke",
       },
@@ -49,6 +45,5 @@ export default [
     icon: mdiLogout,
     label: "Odjava",
     isDesktopNoLabel: true,
-    isLogout: true,
   },
 ];

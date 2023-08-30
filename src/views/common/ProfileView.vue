@@ -63,76 +63,70 @@ const submitPass = () => {
       <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <CardBox is-form @submit.prevent="submitProfile">
           <FormField label="Avatar" help="Max 500kb">
-            <FormFilePicker label="Prenesi" />
+            <FormFilePicker label="Prenesi" color="fipu_blue" />
           </FormField>
           <FormField
             v-if="profileForm.type != 'student'"
             label="Korisničko ime"
-            help="Obavezno. Vaše korisničko ime"
           >
             <FormControl
               v-model="profileForm.username"
               :icon="mdiAccount"
+              readonly
               name="userName"
-              required
               autocomplete="userName"
             />
           </FormField>
-          <FormField label="Ime" help="Obavezno. Vaše ime">
+          <FormField label="Ime">
             <FormControl
               v-model="profileForm.name"
               :icon="mdiAccount"
               name="name"
-              required
+              readonly
               autocomplete="name"
             />
           </FormField>
-          <FormField label="Prezime" help="Obavezno. Vaše prezime">
+          <FormField label="Prezime">
             <FormControl
               v-model="profileForm.surname"
               :icon="mdiAccount"
               name="prezime"
-              required
+              readonly
               autocomplete="prezime"
             />
           </FormField>
-          <FormField label="E-mail" help="Obavezno. Vaša e-mail adresa">
+          <FormField label="E-mail">
             <FormControl
               v-model="profileForm.email"
               :icon="mdiMail"
               type="email"
               name="email"
-              required
+              readonly
               autocomplete="email"
             />
           </FormField>
 
-          <FormField label="JMBAG" help="Obavezno. Vaš JMBAG">
+          <FormField label="JMBAG">
             <FormControl
               v-model="profileForm.jmbag"
               :icon="mdiCardAccountDetails"
               type="jmbag"
               name="jmbag"
-              required
+              readonly
               autocomplete="jmbag"
             />
           </FormField>
 
-          <FormField label="Godina studija" help="Obavezno. Godina studija">
+          <FormField label="Godina studija">
             <FormControl
               v-model="profileForm.year_of_study"
               :icon="mdiSchool"
               type="year_of_study"
               name="year_of_study"
-              required
+              readonly
               autocomplete="year_of_study"
             />
           </FormField>
-
-          <BaseButtons>
-            <BaseButton color="info" type="submit" label="Ažuriraj!" />
-            <BaseButton color="info" label="Dodatno" outline />
-          </BaseButtons>
         </CardBox>
 
         <CardBox is-form @submit.prevent="submitPass">
@@ -178,8 +172,7 @@ const submitPass = () => {
           </FormField>
 
           <BaseButtons>
-            <BaseButton type="submit" color="info" label="Ažuriraj!" />
-            <BaseButton color="info" label="Dodatno" outline />
+            <BaseButton type="submit" color="fipu_blue" label="Ažuriraj!" />
           </BaseButtons>
         </CardBox>
       </div>

@@ -41,8 +41,10 @@ class UserTaskMappings {
     {
       order: 3,
       _id: "evaluacija_poslodavac",
-      component: Student_WaitingForEvaluation,
       name: "Čeka evaluaciju poslodavca",
+      form_title: "Evaluacija poslodavca",
+      bpmn_task_color: "#e25555",
+      component: Student_WaitingForEvaluation,
     },
     {
       order: 4,
@@ -56,45 +58,16 @@ class UserTaskMappings {
     },
   ];
 
-  static getTaskName(taskId) {
-    return getMappedProperty(this.tasks, "_id", taskId, "name");
-  }
-
-  static getTaskFormTitle(taskId) {
-    return getMappedProperty(this.tasks, "_id", taskId, "form_title");
-  }
-
-  static getComponent(taskId) {
-    return getMappedProperty(this.tasks, "_id", taskId, "component");
-  }
-
-  static getTaskCopmonent(taskId) {
-    return getMappedProperty(this.tasks, "_id", taskId, "task_component");
-  }
-
-  static getBpmnTaskColor(taskId) {
-    return getMappedProperty(this.tasks, "_id", taskId, "bpmn_task_color");
-  }
-
-  static getCurrentOrder(taskId) {
-    return getMappedProperty(this.tasks, "_id", taskId, "order");
-  }
-  static getBpmnPendingInfoMsg(taskId) {
-    return getMappedProperty(
-      this.tasks,
-      "_id",
-      taskId,
-      "bpmn_pending_info_msg"
-    );
+  static getTaskProperty(taskId, property) {
+    return getMappedProperty(this.tasks, "_id", taskId, property);
   }
 }
 
 import {
   mdiRayStartArrow,
   mdiThumbsUpDownOutline,
-  mdiContentSaveCheckOutline,
   mdiAlertBox,
-  mdiCheckAll,
+  mdiNoteCheck,
 } from "@mdi/js";
 import Student_WaitingForEvaluation from "@/components/Internship/Student_WaitingForEvaluation.vue";
 
@@ -117,6 +90,12 @@ class ActivityEventMappings {
       icon: mdiAlertBox,
       type: "danger",
       message: "Čeka alokaciju",
+    },
+    {
+      activity_id: "alociranje_profesor",
+      icon: mdiNoteCheck,
+      type: "success",
+      message: "Zadatak alociran",
     },
   ];
   static getEvent(activityId) {

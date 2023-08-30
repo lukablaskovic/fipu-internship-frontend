@@ -49,6 +49,7 @@ const props = defineProps({
   borderless: Boolean,
   transparent: Boolean,
   ctrlKFocus: Boolean,
+  readonly: Boolean,
 });
 
 const emit = defineEmits(["update:modelValue", "setRef"]);
@@ -66,7 +67,7 @@ const searchBarClasses = computed(() => {
 
 const inputElClass = computed(() => {
   const base = [
-    "px-3 py-2 max-w-full focus:ring  focus:outline-none border-gray-700 rounded w-full",
+    "px-3 py-2 max-w-full focus:ring focus:ring-fipu_blue  focus:outline-none border-gray-700 rounded w-full",
     "dark:placeholder-gray-400",
     computedType.value === "textarea" ? "h-24" : "h-12",
     props.borderless ? "border-0" : "border",
@@ -136,6 +137,7 @@ if (props.ctrlKFocus) {
       v-if="computedType === 'select'"
       :id="id"
       v-model="computedValue"
+      :readonly="readonly"
       :name="name"
       :class="inputElClass"
     >
@@ -151,6 +153,7 @@ if (props.ctrlKFocus) {
       v-else-if="computedType === 'textarea'"
       :id="id"
       v-model="computedValue"
+      :readonly="readonly"
       :class="inputElClass"
       :name="name"
       :maxlength="maxlength"
@@ -162,6 +165,7 @@ if (props.ctrlKFocus) {
       :id="id"
       ref="inputEl"
       v-model="computedValue"
+      :readonly="readonly"
       :name="name"
       :maxlength="maxlength"
       :inputmode="inputmode"

@@ -20,7 +20,7 @@
   .checkbox input[type="checkbox"]:focus + .check,
   .radio input[type="radio"]:focus + .check,
   .switch input[type="checkbox"]:focus + .check {
-    @apply ring ring-blue-500;
+    @apply ring ring-fipu_blue;
   }
 
   .checkbox input[type="checkbox"] + .check,

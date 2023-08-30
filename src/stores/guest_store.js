@@ -50,11 +50,15 @@ export const useGuestStore = defineStore("guest", {
       if (!assignmentExists) {
         this.checkedAssignments.push(assignment);
       }
+      console.log(this.checkedAssignments);
     },
     removeAssignment(assignment) {
       this.checkedAssignments = this.checkedAssignments.filter(
         (a) => a["ID Zadatka"] !== assignment["ID Zadatka"]
       );
+    },
+    resetAssignments() {
+      this.checkedAssignments = [];
     },
   },
 });

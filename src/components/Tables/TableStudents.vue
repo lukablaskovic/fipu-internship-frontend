@@ -106,22 +106,24 @@ const pagesList = computed(() => {
             class="flex w-2/5 self-center lg:w-full"
             max="5"
             :value="
-              UserTaskMappings.getCurrentOrder(
+              UserTaskMappings.getTaskProperty(
                 student['process_instance_data']['pending'][0]
               )
             "
           >
             {{
-              UserTaskMappings.getCurrentOrder(
-                student["process_instance_data"]["pending"][0]
+              UserTaskMappings.getTaskProperty(
+                student["process_instance_data"]["pending"][0],
+                "order"
               )
             }}
           </progress>
         </td>
         <td data-label="Stanje">
           {{
-            UserTaskMappings.getTaskName(
-              student["process_instance_data"]["pending"][0]
+            UserTaskMappings.getTaskProperty(
+              student["process_instance_data"]["pending"][0],
+              "name"
             )
           }}
         </td>

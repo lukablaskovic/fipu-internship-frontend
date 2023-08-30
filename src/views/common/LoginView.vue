@@ -14,22 +14,26 @@ import BaseButtons from "@/components/Base/BaseButtons.vue";
 
 import { mainStore } from "@/main";
 
-const form = reactive({
+const loginForm = reactive({
   email: "admin@fipu.hr",
   password: "123456",
-  remember: true,
+  remember_me: false,
 });
 const router = useRouter();
 
 async function onSubmit() {
-  await mainStore.login(form.email, form.password);
+  await mainStore.login(loginForm);
 }
 </script>
 
 <template>
   <SectionSplitHorizontally bg="blue">
-    <div class="flex flex-row overflow-hidden rounded-lg p-12 h-screen">
-      <CardBox class="flex-1 rounded-l-lg justify-center items-center">
+    <div
+      class="flex flex-col md:flex-row overflow-hidden md:rounded-lg md:p-12 md:h-screen"
+    >
+      <CardBox
+        class="hidden md:block flex-1 md:rounded-l-lg justify-center items-center"
+      >
         <div>
           <img
             src="login_art.jpg"
@@ -40,7 +44,7 @@ async function onSubmit() {
       </CardBox>
 
       <CardBox
-        class="flex-1 flex flex-col justify-center items-center space-y-4 rounded-r-lg"
+        class="flex-1 flex flex-col md:rounded-r-lg p-3 justify-center items-center space-y-4"
         is-form
         @submit.prevent="onSubmit"
       >
@@ -51,7 +55,7 @@ async function onSubmit() {
             class="w-36 h-36 object-cover mx-auto"
           />
         </div>
-        <h2 class="text-4xl text-center font-bold mb-4 mt-4">
+        <h2 class="text-2xl md:text-4xl text-center font-bold mb-4 mt-4">
           Dobrodošli na FIPU Internship Dashboard
         </h2>
         <h2 class="mb-4 text-center">
@@ -68,7 +72,7 @@ async function onSubmit() {
         <div class="w-full px-4">
           <FormField label="E-mail" help="Molimo unesite vašu e-mail adresu">
             <FormControl
-              v-model="form.email"
+              v-model="loginForm.email"
               :icon="mdiAccount"
               name="email"
               autocomplete="username"
@@ -77,7 +81,7 @@ async function onSubmit() {
 
           <FormField label="Lozinka" help="Molimo unesite vašu lozinku">
             <FormControl
-              v-model="form.password"
+              v-model="loginForm.password"
               :icon="mdiAsterisk"
               type="password"
               name="password"
@@ -90,7 +94,7 @@ async function onSubmit() {
           </div>
 
           <FormCheckRadio
-            v-model="form.remember"
+            v-model="loginForm.remember_me"
             name="remember"
             label="Zapamti me!"
             :input-value="true"

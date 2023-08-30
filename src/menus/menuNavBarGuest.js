@@ -12,7 +12,6 @@ export default [
     isDesktopNoLabel: true,
     isToggleLightDark: true,
   },
-
   {
     icon: mdiLogin,
     label: "Prijava",

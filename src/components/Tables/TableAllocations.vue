@@ -13,7 +13,7 @@ defineProps({
 });
 
 const allocations = ref([]);
-
+let dataLoaded = ref(false);
 const filteredAllocations = computed(() => {
   return allocations.value.filter(
     (allocation) =>
@@ -22,8 +22,10 @@ const filteredAllocations = computed(() => {
 });
 
 onMounted(async () => {
+  dataLoaded.value = false;
   allocations.value = await studentStore.getAllocationsPublic();
   console.log(allocations.value);
+  dataLoaded.value = true;
 });
 
 const perPage = ref(5);
@@ -53,7 +55,7 @@ const pagesList = computed(() => {
 
 <template>
   <LoadingOverlay
-    :is-active="!allocations.length"
+    :is-active="!allocations.length && !dataLoaded"
     title="Učitavanje..."
     description="Može potrajati nekoliko sekundi, molimo ne zatvarajte stranicu."
   >

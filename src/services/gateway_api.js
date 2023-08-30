@@ -13,17 +13,7 @@ const Auth = {
   },
   async login(userData) {
     try {
-      const formData = new FormData();
-      formData.append("username", userData.email);
-      formData.append("password", userData.password);
-
-      const config = {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-      };
-
-      let result = await AxiosWrapper.post("/auth", formData, config);
+      let result = await AxiosWrapper.post("/auth", userData);
       return result;
     } catch (e) {
       return null;

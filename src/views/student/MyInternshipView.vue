@@ -1,19 +1,19 @@
 <script setup>
 import { ref, computed, onBeforeMount } from "vue";
 import { mainStore, studentStore } from "@/main.js";
-import LoadingOverlay from "@/components/LoadingOverlay.vue";
 import { UserTaskMappings } from "@/helpers/maps";
-const userAuthenticated = computed(() => mainStore.userAuthenticated);
+
+import LoadingOverlay from "@/components/LoadingOverlay.vue";
 
 const processInstance = ref(null);
 const pendingProcessTask = ref(null);
 const error = ref(null);
 
 onBeforeMount(async () => {
-  if (userAuthenticated.value) {
+  if (mainStore.userAuthenticated) {
     try {
       processInstance.value = mainStore.currentUser.internship_process.id;
-      console.log(processInstance.value);
+
       pendingProcessTask.value = await studentStore.getPendingUserTask(
         processInstance.value
       );
@@ -30,12 +30,16 @@ const currentRenderingComponent = computed(() => {
     return null;
   }
 
-  if (!userAuthenticated.value) {
-    return UserTaskMappings.getComponent("odabiranje_zadatka_student");
+  if (!mainStore.userAuthenticated) {
+    return UserTaskMappings.getTaskProperty(
+      "odabiranje_zadatka_student",
+      "component"
+    );
   }
 
   return (
-    UserTaskMappings.getComponent(pendingProcessTask.value) || LoadingOverlay
+    UserTaskMappings.getTaskProperty(pendingProcessTask.value, "component") ||
+    LoadingOverlay
   );
 });
 </script>

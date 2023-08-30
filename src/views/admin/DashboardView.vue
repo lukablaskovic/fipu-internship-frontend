@@ -31,7 +31,6 @@ onMounted(async () => {
     adminStore.dashboard_data.waiting_for_allocation;
   await adminStore.getEvents();
   events.value = adminStore.events.reverse();
-  console.log(events.value);
 });
 
 const perPage = ref(10);
@@ -81,7 +80,9 @@ const pagesList = computed(() => {
         <div class="grid grid-cols-1 gap-6 lg:grid-cols-3 mb-6">
           <CardBoxWidget
             v-if="adminStore.studentsFetched"
+            trend="up"
             color="text-emerald-500"
+            class="rounded-lg"
             :icon="mdiAccountSchoolOutline"
             :number="512"
             label="Uspješno odrađenih praksi"
@@ -90,7 +91,9 @@ const pagesList = computed(() => {
 
           <CardBoxWidget
             v-if="adminStore.studentsFetched"
+            trend="up"
             color="text-blue-500"
+            class="rounded-lg"
             :icon="mdiAccountMultiple"
             :number="ongoing_internships"
             label="Studenti u procesu prakse"
@@ -98,7 +101,9 @@ const pagesList = computed(() => {
           <SkeletonLoader v-else></SkeletonLoader>
           <CardBoxWidget
             v-if="adminStore.studentsFetched"
+            trend="up"
             color="text-red-500"
+            class="rounded-lg"
             :icon="mdiPlayPause"
             :number="waiting_for_allocation"
             label="Studenti koji čekaju alokaciju"
@@ -121,6 +126,7 @@ const pagesList = computed(() => {
               :date="event.timestamp"
               :type="event.activity_id"
               :jmbag="event.student_jmbag"
+              class="rounded-lg"
             />
           </div>
           <div class="flex flex-col">
@@ -131,6 +137,7 @@ const pagesList = computed(() => {
               :date="event.timestamp"
               :type="event.activity_id"
               :jmbag="event.student_jmbag"
+              class="rounded-lg"
             />
           </div>
         </div>
@@ -147,7 +154,7 @@ const pagesList = computed(() => {
                 @click="currentPage = page"
               />
             </BaseButtons>
-            <small>Page {{ currentPageHuman }} of {{ numPages }}</small>
+            <small>Stranica {{ currentPageHuman }} od {{ numPages }}</small>
           </BaseLevel>
         </div>
       </SectionMain>

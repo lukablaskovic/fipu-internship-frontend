@@ -53,6 +53,7 @@ defineProps({
 
 <template>
   <CardBox
+    is-hoverable
     :class="{ 'hover:border hover:ring hover:border-fipu_blue': hoverable }"
   >
     <BaseLevel v-if="trend" class="mb-3" mobile>

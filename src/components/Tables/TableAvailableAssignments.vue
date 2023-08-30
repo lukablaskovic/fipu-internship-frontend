@@ -23,6 +23,7 @@ let checkedAssignments = computed(() => guestStore.checkedAssignments);
 
 onMounted(async () => {
   allAvailableAssignments.value = await guestStore.fetchAvailableAssignments();
+  guestStore.resetAssignments();
 });
 
 const perPage = ref(5);
@@ -160,13 +161,8 @@ const checked = (value, assignment) => {
       >
         <TableCheckboxCell
           v-if="checkable"
-          v-model="assignmentCheckedStates[assignment['ID Zadatka']]"
-          :assignment-data="assignment"
-          :disabled="
-            disableUnchecked &&
-            !assignmentCheckedStates[assignment['ID Zadatka']] &&
-            !isCheckedAssignment(assignment)
-          "
+          :value="isCheckedAssignment(assignment)"
+          :disabled="disableUnchecked && !isCheckedAssignment(assignment)"
           @checked="checked($event, assignment)"
         />
 

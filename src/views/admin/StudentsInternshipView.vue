@@ -93,7 +93,10 @@ onMounted(async () => {
           v-if="modal_select_bpmn_task"
           v-model="modal_select_bpmn_task"
           :title="
-            UserTaskMappings.getTaskFormTitle(process_instance_data.pending[0])
+            UserTaskMappings.getTaskProperty(
+              process_instance_data.pending[0],
+              'form_title'
+            )
           "
           button-label="Potvrda"
           has-cancel
@@ -113,8 +116,9 @@ onMounted(async () => {
             class="mb-4"
           >
             {{
-              UserTaskMappings.getBpmnPendingInfoMsg(
-                adminStore.bpmn_diagram.clicked_task_id
+              UserTaskMappings.getTaskProperty(
+                adminStore.bpmn_diagram.clicked_task_id,
+                "bpmn_pending_info_msg"
               )
             }}
           </p>
@@ -142,8 +146,9 @@ onMounted(async () => {
           v-if="modal_past_bpmn_task"
           v-model="modal_past_bpmn_task"
           :title="
-            UserTaskMappings.getTaskFormTitle(
-              adminStore.bpmn_diagram.clicked_task_id
+            UserTaskMappings.getTaskProperty(
+              adminStore.bpmn_diagram.clicked_task_id,
+              'form_title'
             )
           "
           button-label="Povratak"
@@ -151,7 +156,9 @@ onMounted(async () => {
           <!-- Content for past tasks (this can be different from the current task modal) -->
           <p>Ovaj zadatak je već obavljen.</p>
           <component
-            :is="UserTaskMappings.getTaskCopmonent(clickedTaskID)"
+            :is="
+              UserTaskMappings.getTaskProperty(clickedTaskID, 'task_component')
+            "
           ></component>
         </CardBoxModal>
       </SectionMain>
@@ -160,10 +167,16 @@ onMounted(async () => {
         :key="bpmnKey"
         :xml="bpmn_model"
         :current-order="
-          UserTaskMappings.getCurrentOrder(process_instance_data.pending[0])
+          UserTaskMappings.getTaskProperty(
+            process_instance_data.pending[0],
+            'order'
+          )
         "
         :highlight-color="
-          UserTaskMappings.getBpmnTaskColor(process_instance_data.pending[0])
+          UserTaskMappings.getTaskProperty(
+            process_instance_data.pending[0],
+            'bpmn_task_color'
+          )
         "
         :highlight-element-id="process_instance_data.pending[0]"
         @current-task-modal="modal_select_bpmn_task = true"

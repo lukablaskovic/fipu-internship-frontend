@@ -30,14 +30,13 @@ import Utils from "@/helpers/utils.js";
 import { mainStore, guestStore, studentStore } from "@/main.js";
 
 const Layout = computed(() => {
-  if (userAuthenticated.value) {
+  if (mainStore.userAuthenticated) {
     return LayoutAuthenticated;
   } else {
     return LayoutGuest;
   }
 });
 
-const userAuthenticated = computed(() => mainStore.userAuthenticated);
 let note = ref(null);
 
 const checkedAssignments = computed(() => guestStore.checkedAssignments);
@@ -45,30 +44,11 @@ const modalConfirmPreferences = ref(false);
 const enabled = ref(true);
 const vueDraggableDragging = ref(false);
 
-const registerPreferences = async () => {
-  if (!userAuthenticated.value) {
-    showNotificationBar("warning");
-    return;
-  } else {
-    let result = await studentStore.registerPreferences(
-      checkedAssignments.value,
-      note.value
-    );
-    if (result && result.status == "OK") {
-      showNotificationBar("success");
-    } else {
-      showNotificationBar("danger");
-    }
-    await Utils.wait(3);
-    router.go();
-  }
-};
 const notificationBar = ref(null);
 let notificationStatus = ref();
 let notificationMessage = ref();
 
 const notificationSettingsModel = ref([]);
-
 const notificationsOutline = computed(
   () => notificationSettingsModel.value.indexOf("outline") > -1
 );
@@ -98,6 +78,24 @@ function showNotificationBar(type) {
   console.log("notificationBar", notificationBar.value);
   notificationBar.value.show();
 }
+const registerPreferences = async () => {
+  if (!mainStore.userAuthenticated) {
+    showNotificationBar("warning");
+    return;
+  } else {
+    let result = await studentStore.registerPreferences(
+      checkedAssignments.value,
+      note.value
+    );
+    if (result && result.status == "OK") {
+      showNotificationBar("success");
+    } else {
+      showNotificationBar("danger");
+    }
+    await Utils.wait(3);
+    router.go();
+  }
+};
 </script>
 
 <template>

@@ -65,11 +65,10 @@ export const useMainStore = defineStore("main", {
       }
     },
 
-    async login(email, password) {
+    async login(loginForm) {
       try {
-        const loginResult = await Auth.login({ email, password });
+        const loginResult = await Auth.login(loginForm);
         if (loginResult.access_token != null) {
-          console.log("logging in...");
           this.access_token = loginResult.access_token;
           await this.fetchCurrentUser();
         }

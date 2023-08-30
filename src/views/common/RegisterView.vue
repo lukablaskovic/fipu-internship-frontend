@@ -56,8 +56,12 @@ async function onSubmit() {
 
 <template>
   <SectionSplitHorizontally bg="blue">
-    <div class="flex flex-row overflow-hidden rounded-lg p-24 h-screen">
-      <CardBox class="flex-1 rounded-l-lg justify-center items-center">
+    <div
+      class="flex flex-col md:flex-row overflow-hidden md:rounded-lg md:p-12 md:h-screen"
+    >
+      <CardBox
+        class="hidden md:block flex-1 md:rounded-l-lg justify-center items-center"
+      >
         <div>
           <img
             src="register_art.jpg"
@@ -68,7 +72,7 @@ async function onSubmit() {
       </CardBox>
 
       <CardBox
-        class="flex-1 flex flex-col justify-center items-center space-y-4 rounded-r-lg"
+        class="flex-1 flex flex-col justify-center items-center space-y-4 md:rounded-r-lg"
         is-form
         @submit.prevent="onSubmit"
       >
