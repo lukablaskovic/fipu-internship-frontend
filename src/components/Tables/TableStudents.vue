@@ -107,7 +107,8 @@ const pagesList = computed(() => {
             max="5"
             :value="
               UserTaskMappings.getTaskProperty(
-                student['process_instance_data']['pending'][0]
+                student['process_instance_data']['pending'][0],
+                'order'
               )
             "
           >

@@ -1,8 +1,6 @@
 <template>
   <CardBox is-form @submit.prevent="submitForm">
-    <div class="mb-2">
-      {{ documentation }}
-    </div>
+    <div class="mb-2">{{ documentation }}</div>
 
     <FormField v-for="(field, key) in formFields" :key="key">
       <FormCheckRadio
@@ -37,6 +35,7 @@ import FormCheckRadio from "./FormCheckRadio.vue";
 import TaskTable from "../BPMN/TaskTable.vue";
 
 const emit = defineEmits(["update:modelValue", "allFieldsFilled"]);
+
 const props = defineProps({
   formFields: {
     type: Object,

@@ -1,8 +1,8 @@
 <script setup>
-import { reactive } from "vue";
+import { ref, computed, reactive } from "vue";
 import { useRouter } from "vue-router";
 import { mdiAccount, mdiAsterisk } from "@mdi/js";
-
+import { mdiAlertCircle, mdiCheckCircle, mdiAlert, mdiClose } from "@mdi/js";
 import SectionSplitHorizontally from "@/components/Section/SectionSplitHorizontally.vue";
 
 import CardBox from "@/components/Cardbox/CardBox.vue";
@@ -13,6 +13,7 @@ import BaseButton from "@/components/Base/BaseButton.vue";
 import BaseButtons from "@/components/Base/BaseButtons.vue";
 
 import { mainStore } from "@/main";
+import Utils from "@/helpers/utils";
 
 const loginForm = reactive({
   email: "admin@fipu.hr",
@@ -22,14 +23,56 @@ const loginForm = reactive({
 const router = useRouter();
 
 async function onSubmit() {
-  await mainStore.login(loginForm);
+  let loginResult = await mainStore.login(loginForm);
+  if (mainStore.userAuthenticated) {
+    showNotificationBar("success");
+    await Utils.wait(1);
+    mainStore.handleSuccessfulLogin();
+  } else if (loginResult.response.status === 403)
+    showNotificationBar("warning");
+  else showNotificationBar("danger");
+}
+
+const notificationBar = ref(null);
+let notificationStatus = ref();
+let notificationMessage = ref();
+
+const notificationSettingsModel = ref([]);
+const notificationsOutline = computed(
+  () => notificationSettingsModel.value.indexOf("outline") > -1
+);
+function showNotificationBar(type) {
+  switch (type) {
+    case "success":
+      notificationBar.value.color = "success";
+      notificationBar.value.icon = mdiCheckCircle;
+      notificationBar.value.duration = 1;
+      notificationStatus.value = "To je to!";
+      notificationMessage.value = " Uspješna prijava!";
+      break;
+    case "warning":
+      notificationBar.value.color = "warning";
+      notificationBar.value.icon = mdiAlert;
+      notificationStatus.value = "Upozorenje.";
+      notificationMessage.value =
+        "Unijeli ste krive podatke. Provjerite unos i pokušajte ponovno.";
+      break;
+    case "danger":
+      notificationBar.value.color = "danger";
+      notificationBar.value.icon = mdiAlertCircle;
+      notificationStatus.value = "Greška!";
+      notificationMessage.value =
+        "Greška u sustavu. Nije do vas, molimo pokušajte opet ili kontaktirajte profesora.";
+      break;
+  }
+  notificationBar.value.show();
 }
 </script>
 
 <template>
   <SectionSplitHorizontally bg="blue">
     <div
-      class="flex flex-col md:flex-row overflow-hidden md:rounded-lg md:p-12 md:h-screen"
+      class="flex flex-col md:flex-row overflow-hidden md:rounded-lg md:p-8 md:h-screen"
     >
       <CardBox
         class="hidden md:block flex-1 md:rounded-l-lg justify-center items-center"
@@ -44,14 +87,14 @@ async function onSubmit() {
       </CardBox>
 
       <CardBox
-        class="flex-1 flex flex-col md:rounded-r-lg p-3 justify-center items-center space-y-4"
+        class="flex-1 flex flex-col md:rounded-r-lg pt-12 pb-12 justify-center items-center space-y-4"
         is-form
         @submit.prevent="onSubmit"
       >
         <div>
           <img
             src="fipu_hr.png"
-            alt=""
+            alt="fipu logo"
             class="w-36 h-36 object-cover mx-auto"
           />
         </div>
@@ -127,7 +170,24 @@ async function onSubmit() {
           </BaseButtons>
         </div>
         <!-- Form Ends -->
+        <NotificationBar
+          ref="notificationBar"
+          class="animate__animated animate__fadeInUp mt-4"
+          :outline="notificationsOutline"
+        >
+          <b>{{ notificationStatus }}</b> {{ notificationMessage }}
+          <template #right>
+            <BaseButton
+              :icon="mdiClose"
+              :color="notificationsOutline ? 'success' : 'white'"
+              :outline="notificationsOutline"
+              rounded-full
+              small
+            />
+          </template>
+        </NotificationBar>
       </CardBox>
     </div>
   </SectionSplitHorizontally>
+  <div></div>
 </template>

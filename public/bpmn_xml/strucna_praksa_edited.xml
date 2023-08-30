@@ -103,7 +103,7 @@ Napomena: Da biste prijavili preferencije, morate biti prijavljeni u aplikaciji!
             <camunda:inputParameter name="method">POST</camunda:inputParameter>
             <camunda:inputParameter name="url_parameter">
               <camunda:map>
-                <camunda:entry key="to">${Kontakt}</camunda:entry>
+                <camunda:entry key="to">${poslodavac_kontakt}</camunda:entry>
                 <camunda:entry key="template">poslodavac_after_allocation</camunda:entry>
               </camunda:map>
             </camunda:inputParameter>
@@ -116,7 +116,7 @@ Napomena: Da biste prijavili preferencije, morate biti prijavljeni u aplikaciji!
           <camunda:inputParameter name="student_prezime">${student_prezime}</camunda:inputParameter>
           <camunda:inputParameter name="student_godina_studija">${student_godina_studija}</camunda:inputParameter>
           <camunda:inputParameter name="student_email">${student_email}</camunda:inputParameter>
-          <camunda:inputParameter name="Alocirani zadatak">{Alocirani zadatak}</camunda:inputParameter>
+          <camunda:inputParameter name="Alocirani zadatak">${Alocirani zadatak}</camunda:inputParameter>
           <camunda:inputParameter name="id_instance" />
         </camunda:inputOutput>
       </bpmn:extensionElements>
@@ -131,7 +131,7 @@ Napomena: Da biste prijavili preferencije, morate biti prijavljeni u aplikaciji!
             <camunda:inputParameter name="method">POST</camunda:inputParameter>
             <camunda:inputParameter name="url_parameter">
               <camunda:map>
-                <camunda:entry key="to">${email_student}</camunda:entry>
+                <camunda:entry key="to">${student_email}</camunda:entry>
                 <camunda:entry key="template">student_after_allocation</camunda:entry>
               </camunda:map>
             </camunda:inputParameter>
@@ -139,9 +139,9 @@ Napomena: Da biste prijavili preferencije, morate biti prijavljeni u aplikaciji!
           <camunda:connectorId>notification</camunda:connectorId>
         </camunda:connector>
         <camunda:inputOutput>
-          <camunda:inputParameter name="poslodavac_email">${poslodavac_email}</camunda:inputParameter>
-          <camunda:inputParameter name="kompanija">${kompanija}</camunda:inputParameter>
-          <camunda:inputParameter name="opis_posla">${opis_posla}</camunda:inputParameter>
+          <camunda:inputParameter name="Kontakt">${Kontakt}</camunda:inputParameter>
+          <camunda:inputParameter name="Alocirani zadatak">${Alocirani zadatak}</camunda:inputParameter>
+          <camunda:inputParameter name="Opis zadatka">${Opis zadatka}</camunda:inputParameter>
         </camunda:inputOutput>
       </bpmn:extensionElements>
       <bpmn:incoming>Flow_0looqv9</bpmn:incoming>
@@ -571,7 +571,7 @@ Dnevnik je potrebno predati prije prijave ispitnoga roka.</bpmn:documentation>
           <camunda:connectorId>baserow</camunda:connectorId>
         </camunda:connector>
         <camunda:inputOutput>
-          <camunda:outputParameter name="Kontakt" />
+          <camunda:outputParameter name="poslodavac_kontakt" />
           <camunda:outputParameter name="Alocirani zadatak" />
           <camunda:outputParameter name="Opis zadatka" />
         </camunda:inputOutput>

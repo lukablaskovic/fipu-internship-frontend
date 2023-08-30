@@ -1,5 +1,5 @@
 <script setup>
-import { reactive, onMounted } from "vue";
+import { reactive } from "vue";
 import { mainStore } from "@/main.js";
 
 import {
@@ -54,7 +54,7 @@ const passwordForm = reactive({
       <UserCard class="mb-6" />
 
       <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <CardBox is-form @submit.prevent="submitProfile">
+        <CardBox is-form>
           <FormField label="Avatar" help="Max 500kb">
             <FormFilePicker label="Prenesi" color="fipu_blue" />
           </FormField>
@@ -98,33 +98,34 @@ const passwordForm = reactive({
               autocomplete="email"
             />
           </FormField>
+          <div v-if="!mainStore.userAdmin">
+            <FormField label="JMBAG">
+              <FormControl
+                v-model="profileForm.jmbag"
+                :icon="mdiCardAccountDetails"
+                type="jmbag"
+                name="jmbag"
+                readonly
+                autocomplete="jmbag"
+              />
+            </FormField>
 
-          <FormField label="JMBAG">
-            <FormControl
-              v-model="profileForm.jmbag"
-              :icon="mdiCardAccountDetails"
-              type="jmbag"
-              name="jmbag"
-              readonly
-              autocomplete="jmbag"
-            />
-          </FormField>
-
-          <FormField label="Godina studija">
-            <FormControl
-              :v-model="
-                StudentMappings.getYearOfStudyLabel(profileForm.year_of_study)
-              "
-              :icon="mdiSchool"
-              type="year_of_study"
-              name="year_of_study"
-              readonly
-              autocomplete="year_of_study"
-            />
-          </FormField>
+            <FormField label="Godina studija">
+              <FormControl
+                :v-model="
+                  StudentMappings.getYearOfStudyLabel(profileForm.year_of_study)
+                "
+                :icon="mdiSchool"
+                type="year_of_study"
+                name="year_of_study"
+                readonly
+                autocomplete="year_of_study"
+              />
+            </FormField>
+          </div>
         </CardBox>
 
-        <CardBox is-form @submit.prevent="submitPass">
+        <CardBox is-form>
           <FormField
             label="Trenutna lozinka"
             help="Obavezno. Vaša trenutna lozinka"

@@ -7,7 +7,6 @@ import CardBoxModal from "@/components/Cardbox/CardBoxModal.vue";
 import BaseButtons from "@/components/Base/BaseButtons.vue";
 import BaseButton from "@/components/Base/BaseButton.vue";
 import LoadingOverlay from "@/components/LoadingOverlay.vue";
-import BaseDivider from "@/components/Base/BaseDivider.vue";
 import { adminStore } from "@/main.js";
 
 defineProps({
@@ -104,7 +103,7 @@ onMounted(async () => {
   </LoadingOverlay>
 
   <table v-else>
-    <thead>
+    <thead class="text-sm">
       <tr>
         <th>Odabir</th>
         <th>ID Zadatka</th>
@@ -113,7 +112,7 @@ onMounted(async () => {
         <th />
       </tr>
     </thead>
-    <tbody>
+    <tbody class="text-sm">
       <tr
         v-for="(assignment, index) in preferencesArray"
         :key="assignment['ID Zadatka']"
@@ -140,8 +139,6 @@ onMounted(async () => {
       </tr>
     </tbody>
   </table>
-  <BaseDivider />
-  <p v-if="selectedAssignmentId">
-    Odabrali ste: <b>{{ selectedAssignmentId }}</b>
-  </p>
 </template>
+
+<style scoped></style>

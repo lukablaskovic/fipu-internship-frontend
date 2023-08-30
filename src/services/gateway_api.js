@@ -7,7 +7,7 @@ const Auth = {
     try {
       let result = await AxiosWrapper.post("/students", postData);
       return result;
-    } catch (e) {
+    } catch (error) {
       return null;
     }
   },
@@ -15,8 +15,11 @@ const Auth = {
     try {
       let result = await AxiosWrapper.post("/auth", userData);
       return result;
-    } catch (e) {
-      return null;
+    } catch (error) {
+      if (error.response && error.response.status === 403) {
+        return error;
+      }
+      return error;
     }
   },
 };

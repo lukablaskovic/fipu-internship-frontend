@@ -16,7 +16,7 @@ export const useMainStore = defineStore("main", {
       avatar: "",
       baserow_id: null,
       type: "" || null,
-
+      loggedAt: null,
       internship_process: {
         id: null,
         pending_user_task: null,
@@ -72,14 +72,19 @@ export const useMainStore = defineStore("main", {
         if (loginResult.access_token != null) {
           this.access_token = loginResult.access_token;
           await this.fetchCurrentUser();
+          this.currentUser.loggedAt = loginResult.timestamp;
+          return this.access_token;
         }
-        if (this.currentUser.type == "student") {
-          this.router.push("/moja-praksa");
-        } else if (this.currentUser.type == "admin") {
-          this.router.push("/dashboard");
-        }
+        return loginResult;
       } catch (error) {
         console.log(error);
+      }
+    },
+    handleSuccessfulLogin() {
+      if (this.currentUser.type == "student") {
+        this.router.push("/moja-praksa");
+      } else if (this.currentUser.type == "admin") {
+        this.router.push("/dashboard");
       }
     },
     clearCurrentUser() {

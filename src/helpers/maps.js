@@ -89,13 +89,19 @@ class ActivityEventMappings {
       activity_id: "spremanje-preferencije",
       icon: mdiAlertBox,
       type: "danger",
-      message: "Čeka alokaciju",
+      message: "Čeka alokaciju profesora",
     },
     {
       activity_id: "alociranje_profesor",
       icon: mdiNoteCheck,
       type: "success",
       message: "Zadatak alociran",
+    },
+    {
+      activity_id: "evaluacija_poslodavac",
+      icon: mdiAlertBox,
+      type: "danger",
+      message: "Čeka evaluaciju poslodavca",
     },
   ];
   static getEvent(activityId) {

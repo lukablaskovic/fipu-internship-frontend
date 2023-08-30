@@ -8,8 +8,12 @@ import CardBox from "@/components/Cardbox/CardBox.vue";
 import FormCheckRadio from "@/components/Form/FormCheckRadio.vue";
 import PillTag from "@/components/PillTag/PillTag.vue";
 
-const accountType = computed(() => mainStore.currentUser.type);
+import moment from "@/moment-setup";
 
+const accountType = computed(() => mainStore.currentUser.type);
+const loggeddTimeAgo = computed(() =>
+  moment(mainStore.currentUser.loggedAt).fromNow()
+);
 const username = computed(() => mainStore.currentUser.username);
 const name = computed(() => mainStore.currentUser.name);
 
@@ -26,7 +30,7 @@ const userSwitchVal = ref(false);
             v-model="userSwitchVal"
             name="notifications-switch"
             type="switch"
-            label="Obavijesti"
+            label="Slack obavijesti"
             :input-value="true"
           />
         </div>
@@ -34,7 +38,10 @@ const userSwitchVal = ref(false);
           Hej, <b>{{ username || name }}</b
           >!
         </h1>
-        <p>Zadnja prijava <b>12 mins ago</b> s IP adrese <b>127.0.0.1</b></p>
+        <p>
+          Zadnja prijava <b>{{ loggeddTimeAgo }}</b> s IP adrese
+          <b>127.0.0.1</b>
+        </p>
         <div class="flex justify-center md:block">
           <PillTag
             v-if="accountType == 'admin'"
