@@ -84,9 +84,9 @@ async function onSubmit() {
           />
         </div>
         <h2 class="text-4xl text-center font-bold mb-4 mt-4">
-          Dobrodošli na FIPU Internship Dashboard
+          Molimo unesite vaše podatke
         </h2>
-        <h2 class="mb-4 text-center">
+        <h2 class="mb-4 text-center text-fipu_gray">
           Već imate račun ili želite samo pregledati zadatke? Povratak na
           prijavu
           <a

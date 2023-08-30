@@ -22,7 +22,7 @@
           <div
             class="text-center flex-1 lg:text-left lg:pl-6 xl:text-center xl:pl-0"
           >
-            <b class="font-black"> Internship Dashboard</b>
+            <b class="font-black text-xl"> FIPU Praksa v1.0</b>
           </div>
 
           <button

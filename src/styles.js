@@ -1,3 +1,4 @@
+/*
 export const basic = {
   aside: "bg-gray-800",
   asideScrollbars: "aside-scrollbars-gray",
@@ -10,7 +11,7 @@ export const basic = {
   navBarItemLabelActiveColor: "text-blue-600",
   overlay: "from-gray-700 via-gray-900 to-gray-700",
 };
-
+*/
 export const white = {
   aside: "bg-gray-100",
   asideScrollbars: "aside-scrollbars-light",

@@ -55,8 +55,10 @@ async function onSubmit() {
             class="w-36 h-36 object-cover mx-auto"
           />
         </div>
-        <h2 class="text-2xl md:text-4xl text-center font-bold mb-4 mt-4">
-          Dobrodošli na FIPU Internship Dashboard
+        <h2
+          class="text-2xl md:text-4xl text-center text-fipu_gray font-bold mb-4 mt-4"
+        >
+          Dobrodošli na <span class="text-fipu_blue">FIPU Praksa</span>
         </h2>
         <h2 class="mb-4 text-center">
           Molimo prijavite se kako biste pregledali stanje vaše prakse ili
