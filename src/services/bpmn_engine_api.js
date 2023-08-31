@@ -1,4 +1,5 @@
 import createAxiosInstance from "@/helpers/axios-wrapper";
+import { mainStore } from "@/main";
 
 const AxiosWrapper = createAxiosInstance(
   import.meta.env.VITE_BPMN_ENGINE_API_URL
@@ -34,7 +35,7 @@ const Model = {
 const ProcessInstance = {
   // Instance creation upon student registration
   async create(bpmn_model) {
-    if (!bpmn_model) bpmn_model = "strucna_praksa_edited.bpmn";
+    if (!bpmn_model) bpmn_model = `${mainStore.bpmn_process_name}.bpmn`;
     try {
       let result = await AxiosWrapper.post(`/model/${bpmn_model}/instance`);
       return result;
@@ -73,7 +74,6 @@ const ProcessInstance = {
       return [];
     }
   },
-
   async handleNewInstance(instance_id, current_task, post_data) {
     try {
       let result = await AxiosWrapper.post(

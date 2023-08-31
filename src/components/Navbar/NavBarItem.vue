@@ -47,7 +47,7 @@ const componentClass = computed(() => {
 const itemLabel = computed(() =>
   props.item.isCurrentUser
     ? mainStore.currentUser.username ||
-      `${mainStore.currentUser.name} ${mainStore.currentUser.surname}`
+      `${mainStore.currentUser.ime} ${mainStore.currentUser.prezime}`
     : props.item.label
 );
 

@@ -47,7 +47,6 @@ function initializeBpmnViewer(container) {
 
 async function importBpmnDiagram(viewer, xml) {
   const result = await viewer.importXML(xml);
-  //console.log("success !", result.warnings);
 }
 
 function setupEventListeners(viewer) {

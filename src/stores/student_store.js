@@ -7,19 +7,20 @@ export const useStudentStore = defineStore("student", {
     student_process_instance_data: {},
   }),
   actions: {
-    async registerPreferences(assignmentsData, note) {
+    async registerPreferences(assignmentsData, napomena) {
       let post_data = {
-        JMBAG: mainStore.currentUser["jmbag"],
-        Student: [mainStore.currentUser["jmbag"]],
+        JMBAG: mainStore.currentUser["JMBAG"],
+        Student: [mainStore.currentUser["JMBAG"]],
         student_email: mainStore.currentUser["email"],
-        student_ime: mainStore.currentUser["name"],
-        student_prezime: mainStore.currentUser["surname"],
-        student_godina_studija: mainStore.currentUser["year_of_study"],
-        "Prvi odabir": [assignmentsData[0]["ID Zadatka"]],
-        "Drugi odabir": [assignmentsData[1]["ID Zadatka"]],
-        "Treći odabir": [assignmentsData[2]["ID Zadatka"]],
-        Napomena: note,
+        student_ime: mainStore.currentUser["ime"],
+        student_prezime: mainStore.currentUser["prezime"],
+        student_godina_studija: mainStore.currentUser["godina_studija"],
+        Prvi_odabir: [assignmentsData[0]["id_zadatak"]],
+        Drugi_odabir: [assignmentsData[1]["id_zadatak"]],
+        Treci_odabir: [assignmentsData[2]["id_zadatak"]],
+        napomena: napomena,
       };
+      console.log("student_store_post_data", post_data);
       try {
         let process_instance_id = mainStore.currentUser.internship_process.id;
         let pending_user_task =

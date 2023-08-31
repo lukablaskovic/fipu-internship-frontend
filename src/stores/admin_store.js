@@ -2,6 +2,7 @@ import { defineStore } from "pinia";
 import { User } from "@/services/gateway_api";
 import { Model, ProcessInstance } from "@/services/bpmn_engine_api";
 import { Admin } from "@/services/baserow_client_api";
+import { mainStore } from "@/main";
 export const useAdminStore = defineStore("admin", {
   state: () => ({
     students: [],
@@ -73,9 +74,9 @@ export const useAdminStore = defineStore("admin", {
         console.log("Error:", error);
       }
     },
-    async getPreferencesDetailed(student_jmbag) {
+    async getPreferencesDetailed(student_JMBAG) {
       try {
-        const response = await Admin.getPreferencesDetailed(student_jmbag);
+        const response = await Admin.getPreferencesDetailed(student_JMBAG);
         return response;
       } catch (error) {
         console.log("Error:", error);
@@ -85,7 +86,8 @@ export const useAdminStore = defineStore("admin", {
       try {
         const response = await Model.search();
         const model = response.results.find(
-          (result) => result.model_path === "strucna_praksa_edited.bpmn"
+          (result) =>
+            result.model_path === `${mainStore.bpmn_process_name}.bpmn`
         );
 
         if (model && model.instances) {
@@ -105,9 +107,9 @@ export const useAdminStore = defineStore("admin", {
             (stud) => stud.process_instance_id === event.instance_id
           );
           if (student) {
-            event.student_name = student["Ime"];
-            event.student_surname = student["Prezime"];
-            event.student_jmbag = student["JMBAG"];
+            event.student_ime = student["ime"];
+            event.student_prezime = student["prezime"];
+            event.student_JMBAG = student["JMBAG"];
           }
         });
         this.events = response;

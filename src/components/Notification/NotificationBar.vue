@@ -27,8 +27,6 @@ const componentClass = computed(() => {
 });
 
 const dismiss = () => {
-  console.log("Dismiss function called!");
-
   isDismissed.value = true;
 };
 

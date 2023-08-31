@@ -2,6 +2,7 @@ import { defineStore } from "pinia";
 import { Guest } from "@/services/baserow_client_api.js";
 import { ProcessInstance } from "@/services/bpmn_engine_api.js";
 import { Auth } from "@/services/gateway_api.js";
+import { mainStore } from "@/main.js";
 
 export const useGuestStore = defineStore("guest", {
   state: () => ({
@@ -23,7 +24,7 @@ export const useGuestStore = defineStore("guest", {
     async createInternshipInstance() {
       try {
         const response = await ProcessInstance.create(
-          "strucna_praksa_edited.bpmn"
+          `${mainStore.bpmn_process_name}.bpmn`
         );
         return response;
       } catch (error) {
@@ -45,7 +46,7 @@ export const useGuestStore = defineStore("guest", {
     },
     addAssignment(assignment) {
       const assignmentExists = this.checkedAssignments.some(
-        (a) => a["ID Zadatka"] === assignment["ID Zadatka"]
+        (a) => a["id_zadatak"] === assignment["id_zadatak"]
       );
       if (!assignmentExists) {
         this.checkedAssignments.push(assignment);
@@ -54,7 +55,7 @@ export const useGuestStore = defineStore("guest", {
     },
     removeAssignment(assignment) {
       this.checkedAssignments = this.checkedAssignments.filter(
-        (a) => a["ID Zadatka"] !== assignment["ID Zadatka"]
+        (a) => a["id_zadatak"] !== assignment["id_zadatak"]
       );
     },
     resetAssignments() {

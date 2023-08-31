@@ -58,13 +58,13 @@ const disableUnchecked = computed(() => {
 
 watch(checkedAssignments, (newVals) => {
   newVals.forEach((assignment) => {
-    assignmentCheckedStates.value[assignment["ID Zadatka"]] = false;
+    assignmentCheckedStates.value[assignment["id_zadatak"]] = false;
   });
 });
 
 const isCheckedAssignment = (assignment) => {
   return checkedAssignments.value.some(
-    (a) => a["ID Zadatka"] === assignment["ID Zadatka"]
+    (a) => a["id_zadatak"] === assignment["id_zadatak"]
   );
 };
 
@@ -73,7 +73,7 @@ const checked = (value, assignment) => {
   if (value) {
     if (checkedAssignments.value.length >= MAX_NUM_ASSIGNMENTS) {
       alert("You can only select a maximum of 3 assignments.");
-      assignmentCheckedStates[assignment["ID Zadatka"]] = false;
+      assignmentCheckedStates[assignment["id_zadatak"]] = false;
       return;
     }
     guestStore.addAssignment(assignment);
@@ -96,47 +96,47 @@ const checked = (value, assignment) => {
   <CardBoxModal
     v-if="isModalActive"
     v-model="isModalActive"
-    :title="isModalActive['ID Zadatka']"
+    :title="isModalActive['id_zadatak']"
     button-label="Zatvori"
     button="fipu_blue"
     has-cancel:false
     @cancel="mainStore.activateLogoutModal(false)"
   >
     <hr />
-    <div><b>Zadatak studenta:</b> {{ isModalActive["Zadatak studenta"] }}</div>
+    <div><b>Zadatak studenta:</b> {{ isModalActive["opis_zadatka"] }}</div>
     <div><b>Poslodavac: </b>{{ isModalActive["Poslodavac"][0].value }}</div>
     <div>
       <b>Preferirane tehnologije:</b>
-      {{ isModalActive["Preferirane tehnologije"] }}
+      {{ isModalActive["preferirane_tehnologije"] }}
     </div>
 
     <div>
       <b>Preferencije za studenta: </b>
-      {{ isModalActive["Preferencije za studenta"] }}
+      {{ isModalActive["preferencije_za_studenta"] }}
     </div>
 
     <div>
       <b>Potrebno imati: </b>
-      {{ isModalActive["Potrebno imati"] }}
+      {{ isModalActive["potrebno_imati"] }}
     </div>
     <div>
       <b>Trajanje (sati): </b>
-      {{ isModalActive["Trajanje (sati)"] }}
+      {{ isModalActive["trajanje_sati"] }}
     </div>
 
     <div>
       <b>Željeno okvirno vrijeme početka: </b>
-      {{ isModalActive["Željeno okvirno vrijeme početka"] }}
+      {{ isModalActive["zeljeno_okvirno_vrijeme_pocetka"] }}
     </div>
     <div>
       <b>Angažman FIPU: </b>
-      {{ isModalActive["Angažman FIPU"] }}
+      {{ isModalActive["angazman_fipu"] }}
     </div>
-    <div><b>Kontakt email: </b>{{ isModalActive["Kontakt email"] }}</div>
-    <div><b>Lokacija: </b>{{ isModalActive["Lokacija"] }}</div>
+    <div><b>Kontakt email: </b>{{ isModalActive["poslodavac_email"] }}</div>
+    <div><b>Lokacija: </b>{{ isModalActive["lokacija"] }}</div>
     <div>
       <b>Napomena</b>
-      {{ isModalActive["Napomena"] }}
+      {{ isModalActive["napomena"] }}
     </div>
     <br />
   </CardBoxModal>
@@ -157,7 +157,7 @@ const checked = (value, assignment) => {
     <tbody>
       <tr
         v-for="assignment in assignmentsPaginated"
-        :key="assignment['ID Zadatka']"
+        :key="assignment['id_zadatak']"
       >
         <TableCheckboxCell
           v-if="checkable"
@@ -166,20 +166,20 @@ const checked = (value, assignment) => {
           @checked="checked($event, assignment)"
         />
 
-        <td data-label="ID Zadatka">
-          {{ assignment["ID Zadatka"] }}
+        <td data-label="id_zadatak">
+          {{ assignment["id_zadatak"] }}
         </td>
         <td data-label="Kontakt email">
-          {{ assignment["Kontakt email"] }}
+          {{ assignment["poslodavac_email"] }}
         </td>
         <td data-label="Preferirane tehnologije">
-          {{ assignment["Preferirane tehnologije"] }}
+          {{ assignment["preferirane_tehnologije"] }}
         </td>
         <td data-label="Trajanje (sati)">
-          {{ assignment["Trajanje (sati)"] }}
+          {{ assignment["trajanje_sati"] }}
         </td>
         <td data-label="Lokacija">
-          {{ assignment["Lokacija"] }}
+          {{ assignment["lokacija"] }}
         </td>
 
         <td class="before:hidden lg:w-1 whitespace-nowrap">

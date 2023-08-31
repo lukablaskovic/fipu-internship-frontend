@@ -4,15 +4,15 @@ function getMappedProperty(arr, key, keyValue, prop) {
 }
 
 class StudentMappings {
-  static year_of_study = [
+  static GodinaStudijaMappings = [
     { id: 1, label: "3. prijediplomski", dbLabel: "3_prijediplomski" },
     { id: 2, label: "1. diplomski", dbLabel: "1_diplomski" },
     { id: 3, label: "2. diplomski", dbLabel: "2_diplomski" },
   ];
 
-  static getYearOfStudyLabel(dbLabel) {
-    const year = this.year_of_study.find((year) => year.dbLabel === dbLabel);
-    return year ? year.label : dbLabel;
+  static getGodinaStudija(dbLabel) {
+    const gs = this.GodinaStudijaMappings.find((gs) => gs.dbLabel === dbLabel);
+    return gs ? gs.label : dbLabel;
   }
 }
 

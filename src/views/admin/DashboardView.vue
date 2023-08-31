@@ -127,10 +127,9 @@ const pagesList = computed(() => {
             <CardBoxEvents
               v-for="(event, index) in leftItems"
               :key="'left-' + index"
-              :student="event.student_name + ' ' + event.student_surname"
-              :date="event.timestamp"
+              :student="event.student_ime + ' ' + event.student_prezime"
               :type="event.activity_id"
-              :jmbag="event.student_jmbag"
+              :JMBAG="event.student_JMBAG"
               class="rounded-lg"
             />
           </div>
@@ -138,10 +137,10 @@ const pagesList = computed(() => {
             <CardBoxEvents
               v-for="(event, index) in rightItems"
               :key="'right-' + index"
-              :student="event.student_name + ' ' + event.student_surname"
+              :student="event.student_ime + ' ' + event.student_prezime"
               :date="event.timestamp"
               :type="event.activity_id"
-              :jmbag="event.student_jmbag"
+              :JMBAG="event.student_JMBAG"
               class="rounded-lg"
             />
           </div>

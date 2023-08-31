@@ -69,7 +69,7 @@ onMounted(() => {
 });
 
 const handleRowSelected = (assignmentId) => {
-  formValues["Alocirani zadatak"] = assignmentId;
+  formValues["Alocirani_zadatak"] = assignmentId;
   console.log(formValues);
 };
 
@@ -93,7 +93,8 @@ watch(
   (newValues) => {
     emit("update:modelValue", newValues);
   },
-  { deep: true }
+  { deep: true },
+  console.log(formValues)
 );
 
 const submitForm = () => {

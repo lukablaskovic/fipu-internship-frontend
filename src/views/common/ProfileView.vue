@@ -26,11 +26,11 @@ import { StudentMappings } from "@/helpers/maps.js";
 
 const profileForm = reactive({
   username: mainStore.currentUser.username,
-  name: mainStore.currentUser.name,
-  surname: mainStore.currentUser.surname,
-  jmbag: mainStore.currentUser.jmbag,
-  type: mainStore.currentUser.type,
-  year_of_study: mainStore.currentUser.year_of_study,
+  ime: mainStore.currentUser.ime,
+  prezime: mainStore.currentUser.prezime,
+  JMBAG: mainStore.currentUser.JMBAG,
+  account_type: mainStore.currentUser.account_type,
+  godina_studija: mainStore.currentUser.godina_studija,
   email: mainStore.currentUser.email,
 });
 
@@ -72,16 +72,16 @@ const passwordForm = reactive({
           </FormField>
           <FormField label="Ime">
             <FormControl
-              v-model="profileForm.name"
+              v-model="profileForm.ime"
               :icon="mdiAccount"
-              name="name"
+              name="ime"
               readonly
-              autocomplete="name"
+              autocomplete="ime"
             />
           </FormField>
           <FormField label="Prezime">
             <FormControl
-              v-model="profileForm.surname"
+              v-model="profileForm.prezime"
               :icon="mdiAccount"
               name="prezime"
               readonly
@@ -101,25 +101,25 @@ const passwordForm = reactive({
           <div v-if="!mainStore.userAdmin">
             <FormField label="JMBAG">
               <FormControl
-                v-model="profileForm.jmbag"
+                v-model="profileForm.JMBAG"
                 :icon="mdiCardAccountDetails"
-                type="jmbag"
-                name="jmbag"
+                type="JMBAG"
+                name="JMBAG"
                 readonly
-                autocomplete="jmbag"
+                autocomplete="JMBAG"
               />
             </FormField>
 
             <FormField label="Godina studija">
               <FormControl
                 :v-model="
-                  StudentMappings.getYearOfStudyLabel(profileForm.year_of_study)
+                  StudentMappings.getGodinaStudija(profileForm.godina_studija)
                 "
                 :icon="mdiSchool"
-                type="year_of_study"
-                name="year_of_study"
+                type="godina_studija"
+                name="godina_studija"
                 readonly
-                autocomplete="year_of_study"
+                autocomplete="godina_studija"
               />
             </FormField>
           </div>

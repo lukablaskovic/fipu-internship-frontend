@@ -12,27 +12,19 @@ import FormField from "@/components/Form/FormField.vue";
 import FormControl from "@/components/Form/FormControl.vue";
 import BaseButton from "@/components/Base/BaseButton.vue";
 import BaseButtons from "@/components/Base/BaseButtons.vue";
-
 import { StudentMappings } from "@/helpers/maps";
-
 import { guestStore } from "@/main";
 
 const router = useRouter();
 
-const selectYearOfStudy = [
-  { id: 1, label: "3. prijediplomski", dbLabel: "3_prijediplomski" },
-  { id: 2, label: "1. diplomski", dbLabel: "1_diplomski" },
-  { id: 3, label: "2. diplomski", dbLabel: "2_diplomski" },
-];
-
 let data_confirmed = ref(false);
 
 const form = reactive({
-  name: "Pero",
-  surname: "Peric",
-  email: "peric@unipu.hr",
-  jmbag: "0303088177",
-  year_of_study: selectYearOfStudy[0],
+  ime: "Luka",
+  prezime: "Blašković",
+  email: "lblaskovi@unipu.hr",
+  JMBAG: "0303088177",
+  godina_studija: StudentMappings.GodinaStudijaMappings[1],
   password: "123456",
 });
 
@@ -42,7 +34,7 @@ async function onSubmit() {
   let instanceCreationResult = await guestStore.createInternshipInstance();
   let postData = {
     ...form,
-    year_of_study: form.year_of_study.dbLabel,
+    godina_studija: form.godina_studija.dbLabel,
     process_instance_id: instanceCreationResult.id,
   };
 
@@ -102,28 +94,28 @@ async function onSubmit() {
             <div>
               <FormField label="Ime" help="Molimo unesite vaše ime">
                 <FormControl
-                  v-model="form.name"
+                  v-model="form.ime"
                   :icon="mdiAccount"
-                  name="name"
-                  autocomplete="name"
+                  name="ime"
+                  autocomplete="ime"
                 />
               </FormField>
 
               <FormField label="Prezime" help="Molimo unesite vaše prezime">
                 <FormControl
-                  v-model="form.surname"
+                  v-model="form.prezime"
                   :icon="mdiAccount"
-                  name="surname"
-                  autocomplete="surname"
+                  name="prezime"
+                  autocomplete="prezime"
                 />
               </FormField>
 
               <FormField label="JMBAG" help="Molimo unesite vaš JMBAG">
                 <FormControl
-                  v-model="form.jmbag"
+                  v-model="form.JMBAG"
                   :icon="mdiAccount"
-                  name="jmbag"
-                  autocomplete="jmbag"
+                  name="JMBAG"
+                  autocomplete="JMBAG"
                 />
               </FormField>
 
@@ -149,8 +141,8 @@ async function onSubmit() {
                 help="Odaberite vašu nastavnu godinu"
               >
                 <FormControl
-                  v-model="form.year_of_study"
-                  :options="selectYearOfStudy"
+                  v-model="form.godina_studija"
+                  :options="StudentMappings.GodinaStudijaMappings"
                 />
               </FormField>
 

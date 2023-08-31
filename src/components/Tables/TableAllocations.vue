@@ -17,7 +17,7 @@ let dataLoaded = ref(false);
 const filteredAllocations = computed(() => {
   return allocations.value.filter(
     (allocation) =>
-      allocation["Alocirani zadatak"] && allocation["Opis zadatka"]
+      allocation["Alocirani_zadatak"] && allocation["opis_zadatka"]
   );
 });
 
@@ -79,10 +79,10 @@ const pagesList = computed(() => {
           {{ allocation["JMBAG"] }}
         </td>
         <td data-label="Alocirani zadatak">
-          {{ allocation["Alocirani zadatak"] }}
+          {{ allocation["Alocirani_zadatak"] }}
         </td>
         <td data-label="Opis zadatka">
-          {{ allocation["Opis zadatka"] }}
+          {{ allocation["opis_zadatka"] }}
         </td>
 
         <td data-label="Kontakt">

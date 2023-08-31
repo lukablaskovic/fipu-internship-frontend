@@ -45,9 +45,12 @@ const transactionBarItems = computed(() => mainStore.history);
 async function fetchXML() {
   try {
     // Make sure to set the responseType to 'text' since we're reading the XML as a string.
-    const response = await axios.get("/bpmn_xml/strucna_praksa_edited.xml", {
-      responseType: "text",
-    });
+    const response = await axios.get(
+      `/bpmn_xml/${mainStore.bpmn_process_name}.xml`,
+      {
+        responseType: "text",
+      }
+    );
 
     return response.data;
   } catch (error) {

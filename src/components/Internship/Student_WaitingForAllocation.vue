@@ -18,8 +18,7 @@ import LayoutGuest from "@/layouts/LayoutGuest.vue";
 
 import SectionTitleLineWithButton from "@/components/Section/SectionTitleLineWithButton.vue";
 import CardBoxWidget from "@/components/Cardbox/CardBoxWidget.vue";
-import BaseButtons from "@/components/Base/BaseButtons.vue";
-import BaseButton from "@/components/Base/BaseButton.vue";
+
 import CardBoxModal from "@/components/Cardbox/CardBoxModal.vue";
 import { mainStore, studentStore } from "@/main.js";
 
@@ -33,9 +32,9 @@ onMounted(async () => {
   let result = await studentStore.getInstanceInfo(
     mainStore.currentUser.internship_process.id
   );
-  prviOdabir.value = result.variables["Prvi odabir"][0];
-  drugiOdabir.value = result.variables["Drugi odabir"][0];
-  treciOdabir.value = result.variables["Treći odabir"][0];
+  prviOdabir.value = result.variables["Prvi_odabir"][0];
+  drugiOdabir.value = result.variables["Drugi_odabir"][0];
+  treciOdabir.value = result.variables["Treci_odabir"][0];
 });
 
 const Layout = computed(() => {
@@ -117,48 +116,46 @@ const userAuthenticated = computed(() => mainStore.userAuthenticated);
       <CardBoxModal
         v-if="isModalActive"
         v-model="isModalActive"
-        :title="isModalActive['ID Zadatka']"
+        :title="isModalActive['id_zadatak']"
         button-label="Zatvori"
         button="fipu_blue"
         has-cancel:false
       >
         <hr />
-        <div>
-          <b>Zadatak studenta:</b> {{ isModalActive["Zadatak studenta"] }}
-        </div>
+        <div><b>Zadatak studenta:</b> {{ isModalActive["opis_zadatka"] }}</div>
         <div><b>Poslodavac: </b>{{ isModalActive["Poslodavac"][0].value }}</div>
         <div>
           <b>Preferirane tehnologije:</b>
-          {{ isModalActive["Preferirane tehnologije"] }}
+          {{ isModalActive["preferirane_tehnologije"] }}
         </div>
 
         <div>
           <b>Preferencije za studenta: </b>
-          {{ isModalActive["Preferencije za studenta"] }}
+          {{ isModalActive["preferencije_za_studenta"] }}
         </div>
 
         <div>
           <b>Potrebno imati: </b>
-          {{ isModalActive["Potrebno imati"] }}
+          {{ isModalActive["potrebno_imati"] }}
         </div>
         <div>
           <b>Trajanje (sati): </b>
-          {{ isModalActive["Trajanje (sati)"] }}
+          {{ isModalActive["trajanje_sati"] }}
         </div>
 
         <div>
           <b>Željeno okvirno vrijeme početka: </b>
-          {{ isModalActive["Željeno okvirno vrijeme početka"] }}
+          {{ isModalActive["zeljeno_okvirno_vrijeme_pocetka"] }}
         </div>
         <div>
           <b>Angažman FIPU: </b>
-          {{ isModalActive["Angažman FIPU"] }}
+          {{ isModalActive["angazman_fipu"] }}
         </div>
-        <div><b>Kontakt email: </b>{{ isModalActive["Kontakt email"] }}</div>
-        <div><b>Lokacija: </b>{{ isModalActive["Lokacija"] }}</div>
+        <div><b>Kontakt email: </b>{{ isModalActive["poslodavac_email"] }}</div>
+        <div><b>Lokacija: </b>{{ isModalActive["lokacija"] }}</div>
         <div>
           <b>Napomena</b>
-          {{ isModalActive["Napomena"] }}
+          {{ isModalActive["napomena"] }}
         </div>
         <br />
       </CardBoxModal>

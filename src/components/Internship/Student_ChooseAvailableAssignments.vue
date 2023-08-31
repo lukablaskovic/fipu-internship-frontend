@@ -37,7 +37,7 @@ const Layout = computed(() => {
   }
 });
 
-let note = ref(null);
+let napomena = ref(null);
 
 const checkedAssignments = computed(() => guestStore.checkedAssignments);
 const modalConfirmPreferences = ref(false);
@@ -85,7 +85,7 @@ const registerPreferences = async () => {
   } else {
     let result = await studentStore.registerPreferences(
       checkedAssignments.value,
-      note.value
+      napomena.value
     );
     if (result && result.status == "OK") {
       showNotificationBar("success");
@@ -151,7 +151,7 @@ const registerPreferences = async () => {
                 :class="{ 'not-draggable': !enabled, 'cursor-move': enabled }"
               >
                 <span class="mb-2 font-bold">{{ index + 1 }}. odabir</span>
-                {{ element["ID Zadatka"] }}
+                {{ element["id_zadatak"] }}
               </div>
             </template>
           </draggable>
@@ -165,7 +165,7 @@ const registerPreferences = async () => {
           help="Maksimalno 255 znakova"
         >
           <FormControl
-            v-model="note"
+            v-model="napomena"
             type="textarea"
             placeholder="Slobodno dodaj napomenu za voditelja prakse."
           />
@@ -208,12 +208,12 @@ const registerPreferences = async () => {
         <br />
         <p
           v-for="(assignment, index) in checkedAssignments"
-          :key="assignment['ID Zadatka']"
+          :key="assignment['id_zadatak']"
         >
-          <b>Odabir {{ index + 1 }}: </b>{{ assignment["ID Zadatka"] }}
+          <b>Odabir {{ index + 1 }}: </b>{{ assignment["id_zadatak"] }}
         </p>
         <br />
-        <p><b>Napomena:</b> {{ note }}</p></CardBoxModal
+        <p><b>Napomena:</b> {{ napomena }}</p></CardBoxModal
       >
     </SectionMain>
   </component>

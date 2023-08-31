@@ -21,7 +21,8 @@ const props = defineProps({
     type: String,
     required: true,
   },
-  jmbag: {
+  // eslint-disable-next-line vue/prop-name-casing
+  JMBAG: {
     type: String,
     required: true,
   },
@@ -57,7 +58,7 @@ const icon = computed(() => {
         <div class="text-center space-y-1 md:text-left md:mr-6">
           <h4 class="text-xl">{{ student }}</h4>
           <p class="text-gray-500 dark:text-slate-400">
-            <b>JMBAG: {{ jmbag }}</b>
+            <b>JMBAG: {{ JMBAG }}</b>
           </p>
         </div>
       </BaseLevel>

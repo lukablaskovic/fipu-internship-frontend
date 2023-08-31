@@ -68,11 +68,11 @@ const pagesList = computed(() => {
         <TableCheckboxCell v-if="checkable" :assignment-data="company" />
 
         <td data-label="Naziv">
-          {{ company["Naziv"] }}
+          {{ company["naziv"] }}
         </td>
         <td data-label="Web mjesto">
-          <a class="underline" :href="company['Web']" target="_blank">{{
-            company["Web"]
+          <a class="underline" :href="company['web']" target="_blank">{{
+            company["web"]
           }}</a>
         </td>
 
@@ -82,7 +82,7 @@ const pagesList = computed(() => {
               color="fipu_blue"
               :icon="mdiWeb"
               small
-              @click="goToCompanyWeb(company['Web'])"
+              @click="goToCompanyWeb(company['web'])"
             />
           </BaseButtons>
         </td>

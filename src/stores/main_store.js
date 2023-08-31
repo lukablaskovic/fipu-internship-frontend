@@ -5,18 +5,20 @@ import axios from "axios";
 
 export const useMainStore = defineStore("main", {
   state: () => ({
+    bpmn_process_name: "strucna_praksa_edited",
     currentUser: {
       id: "",
-      name: "",
-      surname: "",
+      ime: "",
+      prezime: "",
       username: "",
-      jmbag: "",
+      JMBAG: "",
       email: "",
-      year_of_study: "",
+      godina_studija: "",
       avatar: "",
       baserow_id: null,
-      type: "" || null,
+      account_type: "" || null,
       loggedAt: null,
+
       internship_process: {
         id: null,
         pending_user_task: null,
@@ -24,15 +26,15 @@ export const useMainStore = defineStore("main", {
 
       reset() {
         this.id = "";
-        this.name = "";
-        this.surname = "";
+        this.ime = "";
+        this.prezime = "";
         this.username = "";
-        this.jmbag = "";
+        this.JMBAG = "";
         this.email = "";
-        this.year_of_study = "";
+        this.godina_studija = "";
         this.avatar = "";
         this.baserow_id = null;
-        this.type = "" || null;
+        this.account_type = "" || null;
         this.internship_process.id = null;
         this.internship_process.pending_user_task = null;
       },
@@ -49,7 +51,7 @@ export const useMainStore = defineStore("main", {
       return Boolean(this.access_token);
     },
     userAdmin() {
-      return this.currentUser && this.currentUser.type === "admin";
+      return this.currentUser && this.currentUser.account_type === "admin";
     },
   },
   actions: {
@@ -81,9 +83,9 @@ export const useMainStore = defineStore("main", {
       }
     },
     handleSuccessfulLogin() {
-      if (this.currentUser.type == "student") {
+      if (this.currentUser.account_type == "student") {
         this.router.push("/moja-praksa");
-      } else if (this.currentUser.type == "admin") {
+      } else if (this.currentUser.account_type == "admin") {
         this.router.push("/dashboard");
       }
     },

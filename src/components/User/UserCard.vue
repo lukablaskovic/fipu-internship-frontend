@@ -10,12 +10,9 @@ import PillTag from "@/components/PillTag/PillTag.vue";
 
 import moment from "@/moment-setup";
 
-const accountType = computed(() => mainStore.currentUser.type);
 const loggeddTimeAgo = computed(() =>
   moment(mainStore.currentUser.loggedAt).fromNow()
 );
-const username = computed(() => mainStore.currentUser.username);
-const name = computed(() => mainStore.currentUser.name);
 
 const userSwitchVal = ref(false);
 </script>
@@ -35,7 +32,10 @@ const userSwitchVal = ref(false);
           />
         </div>
         <h1 class="text-2xl">
-          Hej, <b>{{ username || name }}</b
+          Hej,
+          <b>{{
+            mainStore.currentUser.username || mainStore.currentUser.ime
+          }}</b
           >!
         </h1>
         <p>
@@ -44,13 +44,13 @@ const userSwitchVal = ref(false);
         </p>
         <div class="flex justify-center md:block">
           <PillTag
-            v-if="accountType == 'admin'"
+            v-if="mainStore.currentUser.account_type == 'admin'"
             label="Admin"
             color="danger"
             :icon="mdiShieldAccount"
           />
           <PillTag
-            v-if="accountType == 'student'"
+            v-if="mainStore.currentUser.account_type == 'student'"
             label="Student"
             color="success"
             :icon="mdiSchool"

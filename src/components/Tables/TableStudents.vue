@@ -1,8 +1,7 @@
 <script setup>
-import { computed, ref, reactive, onBeforeMount } from "vue";
+import { computed, ref, onBeforeMount } from "vue";
 
 import { mdiEye } from "@mdi/js";
-import TableCheckboxCell from "@/components/Tables/TableCheckboxCell.vue";
 import BaseLevel from "@/components/Base/BaseLevel.vue";
 import BaseButtons from "@/components/Base/BaseButtons.vue";
 import BaseButton from "@/components/Base/BaseButton.vue";
@@ -86,19 +85,17 @@ const pagesList = computed(() => {
           {{ student["JMBAG"] }}
         </td>
         <td data-label="Ime">
-          {{ student["Ime"] }}
+          {{ student["ime"] }}
         </td>
         <td data-label="Prezime">
-          {{ student["Prezime"] }}
+          {{ student["prezime"] }}
         </td>
         <td data-label="Email">
-          {{ student["Email"] }}
+          {{ student["email"] }}
         </td>
         <td data-label="Godina studija">
           {{
-            StudentMappings.getYearOfStudyLabel(
-              student["Godina studija"]["value"]
-            )
+            StudentMappings.getGodinaStudija(student["godina_studija"]["value"])
           }}
         </td>
         <td data-label="Progress" class="lg:w-32">
