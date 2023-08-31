@@ -21,8 +21,7 @@ const props = defineProps({
     type: String,
     required: true,
   },
-  // eslint-disable-next-line vue/prop-name-casing
-  JMBAG: {
+  jmbag: {
     type: String,
     required: true,
   },
@@ -30,6 +29,7 @@ const props = defineProps({
 
 const momentDate = computed(() => {
   let date = moment(props.date);
+  console.log(date);
   return date.fromNow();
 });
 
@@ -58,7 +58,7 @@ const icon = computed(() => {
         <div class="text-center space-y-1 md:text-left md:mr-6">
           <h4 class="text-xl">{{ student }}</h4>
           <p class="text-gray-500 dark:text-slate-400">
-            <b>JMBAG: {{ JMBAG }}</b>
+            <b>JMBAG: {{ jmbag }}</b>
           </p>
         </div>
       </BaseLevel>

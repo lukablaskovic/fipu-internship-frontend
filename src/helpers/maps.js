@@ -68,6 +68,7 @@ import {
   mdiThumbsUpDownOutline,
   mdiAlertBox,
   mdiNoteCheck,
+  mdiAccountTie,
 } from "@mdi/js";
 import Student_WaitingForEvaluation from "@/components/Internship/Student_WaitingForEvaluation.vue";
 
@@ -86,7 +87,7 @@ class ActivityEventMappings {
       message: "Prijava zadataka",
     },
     {
-      activity_id: "spremanje-preferencije",
+      activity_id: "spremanje_preferencije",
       icon: mdiAlertBox,
       type: "danger",
       message: "Čeka alokaciju profesora",
@@ -98,11 +99,17 @@ class ActivityEventMappings {
       message: "Zadatak alociran",
     },
     {
-      activity_id: "evaluacija_poslodavac",
-      icon: mdiAlertBox,
-      type: "danger",
-      message: "Čeka evaluaciju poslodavca",
+      activity_id: "razgovor_za_praksu_poslodavac",
+      icon: mdiAccountTie,
+      type: "info",
+      message: "Evaluacija poslodavca u tijeku",
     },
+  ];
+  static skipEvents = [
+    "spremanje_alokacija",
+    "uzimanje_podataka_o_poslodavcu_student",
+    "obavjestavanje_poslodavca_nakon_alokacije",
+    "obavjestavanje_studenta_nakon_alokacije",
   ];
   static getEvent(activityId) {
     return this.events.find((event) => event.activity_id === activityId);

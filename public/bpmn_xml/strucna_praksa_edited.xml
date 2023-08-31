@@ -34,9 +34,9 @@
         <bpmn:flowNodeRef>azuriranje_podataka_profesor</bpmn:flowNodeRef>
         <bpmn:flowNodeRef>obavjestavanje_studenta_nakon_alokacije</bpmn:flowNodeRef>
         <bpmn:flowNodeRef>obavjestavanje_poslodavca_nakon_alokacije</bpmn:flowNodeRef>
-        <bpmn:flowNodeRef>spremanje-preferencije</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>spremanje_preferencije</bpmn:flowNodeRef>
         <bpmn:flowNodeRef>alociranje_profesor</bpmn:flowNodeRef>
-        <bpmn:flowNodeRef>spremanje-alokacija</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>spremanje_alokacija</bpmn:flowNodeRef>
         <bpmn:flowNodeRef>uzimanje_podataka_o_poslodavcu_student</bpmn:flowNodeRef>
       </bpmn:lane>
     </bpmn:laneSet>
@@ -61,7 +61,7 @@
       <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">kandidat_odobren:false</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
     <bpmn:sequenceFlow id="Flow_12zi41o" sourceRef="start_event_student" targetRef="odabiranje_zadatka_student" />
-    <bpmn:sequenceFlow id="Flow_0lsghyt" sourceRef="alociranje_profesor" targetRef="spremanje-alokacija" />
+    <bpmn:sequenceFlow id="Flow_0lsghyt" sourceRef="alociranje_profesor" targetRef="spremanje_alokacija" />
     <bpmn:userTask id="odabiranje_zadatka_student" name="Odabir preferencija za praksu">
       <bpmn:documentation>Pogledajte zanimljive slobodne zadatke te odaberite i rasporedite 3 najdraža - (1. odabir | 2. odabir | 3. odabir).
 
@@ -491,9 +491,9 @@ Dnevnik je potrebno predati prije prijave ispitnoga roka.</bpmn:documentation>
       <bpmn:outgoing>SequenceFlow_0v5m4rx</bpmn:outgoing>
     </bpmn:sendTask>
     <bpmn:sequenceFlow id="SequenceFlow_0v5m4rx" sourceRef="obavijest_odbijanje" targetRef="odabiranje_zadatka_student" />
-    <bpmn:sequenceFlow id="Flow_1duw845" sourceRef="odabiranje_zadatka_student" targetRef="spremanje-preferencije" />
-    <bpmn:sequenceFlow id="Flow_0ti6tpk" sourceRef="spremanje-preferencije" targetRef="alociranje_profesor" />
-    <bpmn:serviceTask id="spremanje-preferencije" name="Spremanje preferencija u baserow">
+    <bpmn:sequenceFlow id="Flow_1duw845" sourceRef="odabiranje_zadatka_student" targetRef="spremanje_preferencije" />
+    <bpmn:sequenceFlow id="Flow_0ti6tpk" sourceRef="spremanje_preferencije" targetRef="alociranje_profesor" />
+    <bpmn:serviceTask id="spremanje_preferencije" name="Spremanje preferencija u baserow">
       <bpmn:extensionElements>
         <camunda:connector>
           <camunda:inputOutput>
@@ -535,8 +535,8 @@ Dnevnik je potrebno predati prije prijave ispitnoga roka.</bpmn:documentation>
       <bpmn:incoming>Flow_0ti6tpk</bpmn:incoming>
       <bpmn:outgoing>Flow_0lsghyt</bpmn:outgoing>
     </bpmn:userTask>
-    <bpmn:sequenceFlow id="Flow_07vs9rk" sourceRef="spremanje-alokacija" targetRef="uzimanje_podataka_o_poslodavcu_student" />
-    <bpmn:serviceTask id="spremanje-alokacija" name="Spremanje alokacije u baserow">
+    <bpmn:sequenceFlow id="Flow_07vs9rk" sourceRef="spremanje_alokacija" targetRef="uzimanje_podataka_o_poslodavcu_student" />
+    <bpmn:serviceTask id="spremanje_alokacija" name="Spremanje alokacije u baserow">
       <bpmn:documentation>Spremanje alokacije u baserow bazu podataka</bpmn:documentation>
       <bpmn:extensionElements>
         <camunda:connector>
@@ -675,14 +675,14 @@ Dnevnik je potrebno predati prije prijave ispitnoga roka.</bpmn:documentation>
       <bpmndi:BPMNShape id="SendTask_1e2ea7n_di" bpmnElement="obavijest_odbijanje">
         <dc:Bounds x="311" y="130" width="100" height="80" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_1qsfox4_di" bpmnElement="spremanje-preferencije">
+      <bpmndi:BPMNShape id="Activity_1qsfox4_di" bpmnElement="spremanje_preferencije">
         <dc:Bounds x="311" y="450" width="100" height="80" />
         <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Activity_1d4nyrm_di" bpmnElement="alociranje_profesor">
         <dc:Bounds x="311" y="550" width="100" height="80" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_098cswa_di" bpmnElement="spremanje-alokacija">
+      <bpmndi:BPMNShape id="Activity_098cswa_di" bpmnElement="spremanje_alokacija">
         <dc:Bounds x="446" y="550" width="100" height="80" />
         <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>

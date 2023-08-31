@@ -18,7 +18,7 @@ import SkeletonLoaderEvent from "@/components/SkeletonLoaderEvent.vue";
 import BaseLevel from "@/components/Base/BaseLevel.vue";
 import BaseButtons from "@/components/Base/BaseButtons.vue";
 import BaseButton from "@/components/Base/BaseButton.vue";
-
+import { ActivityEventMappings } from "@/helpers/maps.js";
 const userAuthenticated = computed(() => mainStore.userAuthenticated);
 
 const ongoing_internships = ref(0);
@@ -32,7 +32,12 @@ onMounted(async () => {
   waiting_for_allocation.value =
     adminStore.dashboard_data.waiting_for_allocation;
   await adminStore.getEvents();
-  events.value = adminStore.events.reverse();
+  events.value = adminStore.events
+    .filter(
+      (event) => !ActivityEventMappings.skipEvents.includes(event.activity_id)
+    )
+    .reverse();
+  console.log("left items", leftItems.value);
 });
 
 const perPage = ref(10);
@@ -128,8 +133,9 @@ const pagesList = computed(() => {
               v-for="(event, index) in leftItems"
               :key="'left-' + index"
               :student="event.student_ime + ' ' + event.student_prezime"
+              :date="event.timestamp"
               :type="event.activity_id"
-              :JMBAG="event.student_JMBAG"
+              :jmbag="event.student_JMBAG"
               class="rounded-lg"
             />
           </div>
@@ -140,7 +146,7 @@ const pagesList = computed(() => {
               :student="event.student_ime + ' ' + event.student_prezime"
               :date="event.timestamp"
               :type="event.activity_id"
-              :JMBAG="event.student_JMBAG"
+              :jmbag="event.student_JMBAG"
               class="rounded-lg"
             />
           </div>
