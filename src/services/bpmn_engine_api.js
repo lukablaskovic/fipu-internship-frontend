@@ -41,8 +41,7 @@ const ProcessInstance = {
       return result;
     } catch (error) {
       console.log("Error:", error);
-
-      return null;
+      return { status: 500, message: "Internal server error", data: error };
     }
   },
   // Instance info

@@ -9,6 +9,7 @@ const props = defineProps({
   isForm: Boolean,
   isHoverable: Boolean,
   isModal: Boolean,
+  centeredContent: Boolean,
 });
 
 const emit = defineEmits(["submit"]);
@@ -41,7 +42,10 @@ const submit = (event) => {
   >
     <slot v-if="hasComponentLayout" />
     <template v-else>
-      <CardBoxComponentBody :no-padding="hasTable">
+      <CardBoxComponentBody
+        :no-padding="hasTable"
+        :centered-content="centeredContent"
+      >
         <slot />
       </CardBoxComponentBody>
       <CardBoxComponentFooter v-if="hasFooterSlot">

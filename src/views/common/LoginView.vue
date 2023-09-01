@@ -3,7 +3,7 @@ import { ref, computed, reactive } from "vue";
 import { useRouter } from "vue-router";
 import { mdiAccount, mdiAsterisk } from "@mdi/js";
 import { mdiAlertCircle, mdiCheckCircle, mdiAlert, mdiClose } from "@mdi/js";
-import SectionSplitHorizontally from "@/components/Section/SectionSplitHorizontally.vue";
+import SectionSplitLogin from "@/components/Section/SectionSplitLogin.vue";
 
 import CardBox from "@/components/Cardbox/CardBox.vue";
 import FormCheckRadio from "@/components/Form/FormCheckRadio.vue";
@@ -70,40 +70,40 @@ function showNotificationBar(type) {
 </script>
 
 <template>
-  <SectionSplitHorizontally bg="blue">
+  <SectionSplitLogin bg="blue">
     <div
-      class="flex flex-col md:flex-row overflow-hidden md:rounded-lg md:p-8 md:h-screen"
+      class="flex flex-col flex-shrink md:flex-row overflow-hidden md:rounded-lg md:p-4 2xl:p-16 md:h-screen lg:px-12"
     >
+      <!--This is graphics image cardbox-->
       <CardBox
         class="hidden md:block flex-1 md:rounded-l-lg justify-center items-center"
+        centered-content
       >
-        <div>
-          <img
-            src="login_art.jpg"
-            alt="Login graphics"
-            class="max-w-full h-auto"
-          />
-        </div>
+        <img
+          src="login_art.jpg"
+          alt="Login graphics"
+          class="w-3/4 object-contain mx-auto"
+        />
       </CardBox>
-
+      <!--This is cardbox with form-->
       <CardBox
-        class="flex-1 flex flex-col md:rounded-r-lg pt-12 pb-12 justify-center items-center space-y-4"
+        class="flex flex-col flex-shrink flex-1 justify-center items-center space-y-4 md:rounded-r-lg"
         is-form
+        centered-content
         @submit.prevent="onSubmit"
       >
-        <div>
-          <img
-            src="fipu_hr.png"
-            alt="fipu logo"
-            class="w-36 h-36 object-cover mx-auto"
-          />
-        </div>
+        <img
+          src="fipu_hr.png"
+          alt="fipu logo"
+          class="w-1/4 lg:w-1/5 2xl:1/6 object-contain mx-auto"
+        />
+
         <h2
-          class="text-2xl md:text-4xl text-center text-fipu_gray font-bold mb-4 mt-4"
+          class="text-2xl lg:text-3xl 2xl:text-4xl text-center text-fipu_gray font-bold xl:mb-1 mb-4 md:mb-0 2xl:mb-4"
         >
-          Dobrodošli na <span class="text-fipu_blue">FIPU Praksa</span>
+          Dobrodošli u <span class="text-fipu_blue">FIPU Praksa</span>
         </h2>
-        <h2 class="mb-4 text-center">
+        <h2 class="md:text-sm lg:text-sm 2xl:text-base text-center 2xl:mb-4">
           Molimo prijavite se kako biste pregledali stanje vaše prakse ili
           prijavili zadatke. Ukoliko želite samo pregledati dostupne zadatke i
           poduzeća, molimo nastavite kao gost
@@ -114,8 +114,8 @@ function showNotificationBar(type) {
           >.
         </h2>
 
-        <div class="w-full px-4">
-          <FormField label="E-mail" help="Molimo unesite vašu e-mail adresu">
+        <div class="w-full px-2 lg:px-12">
+          <FormField label="E-mail">
             <FormControl
               v-model="loginForm.email"
               :icon="mdiAccount"
@@ -124,7 +124,7 @@ function showNotificationBar(type) {
             />
           </FormField>
 
-          <FormField label="Lozinka" help="Molimo unesite vašu lozinku">
+          <FormField label="Lozinka">
             <FormControl
               v-model="loginForm.password"
               :icon="mdiAsterisk"
@@ -134,7 +134,7 @@ function showNotificationBar(type) {
             />
           </FormField>
 
-          <div class="text-right mb-2">
+          <div class="text-right">
             <a href="#" class="text-sm">Zaboravili ste lozinku?</a>
           </div>
 
@@ -142,10 +142,11 @@ function showNotificationBar(type) {
             v-model="loginForm.remember_me"
             name="remember"
             label="Zapamti me!"
+            class="mb-1 2xl:mb-4"
             :input-value="true"
           />
 
-          <BaseButtons class="space-y-2 mt-6">
+          <BaseButtons class="space-y-2">
             <BaseButton
               type="submit"
               color="fipu_blue"
@@ -153,13 +154,12 @@ function showNotificationBar(type) {
               class="w-full"
             />
           </BaseButtons>
-          <!-- Separator between social media sign in and email/password sign in -->
           <div
-            class="my-4 flex items-center before:mt-0.5 before:flex-1 before:border-t before:border-neutral-300 after:mt-0.5 after:flex-1 after:border-t after:border-neutral-300"
+            class="my-2 2xl:my-4 flex items-center before:mt-0.5 before:flex-1 before:border-t before:border-neutral-300 after:mt-0.5 after:flex-1 after:border-t after:border-neutral-300"
           >
             <p class="mx-4 mb-0 text-center dark:text-white">ili</p>
           </div>
-          <BaseButtons class="space-y-2 mt-6">
+          <BaseButtons class="space-y-2">
             <BaseButton
               color="fipu_blue"
               outline
@@ -168,26 +168,26 @@ function showNotificationBar(type) {
               class="w-full"
             />
           </BaseButtons>
+
+          <!-- Form Ends -->
+          <NotificationBar
+            ref="notificationBar"
+            class="animate__animated animate__fadeInUp mt-2"
+            :outline="notificationsOutline"
+          >
+            <b>{{ notificationStatus }}</b> {{ notificationMessage }}
+            <template #right>
+              <BaseButton
+                :icon="mdiClose"
+                :color="notificationsOutline ? 'success' : 'white'"
+                :outline="notificationsOutline"
+                rounded-full
+                small
+              />
+            </template>
+          </NotificationBar>
         </div>
-        <!-- Form Ends -->
-        <NotificationBar
-          ref="notificationBar"
-          class="animate__animated animate__fadeInUp mt-4"
-          :outline="notificationsOutline"
-        >
-          <b>{{ notificationStatus }}</b> {{ notificationMessage }}
-          <template #right>
-            <BaseButton
-              :icon="mdiClose"
-              :color="notificationsOutline ? 'success' : 'white'"
-              :outline="notificationsOutline"
-              rounded-full
-              small
-            />
-          </template>
-        </NotificationBar>
       </CardBox>
     </div>
-  </SectionSplitHorizontally>
-  <div></div>
+  </SectionSplitLogin>
 </template>

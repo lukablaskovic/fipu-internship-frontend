@@ -1,10 +1,16 @@
 <script setup>
-import { ref, reactive } from "vue";
+import { ref, reactive, computed } from "vue";
 
 import { useRouter } from "vue-router";
-import { mdiAccount, mdiAsterisk } from "@mdi/js";
+import {
+  mdiAccount,
+  mdiAsterisk,
+  mdiCheckCircle,
+  mdiAlert,
+  mdiAlertCircle,
+} from "@mdi/js";
 
-import SectionSplitHorizontally from "@/components/Section/SectionSplitHorizontally.vue";
+import SectionSplitRegister from "@/components/Section/SectionSplitRegister.vue";
 
 import CardBox from "@/components/Cardbox/CardBox.vue";
 import FormCheckRadio from "@/components/Form/FormCheckRadio.vue";
@@ -15,6 +21,7 @@ import BaseButtons from "@/components/Base/BaseButtons.vue";
 import { StudentMappings } from "@/helpers/maps";
 import { guestStore } from "@/main";
 
+import Utils from "@/helpers/utils";
 const router = useRouter();
 
 let data_confirmed = ref(false);
@@ -31,51 +38,111 @@ const form = reactive({
 let passwordConfirm = "";
 
 async function onSubmit() {
-  let instanceCreationResult = await guestStore.createInternshipInstance();
   let postData = {
     ...form,
     godina_studija: form.godina_studija.dbLabel,
-    process_instance_id: instanceCreationResult.id,
   };
 
   let registrationResult = await guestStore.registerStudent(postData);
-
-  if (instanceCreationResult && registrationResult) {
-    router.push("/login");
+  console.log(registrationResult);
+  if (
+    registrationResult.response &&
+    registrationResult.response.status === 400
+  ) {
+    showNotificationBar("warning");
+  } else if (
+    registrationResult.response &&
+    registrationResult.response.status === 500
+  ) {
+    showNotificationBar("danger");
+  } else {
+    let instanceCreationResult = await guestStore.createInternshipInstance();
+    console.log(instanceCreationResult);
+    if (instanceCreationResult.status !== 500) {
+      await guestStore.update_process_instance(
+        registrationResult.data.id,
+        instanceCreationResult.id
+      );
+      showNotificationBar("success");
+      await Utils.wait(1);
+      router.push("/login");
+    } else {
+      //Bpmn engine je pao
+      //Treba izbrisati podatek o studentu ako se ovo dogodi, ili bolje provjeriti postoje li vec i samo dodati instancu
+      showNotificationBar("danger");
+      return;
+    }
   }
+}
+const notificationBar = ref(null);
+let notificationStatus = ref();
+let notificationMessage = ref();
+
+const notificationSettingsModel = ref([]);
+const notificationsOutline = computed(
+  () => notificationSettingsModel.value.indexOf("outline") > -1
+);
+function showNotificationBar(type) {
+  switch (type) {
+    case "success":
+      notificationBar.value.color = "success";
+      notificationBar.value.icon = mdiCheckCircle;
+      notificationBar.value.duration = 1;
+      notificationStatus.value = "To je to!";
+      notificationMessage.value = " Uspješna registracija!";
+      break;
+    case "warning":
+      notificationBar.value.color = "warning";
+      notificationBar.value.icon = mdiAlert;
+      notificationStatus.value = "Upozorenje.";
+      notificationMessage.value = " Račun s ovim podacima već postoji.";
+      break;
+    case "danger":
+      notificationBar.value.color = "danger";
+      notificationBar.value.icon = mdiAlertCircle;
+      notificationStatus.value = "Greška!";
+      notificationMessage.value =
+        "Sustav ne radi. Nije do vas, molimo pokušajte opet ili kontaktirajte profesora.";
+      break;
+  }
+  notificationBar.value.show();
 }
 </script>
 
 <template>
-  <SectionSplitHorizontally bg="blue">
+  <SectionSplitRegister bg="blue">
     <div
-      class="flex flex-col md:flex-row overflow-hidden md:rounded-lg md:p-12 md:h-screen"
+      class="flex flex-col flex-shrink md:flex-row overflow-hidden md:rounded-lg md:p-4 2xl:p-16 md:h-screen 2xl:px-12"
     >
+      <!--This is graphics image cardbox-->
       <CardBox
         class="hidden md:block flex-1 md:rounded-l-lg justify-center items-center"
+        centered-content
       >
-        <div>
-          <img
-            src="register_art.jpg"
-            alt="Login graphics"
-            class="max-w-full h-auto"
-          />
-        </div>
+        <img
+          src="register_art.jpg"
+          alt="Register graphics"
+          class="w-3/4 object-contain mx-auto"
+        />
       </CardBox>
+      <!--This is cardbox with register form-->
 
       <CardBox
-        class="flex-1 flex flex-col justify-center items-center space-y-4 md:rounded-r-lg"
+        class="flex flex-col flex-shrink flex-1 justify-center items-center space-y-4 md:rounded-r-lg"
         is-form
+        centered-content
         @submit.prevent="onSubmit"
       >
         <div>
           <img
             src="fipu_hr.png"
             alt=""
-            class="w-36 h-36 object-cover mx-auto"
+            class="w-1/4 lg:w-1/5 2xl:1/6 object-contain mx-auto"
           />
         </div>
-        <h2 class="text-4xl text-center font-bold mb-4 mt-4">
+        <h2
+          class="text-2xl lg:text-3xl 2xl:text-4xl text-center text-fipu_gray font-bold xl:mb-1 md:mb-0 2xl:mb-4"
+        >
           Molimo unesite vaše podatke
         </h2>
         <h2 class="mb-4 text-center text-fipu_gray">
@@ -88,11 +155,11 @@ async function onSubmit() {
           >.
         </h2>
 
-        <div class="w-full px-4 lg:flex lg:flex-wrap lg:items-stretch">
+        <div class="w-full 2xl:px-4 lg:flex lg:flex-wrap lg:items-stretch">
           <!-- Column 1 -->
-          <div class="lg:w-1/2 px-2 lg:flex lg:flex-col lg:justify-between">
+          <div class="lg:w-1/2 md:px-4 lg:flex lg:flex-col lg:justify-between">
             <div>
-              <FormField label="Ime" help="Molimo unesite vaše ime">
+              <FormField label="Ime">
                 <FormControl
                   v-model="form.ime"
                   :icon="mdiAccount"
@@ -101,7 +168,7 @@ async function onSubmit() {
                 />
               </FormField>
 
-              <FormField label="Prezime" help="Molimo unesite vaše prezime">
+              <FormField label="Prezime">
                 <FormControl
                   v-model="form.prezime"
                   :icon="mdiAccount"
@@ -110,7 +177,7 @@ async function onSubmit() {
                 />
               </FormField>
 
-              <FormField label="JMBAG" help="Molimo unesite vaš JMBAG">
+              <FormField label="JMBAG">
                 <FormControl
                   v-model="form.JMBAG"
                   :icon="mdiAccount"
@@ -119,10 +186,7 @@ async function onSubmit() {
                 />
               </FormField>
 
-              <FormField
-                label="UNIPU E-mail"
-                help="Molimo unesite vašu UNIPU e-mail adresu"
-              >
+              <FormField label="UNIPU E-mail">
                 <FormControl
                   v-model="form.email"
                   :icon="mdiAccount"
@@ -134,19 +198,18 @@ async function onSubmit() {
           </div>
 
           <!-- Column 2 -->
-          <div class="lg:w-1/2 px-2 lg:flex lg:flex-col lg:justify-between">
+          <div
+            class="lg:w-1/2 mt-2 md:mt-0 lg:flex lg:flex-col lg:justify-between"
+          >
             <div>
-              <FormField
-                label="Godina studija"
-                help="Odaberite vašu nastavnu godinu"
-              >
+              <FormField label="Godina studija">
                 <FormControl
                   v-model="form.godina_studija"
                   :options="StudentMappings.GodinaStudijaMappings"
                 />
               </FormField>
 
-              <FormField label="Lozinka" help="Molimo unesite vašu lozinku">
+              <FormField label="Lozinka">
                 <FormControl
                   v-model="form.password"
                   :icon="mdiAsterisk"
@@ -156,10 +219,7 @@ async function onSubmit() {
                 />
               </FormField>
 
-              <FormField
-                label="Potvrda lozinke"
-                help="Molimo potvrdite vašu lozinku"
-              >
+              <FormField label="Potvrda lozinke">
                 <FormControl
                   v-model="passwordConfirm"
                   :icon="mdiAsterisk"
@@ -168,11 +228,12 @@ async function onSubmit() {
                   autocomplete="current-password"
                 />
               </FormField>
+
               <FormCheckRadio
                 v-model="data_confirmed"
                 name="data_confirmed"
                 type="checkbox"
-                label="Potvrđujem ispravnost korisničkih podataka."
+                label="Potvrđujem ispravnost podataka."
                 :input-value="true"
               />
             </div>
@@ -188,9 +249,24 @@ async function onSubmit() {
             </BaseButtons>
           </div>
         </div>
-
+        <NotificationBar
+          ref="notificationBar"
+          class="animate__animated animate__fadeInUp mt-4 w-full"
+          :outline="notificationsOutline"
+        >
+          <b>{{ notificationStatus }}</b> {{ notificationMessage }}
+          <template #right>
+            <BaseButton
+              :icon="mdiClose"
+              :color="notificationsOutline ? 'success' : 'white'"
+              :outline="notificationsOutline"
+              rounded-full
+              small
+            />
+          </template>
+        </NotificationBar>
         <!-- Form Ends -->
       </CardBox>
     </div>
-  </SectionSplitHorizontally>
+  </SectionSplitRegister>
 </template>

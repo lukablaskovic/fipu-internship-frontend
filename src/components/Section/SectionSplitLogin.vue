@@ -1,7 +1,7 @@
 <script setup>
 import { computed } from "vue";
 import { styleStore } from "@/main.js";
-import { gradientBgBlue, gradientBgDark, gradientBgPinkRed } from "@/colors";
+import { gradientBgBlue, gradientBgDark } from "@/colors";
 
 const props = defineProps({
   bg: {
@@ -19,8 +19,6 @@ const colorClass = computed(() => {
   switch (props.bg) {
     case "blue":
       return gradientBgBlue;
-    case "pinkRed":
-      return gradientBgPinkRed;
   }
 
   return "";
@@ -28,10 +26,7 @@ const colorClass = computed(() => {
 </script>
 
 <template>
-  <div
-    class="flex min-h-screen items-center justify-center"
-    :class="colorClass"
-  >
+  <div class="md:pl-36 md:pr-36" :class="colorClass">
     <slot card-class="shadow-2xl" />
   </div>
 </template>

@@ -29,6 +29,19 @@ export const useGuestStore = defineStore("guest", {
         return response;
       } catch (error) {
         console.log("Error:", error);
+        return error;
+      }
+    },
+    async update_process_instance(student_id, process_instance_id) {
+      try {
+        const response = await Auth.update_process_instance(
+          student_id,
+          process_instance_id
+        );
+        return response;
+      } catch (error) {
+        console.log("Error:", error);
+        return error;
       }
     },
     async fetchAvailableAssignments() {

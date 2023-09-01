@@ -3,6 +3,7 @@
 const plugin = require("tailwindcss/plugin");
 
 module.exports = {
+  mode: "jit",
   content: ["./index.html", "./src/**/*.{vue,js,ts,jsx,tsx}"],
   darkMode: "class", // or 'media' or 'class'
   theme: {
@@ -19,7 +20,6 @@ module.exports = {
         fipu_text_blue: "#6dd0f6",
         search_bar: "#c7c8c9",
       },
-
       zIndex: {
         "-1": "-1",
       },

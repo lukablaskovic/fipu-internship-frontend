@@ -1,10 +1,8 @@
 <script setup>
-import { ref, computed, useSlots, nextTick } from "vue";
-import { mdiClose } from "@mdi/js";
+import { ref, computed, nextTick } from "vue";
 import { colorsBgLight, colorsOutline } from "@/colors.js";
 import BaseLevel from "@/components/Base/BaseLevel.vue";
 import BaseIcon from "@/components/Base/BaseIcon.vue";
-import BaseButton from "@/components/Base/BaseButton.vue";
 import Utils from "@/helpers/utils.js";
 
 const color = ref("");
@@ -59,7 +57,7 @@ defineExpose({
     v-if="!isDismissed"
     ref="notificationElement"
     :class="componentClass"
-    class="px-3 py-2 md:py-3 mb-6 last:mb-0 border rounded-lg transition-colors duration-150"
+    class="px-3 md:py-3 mb-6 last:mb-0 border rounded-lg transition-colors duration-150"
   >
     <BaseLevel>
       <div class="flex flex-col md:flex-row items-center">
@@ -71,7 +69,7 @@ defineExpose({
           size="24"
           class="md:mr-2"
         />
-        <span class="text-center md:text-left md:py-2"><slot /></span>
+        <span class="text-center md:text-left 2xl:py-2"><slot /></span>
       </div>
     </BaseLevel>
   </div>
