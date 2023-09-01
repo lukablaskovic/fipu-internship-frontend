@@ -12,8 +12,10 @@ import SectionTitleLineWithButton from "@/components/Section/SectionTitleLineWit
 import TableMicroservices from "@/components/Tables/TableMicroservices.vue";
 
 import { Control } from "@/services/microservices_control";
+import LoadingOverlay from "@/components/LoadingOverlay.vue";
 
 const servicesStatus = ref({});
+const loading = ref(true);
 
 onMounted(async () => {
   try {
@@ -21,6 +23,8 @@ onMounted(async () => {
     console.log(servicesStatus.value);
   } catch (error) {
     console.error("Failed to fetch service statuses:", error);
+  } finally {
+    loading.value = false;
   }
 });
 </script>
@@ -28,6 +32,13 @@ onMounted(async () => {
 <template>
   <div>
     <LayoutAuthenticated>
+      <LoadingOverlay
+        :is-active="loading"
+        title="Učitavanje..."
+        description="Može potrajati nekoliko sekundi, molimo ne zatvarajte stranicu."
+      >
+      </LoadingOverlay>
+
       <SectionMain>
         <SectionTitleLineWithButton
           :icon="mdiCloudCog"

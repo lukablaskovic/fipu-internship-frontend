@@ -12,11 +12,7 @@
     </div>
   </div>
 </template>
-
-<script setup></script>
-
 <style>
-/* Add the pulse animation */
 @keyframes pulse {
   0% {
     background-color: #f0f0f0;

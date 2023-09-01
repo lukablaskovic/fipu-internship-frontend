@@ -56,7 +56,7 @@ const User = {
       } catch (error) {
         if (retries === 1) {
           console.error(
-            "Nije uspjelo dohvaćanje učenika nakon više ponovnih pokušaja:",
+            "Nije uspjelo dohvaćanje studenata nakon više ponovljenih pokušaja:",
             error
           );
           return null;
