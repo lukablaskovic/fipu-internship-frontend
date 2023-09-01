@@ -1,115 +1,74 @@
 <script setup>
 import { computed, ref, onMounted } from "vue";
-
-import { mdiEye } from "@mdi/js";
+import { Control } from "@/services/microservices_control";
+import { mdiRefresh, mdiRestartAlert } from "@mdi/js";
 import TableCheckboxCell from "@/components/Tables/TableCheckboxCell.vue";
-import BaseLevel from "@/components/Base/BaseLevel.vue";
 import BaseButtons from "@/components/Base/BaseButtons.vue";
 import BaseButton from "@/components/Base/BaseButton.vue";
-import LoadingOverlay from "../LoadingOverlay.vue";
-import { adminStore } from "@/main.js";
 
-defineProps({
+const props = defineProps({
   checkable: Boolean,
+  services: {
+    type: Object,
+    required: true,
+  },
 });
 
-const isModalActive = ref(null);
-const allModels = ref([]);
+// Making a local reactive copy of services
+const localServices = ref({ ...props.services });
 
-onMounted(async () => {
-  allModels.value = await adminStore.searchModels();
-});
+async function checkServiceStatus(serviceName) {
+  console.log("Checking service status:", serviceName);
+  let result = await Control.checkServiceStatus(serviceName);
 
-const perPage = ref(5);
-const currentPage = ref(0);
-const modelsPaginated = computed(() =>
-  allModels.value.slice(
-    perPage.value * currentPage.value,
-    perPage.value * (currentPage.value + 1)
-  )
-);
-
-const numPages = computed(() =>
-  Math.ceil(allModels.value.length / perPage.value)
-);
-const currentPageHuman = computed(() => currentPage.value + 1);
-
-const pagesList = computed(() => {
-  const pagesList = [];
-
-  for (let i = 0; i < numPages.value; i++) {
-    pagesList.push(i);
-  }
-
-  return pagesList;
-});
+  // Update the local copy with the new service status
+  localServices.value[serviceName] = result[serviceName];
+}
 </script>
 
 <template>
-  <LoadingOverlay
-    :is-active="!allModels.length"
-    title="Učitavanje..."
-    description="Može potrajati nekoliko sekundi, molimo ne zatvarajte stranicu."
-  >
-  </LoadingOverlay>
   <table>
     <thead>
       <tr>
-        <th>File</th>
-        <th>Process ID</th>
-        <th>Process</th>
-        <th>Active instances</th>
-        <th>Tasks</th>
-        <th />
+        <th>Naziv</th>
+        <th>Status</th>
+        <th>Poruka</th>
+        <th>URL</th>
       </tr>
     </thead>
     <tbody>
-      <tr v-for="model in modelsPaginated" :key="model['model_path']">
-        <TableCheckboxCell v-if="checkable" :assignment-data="model" />
+      <tr v-for="(service, serviceName) in localServices" :key="serviceName">
+        <TableCheckboxCell v-if="checkable" />
 
-        <td data-label="File">
-          {{ model["model_path"] }}
+        <td data-label="Naziv">
+          {{ serviceName }}
         </td>
-        <td data-label="Process ID">
-          {{ model["main_process"]["id"] }}
+        <td data-label="Status">
+          {{ service["status"] }}
         </td>
-        <td data-label="Process">
-          {{ model["main_process"]["name"] }}
+        <td data-label="Poruka">
+          {{ service["message"] }}
         </td>
-        <td data-label="Active instances">
-          {{ model["instances"]["length"] }}
-        </td>
-        <td data-label="Tasks">
-          {{ model["tasks"]["length"] }}
+        <td data-label="URL">
+          {{ service["url"] }}
         </td>
         <td class="before:hidden lg:w-1 whitespace-nowrap">
           <BaseButtons type="justify-start lg:justify-end" no-wrap>
             <BaseButton
-              color="fipu_blue"
-              :icon="mdiEye"
+              color="info"
+              :icon="mdiRefresh"
               small
-              @click="isModalActive = model"
+              @click="checkServiceStatus(serviceName)"
+            />
+            <BaseButton
+              color="danger"
+              :icon="mdiRestartAlert"
+              small
+              @click="isModalDangerActive = true"
             />
           </BaseButtons>
         </td>
       </tr>
     </tbody>
   </table>
-
-  <div class="p-3 lg:px-6 border-t border-gray-100 dark:border-slate-800">
-    <BaseLevel>
-      <BaseButtons>
-        <BaseButton
-          v-for="page in pagesList"
-          :key="page"
-          :active="page === currentPage"
-          :label="page + 1"
-          :color="page === currentPage ? 'lightDark' : 'whiteDark'"
-          small
-          @click="currentPage = page"
-        />
-      </BaseButtons>
-      <small>Stranica {{ currentPageHuman }} od {{ numPages }}</small>
-    </BaseLevel>
-  </div>
 </template>

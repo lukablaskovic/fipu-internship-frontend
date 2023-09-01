@@ -40,7 +40,6 @@ const ProcessInstance = {
       let result = await AxiosWrapper.post(`/model/${bpmn_model}/instance`);
       return result;
     } catch (error) {
-      console.log("Error:", error);
       return { status: 500, message: "Internal server error", data: error };
     }
   },
@@ -50,7 +49,6 @@ const ProcessInstance = {
       let result = await AxiosWrapper.get(`/instance/${id}`);
       return result;
     } catch (error) {
-      console.log("Error:", error);
       return null;
     }
   },
@@ -59,7 +57,6 @@ const ProcessInstance = {
       let result = await AxiosWrapper.get(`/instance/${id}/task/${task}`);
       return result;
     } catch (error) {
-      console.log("Error:", error);
       return null;
     }
   },

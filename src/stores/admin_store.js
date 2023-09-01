@@ -50,7 +50,15 @@ export const useAdminStore = defineStore("admin", {
       try {
         this.studentsFetched = false;
         const students = await User.getStudents();
+
+        if (!students || students.length === 0) {
+          this.students = [];
+          this.studentsFetched = true;
+          return; // Exit the method if no students are fetched
+        }
+
         this.dashboard_data.waiting_for_allocation = 0;
+
         const promises = students.map(async (student) => {
           const data = await this.getProcessInstanceData(student);
           student.process_instance_data = data;
@@ -69,11 +77,13 @@ export const useAdminStore = defineStore("admin", {
         await Promise.all(promises);
 
         this.students = students;
-        this.studentsFetched = true;
       } catch (error) {
         console.log("Error:", error);
+      } finally {
+        this.studentsFetched = true; // Ensure this is always set to true at the end, regardless of any error
       }
     },
+
     async getPreferencesDetailed(student_JMBAG) {
       try {
         const response = await Admin.getPreferencesDetailed(student_JMBAG);

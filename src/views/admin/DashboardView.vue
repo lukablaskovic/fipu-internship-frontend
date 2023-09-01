@@ -37,7 +37,6 @@ onMounted(async () => {
       (event) => !ActivityEventMappings.skipEvents.includes(event.activity_id)
     )
     .reverse();
-  console.log("left items", leftItems.value);
 });
 
 const perPage = ref(10);

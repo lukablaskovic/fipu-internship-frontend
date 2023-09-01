@@ -45,14 +45,27 @@ const User = {
       return null;
     }
   },
-  async getStudents() {
-    try {
-      let result = await AxiosWrapper.get("/admin/students");
-      return result;
-    } catch (e) {
-      return null;
+  async getStudents(retries = 3) {
+    while (retries > 0) {
+      try {
+        let result = await AxiosWrapper.get("/admin/students");
+        if (!result || result.length === 0) {
+          throw new Error("Nema pronađenih studenata.");
+        }
+        return result;
+      } catch (error) {
+        if (retries === 1) {
+          console.error(
+            "Nije uspjelo dohvaćanje učenika nakon više ponovnih pokušaja:",
+            error
+          );
+          return null;
+        }
+        retries--;
+      }
     }
   },
+
   async getCompanies() {
     try {
       let result = await AxiosWrapper.get("/users/companies");
