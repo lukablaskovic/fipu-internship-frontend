@@ -9,6 +9,7 @@ function createAxiosInstance(API_URL) {
     },
   });
 
+  // Request interceptor
   AxiosInstance.interceptors.request.use(
     (config) => {
       const token = mainStore.access_token;
@@ -18,6 +19,19 @@ function createAxiosInstance(API_URL) {
       return config;
     },
     (error) => {
+      return Promise.reject(error);
+    }
+  );
+
+  // Response interceptor
+  AxiosInstance.interceptors.response.use(
+    (response) => {
+      return response;
+    },
+    (error) => {
+      if (error.response && error.response.status === 401) {
+        mainStore.logout();
+      }
       return Promise.reject(error);
     }
   );
