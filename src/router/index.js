@@ -13,12 +13,12 @@ const routes = [
   },
   {
     meta: {
-      title: "Students",
+      title: "Studenti",
       requiresAuth: true,
       requiresAdmin: true,
     },
-    path: "/students",
-    name: "students",
+    path: "/studenti",
+    name: "studenti",
     component: () => import("@/views/admin/StudentsInternshipView.vue"),
   },
   {

@@ -7,6 +7,9 @@ import {
   mdiPlayPause,
   mdiViewDashboard,
   mdiCommentProcessing,
+  mdiMonitorAccount,
+  mdiAccountCancel,
+  mdiAlertBox,
 } from "@mdi/js";
 import SectionMain from "@/components/Section/SectionMain.vue";
 import CardBoxWidget from "@/components/Cardbox/CardBoxWidget.vue";
@@ -23,6 +26,7 @@ const userAuthenticated = computed(() => mainStore.userAuthenticated);
 
 const ongoing_internships = ref(0);
 const waiting_for_allocation = ref(0);
+const waiting_for_evaluation = ref(0);
 const events = ref([]);
 
 onMounted(async () => {
@@ -31,10 +35,12 @@ onMounted(async () => {
   ongoing_internships.value = adminStore.dashboard_data.ongoing_internships;
   waiting_for_allocation.value =
     adminStore.dashboard_data.waiting_for_allocation;
+  waiting_for_evaluation.value =
+    adminStore.dashboard_data.waiting_for_evaluation;
   await adminStore.getEvents();
   events.value = adminStore.events
     .filter(
-      (event) => !ActivityEventMappings.skipEvents.includes(event.activity_id)
+      (event) => !ActivityEventMappings.shouldSkipEvent(event.activity_id)
     )
     .reverse();
 });
@@ -104,7 +110,7 @@ const pagesList = computed(() => {
             class="rounded-lg"
             :icon="mdiAccountMultiple"
             :number="ongoing_internships"
-            label="Studenti u procesu prakse"
+            label="Trenutno aktivnih praksi"
           />
           <SkeletonLoader v-else></SkeletonLoader>
           <CardBoxWidget
@@ -115,10 +121,50 @@ const pagesList = computed(() => {
             class="rounded-lg"
             :icon="mdiPlayPause"
             :number="waiting_for_allocation"
-            label="Studenti koji čekaju alokaciju"
+            label="Studenti koji čekaju na alokaciju"
+          />
+
+          <SkeletonLoader v-else></SkeletonLoader>
+        </div>
+
+        <div class="grid grid-cols-1 gap-6 lg:grid-cols-3 mb-6">
+          <CardBoxWidget
+            v-if="adminStore.studentsFetched"
+            trend="10%"
+            trend-type="up"
+            color="text-emerald-500"
+            class="rounded-lg"
+            :icon="mdiMonitorAccount"
+            :number="waiting_for_evaluation"
+            label="Studenti u procesu evaluacije"
+          />
+          <SkeletonLoader v-else></SkeletonLoader>
+
+          <CardBoxWidget
+            v-if="adminStore.studentsFetched"
+            trend="10%"
+            trend-type="up"
+            color="text-emerald-500"
+            class="rounded-lg"
+            :icon="mdiAccountCancel"
+            :number="0"
+            label="Odustalo od prakse"
+          />
+          <SkeletonLoader v-else></SkeletonLoader>
+
+          <CardBoxWidget
+            v-if="adminStore.studentsFetched"
+            trend="10%"
+            trend-type="up"
+            color="text-emerald-500"
+            class="rounded-lg"
+            :icon="mdiAlertBox"
+            :number="0"
+            label="Čeka upis ocjene"
           />
           <SkeletonLoader v-else></SkeletonLoader>
         </div>
+
         <SectionTitleLineWithButton
           :icon="mdiCommentProcessing"
           title="Najnoviji događaji"

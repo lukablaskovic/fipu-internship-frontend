@@ -14,7 +14,7 @@ export default [
     label: "Nadzorna ploča",
   },
   {
-    to: "/students",
+    to: "/studenti",
     icon: mdiAccountMultiple,
     label: "Studenti",
   },

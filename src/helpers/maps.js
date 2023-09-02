@@ -116,8 +116,27 @@ class ActivityEventMappings {
     "uzimanje_podataka_o_poslodavcu_student",
     "obavjestavanje_poslodavca_nakon_alokacije",
     "obavjestavanje_studenta_nakon_alokacije",
+    "student_prihvacen",
     "obavjestavanje_studenta_nakon_prihvacanja_email",
   ];
+
+  static isGatewayEvent(activityId) {
+    return activityId.startsWith("Gateway_");
+  }
+
+  static getFilteredEvents() {
+    return this.events.filter(
+      (event) => !this.isGatewayEvent(event.activity_id)
+    );
+  }
+
+  static shouldSkipEvent(activityId) {
+    return (
+      this.skipEvents.includes(activityId) || this.isGatewayEvent(activityId)
+    );
+  }
+
+  // Existing method to get event based on activityId
   static getEvent(activityId) {
     return this.events.find((event) => event.activity_id === activityId);
   }

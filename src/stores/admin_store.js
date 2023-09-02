@@ -14,6 +14,7 @@ export const useAdminStore = defineStore("admin", {
       finished_internships: 0,
       ongoing_internships: 0,
       waiting_for_allocation: 0,
+      waiting_for_evaluation: 0,
       events: [],
     },
 
@@ -58,6 +59,7 @@ export const useAdminStore = defineStore("admin", {
         }
 
         this.dashboard_data.waiting_for_allocation = 0;
+        this.dashboard_data.waiting_for_evaluation = 0;
 
         const promises = students.map(async (student) => {
           const data = await this.getProcessInstanceData(student);
@@ -71,6 +73,11 @@ export const useAdminStore = defineStore("admin", {
             student.process_instance_data.pending[0] == "alociranje_profesor"
           ) {
             this.dashboard_data.waiting_for_allocation++;
+          }
+          if (
+            student.process_instance_data.pending[0] == "evaluacija_poslodavac"
+          ) {
+            this.dashboard_data.waiting_for_evaluation++;
           }
         });
 
