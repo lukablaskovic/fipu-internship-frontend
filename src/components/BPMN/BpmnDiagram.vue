@@ -63,8 +63,18 @@ function setupEventListeners(viewer) {
 
 function handleElementHover(event, canvasElement) {
   const element = event.element;
-  canvasElement.style.cursor =
-    element && element.type === "bpmn:UserTask" ? "pointer" : "default";
+
+  if (element && element.type === "bpmn:UserTask") {
+    const taskOrder = getTaskOrder(element.id);
+
+    if (taskOrder === props.currentOrder || taskOrder < props.currentOrder) {
+      canvasElement.style.cursor = "pointer";
+    } else {
+      canvasElement.style.cursor = "not-allowed";
+    }
+  } else {
+    canvasElement.style.cursor = "default";
+  }
 }
 
 function handleElementClick(event, emitFunction) {

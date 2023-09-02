@@ -73,7 +73,7 @@
       </div>
 
       <div v-if="props.data.selekcija === true" class="flex flex-col-reverse">
-        <dt class="text-sm font-medium text-gray-600">Selecija</dt>
+        <dt class="text-sm font-medium text-gray-600">Selekcija</dt>
         <dd class="text-xs text-gray-500">
           {{ props.data.proces_selekcije }}
         </dd>

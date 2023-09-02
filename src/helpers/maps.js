@@ -16,9 +16,6 @@ class StudentMappings {
   }
 }
 
-import Student_ChooseAvailableAssignments from "@/components/Internship/Student_ChooseAvailableAssignments.vue";
-import Student_WaitingForAllocation from "@/components/Internship/Student_WaitingForAllocation.vue";
-
 class UserTaskMappings {
   static tasks = [
     {
@@ -28,23 +25,28 @@ class UserTaskMappings {
       form_title: "Prijavljene preferencije",
       bpmn_pending_info_msg: "Student još nije prijavio preferencije.",
       bpmn_task_color: "#79d4f2",
-      component: Student_ChooseAvailableAssignments,
+      component: () =>
+        import(
+          "@/components/Internship/Student_ChooseAvailableAssignments.vue"
+        ),
     },
     {
       order: 2,
       _id: "alociranje_profesor",
-      name: "Čeka alokaciju",
+      name: "Čeka alokaciju profesora",
       form_title: "Alokacija studenta",
       bpmn_task_color: "#e25555",
-      component: Student_WaitingForAllocation,
+      component: () =>
+        import("@/components/Internship/Student_WaitingForAllocation.vue"),
     },
     {
       order: 3,
       _id: "evaluacija_poslodavac",
-      name: "Čeka evaluaciju poslodavca",
+      name: "Evaluacija poslodavca u tijeku",
       form_title: "Evaluacija poslodavca",
       bpmn_task_color: "#e25555",
-      component: Student_WaitingForEvaluation,
+      component: () =>
+        import("@/components/Internship/Student_WaitingForEvaluation.vue"),
     },
     {
       order: 4,

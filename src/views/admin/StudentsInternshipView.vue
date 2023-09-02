@@ -1,12 +1,7 @@
 <script setup>
 import { computed, ref, onMounted } from "vue";
-import {
-  mdiNumeric1Circle,
-  mdiNumeric2CircleOutline,
-  mdiNumeric3CircleOutline,
-  mdiAccount,
-} from "@mdi/js";
-import { adminStore, mainStore, studentStore } from "@/main.js";
+
+import { adminStore, mainStore } from "@/main.js";
 import { mdiAccountMultiple } from "@mdi/js";
 import SectionMain from "@/components/Section/SectionMain.vue";
 import CardBox from "@/components/Cardbox/CardBox.vue";
@@ -20,18 +15,18 @@ import BpmnDiagram from "@/components/BPMN/BpmnDiagram.vue";
 import axios from "axios";
 import CardBoxModal from "@/components/Cardbox/CardBoxModal.vue";
 import { UserTaskMappings } from "@/helpers/maps";
-
+import TableInstanceData from "@/components/BPMN/TableInstanceData.vue";
 const bpmnKey = ref(0);
 
 const bpmn_model = ref(null);
 let bpmn_diagram_active = ref(false);
+
 const modal_select_bpmn_task = ref(false);
 const modal_past_bpmn_task = ref(false);
 
 const process_instance_data = ref(null);
 
 const userAuthenticated = computed(() => mainStore.userAuthenticated);
-const clickedTaskID = computed(() => adminStore.bpmn_diagram.clicked_task_id);
 
 const disabledCondition = ref(true);
 
@@ -164,13 +159,8 @@ onMounted(async () => {
           "
           button-label="Povratak"
         >
-          <!-- Content for past tasks (this can be different from the current task modal) -->
           <p>Ovaj zadatak je već obavljen.</p>
-          <component
-            :is="
-              UserTaskMappings.getTaskProperty(clickedTaskID, 'task_component')
-            "
-          ></component>
+          <TableInstanceData></TableInstanceData>
         </CardBoxModal>
       </SectionMain>
       <BpmnDiagram

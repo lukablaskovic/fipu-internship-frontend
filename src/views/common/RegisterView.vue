@@ -64,7 +64,7 @@ async function onSubmit() {
         instanceCreationResult.id
       );
       showNotificationBar("success");
-      await Utils.wait(1);
+      await Utils.wait(2);
       router.push("/login");
     } else {
       //Bpmn engine je pao

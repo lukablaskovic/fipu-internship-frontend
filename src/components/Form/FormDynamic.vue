@@ -2,28 +2,28 @@
   <CardBox is-form @submit.prevent="submitForm">
     <div class="mb-2">{{ documentation }}</div>
 
-    <FormField v-for="(field, key) in formFields" :key="key">
-      <FormCheckRadio
-        v-if="field.type === 'yes-no-boolean'"
-        v-model="formValues[key]"
-        :name="key"
-        :label="field.label"
-        :input-value="true"
-      />
+    <div v-for="(field, key) in formFields" :key="key">
+      <FormField v-if="field.type === 'yes-no-boolean'">
+        <FormCheckRadio
+          v-model="formValues[key]"
+          :name="key"
+          :label="field.label"
+          :input-value="true"
+        />
 
+        <!-- Handle var-string and not rendering any form field -->
+        <template v-if="field.type === 'var-string'"> </template>
+
+        <!-- Add more conditions here for other field types -->
+      </FormField>
       <!-- Handle selectFromTable field type -->
       <component
         :is="tableComponent"
-        v-else-if="field.type.startsWith('selectFromTable')"
+        v-if="field.type.startsWith('selectFromTable')"
         :data="getTableType(field.type)"
         @row-selected="handleRowSelected"
       />
-
-      <!-- Handle var-string and not rendering any form field -->
-      <template v-else-if="field.type === 'var-string'"> </template>
-
-      <!-- Add more conditions here for other field types -->
-    </FormField>
+    </div>
   </CardBox>
 </template>
 
