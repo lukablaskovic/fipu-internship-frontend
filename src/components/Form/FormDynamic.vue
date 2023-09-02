@@ -3,26 +3,26 @@
     <div class="mb-2">{{ documentation }}</div>
 
     <div v-for="(field, key) in formFields" :key="key">
-      <FormField v-if="field.type === 'yes-no-boolean'">
-        <FormCheckRadio
+      <FormField v-if="field.type === 'yes-no-boolean'" :label="field.label">
+        <FormCheckRadioGroup
           v-model="formValues[key]"
           :name="key"
-          :label="field.label"
-          :input-value="true"
+          type="radio"
+          :options="{ true: 'Da', false: 'Ne' }"
         />
-
-        <!-- Handle var-string and not rendering any form field -->
-        <template v-if="field.type === 'var-string'"> </template>
-
-        <!-- Add more conditions here for other field types -->
       </FormField>
-      <!-- Handle selectFromTable field type -->
+
+      <template v-if="field.type === 'var-string'"> </template>
+
       <component
         :is="tableComponent"
         v-if="field.type.startsWith('selectFromTable')"
         :data="getTableType(field.type)"
         @row-selected="handleRowSelected"
       />
+      <p v-if="field.type.startsWith('selectFromTable')" class="mt-2">
+        Odabrali ste: <b> {{ formValues["Alocirani_zadatak"] }} </b>
+      </p>
     </div>
   </CardBox>
 </template>
@@ -32,6 +32,7 @@ import { onMounted, computed, reactive, watch } from "vue";
 import CardBox from "../Cardbox/CardBox.vue";
 import FormField from "./FormField.vue";
 import FormCheckRadio from "./FormCheckRadio.vue";
+import FormCheckRadioGroup from "./FormCheckRadioGroup.vue";
 import TaskTable from "../BPMN/TaskTable.vue";
 
 const emit = defineEmits(["update:modelValue", "allFieldsFilled"]);
@@ -70,7 +71,6 @@ onMounted(() => {
 
 const handleRowSelected = (assignmentId) => {
   formValues["Alocirani_zadatak"] = assignmentId;
-  console.log(formValues);
 };
 
 const allFieldsFilled = computed(() => {
@@ -90,11 +90,11 @@ watch(allFieldsFilled, (newValue) => {
 
 watch(
   formValues,
-  (newValues) => {
+  (newValues, oldValues) => {
     emit("update:modelValue", newValues);
+    console.log(formValues);
   },
-  { deep: true },
-  console.log(formValues)
+  { deep: true }
 );
 
 const submitForm = () => {

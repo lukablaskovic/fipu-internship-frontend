@@ -56,13 +56,13 @@ async function handleProcessDiagram() {
   process_instance_data.value = await adminStore.getProcessInstanceData(
     adminStore.selectedStudent
   );
-
+  console.log(process_instance_data.value);
   bpmnKey.value++;
 }
 
 onMounted(async () => {
-  await adminStore.getStudents();
   adminStore.selectedStudent = null;
+  await adminStore.getStudents();
   bpmn_model.value = await fetchXML();
 });
 </script>

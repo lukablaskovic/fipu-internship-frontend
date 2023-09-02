@@ -1,4 +1,11 @@
-import { mdiMonitor, mdiAccountMultiple, mdiEngine, mdiDomain } from "@mdi/js";
+import {
+  mdiMonitor,
+  mdiAccountMultiple,
+  mdiEngine,
+  mdiDomain,
+  mdiClipboardText,
+  mdiClipboardCheck,
+} from "@mdi/js";
 
 export default [
   {
@@ -10,6 +17,16 @@ export default [
     to: "/students",
     icon: mdiAccountMultiple,
     label: "Studenti",
+  },
+  {
+    to: "/dostupni-zadaci",
+    icon: mdiClipboardText,
+    label: "Zadaci",
+  },
+  {
+    to: "/alokacije-javno",
+    icon: mdiClipboardCheck,
+    label: "Alokacije",
   },
   {
     to: "/poslodavci",

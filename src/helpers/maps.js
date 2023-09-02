@@ -16,6 +16,10 @@ class StudentMappings {
   }
 }
 
+import Student_WaitingForEvaluation from "@/components/Internship/Student_WaitingForEvaluation.vue";
+import Student_WaitingForAllocation from "@/components/Internship/Student_WaitingForAllocation.vue";
+import Student_ChooseAvailableAssignments from "@/components/Internship/Student_ChooseAvailableAssignments.vue";
+
 class UserTaskMappings {
   static tasks = [
     {
@@ -25,10 +29,7 @@ class UserTaskMappings {
       form_title: "Prijavljene preferencije",
       bpmn_pending_info_msg: "Student još nije prijavio preferencije.",
       bpmn_task_color: "#79d4f2",
-      component: () =>
-        import(
-          "@/components/Internship/Student_ChooseAvailableAssignments.vue"
-        ),
+      component: Student_ChooseAvailableAssignments,
     },
     {
       order: 2,
@@ -36,8 +37,7 @@ class UserTaskMappings {
       name: "Čeka alokaciju profesora",
       form_title: "Alokacija studenta",
       bpmn_task_color: "#e25555",
-      component: () =>
-        import("@/components/Internship/Student_WaitingForAllocation.vue"),
+      component: Student_WaitingForAllocation,
     },
     {
       order: 3,
@@ -45,8 +45,7 @@ class UserTaskMappings {
       name: "Evaluacija poslodavca u tijeku",
       form_title: "Evaluacija poslodavca",
       bpmn_task_color: "#e25555",
-      component: () =>
-        import("@/components/Internship/Student_WaitingForEvaluation.vue"),
+      component: Student_WaitingForEvaluation,
     },
     {
       order: 4,
@@ -72,7 +71,6 @@ import {
   mdiNoteCheck,
   mdiAccountTie,
 } from "@mdi/js";
-import Student_WaitingForEvaluation from "@/components/Internship/Student_WaitingForEvaluation.vue";
 
 class ActivityEventMappings {
   static events = [
@@ -86,7 +84,7 @@ class ActivityEventMappings {
       activity_id: "odabiranje_zadatka_student",
       icon: mdiThumbsUpDownOutline,
       type: "info",
-      message: "Prijava zadataka",
+      message: "Prijavljene preferencije",
     },
     {
       activity_id: "spremanje_preferencije",
@@ -106,12 +104,19 @@ class ActivityEventMappings {
       type: "warning",
       message: "Evaluacija poslodavca u tijeku",
     },
+    {
+      activity_id: "evaluacija_poslodavac",
+      icon: mdiAccountTie,
+      type: "success",
+      message: "Poslodavac obavio evaluaciju",
+    },
   ];
   static skipEvents = [
     "spremanje_alokacija",
     "uzimanje_podataka_o_poslodavcu_student",
     "obavjestavanje_poslodavca_nakon_alokacije",
     "obavjestavanje_studenta_nakon_alokacije",
+    "obavjestavanje_studenta_nakon_prihvacanja_email",
   ];
   static getEvent(activityId) {
     return this.events.find((event) => event.activity_id === activityId);
