@@ -8,6 +8,7 @@ import BaseButtons from "@/components/Base/BaseButtons.vue";
 import BaseButton from "@/components/Base/BaseButton.vue";
 import LoadingOverlay from "../LoadingOverlay.vue";
 import { mainStore } from "@/main.js";
+import UserAvatar from "@/components/User/UserAvatar.vue";
 
 defineProps({
   checkable: Boolean,
@@ -16,7 +17,8 @@ defineProps({
 const allCompanies = ref([]);
 
 onMounted(async () => {
-  allCompanies.value = await mainStore.getCompanies();
+  let result = await mainStore.fetchCompanies();
+  allCompanies.value = result.data.results;
 });
 
 const goToCompanyWeb = (url) => {
@@ -58,6 +60,7 @@ const pagesList = computed(() => {
   <table>
     <thead>
       <tr>
+        <th />
         <th>Naziv</th>
         <th>Web mjesto</th>
         <th />
@@ -66,6 +69,19 @@ const pagesList = computed(() => {
     <tbody>
       <tr v-for="company in companiesPaginated" :key="company['JMBAG']">
         <TableCheckboxCell v-if="checkable" :assignment-data="company" />
+
+        <td v-if="company['logo'][0]" class="border-b-0 lg:w-6 before:hidden">
+          <UserAvatar
+            :avatar="company['logo'][0]['url']"
+            class="w-24 h-24 mx-auto lg:w-6 lg:h-6"
+          />
+        </td>
+        <td v-else>
+          <UserAvatar
+            avatar="No-Logo.png"
+            class="w-24 h-24 mx-auto lg:w-6 lg:h-6"
+          />
+        </td>
 
         <td data-label="Naziv">
           {{ company["naziv"] }}

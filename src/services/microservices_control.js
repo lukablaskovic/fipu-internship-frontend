@@ -22,7 +22,7 @@ const MICROSERVICES = Object.fromEntries(
 function serviceStatusError(serviceName, url) {
   return {
     [serviceName]: {
-      status: "❌ Down",
+      status: "Down",
       message: "Service is not available",
       url,
     },
@@ -40,6 +40,7 @@ const Control = {
               status: response.status,
               message: response.message,
               url: serviceData.url,
+              status_check_timestamp: response.status_check_timestamp,
             },
           }))
           .catch(() => serviceStatusError(serviceName, serviceData.url))

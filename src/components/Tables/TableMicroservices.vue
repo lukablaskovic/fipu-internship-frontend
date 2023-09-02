@@ -1,11 +1,14 @@
 <script setup>
-import { computed, ref, onMounted } from "vue";
+import { ref } from "vue";
 import { Control } from "@/services/microservices_control";
 import { mdiRefresh, mdiRestartAlert } from "@mdi/js";
 import TableCheckboxCell from "@/components/Tables/TableCheckboxCell.vue";
 import BaseButtons from "@/components/Base/BaseButtons.vue";
 import BaseButton from "@/components/Base/BaseButton.vue";
 import SkeletonLoaderTable from "@/components/SkeletonLoaderTable.vue";
+
+import moment from "@/moment-setup";
+
 const props = defineProps({
   checkable: Boolean,
   services: {
@@ -43,6 +46,7 @@ async function checkServiceStatus(serviceName) {
         <th>Status</th>
         <th>Poruka</th>
         <th>URL</th>
+        <th>Zadnji put aktivan</th>
         <th>Actions</th>
       </tr>
     </thead>
@@ -70,6 +74,9 @@ async function checkServiceStatus(serviceName) {
           </td>
           <td data-label="URL">
             {{ service["url"] }}
+          </td>
+          <td data-label="Zadnji put aktivan">
+            {{ moment(service["status_check_timestamp"]).fromNow() }}
           </td>
           <td class="before:hidden lg:w-1 whitespace-nowrap">
             <BaseButtons type="justify-start lg:justify-end" no-wrap>

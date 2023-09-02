@@ -5,6 +5,7 @@ import { Student } from "@/services/baserow_client_api";
 export const useStudentStore = defineStore("student", {
   state: () => ({
     student_process_instance_data: {},
+    allocated_assignment: null,
   }),
   actions: {
     async registerPreferences(assignmentsData, napomena) {

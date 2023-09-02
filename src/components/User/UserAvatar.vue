@@ -10,10 +10,6 @@ const props = defineProps({
     type: String,
     default: null,
   },
-  api: {
-    type: String,
-    default: "avataaars",
-  },
 });
 
 const username = computed(() => props.username);

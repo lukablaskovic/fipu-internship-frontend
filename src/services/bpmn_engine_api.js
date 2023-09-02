@@ -62,7 +62,7 @@ const ProcessInstance = {
   },
   async search(query) {
     try {
-      let result = await AxiosWrapper.get("/instance", { q: query });
+      let result = await AxiosWrapper.get("/instance", { search: query });
       return result.results;
     } catch (error) {
       console.log("Error:", error);

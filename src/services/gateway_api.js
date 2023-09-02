@@ -65,15 +65,6 @@ const User = {
       }
     }
   },
-
-  async getCompanies() {
-    try {
-      let result = await AxiosWrapper.get("/users/companies");
-      return result;
-    } catch (e) {
-      return null;
-    }
-  },
 };
 
 export { Auth, User };

@@ -14,6 +14,18 @@ const Guest = {
       return null;
     }
   },
+  async fetchCompanies(query = "") {
+    try {
+      console.log({ search: query });
+      let result = await AxiosWrapper.get("/Poslodavac", {
+        search: query,
+      });
+      console.log("fetchCompanies", result.data);
+      return result;
+    } catch (e) {
+      return null;
+    }
+  },
 };
 
 const Student = {

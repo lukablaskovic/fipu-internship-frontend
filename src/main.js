@@ -53,7 +53,7 @@ if (
 }
 
 /* Default title tag */
-const defaultDocumentTitle = "FIPU Internship App";
+const defaultDocumentTitle = "Fipu Praksa";
 
 /* Set document title from route meta */
 router.afterEach((to) => {

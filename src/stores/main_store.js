@@ -1,6 +1,7 @@
 import { defineStore } from "pinia";
 import { Auth } from "@/services/gateway_api";
 import { User } from "@/services/gateway_api";
+import { Guest } from "@/services/baserow_client_api";
 import axios from "axios";
 
 export const useMainStore = defineStore("main", {
@@ -121,9 +122,9 @@ export const useMainStore = defineStore("main", {
     activateHelpModal(state) {
       this.helpModalActive = state;
     },
-    async getCompanies() {
+    async fetchCompanies(search = "") {
       try {
-        const response = await User.getCompanies();
+        const response = await Guest.fetchCompanies(search);
         this.companies = response;
         return response;
       } catch (error) {

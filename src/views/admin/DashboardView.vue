@@ -86,7 +86,8 @@ const pagesList = computed(() => {
         <div class="grid grid-cols-1 gap-6 lg:grid-cols-3 mb-6">
           <CardBoxWidget
             v-if="adminStore.studentsFetched"
-            trend="up"
+            trend="10%"
+            trend-type="up"
             color="text-emerald-500"
             class="rounded-lg"
             :icon="mdiAccountSchoolOutline"
@@ -97,8 +98,9 @@ const pagesList = computed(() => {
 
           <CardBoxWidget
             v-if="adminStore.studentsFetched"
-            trend="up"
-            color="text-blue-500"
+            trend="10%"
+            trend-type="up"
+            color="text-fipu_blue"
             class="rounded-lg"
             :icon="mdiAccountMultiple"
             :number="ongoing_internships"
@@ -107,7 +109,8 @@ const pagesList = computed(() => {
           <SkeletonLoader v-else></SkeletonLoader>
           <CardBoxWidget
             v-if="adminStore.studentsFetched"
-            trend="up"
+            trend="10%"
+            trend-type="up"
             color="text-red-500"
             class="rounded-lg"
             :icon="mdiPlayPause"

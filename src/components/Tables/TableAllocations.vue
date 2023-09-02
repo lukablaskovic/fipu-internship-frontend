@@ -86,13 +86,13 @@ const pagesList = computed(() => {
         </td>
 
         <td data-label="Kontakt">
-          {{ allocation["Kontakt"] }}
+          {{ allocation["poslodavac_email"] }}
         </td>
 
         <td data-label="Prijavnica ispunjena">
           <TableCheckboxCell
             readonly
-            :value="allocation['prijavnica_ispunjena']"
+            :value="allocation['popunjena_prijavnica']"
           />
         </td>
         <td data-label="Prijavnica ispunjena">

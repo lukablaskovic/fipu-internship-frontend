@@ -22,8 +22,8 @@
       <bpmn:lane id="profesor_lane" name="Profesor">
         <bpmn:flowNodeRef>obavjestavanje_alociranje_student_slack</bpmn:flowNodeRef>
         <bpmn:flowNodeRef>Gateway_1v1zql0</bpmn:flowNodeRef>
-        <bpmn:flowNodeRef>obavjestavanje_studenta_slack_poslodavac</bpmn:flowNodeRef>
-        <bpmn:flowNodeRef>obavjestavanje_studenta_email_poslodavac</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>obavjestavanje_studenta_nakon_prihvacanja_slack</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>obavjestavanje_studenta_nakon_prihvacanja_email</bpmn:flowNodeRef>
         <bpmn:flowNodeRef>Gateway_022ukch</bpmn:flowNodeRef>
         <bpmn:flowNodeRef>azuriranje_baserow_student</bpmn:flowNodeRef>
         <bpmn:flowNodeRef>slanje_potvrde_slack_profesor</bpmn:flowNodeRef>
@@ -41,8 +41,8 @@
       </bpmn:lane>
     </bpmn:laneSet>
     <bpmn:sequenceFlow id="Flow_1ry7vwa" sourceRef="Gateway_1v1zql0" targetRef="ispunjavanje_prijavnice_student" />
-    <bpmn:sequenceFlow id="Flow_0k988op" sourceRef="obavjestavanje_studenta_email_poslodavac" targetRef="Gateway_1v1zql0" />
-    <bpmn:sequenceFlow id="Flow_10qrmyc" sourceRef="Gateway_022ukch" targetRef="obavjestavanje_studenta_email_poslodavac" />
+    <bpmn:sequenceFlow id="Flow_0k988op" sourceRef="obavjestavanje_studenta_nakon_prihvacanja_email" targetRef="Gateway_1v1zql0" />
+    <bpmn:sequenceFlow id="Flow_10qrmyc" sourceRef="Gateway_022ukch" targetRef="obavjestavanje_studenta_nakon_prihvacanja_email" />
     <bpmn:sequenceFlow id="Flow_1cvohty" sourceRef="azuriranje_baserow_student" targetRef="end_event_student" />
     <bpmn:sequenceFlow id="Flow_1jgq625" sourceRef="slanje_potvrde_email_profesor" targetRef="Gateway_0q2wy8q" />
     <bpmn:sequenceFlow id="Flow_0rr5pyh" sourceRef="Gateway_1b8kjb9" targetRef="slanje_potvrde_email_profesor" />
@@ -108,7 +108,7 @@ Napomena: Da biste prijavili preferencije, morate biti prijavljeni u aplikaciji!
               </camunda:map>
             </camunda:inputParameter>
           </camunda:inputOutput>
-          <camunda:connectorId>notification</camunda:connectorId>
+          <camunda:connectorId>sendgrid</camunda:connectorId>
         </camunda:connector>
         <camunda:inputOutput>
           <camunda:inputParameter name="next_task">evaluacija_poslodavac</camunda:inputParameter>
@@ -136,7 +136,7 @@ Napomena: Da biste prijavili preferencije, morate biti prijavljeni u aplikaciji!
               </camunda:map>
             </camunda:inputParameter>
           </camunda:inputOutput>
-          <camunda:connectorId>notification</camunda:connectorId>
+          <camunda:connectorId>sendgrid</camunda:connectorId>
         </camunda:connector>
         <camunda:inputOutput>
           <camunda:inputParameter name="poslodavac_email">${poslodavac_email}</camunda:inputParameter>
@@ -262,7 +262,7 @@ Dnevnik je potrebno predati prije prijave ispitnoga roka.</bpmn:documentation>
             <camunda:inputParameter name="url">/email</camunda:inputParameter>
             <camunda:inputParameter name="method">POST</camunda:inputParameter>
           </camunda:inputOutput>
-          <camunda:connectorId>notification</camunda:connectorId>
+          <camunda:connectorId>sendgrid</camunda:connectorId>
         </camunda:connector>
         <camunda:inputOutput>
           <camunda:inputParameter name="attachment_name">potvrda.pdf</camunda:inputParameter>
@@ -333,7 +333,7 @@ Dnevnik je potrebno predati prije prijave ispitnoga roka.</bpmn:documentation>
       <bpmn:incoming>Flow_1rdv20r</bpmn:incoming>
       <bpmn:outgoing>Flow_10qrmyc</bpmn:outgoing>
     </bpmn:parallelGateway>
-    <bpmn:sendTask id="obavjestavanje_studenta_email_poslodavac" name="Obavještavanje studenta email">
+    <bpmn:sendTask id="obavjestavanje_studenta_nakon_prihvacanja_email" name="Obavještavanje studenta email">
       <bpmn:extensionElements>
         <camunda:connector>
           <camunda:inputOutput>
@@ -341,24 +341,23 @@ Dnevnik je potrebno predati prije prijave ispitnoga roka.</bpmn:documentation>
             <camunda:inputParameter name="method">POST</camunda:inputParameter>
             <camunda:inputParameter name="url_parameter">
               <camunda:map>
-                <camunda:entry key="to">${email_student}</camunda:entry>
-                <camunda:entry key="decision">Approve</camunda:entry>
+                <camunda:entry key="to">${student_email}</camunda:entry>
                 <camunda:entry key="template">student_after_approval</camunda:entry>
               </camunda:map>
             </camunda:inputParameter>
           </camunda:inputOutput>
-          <camunda:connectorId>notification</camunda:connectorId>
+          <camunda:connectorId>sendgrid</camunda:connectorId>
         </camunda:connector>
         <camunda:inputOutput>
           <camunda:inputParameter name="next_task">ispunjavanje_prijavnice_student</camunda:inputParameter>
           <camunda:inputParameter name="id_instance" />
-          <camunda:inputParameter name="kompanija">${kompanija}</camunda:inputParameter>
+          <camunda:inputParameter name="poslodavac_naziv">${poslodavac_naziv}</camunda:inputParameter>
         </camunda:inputOutput>
       </bpmn:extensionElements>
       <bpmn:incoming>Flow_10qrmyc</bpmn:incoming>
       <bpmn:outgoing>Flow_0k988op</bpmn:outgoing>
     </bpmn:sendTask>
-    <bpmn:sendTask id="obavjestavanje_studenta_slack_poslodavac" name="Obavještavanje studenta slack">
+    <bpmn:sendTask id="obavjestavanje_studenta_nakon_prihvacanja_slack" name="Obavještavanje studenta slack">
       <bpmn:extensionElements>
         <camunda:connector>
           <camunda:inputOutput>
@@ -574,6 +573,7 @@ Dnevnik je potrebno predati prije prijave ispitnoga roka.</bpmn:documentation>
           <camunda:outputParameter name="poslodavac_email" />
           <camunda:outputParameter name="Alocirani_zadatak" />
           <camunda:outputParameter name="opis_zadatka" />
+          <camunda:outputParameter name="poslodavac_naziv" />
         </camunda:inputOutput>
       </bpmn:extensionElements>
       <bpmn:incoming>Flow_07vs9rk</bpmn:incoming>
@@ -652,10 +652,10 @@ Dnevnik je potrebno predati prije prijave ispitnoga roka.</bpmn:documentation>
       <bpmndi:BPMNShape id="Gateway_10wwbee_di" bpmnElement="Gateway_022ukch">
         <dc:Bounds x="985" y="465" width="50" height="50" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_1tszbn7_di" bpmnElement="obavjestavanje_studenta_email_poslodavac">
+      <bpmndi:BPMNShape id="Activity_1tszbn7_di" bpmnElement="obavjestavanje_studenta_nakon_prihvacanja_email">
         <dc:Bounds x="1070" y="450" width="100" height="80" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_0oeucpk_di" bpmnElement="obavjestavanje_studenta_slack_poslodavac">
+      <bpmndi:BPMNShape id="Activity_0oeucpk_di" bpmnElement="obavjestavanje_studenta_nakon_prihvacanja_slack">
         <dc:Bounds x="1070" y="550" width="100" height="80" />
         <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>

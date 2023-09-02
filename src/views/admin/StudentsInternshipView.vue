@@ -4,6 +4,7 @@ import {
   mdiNumeric1Circle,
   mdiNumeric2CircleOutline,
   mdiNumeric3CircleOutline,
+  mdiAccount,
 } from "@mdi/js";
 import { adminStore, mainStore, studentStore } from "@/main.js";
 import { mdiAccountMultiple } from "@mdi/js";
@@ -66,6 +67,7 @@ async function handleProcessDiagram() {
 
 onMounted(async () => {
   await adminStore.getStudents();
+  adminStore.selectedStudent = null;
   bpmn_model.value = await fetchXML();
 });
 </script>
@@ -90,6 +92,13 @@ onMounted(async () => {
         >
           <CardBoxComponentEmpty />
         </CardBox>
+        <p v-if="adminStore.selectedStudent != null" class="mt-2">
+          Trenutno se prikazuje:
+          <b
+            >{{ adminStore.selectedStudent.ime }}
+            {{ adminStore.selectedStudent.prezime }}</b
+          >
+        </p>
         <!-- Modal for the current task -->
         <CardBoxModal
           v-if="modal_select_bpmn_task"

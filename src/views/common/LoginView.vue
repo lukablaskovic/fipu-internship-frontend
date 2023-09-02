@@ -70,7 +70,7 @@ function showNotificationBar(type) {
 </script>
 
 <template>
-  <SectionSplitLogin bg="blue">
+  <SectionSplitLogin bg="blue" class="flex items-start min-h-screen">
     <div
       class="flex flex-col flex-shrink md:flex-row overflow-hidden md:rounded-lg md:p-4 2xl:p-16 md:h-screen lg:px-12"
     >

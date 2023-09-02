@@ -1,13 +1,6 @@
 <script setup>
 import { ref, computed, onMounted } from "vue";
-import {
-  mdiClipboardCheckOutline,
-  mdiProgressClock,
-  mdiLaptop,
-  mdiNumeric1Circle,
-  mdiNumeric2CircleOutline,
-  mdiNumeric3CircleOutline,
-} from "@mdi/js";
+import { mdiClipboardCheckOutline, mdiProgressClock, mdiLaptop } from "@mdi/js";
 
 import SectionMain from "@/components/Section/SectionMain.vue";
 
@@ -15,21 +8,27 @@ import LayoutAuthenticated from "@/layouts/LayoutAuthenticated.vue";
 import LayoutGuest from "@/layouts/LayoutGuest.vue";
 
 import SectionTitleLineWithButton from "@/components/Section/SectionTitleLineWithButton.vue";
-import CardBoxWidget from "@/components/Cardbox/CardBoxWidget.vue";
-
+import CardboxAllocation from "@/components/Cardbox/CardBoxAllocation.vue";
 import { mainStore, studentStore } from "@/main.js";
 
-const prviOdabir = ref(null);
-const drugiOdabir = ref(null);
-const treciOdabir = ref(null);
+const allocated_assignment = ref(null);
 
 onMounted(async () => {
-  let result = await studentStore.getInstanceInfo(
+  await studentStore.getInstanceInfo(
     mainStore.currentUser.internship_process.id
   );
-  prviOdabir.value = result.variables["Prvi_odabir"][0];
-  drugiOdabir.value = result.variables["Drugi_odabir"][0];
-  treciOdabir.value = result.variables["Treci_odabir"][0];
+
+  if (studentStore.allocated_assignment == null) {
+    let result = await studentStore.getAssignmentDetails(
+      studentStore.student_process_instance_data.variables["Alocirani_zadatak"]
+    );
+    studentStore.allocated_assignment = result.data.results[0];
+
+    allocated_assignment.value = result.data.results[0];
+  } else {
+    allocated_assignment.value = studentStore.allocated_assignment;
+    console.log("allocated_assignment.value", allocated_assignment.value);
+  }
 });
 
 const Layout = computed(() => {
@@ -55,47 +54,36 @@ const userAuthenticated = computed(() => mainStore.userAuthenticated);
       <SectionTitleLineWithButton
         :icon="mdiProgressClock"
         main
-        title="U procesu evaluacije"
+        title="U procesu Evaluacije"
       ></SectionTitleLineWithButton>
-      <p>Alocirani ste na zadatak {{ zadatak }}.</p>
       <p>
-        Potrebno je kontaktirati mentora sa zadatka na koji ste alocirani.
-        Predstavite se i recite da ste dobili zadatak.
+        Alocirani ste na zadatak:
+        <b>{{ studentStore.allocated_assignment["id_zadatak"] }} </b>
       </p>
       <p>
-        Ukoliko je potrebno morate obaviti intervju ili proces selekcije, ako
-        poslodavac to traži od vas.
+        Mentora kontaktirajte putem maila:
+        <b>{{ studentStore.allocated_assignment["poslodavac_email"] }}</b
+        >.
       </p>
       <br />
-      <SectionTitleLineWithButton
-        :icon="mdiClipboardCheckOutline"
-        main
-        title="Alocirani zadatak"
-      ></SectionTitleLineWithButton>
+      <p>
+        Predstavite se i recite da ste dobili zadatak. Ukoliko se provodi
+        selekcija, morat ćete istu obaviti u dogovoru s poslodavcem.
+      </p>
+      <p>
+        Kada vas poslodavac prihvati, o tome ćete biti pravovremeno obaviješteni
+        te morate dogovoriti datum početka prakse i ostale detalje.
+        <u>Nakon</u> što to obavite, ovdje ćete popuniti <b>Prijavnicu</b> prije
+        početka izvođenja same prakse.
+      </p>
 
-      <div class="grid grid-cols-1 gap-6 lg:grid-cols-3 mb-6">
-        <CardBoxWidget
-          color="text-fipu_blue"
-          :icon="mdiNumeric1Circle"
-          :number="null"
-          :text="prviOdabir"
-          label="1. odabir"
-        />
-        <CardBoxWidget
-          color="text-fipu_blue"
-          :icon="mdiNumeric2CircleOutline"
-          :number="null"
-          :text="drugiOdabir"
-          label="2. odabir"
-        />
-        <CardBoxWidget
-          color="text-fipu_blue"
-          :icon="mdiNumeric3CircleOutline"
-          :number="null"
-          :text="treciOdabir"
-          label="3. odabir"
-        />
-      </div>
+      <br />
+      <hr />
+
+      <CardboxAllocation
+        v-if="allocated_assignment != null"
+        :data="allocated_assignment"
+      ></CardboxAllocation>
     </SectionMain>
   </component>
 </template>

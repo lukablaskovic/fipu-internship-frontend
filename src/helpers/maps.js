@@ -101,7 +101,7 @@ class ActivityEventMappings {
     {
       activity_id: "razgovor_za_praksu_poslodavac",
       icon: mdiAccountTie,
-      type: "info",
+      type: "warning",
       message: "Evaluacija poslodavca u tijeku",
     },
   ];

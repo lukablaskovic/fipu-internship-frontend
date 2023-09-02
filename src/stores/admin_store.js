@@ -6,7 +6,7 @@ import { mainStore } from "@/main";
 export const useAdminStore = defineStore("admin", {
   state: () => ({
     students: [],
-    selectedStudent: {},
+    selectedStudent: null,
     companies: [],
     studentsFetched: false,
 
@@ -83,7 +83,6 @@ export const useAdminStore = defineStore("admin", {
         this.studentsFetched = true; // Ensure this is always set to true at the end, regardless of any error
       }
     },
-
     async getPreferencesDetailed(student_JMBAG) {
       try {
         const response = await Admin.getPreferencesDetailed(student_JMBAG);

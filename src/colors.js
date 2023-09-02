@@ -1,7 +1,7 @@
-export const gradientBgBase = "bg-gradient-to-tr";
-export const gradientBgBlue = `${gradientBgBase} from-blue-500 via-blue-400 to-blue-200`;
-export const gradientBgDark = `${gradientBgBase} from-slate-700 via-slate-900 to-slate-800`;
-export const gradientBgPinkRed = `${gradientBgBase} from-pink-400 via-red-500 to-yellow-500`;
+export const gradientBgBase = "md:bg-gradient-to-tr";
+export const gradientBgBlue = `${gradientBgBase} md:from-blue-500 md:via-blue-300 md:to-fipu_blue`;
+export const gradientBgDark = `${gradientBgBase} md:from-slate-700 md:via-slate-900 md:to-slate-800`;
+export const gradientBgPinkRed = `${gradientBgBase} md:from-pink-400 md:via-red-500 md:to-yellow-500`;
 
 export const colorsBgLight = {
   white: "bg-white text-black",
@@ -10,7 +10,7 @@ export const colorsBgLight = {
   success: "bg-emerald-500 border-emerald-500 text-white",
   danger: "bg-red-500 border-red-500 text-white",
   warning: "bg-yellow-500 border-yellow-500 text-white",
-  info: "bg-blue-500 border-blue-500 text-white",
+  info: "bg-fipu_blue border-fipu_blue text-white",
   fipu_blue: "bg-fipu_blue border-fipu_blue text-white",
 };
 
@@ -21,7 +21,7 @@ export const colorsText = {
   success: "text-emerald-500",
   danger: "text-red-500",
   warning: "text-yellow-500",
-  info: "text-blue-500",
+  info: "text-fipu_blue",
 };
 
 export const colorsOutline = {
@@ -31,7 +31,7 @@ export const colorsOutline = {
   success: [colorsText.success, "border-emerald-500"],
   danger: [colorsText.danger, "border-red-500"],
   warning: [colorsText.warning, "border-yellow-500"],
-  info: [colorsText.info, "border-blue-500"],
+  info: [colorsText.info, "border-fipu_blue"],
 };
 
 export const getButtonColor = (
@@ -49,7 +49,8 @@ export const getButtonColor = (
       success: "ring-emerald-300 dark:ring-emerald-700",
       danger: "ring-red-300 dark:ring-red-700",
       warning: "ring-yellow-300 dark:ring-yellow-700",
-      info: "ring-blue-300 dark:ring-blue-700",
+      info: "ring-fipu_blue dark:ring-fipu_dark_blue",
+      fipu_blue: "ring-fipu_blue dark:ring-fipu_dark_blue",
     },
     active: {
       white: "bg-gray-100",
@@ -59,7 +60,7 @@ export const getButtonColor = (
       success: "bg-emerald-700 dark:bg-emerald-600",
       danger: "bg-red-700 dark:bg-red-600",
       warning: "bg-yellow-700 dark:bg-yellow-600",
-      info: "bg-blue-700 dark:bg-blue-600",
+      info: "bg-fipu_blue dark:bg-fipu_light_blue",
       fipu_blue: "bg-fipu_blue dark:bg-fipu_light_blue",
       fipu_light_blue: "bg-fipu_light_blue dark:bg-fipu_blue",
       fipu_dark_blue: "bg-fipu_dark_blue dark:bg-fipu_light_blue",
@@ -73,8 +74,8 @@ export const getButtonColor = (
       success: "bg-emerald-600 dark:bg-emerald-500 text-white",
       danger: "bg-red-600 dark:bg-red-500 text-white",
       warning: "bg-yellow-600 dark:bg-yellow-500 text-white",
-      info: "bg-blue-600 dark:bg-blue-500 text-white",
-      fipu_blue: "bg-fipu_blue text-white",
+      info: "bg-fipu_blue dark:fipu_light_blue text-white",
+      fipu_blue: "bg-fipu_blue text-white text-white",
       fipu_light_blue: "bg-fipu_light_blue text-white",
       fipu_dark_blue: "bg-fipu_dark_blue text-white",
       fipu_text_blue: "bg-fipu_text_blue text-white",
@@ -90,7 +91,8 @@ export const getButtonColor = (
         "hover:bg-red-700 hover:border-red-700 hover:dark:bg-red-600 hover:dark:border-red-600",
       warning:
         "hover:bg-yellow-700 hover:border-yellow-700 hover:dark:bg-yellow-600 hover:dark:border-yellow-600",
-      info: "hover:bg-blue-700 hover:border-blue-700 hover:dark:bg-blue-600 hover:dark:border-blue-600",
+      info: "hover:bg-fipu_blue hover:border-fipu_blue hover:dark:bg-fipu_light_blue hover:dark:border-fipu_light_blue",
+      fipu_blue: "hover:bg-fipu_light_blue hover:border-fipu_dark_blue",
     },
     borders: {
       white: "border-white",
@@ -111,7 +113,7 @@ export const getButtonColor = (
       success: "text-emerald-600 dark:text-emerald-500",
       danger: "text-red-600 dark:text-red-500",
       warning: "text-yellow-600 dark:text-yellow-500",
-      info: "text-blue-600 dark:text-blue-500",
+      info: "text-fipu_blue dark:fipu_light_blue",
       fipu_blue: "text-fipu_blue",
       fipu_dark_blue: "text-fipu_dark_blue",
       fipu_text_blue: "text-fipu_text_blue",
@@ -125,7 +127,8 @@ export const getButtonColor = (
         "hover:bg-red-600 hover:text-white hover:text-white hover:dark:text-white hover:dark:border-red-600",
       warning:
         "hover:bg-yellow-600 hover:text-white hover:text-white hover:dark:text-white hover:dark:border-yellow-600",
-      info: "hover:bg-blue-600 hover:text-white hover:dark:text-white hover:dark:border-blue-600",
+      info: "hover:bg-fipu_light_blue hover:text-white hover:dark:text-white hover:dark:border-fipu_light_blue",
+      fipu_blue: "hover:bg-fipu_light_blue hover:text-white",
     },
   };
 
