@@ -33,13 +33,13 @@ const routes = [
   },
   {
     meta: {
-      title: "Alokacije - Javno",
+      title: "Alokacije",
       requiresAuth: true,
       requiresAdmin: false,
     },
-    path: "/alokacije-javno",
+    path: "/alokacije",
     name: "alokacije",
-    component: () => import("@/views/student/AllocationsPublicView.vue"),
+    component: () => import("@/views/student/AllocationsView.vue"),
   },
   {
     meta: {

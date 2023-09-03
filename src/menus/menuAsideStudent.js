@@ -7,7 +7,7 @@ export default [
     label: "Moja praksa",
   },
   {
-    to: "/alokacije-javno",
+    to: "/alokacije",
     icon: mdiClipboardCheck,
     label: "Alokacije",
   },

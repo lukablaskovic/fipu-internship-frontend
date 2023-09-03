@@ -153,6 +153,7 @@ Napomena: Da biste prijavili preferencije, morate biti prijavljeni u aplikaciji!
       <bpmn:outgoing>Flow_1npalzz</bpmn:outgoing>
     </bpmn:exclusiveGateway>
     <bpmn:userTask id="evaluacija_poslodavac" name="Potvrda evaluacije">
+      <bpmn:documentation>Potrebno je potvrditi prihvaćate li studenta za odrađivanje prakse za zadatak koji mu je alociran.</bpmn:documentation>
       <bpmn:extensionElements>
         <camunda:formData>
           <camunda:formField id="kandidat_odobren" label="Odobravate li ovog kandidata?" type="yes-no-boolean">
@@ -195,28 +196,33 @@ Dnevnik je potrebno predati prije prijave ispitnoga roka.</bpmn:documentation>
       <bpmn:extensionElements>
         <camunda:connector>
           <camunda:inputOutput>
-            <camunda:inputParameter name="url">/prijavnica</camunda:inputParameter>
+            <camunda:inputParameter name="url">/api/prijavnica</camunda:inputParameter>
             <camunda:inputParameter name="method">POST</camunda:inputParameter>
             <camunda:inputParameter name="url_parameter">
               <camunda:map>
-                <camunda:entry key="student_id">${student_id}</camunda:entry>
+                <camunda:entry key="Student">${Student}</camunda:entry>
               </camunda:map>
             </camunda:inputParameter>
           </camunda:inputOutput>
           <camunda:connectorId>baserow</camunda:connectorId>
         </camunda:connector>
         <camunda:inputOutput>
-          <camunda:inputParameter name="kontaktirao_tvrtku">${potvrda_kontaktiranja}</camunda:inputParameter>
-          <camunda:inputParameter name="broj_sati">${dogovoreni_broj_sati}</camunda:inputParameter>
-          <camunda:inputParameter name="detaljni_opis_zadatka">${detaljni_opis_zadatka}</camunda:inputParameter>
-          <camunda:inputParameter name="Poduzeće">${poslodavac_id}</camunda:inputParameter>
-          <camunda:inputParameter name="datum_pocetka">${pocetak_prakse}</camunda:inputParameter>
-          <camunda:inputParameter name="datum_zavrsetka">${kraj_prakse}</camunda:inputParameter>
-          <camunda:inputParameter name="mobitel">${mobitel}</camunda:inputParameter>
-          <camunda:inputParameter name="oib">${oib}</camunda:inputParameter>
-          <camunda:inputParameter name="Mentor">${mentor}</camunda:inputParameter>
-          <camunda:inputParameter name="mail_mentora">${mentor_mail}</camunda:inputParameter>
-          <camunda:outputParameter name="prijavnica_id" />
+          <camunda:inputParameter name="Student">${Student}</camunda:inputParameter>
+          <camunda:inputParameter name="student_OIB">${student_OIB}</camunda:inputParameter>
+          <camunda:inputParameter name="student_broj_mobitela">${student_broj_mobitela}</camunda:inputParameter>
+          <camunda:inputParameter name="student_email">${student_email}</camunda:inputParameter>
+          <camunda:inputParameter name="mentor_ime">${mentor_ime}</camunda:inputParameter>
+          <camunda:inputParameter name="mentor_prezime">${mentor_prezime}</camunda:inputParameter>
+          <camunda:inputParameter name="mentor_email">${mentor_email}</camunda:inputParameter>
+          <camunda:inputParameter name="detaljan_opis_zadatka">${detaljan_opis_zadatka}</camunda:inputParameter>
+          <camunda:inputParameter name="dogovoreni_broj_sati">${dogovoreni_broj_sati}</camunda:inputParameter>
+          <camunda:inputParameter name="pocetak_prakse">${pocetak_prakse}</camunda:inputParameter>
+          <camunda:inputParameter name="kraj_prakse">${kraj_prakse}</camunda:inputParameter>
+          <camunda:inputParameter name="alokacija_potvrda">${alokacija_potvrda}</camunda:inputParameter>
+          <camunda:inputParameter name="kontakt_potvrda">${kontakt_potvrda}</camunda:inputParameter>
+          <camunda:inputParameter name="Poslodavac">${poslodavac_naziv}</camunda:inputParameter>
+          <camunda:inputParameter name="mjesto_izvrsavanja">${mjesto_izvrsavanja}</camunda:inputParameter>
+          <camunda:outputParameter name="id_prijavnica" />
         </camunda:inputOutput>
       </bpmn:extensionElements>
       <bpmn:incoming>Flow_1l8y47v</bpmn:incoming>
@@ -232,16 +238,6 @@ Dnevnik je potrebno predati prije prijave ispitnoga roka.</bpmn:documentation>
           <camunda:connectorId>pdf</camunda:connectorId>
         </camunda:connector>
         <camunda:inputOutput>
-          <camunda:inputParameter name="email_student">${email_student}</camunda:inputParameter>
-          <camunda:inputParameter name="mobitel">${mobitel}</camunda:inputParameter>
-          <camunda:inputParameter name="pocetak_prakse">${pocetak_prakse}</camunda:inputParameter>
-          <camunda:inputParameter name="kraj_prakse">${kraj_prakse}</camunda:inputParameter>
-          <camunda:inputParameter name="oib">${oib}</camunda:inputParameter>
-          <camunda:inputParameter name="mentor">${mentor}</camunda:inputParameter>
-          <camunda:inputParameter name="dogovoreni_broj_sati">${dogovoreni_broj_sati}</camunda:inputParameter>
-          <camunda:inputParameter name="ime_student">${ime_student}</camunda:inputParameter>
-          <camunda:inputParameter name="kompanija">${kompanija}</camunda:inputParameter>
-          <camunda:inputParameter name="detaljni_opis_zadatka">${detaljni_opis_zadatka}</camunda:inputParameter>
           <camunda:outputParameter name="attachment_url" />
           <camunda:outputParameter name="attachment" />
         </camunda:inputOutput>
@@ -385,53 +381,18 @@ Dnevnik je potrebno predati prije prijave ispitnoga roka.</bpmn:documentation>
       <bpmn:documentation>VAŽNO: Prijavnica se popunjava nakon (!) što nastavnik odobri kontakt određenom poduzeću i nakon što student s tim poduzećem dogovori praksu. Popunjenu prijavnicu šaljemo poduzeću na odobrenje i potpis.</bpmn:documentation>
       <bpmn:extensionElements>
         <camunda:formData>
-          <camunda:formField id="mentor" label="Ime i prezime mentora iz organizacije" type="string">
-            <camunda:validation>
-              <camunda:constraint name="required" config="true" />
-            </camunda:validation>
-          </camunda:formField>
-          <camunda:formField id="mentor_mail" label="E-mail mentora" type="string">
-            <camunda:validation>
-              <camunda:constraint name="required" config="true" />
-            </camunda:validation>
-          </camunda:formField>
-          <camunda:formField id="pocetak_prakse" label="Odaberite datum pocetka prakse" type="date">
-            <camunda:validation>
-              <camunda:constraint name="required" config="true" />
-            </camunda:validation>
-          </camunda:formField>
-          <camunda:formField id="kraj_prakse" label="Odaberite datum kraja prakse" type="date">
-            <camunda:validation>
-              <camunda:constraint name="required" config="true" />
-            </camunda:validation>
-          </camunda:formField>
-          <camunda:formField id="dogovoreni_broj_sati" label="Dogovoreni broj sati, mora biti između 90 i 150" type="integer">
-            <camunda:validation>
-              <camunda:constraint name="required" config="true" />
-              <camunda:constraint name="min" config="90" />
-              <camunda:constraint name="max" config="150" />
-            </camunda:validation>
-          </camunda:formField>
-          <camunda:formField id="mobitel" label="Upišite broj mobitela, neće se trajno pohraniti" type="string">
-            <camunda:validation>
-              <camunda:constraint name="required" config="true" />
-            </camunda:validation>
-          </camunda:formField>
-          <camunda:formField id="oib" label="Upišite vaš OIB, za potrebe prijave osiguranja" type="string">
-            <camunda:validation>
-              <camunda:constraint name="required" config="true" />
-            </camunda:validation>
-          </camunda:formField>
-          <camunda:formField id="detaljni_opis_zadatka" label="Detaljno opisati zadatak koji će se izvršavati na praksi" type="rich-text">
-            <camunda:validation>
-              <camunda:constraint name="required" config="true" />
-            </camunda:validation>
-          </camunda:formField>
-          <camunda:formField id="potvrda_kontaktiranja" label="Potvrđujem da sam kontaktirao tvrtku i dogovorio detalje koji su ovdje uneseni" type="boolean">
-            <camunda:validation>
-              <camunda:constraint name="required" config="true" />
-            </camunda:validation>
-          </camunda:formField>
+          <camunda:formField id="student_broj_mobitela" type="string" />
+          <camunda:formField id="student_OIB" type="string" />
+          <camunda:formField id="mentor_ime" type="string" />
+          <camunda:formField id="mentor_prezime" type="string" />
+          <camunda:formField id="mentor_email" type="string" />
+          <camunda:formField id="detaljan_opis_zadatka" type="string" />
+          <camunda:formField id="dogovoreni_broj_sati" type="integer" />
+          <camunda:formField id="pocetak_prakse" type="date" />
+          <camunda:formField id="kraj_prakse" type="date" />
+          <camunda:formField id="alokacija_potvrda" type="boolean" />
+          <camunda:formField id="kontakt_potvrda" type="boolean" />
+          <camunda:formField id="mjesto_izvrsavanja" type="string" />
         </camunda:formData>
       </bpmn:extensionElements>
       <bpmn:incoming>Flow_1ry7vwa</bpmn:incoming>

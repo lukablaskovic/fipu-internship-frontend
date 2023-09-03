@@ -23,6 +23,10 @@ const props = defineProps({
     type: [String, Number, Boolean],
     required: true,
   },
+  required: {
+    type: Boolean,
+    default: false,
+  },
 });
 
 const emit = defineEmits(["update:modelValue"]);
@@ -46,6 +50,7 @@ const inputType = computed(() =>
       :type="inputType"
       :name="name"
       :value="inputValue"
+      :required="required"
     />
     <span class="check" />
     <span class="pl-2">{{ label }}</span>

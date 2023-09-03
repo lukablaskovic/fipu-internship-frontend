@@ -21,10 +21,14 @@
       <div class="h-4 w-40 rounded bg-gray-300"></div>
     </td>
     <td class="animate-pulse bg-pulse">
+      <!-- Skeleton for URL -->
+      <div class="h-4 w-40 rounded bg-gray-300"></div>
+    </td>
+    <td class="animate-pulse bg-pulse">
       <!-- Skeleton for Actions -->
       <div class="flex gap-2">
-        <div class="h-4 w-4 rounded bg-gray-300"></div>
-        <div class="h-4 w-4 rounded bg-gray-300"></div>
+        <div class="h-8 w-8 rounded bg-gray-300"></div>
+        <div class="h-8 w-8 rounded bg-gray-300"></div>
       </div>
     </td>
   </tr>

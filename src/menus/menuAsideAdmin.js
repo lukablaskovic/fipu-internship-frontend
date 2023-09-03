@@ -24,7 +24,7 @@ export default [
     label: "Zadaci",
   },
   {
-    to: "/alokacije-javno",
+    to: "/alokacije",
     icon: mdiClipboardCheck,
     label: "Alokacije",
   },

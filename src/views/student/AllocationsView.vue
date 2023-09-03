@@ -21,12 +21,14 @@ const userAuthenticated = computed(() => mainStore.userAuthenticated);
       <SectionMain>
         <SectionTitleLineWithButton
           :icon="mdiClipboardCheck"
-          title="Alokacije - javni prikaz"
+          :title="
+            mainStore.userAdmin ? 'Alokacije' : 'Alokacije - Javni prikaz'
+          "
           main
         >
         </SectionTitleLineWithButton>
 
-        <div class="mb-4">
+        <div v-if="!mainStore.userAdmin" class="mb-4">
           <p class="text-sm md:text-base">
             Ovdje možete pronaći javni popis alociranih zadataka. Ukoliko se ne
             možete pronaći znači da vas profesor još nije alocirao te morate

@@ -21,7 +21,6 @@ export const useStudentStore = defineStore("student", {
         Treci_odabir: [assignmentsData[2]["id_zadatak"]],
         napomena: napomena,
       };
-      console.log("student_store_post_data", post_data);
       try {
         let process_instance_id = mainStore.currentUser.internship_process.id;
         let pending_user_task =
@@ -34,6 +33,42 @@ export const useStudentStore = defineStore("student", {
         );
         console.log(
           `%c ADMIN_STORE.registerPreferences: ProcessInstance.handleNewInstance ${JSON.stringify(
+            response
+          )}`,
+          "background: #222; color: #bada55"
+        );
+        return response;
+      } catch (error) {
+        console.log("Error:", error);
+      }
+    },
+    async submitApplicationForm(application_data) {
+      let post_data = {
+        student_broj_mobitela: application_data["student_broj_mobitela"],
+        student_OIB: application_data["student_OIB"],
+        mentor_ime: application_data["mentor_ime"],
+        mentor_prezime: application_data["mentor_prezime"],
+        mentor_email: application_data["mentor_email"],
+        detaljan_opis_zadatka: application_data["detaljan_opis_zadatka"],
+        dogovoreni_broj_sati: application_data["dogovoreni_broj_sati"],
+        pocetak_prakse: application_data["pocetak_prakse"],
+        kraj_prakse: application_data["kraj_prakse"],
+        alokacija_potvrda: application_data["alokacija_potvrda"],
+        kontakt_potvrda: application_data["kontakt_potvrda"],
+        mjesto_izvrsavanja: application_data["mjesto_izvrsavanja"],
+      };
+      console.log(post_data);
+      try {
+        let process_instance_id = mainStore.currentUser.internship_process.id;
+        let pending_user_task =
+          mainStore.currentUser.internship_process.pending_user_task;
+        const response = await ProcessInstance.handleNewInstance(
+          process_instance_id,
+          pending_user_task,
+          post_data
+        );
+        console.log(
+          `%c ADMIN_STORE.fillApplicationForm: ProcessInstance.handleNewInstance ${JSON.stringify(
             response
           )}`,
           "background: #222; color: #bada55"
