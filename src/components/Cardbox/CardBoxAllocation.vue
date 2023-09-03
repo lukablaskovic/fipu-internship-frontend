@@ -1,5 +1,5 @@
 <template>
-  <div class="relative block overflow-hidden rounded-lg py-4">
+  <div class="relative block overflow-hidden rounded-lg pb-4">
     <span
       class="absolute inset-x-0 bottom-0 h-2 bg-gradient-to-r from-green-300 via-fipu_blue to-blue-500"
     ></span>

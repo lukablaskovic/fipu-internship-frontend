@@ -1,6 +1,6 @@
 <script setup>
 import { ref, computed, onMounted } from "vue";
-import { mdiProgressClock, mdiLaptop } from "@mdi/js";
+import { mdiProgressClock, mdiLaptop, mdiClipboardCheck } from "@mdi/js";
 
 import SectionMain from "@/components/Section/SectionMain.vue";
 
@@ -79,7 +79,12 @@ const userAuthenticated = computed(() => mainStore.userAuthenticated);
 
       <br />
       <hr />
-
+      <br />
+      <SectionTitleLineWithButton
+        :icon="mdiClipboardCheck"
+        main
+        title="Alocirani zadatak"
+      ></SectionTitleLineWithButton>
       <CardboxAllocation
         v-if="allocated_assignment != null"
         :data="allocated_assignment"

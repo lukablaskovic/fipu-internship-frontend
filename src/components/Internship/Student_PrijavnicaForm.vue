@@ -7,7 +7,6 @@ import {
   mdiAccount,
   mdiMail,
   mdiCheck,
-  mdiReload,
   mdiClipboardCheck,
   mdiCardAccountDetails,
 } from "@mdi/js";
@@ -19,16 +18,13 @@ import LayoutGuest from "@/layouts/LayoutGuest.vue";
 
 import SectionTitleLineWithButton from "@/components/Section/SectionTitleLineWithButton.vue";
 import CardboxAllocation from "@/components/Cardbox/CardBoxAllocation.vue";
-import { mainStore, studentStore } from "@/main.js";
+import { mainStore, snackBarStore, studentStore } from "@/main.js";
 
-import { buttonMenuOptions } from "@/sampleButtonMenuOptions.js";
 import CardBox from "@/components/Cardbox/CardBox.vue";
 import FormCheckRadioGroup from "@/components/Form/FormCheckRadioGroup.vue";
-import FormFilePicker from "@/components/Form/FormFilePicker.vue";
 import FormField from "@/components/Form/FormField.vue";
 import FormControl from "@/components/Form/FormControl.vue";
 import BaseDivider from "@/components/Base/BaseDivider.vue";
-import ButtonMenu from "@/components/Premium/ButtonMenu.vue";
 import BaseButton from "@/components/Base/BaseButton.vue";
 import CardBoxComponentTitle from "@/components/Cardbox/CardBoxComponentTitle.vue";
 
@@ -64,20 +60,6 @@ const userAuthenticated = computed(() => mainStore.userAuthenticated);
 
 ///////////////////////////////////////////////////////////////////////////////
 
-const selectFieldOptions = [
-  { id: 1, label: "Business development" },
-  { id: 2, label: "Marketing" },
-  { id: 3, label: "Sales" },
-];
-
-const listBoxOptions = [
-  { id: 1, label: "Howell Hand", unavailable: false },
-  { id: 2, label: "Hope Howe", unavailable: false },
-  { id: 3, label: "Nelson Jerde", unavailable: false },
-  { id: 4, label: "Kim Weimann (disabled)", unavailable: true },
-  { id: 5, label: "Lenna Smitham", unavailable: false },
-];
-
 const checkboxOptions = {
   alokacija_potvrda:
     "Nastavnik mi je odobrio i alocirao me na ovu tvrtku. Što se i vidi na Alokacije.",
@@ -103,14 +85,7 @@ const form = reactive({
   mentor_email: studentStore.allocated_assignment["poslodavac_email"],
   detaljan_opis: "",
   dogovoreni_broj_sati: "",
-  pass: "secret",
-  phone: "",
-  amount: 1024,
-  ipv6: "fe80::/10",
-  ipv4: "127.0.0.1",
-  currency: "USD",
-  department: selectFieldOptions[0],
-  person: listBoxOptions[0],
+
   question: "Textarea",
   subject: "",
   checkboxOne: ["lorem"],
@@ -119,21 +94,10 @@ const form = reactive({
   radioTwo: "one",
   switchOne: ["one"],
   switchTwo: ["one"],
-  file: null,
 });
-
-const formLower = reactive({
-  name: "John Doe",
-  email: "john.doe@example.com",
-  department: selectFieldOptions[0],
-  person: listBoxOptions[0],
-  question: "Error state",
-});
-
-const passShowHideClicked = ref(false);
 
 const submit = () => {
-  mainStore.pushMessage("Done! Demo only...", "contrast");
+  snackBarStore.pushMessage("Done! Demo only...", "contrast");
 };
 
 const formErrorHasError = ref(false);
@@ -159,6 +123,19 @@ const formErrorSubmit = () => {
       <hr />
       <br />
       <SectionTitleLineWithButton
+        :icon="mdiClipboardCheck"
+        main
+        title="Alocirani zadatak"
+      ></SectionTitleLineWithButton>
+      <CardboxAllocation
+        v-if="allocated_assignment != null"
+        :data="allocated_assignment"
+      ></CardboxAllocation>
+
+      <br />
+      <hr />
+      <br />
+      <SectionTitleLineWithButton
         :icon="mdiFileDocumentEdit"
         main
         title="Prijavnica"
@@ -167,18 +144,22 @@ const formErrorSubmit = () => {
         <b>Važno!</b> Prijavnica se popunjava nakon što nastavnik odobri kontakt
         određenom poduzeću i nakon što student s tim poduzećem dogovir praksu.
       </p>
+      <p>
+        Ispod možete pronaći prijavnicu za praksu. Neki podaci su već u sustavu
+        te su samim time ispisani. Ostale podatke treba popuniti.
+      </p>
       <p>Popunjenu prijavnicu šaljemo poduzeću na odobrenje i potpis.</p>
       <br />
       <hr />
 
-      <div class="grid grid-cols-1 gap-6 mb-6 xl:grid-cols-4">
+      <div class="grid grid-cols-1 gap-6 mb-6">
         <CardBox
           :icon="mdiBallot"
           class="mb-6 lg:mb-0 lg:col-span-2 xl:col-span-3"
           is-form
           @submit.prevent="submit"
         >
-          <CardBoxComponentTitle title="Ispunite prijavnicu ovdje" />
+          <CardBoxComponentTitle title="📃Prijavnica na praksu" />
           <FormField label="Ime i prezime" horizontal>
             <FormControl
               v-model="form.ime"
@@ -205,6 +186,7 @@ const formErrorSubmit = () => {
               type="email"
               help="Vaša UNIPU email adresa"
               placeholder="Email"
+              required
             />
           </FormField>
 
@@ -221,6 +203,7 @@ const formErrorSubmit = () => {
                 placeholder="Vaš broj mobitela"
                 expanded
                 middle-addon
+                required
               />
               <FormControl type="static" model-value="HR" last-addon />
             </FormField>
@@ -234,6 +217,7 @@ const formErrorSubmit = () => {
               type="number"
               help="Za potrebe prijave osiguranja"
               placeholder="OIB"
+              required
             />
           </FormField>
 
@@ -245,6 +229,7 @@ const formErrorSubmit = () => {
               readonly
               help="Odabrano poduzeće"
               placeholder="Odabrano poduzeće"
+              required
             />
           </FormField>
 
@@ -254,6 +239,7 @@ const formErrorSubmit = () => {
               :icon-left="mdiAccount"
               help="Ime mentora"
               placeholder="Ime mentora"
+              required
             />
             <FormControl
               v-model="form.mentor_prezime"
@@ -261,6 +247,7 @@ const formErrorSubmit = () => {
               :icon-right="mdiCheck"
               help="Prezime mentora"
               placeholder="Prezime mentora"
+              required
             />
           </FormField>
 
@@ -272,6 +259,7 @@ const formErrorSubmit = () => {
               type="email"
               help="Email vašeg mentora"
               placeholder="Email mentora"
+              required
             />
           </FormField>
 
@@ -280,6 +268,7 @@ const formErrorSubmit = () => {
               v-model="form.detaljan_opis"
               type="textarea"
               placeholder="Detaljno opišite zadatak koji će se izvršavati na praksi."
+              required
             />
           </FormField>
 
@@ -296,17 +285,18 @@ const formErrorSubmit = () => {
                 placeholder="Dogovoreni broj sati"
                 expanded
                 middle-addon
+                required
               />
               <FormControl type="static" model-value="[90 - 150]" last-addon />
             </FormField>
           </FormField>
 
           <FormField label="Datum početka" horizontal>
-            <FormControl type="date" />
+            <FormControl type="date" required />
           </FormField>
 
           <FormField label="Datum završetka" horizontal>
-            <FormControl type="date" />
+            <FormControl type="date" required />
           </FormField>
 
           <BaseDivider />
@@ -336,31 +326,11 @@ const formErrorSubmit = () => {
 
           <BaseDivider />
 
-          <!--
-          <template #footer>
-            <FormField horizontal grouped>
-              <BaseButton label="Submit" type="submit" color="info" />
-              <ButtonMenu
-                :options="buttonMenuOptions"
-                label="Options"
-                color="info"
-                outline
-                left
-              />
-            </FormField>
-          </template>
-          -->
+          <FormField horizontal grouped>
+            <BaseButton label="Pošalji" type="submit" color="fipu_blue" />
+          </FormField>
         </CardBox>
       </div>
-      <SectionTitleLineWithButton
-        :icon="mdiClipboardCheck"
-        main
-        title="Alocirani zadatak"
-      ></SectionTitleLineWithButton>
-      <CardboxAllocation
-        v-if="allocated_assignment != null"
-        :data="allocated_assignment"
-      ></CardboxAllocation>
     </SectionMain>
   </component>
 </template>
