@@ -1,11 +1,7 @@
 <script setup>
-import { mainStore, styleStore } from "@/main.js";
+import { useStyleStore } from "@/stores/style_store.js";
+import AsideMenuList from "@/components/Premium/AsideMenuList.vue";
 
-import AsideMenuList from "@/components/AsideMenu/AsideMenuList.vue";
-
-import { useRouter } from "vue-router";
-
-const router = useRouter();
 defineProps({
   menu: {
     type: Array,
@@ -24,16 +20,9 @@ defineProps({
 
 const emit = defineEmits(["menu-click"]);
 
-const menuClick = (event, item) => {
-  if (item.logoutModalActive) {
-    mainStore.activateLogoutModal(true);
-    return;
-  }
-  if (item.label == "Prijava") {
-    router.push("/login");
-    return;
-  }
+const styleStore = useStyleStore();
 
+const menuClick = (event, item) => {
   emit("menu-click", event, item);
 };
 </script>

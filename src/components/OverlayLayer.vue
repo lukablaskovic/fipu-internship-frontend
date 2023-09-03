@@ -1,6 +1,5 @@
 <script setup>
-import { styleStore } from "@/main.js";
-
+import { styleStore } from "@/main";
 defineProps({
   zIndex: {
     type: String,

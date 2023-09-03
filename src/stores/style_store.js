@@ -1,6 +1,6 @@
 import { defineStore } from "pinia";
 import * as styles from "@/styles";
-import { darkModeKey } from "@/config";
+import { darkModeKey, styleKey } from "@/config";
 
 export const useStyleStore = defineStore("style", {
   state: () => ({
@@ -10,6 +10,8 @@ export const useStyleStore = defineStore("style", {
     asideBrandStyle: "",
     asideMenuItemStyle: "",
     asideMenuItemActiveStyle: "",
+    asideMenuItemActiveBgStyle: "",
+    asideMenuItemInactiveStyle: "",
     asideMenuDropdownStyle: "",
     navBarItemLabelStyle: "",
     navBarItemLabelHoverStyle: "",
@@ -23,6 +25,10 @@ export const useStyleStore = defineStore("style", {
     setStyle(payload) {
       if (!styles[payload]) {
         return;
+      }
+
+      if (typeof localStorage !== "undefined") {
+        localStorage.setItem(styleKey, payload);
       }
 
       const style = styles[payload];
@@ -50,5 +56,4 @@ export const useStyleStore = defineStore("style", {
       }
     },
   },
-  persist: true,
 });

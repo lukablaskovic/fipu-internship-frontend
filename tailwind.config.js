@@ -11,6 +11,12 @@ module.exports = {
       light: "light",
       gray: "gray",
     },
+    checkRadioSwitchStates: {
+      info: "blue",
+      success: "emerald",
+      warning: "yellow",
+      danger: "red",
+    },
     extend: {
       colors: {
         fipu_blue: "#74d4f4",
@@ -20,11 +26,15 @@ module.exports = {
         fipu_text_blue: "#6dd0f6",
         search_bar: "#c7c8c9",
       },
+      spacing: {
+        22: "5.5rem",
+      },
       zIndex: {
         "-1": "-1",
+        100: "100",
       },
-      flexGrow: {
-        5: "5",
+      height: {
+        "screen-menu": "calc(100vh - 3.5rem)",
       },
       maxHeight: {
         "screen-menu": "calc(100vh - 3.5rem)",
@@ -33,8 +43,23 @@ module.exports = {
       transitionProperty: {
         position: "right, left, top, bottom, margin, padding",
         textColor: "color",
+        size: "width, height",
+        backgroundImage: "background-image",
       },
       keyframes: {
+        shake: {
+          "from, to": { transform: "translate3d(0, 0, 0)" },
+          "10%, 30%, 50%, 70%, 90%": { transform: "translate3d(-10px, 0, 0)" },
+          "20%, 40%, 60%, 80%": { transform: "translate3d(10px, 0, 0)" },
+        },
+        "fade-in-up": {
+          from: { opacity: 0, transform: "translate3d(0, 100%, 0)" },
+          to: { opacity: 1, transform: "none" },
+        },
+        "fade-out-down": {
+          from: { opacity: 1 },
+          to: { opacity: 0, transform: "translate3d(0, 100%, 0)" },
+        },
         "fade-out": {
           from: { opacity: 1 },
           to: { opacity: 0 },
@@ -43,10 +68,46 @@ module.exports = {
           from: { opacity: 0 },
           to: { opacity: 1 },
         },
+        "fade-in-left": {
+          from: {
+            opacity: "0",
+            transform: "translate3d(-50%, 0, 0)",
+          },
+          to: {
+            opacity: 1,
+            transform: "translate3d(0, 0, 0)",
+          },
+        },
+        "fade-in-right": {
+          from: {
+            opacity: "0",
+            transform: "translate3d(50%, 0, 0)",
+          },
+          to: {
+            opacity: 1,
+            transform: "translate3d(0, 0, 0)",
+          },
+        },
+        "slide-in-left": {
+          from: {
+            transform: "translate3d(-30%, 0, 0)",
+            visibility: "visible",
+          },
+          to: {
+            transform: "translate3d(0, 0, 0)",
+          },
+        },
       },
       animation: {
+        shake: "shake 500ms ease-in-out",
+        "fade-in-up-fast": "fade-in-up 150ms ease-in-out",
+        "fade-out-down-fast": "fade-out-down 150ms ease-in-out",
         "fade-out": "fade-out 250ms ease-in-out",
         "fade-in": "fade-in 250ms ease-in-out",
+        "fade-in-fast": "fade-in 150ms ease-in-out",
+        "slide-in-left-fast": "slide-in-left 150ms ease-in-out",
+        "fade-in-left-fast": "fade-in-left 150ms ease-in-out",
+        "fade-in-right-fast": "fade-in-right 150ms ease-in-out",
       },
     },
   },

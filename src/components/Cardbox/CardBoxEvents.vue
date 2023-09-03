@@ -29,7 +29,6 @@ const props = defineProps({
 
 const momentDate = computed(() => {
   let date = moment(props.date);
-  console.log(date);
   return date.fromNow();
 });
 

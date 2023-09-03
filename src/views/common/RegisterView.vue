@@ -57,7 +57,6 @@ async function onSubmit() {
     showNotificationBar("danger");
   } else {
     let instanceCreationResult = await guestStore.createInternshipInstance();
-    console.log(instanceCreationResult);
     if (instanceCreationResult.status !== 500) {
       await guestStore.update_process_instance(
         registrationResult.data.id,

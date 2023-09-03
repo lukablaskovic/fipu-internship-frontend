@@ -46,7 +46,7 @@ async function checkServiceStatus(serviceName) {
         <th>Status</th>
         <th>Poruka</th>
         <th>URL</th>
-        <th>Zadnji put aktivan</th>
+        <th>Zadnja provjera</th>
         <th>Actions</th>
       </tr>
     </thead>
@@ -81,7 +81,7 @@ async function checkServiceStatus(serviceName) {
           <td class="before:hidden lg:w-1 whitespace-nowrap">
             <BaseButtons type="justify-start lg:justify-end" no-wrap>
               <BaseButton
-                color="info"
+                color="fipu_blue"
                 :icon="mdiRefresh"
                 small
                 @click="checkServiceStatus(serviceName)"

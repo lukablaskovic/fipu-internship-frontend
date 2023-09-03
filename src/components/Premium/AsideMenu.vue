@@ -7,11 +7,10 @@ import {
   mdiChevronRightCircleOutline,
   mdiChevronLeftCircleOutline,
 } from "@mdi/js";
-import BaseIcon from "@/components/Base/BaseIcon.vue";
+import BaseIcon from "@/components/BaseIcon.vue";
 import OverlayLayer from "@/components/OverlayLayer.vue";
-import AsideMenuLayer from "@/components/AsideMenu/AsideMenuLayer.vue";
-import AsideMenuItem from "@/components/AsideMenu/AsideMenuItem.vue";
-import { styleStore } from "@/main";
+import AsideMenuLayer from "@/components/Premium/AsideMenuLayer.vue";
+import AsideMenuItem from "@/components/Premium/AsideMenuItem.vue";
 
 defineProps({
   menu: {
@@ -109,14 +108,9 @@ const expandCollapseItem = computed(() => ({
     :active-secondary-menu-key="secondaryMenuItem?.key"
     @menu-click="menuClickPrimaryMenu"
   >
-    <router-link to="/">
-      <div
-        :class="styleStore.asideBrandStyle"
-        class="flex flex-row h-14 items-center justify-center dark:bg-slate-900"
-      >
-        <img src="fipu_hr.png" class="max-h-12 object-contain" />
-      </div>
-    </router-link>
+    <div class="flex-1 px-3 flex justify-center">
+      <b class="font-black">One</b>
+    </div>
 
     <template #footer>
       <ul class="hidden lg:block">

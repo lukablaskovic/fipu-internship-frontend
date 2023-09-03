@@ -8,26 +8,33 @@ import {
   mdiEmail,
 } from "@mdi/js";
 import { ref, onMounted, computed } from "vue";
-import { useRouter } from "vue-router";
+import { mainStore, styleStore } from "@/main.js";
+
 import menuAsideAdmin from "@/menus/menuAsideAdmin.js";
+import AsideMenu from "@/components/AsideMenu/AsideMenu.vue";
+
 import menuAsideStudent from "@/menus/menuAsideStudent.js";
 import menuNavBar from "@/menus/menuNavBar.js";
-import { mainStore, styleStore } from "@/main.js";
+
 import BaseIcon from "@/components/Base/BaseIcon.vue";
 import FormControl from "@/components/Form/FormControl.vue";
 import NavBar from "@/components/Navbar/NavBar.vue";
 import NavBarItemPlain from "@/components/Navbar/NavBarItemPlain.vue";
-import AsideMenu from "@/components/AsideMenu/AsideMenu.vue";
 import FooterBar from "@/components/FooterBar.vue";
+
 import CardBoxModal from "@/components/Cardbox/CardBoxModal.vue";
 import BaseDivider from "@/components/Base/BaseDivider.vue";
 
-const layoutAsidePadding = "xl:pl-60";
+import { layoutStore } from "@/main.js";
 
+import SnackBar from "@/components/Premium/SnackBar.vue";
+
+const layoutAsidePadding = computed(() =>
+  layoutStore.isAsideLgActive ? "lg:pl-22" : "xl:pl-22"
+);
+
+import { useRouter } from "vue-router";
 const router = useRouter();
-
-const isAsideMobileExpanded = ref(false);
-const isAsideLgActive = ref(false);
 
 const logoutModalActive = computed(() => mainStore.logoutModalActive);
 const helpModalActive = computed(() => mainStore.helpModalActive);
@@ -45,8 +52,7 @@ onMounted(() => {
   }
 }),
   router.beforeEach(() => {
-    isAsideMobileExpanded.value = false;
-    isAsideLgActive.value = false;
+    layoutStore.isAsideMobileExpanded = false;
   });
 
 const menuClick = (event, item) => {
@@ -68,35 +74,45 @@ const menuClick = (event, item) => {
   <div
     :class="{
       dark: styleStore.darkMode,
-      'overflow-hidden lg:overflow-visible': isAsideMobileExpanded,
+      'overflow-hidden lg:overflow-visible': layoutStore.isAsideMobileExpanded,
     }"
   >
     <div
-      :class="[layoutAsidePadding, { 'ml-60 lg:ml-0': isAsideMobileExpanded }]"
+      :class="[
+        layoutAsidePadding,
+        { 'ml-60 lg:ml-0': layoutStore.isAsideMobileExpanded },
+      ]"
       class="pt-14 min-h-screen w-screen transition-position lg:w-auto bg-gray-50 dark:bg-slate-800 dark:text-slate-100"
     >
       <NavBar
         :menu="menuNavBar"
         :class="[
           layoutAsidePadding,
-          { 'ml-60 lg:ml-0': isAsideMobileExpanded },
+          { 'ml-60 lg:ml-0': layoutStore.isAsideMobileExpanded },
         ]"
         @menu-click="menuClick"
       >
         <NavBarItemPlain
           display="flex lg:hidden"
-          @click.prevent="isAsideMobileExpanded = !isAsideMobileExpanded"
+          @click.prevent="layoutStore.asideMobileToggle()"
         >
           <BaseIcon
-            :path="isAsideMobileExpanded ? mdiBackburger : mdiForwardburger"
+            :path="
+              layoutStore.isAsideMobileExpanded
+                ? mdiBackburger
+                : mdiForwardburger
+            "
             size="24"
           />
         </NavBarItemPlain>
         <NavBarItemPlain
           display="hidden lg:flex xl:hidden"
-          @click.prevent="isAsideLgActive = true"
+          @click.prevent="layoutStore.asideLgToggle()"
         >
-          <BaseIcon :path="mdiMenu" size="24" />
+          <BaseIcon
+            :path="layoutStore.isAsideLgActive ? mdiBackburger : mdiMenu"
+            size="24"
+          />
         </NavBarItemPlain>
         <NavBarItemPlain use-margin>
           <FormControl
@@ -108,14 +124,7 @@ const menuClick = (event, item) => {
           />
         </NavBarItemPlain>
       </NavBar>
-      <AsideMenu
-        :is-aside-mobile-expanded="isAsideMobileExpanded"
-        :is-aside-lg-active="isAsideLgActive"
-        :menu="menuAside"
-        @menu-click="menuClick"
-        @aside-lg-close-click="isAsideLgActive = false"
-      />
-      <slot />
+
       <CardBoxModal
         v-model="logoutModalActive"
         title="Jeste li sigurni da se želite odjaviti?"
@@ -239,10 +248,13 @@ const menuClick = (event, item) => {
         <BaseDivider></BaseDivider>
       </CardBoxModal>
 
+      <AsideMenu :menu="menuAside" @menu-click="menuClick" />
+      <slot />
       <FooterBar
         ><br />Made with <span style="color: #e25555">&#9829;</span> at
         FIPU.lab</FooterBar
       >
+      <SnackBar />
     </div>
   </div>
 </template>

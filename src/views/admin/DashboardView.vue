@@ -46,28 +46,21 @@ onMounted(async () => {
 });
 
 const perPage = ref(10);
-
 const currentPage = ref(0);
-
 const itemsPaginated = computed(() =>
   events.value.slice(
     perPage.value * currentPage.value,
     perPage.value * (currentPage.value + 1)
   )
 );
-
 const leftItems = computed(() => {
   return itemsPaginated.value.slice(0, 5);
 });
-
 const rightItems = computed(() => {
   return itemsPaginated.value.slice(5, 10);
 });
-
 const numPages = computed(() => Math.ceil(events.value.length / perPage.value));
-
 const currentPageHuman = computed(() => currentPage.value + 1);
-
 const pagesList = computed(() => {
   const pagesList = [];
 

@@ -17,6 +17,7 @@ import { darkModeKey, styleKey } from "@/config.js";
 
 import piniaPluginPersistedstate from "pinia-plugin-persistedstate";
 import NotificationBar from "@/components/Notification/NotificationBar.vue";
+import { useLayoutStore } from "./stores/layout";
 
 /* Init Pinia */
 const pinia = createPinia();
@@ -36,12 +37,17 @@ const studentStore = useStudentStore(pinia);
 const guestStore = useGuestStore(pinia);
 const adminStore = useAdminStore(pinia);
 const styleStore = useStyleStore(pinia);
+const layoutStore = useLayoutStore(pinia);
 
 app.use(router);
 app.mount("#app");
 
+/* Responsive layout control */
+layoutStore.responsiveLayoutControl();
+window.onresize = () => layoutStore.responsiveLayoutControl();
+
 /* App style */
-styleStore.setStyle(localStorage[styleKey] ?? "white");
+styleStore.setStyle(localStorage[styleKey] ?? "basic");
 
 /* Dark mode */
 if (
@@ -62,4 +68,11 @@ router.afterEach((to) => {
     : defaultDocumentTitle;
 });
 
-export { mainStore, studentStore, adminStore, guestStore, styleStore };
+export {
+  mainStore,
+  studentStore,
+  adminStore,
+  guestStore,
+  styleStore,
+  layoutStore,
+};
