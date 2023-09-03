@@ -2,8 +2,8 @@
 import { Menu, MenuButton, MenuItems, MenuItem } from "@headlessui/vue";
 import { computed } from "vue";
 import { mdiChevronDown } from "@mdi/js";
-import BaseIcon from "@/components/BaseIcon.vue";
-import BaseButton from "@/components/BaseButton.vue";
+import BaseIcon from "@/components/Base/BaseIcon.vue";
+import BaseButton from "@/components/Base/BaseButton.vue";
 
 const props = defineProps({
   icon: {

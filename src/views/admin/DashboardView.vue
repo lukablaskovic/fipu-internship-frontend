@@ -22,12 +22,18 @@ import BaseLevel from "@/components/Base/BaseLevel.vue";
 import BaseButtons from "@/components/Base/BaseButtons.vue";
 import BaseButton from "@/components/Base/BaseButton.vue";
 import { ActivityEventMappings } from "@/helpers/maps.js";
+import { snackBarStore } from "@/main.js";
 const userAuthenticated = computed(() => mainStore.userAuthenticated);
 
 const ongoing_internships = ref(0);
 const waiting_for_allocation = ref(0);
 const waiting_for_evaluation = ref(0);
 const events = ref([]);
+
+snackBarStore.pushMessage(
+  `Dobrodošli natrag! ${mainStore.currentUser.username} `,
+  "contrast"
+);
 
 onMounted(async () => {
   await adminStore.getStudents();

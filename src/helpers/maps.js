@@ -15,7 +15,7 @@ class StudentMappings {
     return gs ? gs.label : dbLabel;
   }
 }
-
+import Student_PrijavnicaForm from "@/components/Internship/Student_PrijavnicaForm.vue";
 import Student_WaitingForEvaluation from "@/components/Internship/Student_WaitingForEvaluation.vue";
 import Student_WaitingForAllocation from "@/components/Internship/Student_WaitingForAllocation.vue";
 import Student_ChooseAvailableAssignments from "@/components/Internship/Student_ChooseAvailableAssignments.vue";
@@ -51,6 +51,8 @@ class UserTaskMappings {
       order: 4,
       _id: "ispunjavanje_prijavnice_student",
       name: "Mora ispuniti prijavnicu",
+      form_title: "Ispunjena prijavnica",
+      component: Student_PrijavnicaForm,
     },
     {
       order: 5,

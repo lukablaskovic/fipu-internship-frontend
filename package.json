@@ -8,6 +8,7 @@
     "lint": "eslint . --ext .vue,.js,.jsx,.cjs,.mjs --fix --ignore-path .gitignore"
   },
   "dependencies": {
+    "@headlessui/vue": "^1.7.16",
     "@mdi/js": "^7.0.96",
     "animate.css": "^4.1.1",
     "axios": "^0.27.0",

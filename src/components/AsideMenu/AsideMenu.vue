@@ -88,7 +88,7 @@ router.afterEach(() => {
 });
 
 const expandCollapseItem = computed(() => ({
-  label: isPrimaryMenuCompact.value ? "Exapand" : "Collapse",
+  label: isPrimaryMenuCompact.value ? "Proširi" : "Smanji",
   icon: isPrimaryMenuCompact.value
     ? mdiChevronRightCircleOutline
     : mdiChevronLeftCircleOutline,

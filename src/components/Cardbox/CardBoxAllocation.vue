@@ -1,17 +1,15 @@
 <template>
-  <div
-    class="relative block overflow-hidden rounded-lg border border-gray-100 py-4"
-  >
+  <div class="relative block overflow-hidden rounded-lg py-4">
     <span
       class="absolute inset-x-0 bottom-0 h-2 bg-gradient-to-r from-green-300 via-fipu_blue to-blue-500"
     ></span>
 
     <div class="sm:flex sm:justify-between sm:gap-4">
       <div>
-        <h1 class="text-lg font-bold text-gray-900 sm:text-2xl">
+        <h1 class="text-lg font-bold sm:text-2xl">
           {{ props.data.id_zadatak }}
         </h1>
-        <h3 class="text-lg font-bold text-gray-900 sm:text-xl">
+        <h3 class="text-lg font-bold sm:text-xl">
           {{ truncatedDescription }}
         </h3>
 
@@ -52,29 +50,37 @@
 
     <dl class="mt-6 flex gap-4 sm:gap-6">
       <div class="flex flex-col-reverse">
-        <dt class="text-sm font-medium text-gray-600">Okviran početak</dt>
-        <dd class="text-xs text-gray-500">
+        <dt class="text-sm font-medium text-gray-600 dark:text-gray-200">
+          Okviran početak
+        </dt>
+        <dd class="text-xs text-gray-500 dark:text-gray-100">
           {{ props.data.zeljeno_okvirno_vrijeme_pocetka }}
         </dd>
       </div>
 
       <div class="flex flex-col-reverse">
-        <dt class="text-sm font-medium text-gray-600">Lokacija</dt>
-        <dd class="text-xs text-gray-500">
+        <dt class="text-sm font-medium text-gray-600 dark:text-gray-200">
+          Lokacija
+        </dt>
+        <dd class="text-xs text-gray-500 dark:text-gray-100">
           {{ props.data.lokacija }}
         </dd>
       </div>
 
       <div class="flex flex-col-reverse">
-        <dt class="text-sm font-medium text-gray-600">Trajanje</dt>
-        <dd class="text-xs text-gray-500">
+        <dt class="text-sm font-medium text-gray-600 dark:text-gray-200">
+          Trajanje
+        </dt>
+        <dd class="text-xs text-gray-500 dark:text-gray-100">
           {{ props.data.trajanje_sati }} sati
         </dd>
       </div>
 
       <div v-if="props.data.selekcija === true" class="flex flex-col-reverse">
-        <dt class="text-sm font-medium text-gray-600">Selekcija</dt>
-        <dd class="text-xs text-gray-500">
+        <dt class="text-sm font-medium text-gray-600 dark:text-gray-200">
+          Selekcija
+        </dt>
+        <dd class="text-xs text-gray-500 dark:text-gray-100">
           {{ props.data.proces_selekcije }}
         </dd>
       </div>
@@ -106,7 +112,6 @@ onMounted(async () => {
     props.data["Poslodavac"][0]["value"]
   );
   companyLogo.value = result.data.results[0].logo[0].url;
-  console.log("companyLogo.value", companyLogo.value);
 });
 </script>
 <style></style>

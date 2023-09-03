@@ -12,12 +12,13 @@ import { useStyleStore } from "@/stores/style_store.js";
 import { useGuestStore } from "@/stores/guest_store.js";
 import { useAdminStore } from "@/stores/admin_store.js";
 import { useStudentStore } from "./stores/student_store";
+import { useLayoutStore } from "./stores/layout";
+import { useSnackBarStore } from "./stores/snackBar";
 
 import { darkModeKey, styleKey } from "@/config.js";
 
 import piniaPluginPersistedstate from "pinia-plugin-persistedstate";
 import NotificationBar from "@/components/Notification/NotificationBar.vue";
-import { useLayoutStore } from "./stores/layout";
 
 /* Init Pinia */
 const pinia = createPinia();
@@ -38,7 +39,7 @@ const guestStore = useGuestStore(pinia);
 const adminStore = useAdminStore(pinia);
 const styleStore = useStyleStore(pinia);
 const layoutStore = useLayoutStore(pinia);
-
+const snackBarStore = useSnackBarStore(pinia);
 app.use(router);
 app.mount("#app");
 
@@ -75,4 +76,5 @@ export {
   guestStore,
   styleStore,
   layoutStore,
+  snackBarStore,
 };

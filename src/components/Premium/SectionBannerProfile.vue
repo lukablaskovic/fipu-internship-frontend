@@ -1,24 +1,23 @@
 <script setup>
-import { mdiGithub } from "@mdi/js";
-import BaseButton from "@/components/BaseButton.vue";
-import SectionBanner from "@/components/SectionBanner.vue";
+import { mdiLaptop } from "@mdi/js";
+import BaseButton from "@/components/Base/BaseButton.vue";
+import SectionBanner from "@/components/Section/SectionBanner.vue";
 </script>
 
 <template>
   <SectionBanner
-    class="bg-gradient-to-tr from-cyan-400 via-violet-400 to-purple-500"
+    class="bg-gradient-to-tr from-green-300 via-fipu_blue to-blue-500"
   >
-    <h1 class="text-3xl text-white mb-6">
-      Like the project? Please star on <b>GitHub</b> ;-)
-    </h1>
+    <h1 class="text-3xl text-white mb-6">Provjerite stanje vaše prakse</h1>
     <div>
-      <BaseButton
-        href="https://github.com/justboil/admin-one-vue-tailwind"
-        :icon="mdiGithub"
-        label="GitHub"
-        target="_blank"
-        rounded-full
-      />
+      <router-link to="/moja-praksa">
+        <BaseButton
+          :icon="mdiLaptop"
+          label="Moja praksa"
+          target="_blank"
+          rounded-full
+        />
+      </router-link>
     </div>
   </SectionBanner>
 </template>

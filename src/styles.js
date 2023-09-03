@@ -16,16 +16,16 @@ export const white = {
 
 export const basic = {
   aside: "bg-gray-800",
-  asideScrollbars: "aside-scrollbars-gray",
+  asideScrollbars: "aside-scrollbars-[slate]",
   asideBrand: "items-center justify-center bg-gray-900 text-white",
   asideMenuItem: "text-gray-300 hover:text-white",
-  asideMenuItemActive: "font-bold text-white",
+  asideMenuItemActive: "text-fipu_text_blue font-bold ",
   asideMenuItemActiveBg: "bg-gray-600/25",
   asideMenuItemInactive: "text-gray-300",
   asideMenuDropdown: "bg-gray-700/50",
   navBarItemLabel: "text-black",
-  navBarItemLabelHover: "hover:text-blue-500",
-  navBarItemLabelActiveColor: "text-blue-600",
+  navBarItemLabelHover: "hover:text-fipu_text_blue",
+  navBarItemLabelActiveColor: "text-fipu_blue",
   overlay: "from-gray-700 via-gray-900 to-gray-700",
 };
 

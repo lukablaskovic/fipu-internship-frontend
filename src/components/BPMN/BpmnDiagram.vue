@@ -160,7 +160,7 @@ function handleError(err) {
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 62vh;
+  height: 70vh;
   width: 100%;
   user-select: none;
 }

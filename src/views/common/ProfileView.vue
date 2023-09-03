@@ -4,11 +4,16 @@ import { mainStore } from "@/main.js";
 
 import {
   mdiAccount,
+  mdiAccountCircle,
   mdiEmail,
   mdiAsterisk,
   mdiFormTextboxPassword,
   mdiCardAccountDetails,
   mdiSchool,
+  mdiCheckDecagram,
+  mdiPencil,
+  mdiDomain,
+  mdiMapMarker,
 } from "@mdi/js";
 
 import SectionMain from "@/components/Section/SectionMain.vue";
@@ -19,10 +24,14 @@ import FormControl from "@/components/Form/FormControl.vue";
 import FormFilePicker from "@/components/Form/FormFilePicker.vue";
 import BaseButton from "@/components/Base/BaseButton.vue";
 import BaseButtons from "@/components/Base/BaseButtons.vue";
-import UserCard from "@/components/User/UserCard.vue";
 import LayoutAuthenticated from "@/layouts/LayoutAuthenticated.vue";
 import SectionTitleLineWithButton from "@/components/Section/SectionTitleLineWithButton.vue";
 import { StudentMappings } from "@/helpers/maps.js";
+import UserAvatarCurrentUserWithUpload from "@/components/Premium/UserAvatarCurrentUserWithUpload.vue";
+import BaseIcon from "@/components/Base/BaseIcon.vue";
+import UserCardProfileNumber from "@/components/Premium/UserCardProfileNumber.vue";
+import SectionBannerProfile from "@/components/Premium/SectionBannerProfile.vue";
+import PillTagPlain from "@/components/PillTag/PillTagPlain.vue";
 
 const profileForm = reactive({
   username: mainStore.currentUser.username,
@@ -51,7 +60,46 @@ const passwordForm = reactive({
       >
       </SectionTitleLineWithButton>
 
-      <UserCard class="mb-6" />
+      <div class="grid grid-cols-1 xl:grid-cols-2 gap-6 mb-6">
+        <CardBox flex="flex-row" class="items-center">
+          <div class="flex justify-start items-start">
+            <UserAvatarCurrentUserWithUpload
+              class="w-24 h-24 md:w-36 md:h-36 mr-6"
+            />
+            <div class="flex-1">
+              <div class="flex justify-between items-center">
+                <div class="flex justify-start items-center mb-3">
+                  <h1 class="text-2xl mr-1.5">
+                    {{ mainStore.currentUser.ime }}
+                    {{ mainStore.currentUser.prezime }}
+                  </h1>
+                  <BaseIcon
+                    :path="mdiCheckDecagram"
+                    :size="22"
+                    class="text-blue-400"
+                  />
+                </div>
+                <BaseButton
+                  :icon="mdiPencil"
+                  color="lightDark"
+                  small
+                  rounded-full
+                />
+              </div>
+
+              <BaseButtons class="text-gray-500">
+                <PillTagPlain label="Student" :icon="mdiAccountCircle" />
+                <PillTagPlain label="FIPU" :icon="mdiDomain" />
+              </BaseButtons>
+              <BaseButtons class="mt-6" class-addon="mr-9 last:mr-0 mb-3">
+                <!-- <UserCardProfileNumber :number="499" label="Likes" /> -->
+              </BaseButtons>
+            </div>
+          </div>
+        </CardBox>
+
+        <SectionBannerProfile />
+      </div>
 
       <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <CardBox is-form>

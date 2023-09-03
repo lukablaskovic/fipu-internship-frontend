@@ -22,7 +22,7 @@ const props = defineProps({
   },
   color: {
     type: String,
-    default: "info",
+    default: "fipu_blue",
   },
   isRoundIcon: Boolean,
 });

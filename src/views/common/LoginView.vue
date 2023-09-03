@@ -33,6 +33,8 @@ async function onSubmit() {
   else showNotificationBar("danger");
 }
 
+const passShowHideClicked = ref(false);
+
 const notificationBar = ref(null);
 let notificationStatus = ref();
 let notificationMessage = ref();
@@ -130,7 +132,9 @@ function showNotificationBar(type) {
               :icon="mdiAsterisk"
               type="password"
               name="password"
+              placeholder="Password"
               autocomplete="current-password"
+              @right-icon-click="passShowHideClicked = true"
             />
           </FormField>
 

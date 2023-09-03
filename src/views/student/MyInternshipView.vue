@@ -17,6 +17,7 @@ onBeforeMount(async () => {
       pendingProcessTask.value = await studentStore.getPendingUserTask(
         processInstance.value
       );
+      console.log("pendingProcessTask", pendingProcessTask.value);
     } catch (error) {
       error.value = "An error occurred while fetching instance info.";
       console.error(error);

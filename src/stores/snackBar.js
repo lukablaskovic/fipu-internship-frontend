@@ -26,4 +26,5 @@ export const useSnackBarStore = defineStore("snackBar", {
       this.messages = newMessages;
     },
   },
+  persist: true,
 });

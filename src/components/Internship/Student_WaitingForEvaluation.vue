@@ -1,6 +1,6 @@
 <script setup>
 import { ref, computed, onMounted } from "vue";
-import { mdiClipboardCheckOutline, mdiProgressClock, mdiLaptop } from "@mdi/js";
+import { mdiProgressClock, mdiLaptop } from "@mdi/js";
 
 import SectionMain from "@/components/Section/SectionMain.vue";
 
@@ -44,7 +44,7 @@ const userAuthenticated = computed(() => mainStore.userAuthenticated);
 
 <template>
   <component :is="Layout">
-    <SectionMain>
+    <SectionMain v-if="allocated_assignment != null">
       <SectionTitleLineWithButton :icon="mdiLaptop" title="Moja praksa" main>
       </SectionTitleLineWithButton>
       <p><b>Akademska godina:</b> 2023/2024</p>

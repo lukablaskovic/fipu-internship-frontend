@@ -22,6 +22,7 @@ export const colorsText = {
   danger: "text-red-500",
   warning: "text-yellow-500",
   info: "text-fipu_blue",
+  fipu_blue: "text-fipu_blue",
 };
 
 export const colorsOutline = {
@@ -31,7 +32,7 @@ export const colorsOutline = {
   success: [colorsText.success, "border-emerald-500"],
   danger: [colorsText.danger, "border-red-500"],
   warning: [colorsText.warning, "border-yellow-500"],
-  info: [colorsText.info, "border-fipu_blue"],
+  info: [colorsText.fipu_blue, "border-fipu_blue"],
 };
 
 export const getButtonColor = (
@@ -50,7 +51,7 @@ export const getButtonColor = (
       danger: "ring-red-300 dark:ring-red-700",
       warning: "ring-yellow-300 dark:ring-yellow-700",
       info: "ring-fipu_blue dark:ring-fipu_dark_blue",
-      fipu_blue: "ring-fipu_blue dark:ring-fipu_dark_blue",
+      fipu_blue: "ring-fipu_blue dark:ring-blue-500",
     },
     active: {
       white: "bg-gray-100",
