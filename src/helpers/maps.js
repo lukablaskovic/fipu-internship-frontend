@@ -15,6 +15,7 @@ class StudentMappings {
     return gs ? gs.label : dbLabel;
   }
 }
+import Student_DnevnikPrakseForm from "@/components/Internship/Student_DnevnikPrakseForm.vue";
 import Student_PrijavnicaForm from "@/components/Internship/Student_PrijavnicaForm.vue";
 import Student_WaitingForEvaluation from "@/components/Internship/Student_WaitingForEvaluation.vue";
 import Student_WaitingForAllocation from "@/components/Internship/Student_WaitingForAllocation.vue";
@@ -58,6 +59,8 @@ class UserTaskMappings {
       order: 5,
       _id: "predavanje_dnevnika_student",
       name: "Mora predati dnevnik prakse",
+      form_title: "Dnevnik prakse",
+      component: Student_DnevnikPrakseForm, //DnevnikPrakseForm
     },
   ];
 
@@ -72,6 +75,8 @@ import {
   mdiAlertBox,
   mdiNoteCheck,
   mdiAccountTie,
+  mdiBookAccount,
+  mdiNotebook,
 } from "@mdi/js";
 
 class ActivityEventMappings {
@@ -112,6 +117,24 @@ class ActivityEventMappings {
       type: "success",
       message: "Poslodavac obavio evaluaciju",
     },
+    {
+      activity_id: "ispunjavanje_prijavnice_student",
+      icon: mdiBookAccount,
+      type: "success",
+      message: "Student ispunio prijavnicu",
+    },
+    {
+      activity_id: "kreiranje_potvrde_profesor",
+      icon: mdiBookAccount,
+      type: "success",
+      message: "Potvrda izrađena",
+    },
+    {
+      activity_id: "predavanje_dnevnika_student",
+      icon: mdiNotebook,
+      type: "danger",
+      message: "Predao dnevnik prakse",
+    },
   ];
   static skipEvents = [
     "spremanje_alokacija",
@@ -120,6 +143,9 @@ class ActivityEventMappings {
     "obavjestavanje_studenta_nakon_alokacije",
     "student_prihvacen",
     "obavjestavanje_studenta_nakon_prihvacanja_email",
+    "azuriranje_podataka_profesor",
+    "slanje_potvrde_student_email",
+    "slanje_potvrde_mentor_email",
   ];
 
   static isGatewayEvent(activityId) {

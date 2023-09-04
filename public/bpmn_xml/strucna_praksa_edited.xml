@@ -7,50 +7,45 @@
     <bpmn:laneSet id="LaneSet_00d2bp4">
       <bpmn:lane id="poslodavac_lane" name="Poslodavac">
         <bpmn:extensionElements />
-        <bpmn:flowNodeRef>razgovor_za_praksu_poslodavac</bpmn:flowNodeRef>
-        <bpmn:flowNodeRef>evaluacija_poslodavac</bpmn:flowNodeRef>
         <bpmn:flowNodeRef>student_prihvacen</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>evaluacija_poslodavac</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>razgovor_za_praksu_poslodavac</bpmn:flowNodeRef>
         <bpmn:flowNodeRef>obavijest_odbijanje</bpmn:flowNodeRef>
       </bpmn:lane>
       <bpmn:lane id="student_lane" name="Student">
+        <bpmn:flowNodeRef>odabiranje_zadatka_student</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>start_event_student</bpmn:flowNodeRef>
         <bpmn:flowNodeRef>ispunjavanje_prijavnice_student</bpmn:flowNodeRef>
         <bpmn:flowNodeRef>end_event_student</bpmn:flowNodeRef>
         <bpmn:flowNodeRef>predavanje_dnevnika_student</bpmn:flowNodeRef>
-        <bpmn:flowNodeRef>start_event_student</bpmn:flowNodeRef>
-        <bpmn:flowNodeRef>odabiranje_zadatka_student</bpmn:flowNodeRef>
       </bpmn:lane>
       <bpmn:lane id="profesor_lane" name="Profesor">
-        <bpmn:flowNodeRef>obavjestavanje_alociranje_student_slack</bpmn:flowNodeRef>
-        <bpmn:flowNodeRef>Gateway_1v1zql0</bpmn:flowNodeRef>
-        <bpmn:flowNodeRef>obavjestavanje_studenta_nakon_prihvacanja_slack</bpmn:flowNodeRef>
-        <bpmn:flowNodeRef>obavjestavanje_studenta_nakon_prihvacanja_email</bpmn:flowNodeRef>
-        <bpmn:flowNodeRef>Gateway_022ukch</bpmn:flowNodeRef>
-        <bpmn:flowNodeRef>azuriranje_baserow_student</bpmn:flowNodeRef>
-        <bpmn:flowNodeRef>slanje_potvrde_slack_profesor</bpmn:flowNodeRef>
-        <bpmn:flowNodeRef>Gateway_0q2wy8q</bpmn:flowNodeRef>
-        <bpmn:flowNodeRef>Gateway_1b8kjb9</bpmn:flowNodeRef>
-        <bpmn:flowNodeRef>slanje_potvrde_email_profesor</bpmn:flowNodeRef>
-        <bpmn:flowNodeRef>kreiranje_potvrde_profesor</bpmn:flowNodeRef>
-        <bpmn:flowNodeRef>azuriranje_podataka_profesor</bpmn:flowNodeRef>
-        <bpmn:flowNodeRef>obavjestavanje_studenta_nakon_alokacije</bpmn:flowNodeRef>
         <bpmn:flowNodeRef>obavjestavanje_poslodavca_nakon_alokacije</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>obavjestavanje_studenta_nakon_alokacije</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Gateway_022ukch</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>obavjestavanje_studenta_nakon_prihvacanja_email</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>obavjestavanje_studenta_nakon_prihvacanja_slack</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>obavjestavanje_alociranje_student_slack</bpmn:flowNodeRef>
         <bpmn:flowNodeRef>spremanje_preferencije</bpmn:flowNodeRef>
         <bpmn:flowNodeRef>alociranje_profesor</bpmn:flowNodeRef>
         <bpmn:flowNodeRef>spremanje_alokacija</bpmn:flowNodeRef>
         <bpmn:flowNodeRef>uzimanje_podataka_o_poslodavcu_student</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>azuriranje_podataka_profesor</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>kreiranje_potvrde_profesor</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Gateway_1v1zql0</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>slanje_potvrde_student_email</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Gateway_1b8kjb9</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>slanje_potvrde_student_slack</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>slanje_potvrde_mentor_email</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>azuriranje_baserow_student</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Gateway_0q2wy8q</bpmn:flowNodeRef>
       </bpmn:lane>
     </bpmn:laneSet>
     <bpmn:sequenceFlow id="Flow_1ry7vwa" sourceRef="Gateway_1v1zql0" targetRef="ispunjavanje_prijavnice_student" />
     <bpmn:sequenceFlow id="Flow_0k988op" sourceRef="obavjestavanje_studenta_nakon_prihvacanja_email" targetRef="Gateway_1v1zql0" />
     <bpmn:sequenceFlow id="Flow_10qrmyc" sourceRef="Gateway_022ukch" targetRef="obavjestavanje_studenta_nakon_prihvacanja_email" />
-    <bpmn:sequenceFlow id="Flow_1cvohty" sourceRef="azuriranje_baserow_student" targetRef="end_event_student" />
-    <bpmn:sequenceFlow id="Flow_1jgq625" sourceRef="slanje_potvrde_email_profesor" targetRef="Gateway_0q2wy8q" />
-    <bpmn:sequenceFlow id="Flow_0rr5pyh" sourceRef="Gateway_1b8kjb9" targetRef="slanje_potvrde_email_profesor" />
     <bpmn:sequenceFlow id="Flow_1g3f3ei" sourceRef="kreiranje_potvrde_profesor" targetRef="Gateway_1b8kjb9" />
-    <bpmn:sequenceFlow id="Flow_1bua3l7" sourceRef="azuriranje_podataka_profesor" targetRef="kreiranje_potvrde_profesor" />
     <bpmn:sequenceFlow id="Flow_1l8y47v" sourceRef="ispunjavanje_prijavnice_student" targetRef="azuriranje_podataka_profesor" />
-    <bpmn:sequenceFlow id="Flow_1btfl5a" sourceRef="predavanje_dnevnika_student" targetRef="azuriranje_baserow_student" />
-    <bpmn:sequenceFlow id="Flow_03i13r1" sourceRef="Gateway_0q2wy8q" targetRef="predavanje_dnevnika_student" />
     <bpmn:sequenceFlow id="Flow_1cx42m5" sourceRef="razgovor_za_praksu_poslodavac" targetRef="evaluacija_poslodavac" />
     <bpmn:sequenceFlow id="Flow_1rdv20r" name="Da" sourceRef="student_prihvacen" targetRef="Gateway_022ukch">
       <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">kandidat_odobren:true</bpmn:conditionExpression>
@@ -166,165 +161,6 @@ Napomena: Da biste prijavili preferencije, morate biti prijavljeni u aplikaciji!
       <bpmn:incoming>Flow_1cx42m5</bpmn:incoming>
       <bpmn:outgoing>Flow_0eu1nfh</bpmn:outgoing>
     </bpmn:userTask>
-    <bpmn:userTask id="predavanje_dnevnika_student" name="Predavanje dnevnika prakse">
-      <bpmn:documentation>Template za dnevnik dostupan je na http://bit.ly/fipu-praksa-template
-Dnevnik je potrebno predati prije prijave ispitnoga roka.</bpmn:documentation>
-      <bpmn:extensionElements>
-        <camunda:formData>
-          <camunda:formField id="potvrda_attachment" label="PDF sken ispunjene potvrde o obavljenoj praksi,  Dostaviti tajnici ili Nikoli Tankoviću i u fizičkom obliku" type="file">
-            <camunda:properties>
-              <camunda:property id="storage_api_post_location" value="https://fipubot.unipu.hr/file_api/post/file" />
-              <camunda:property id="storage_api_get_location" value="https://fipubot.unipu.hr/file_api/public/" />
-            </camunda:properties>
-            <camunda:validation>
-              <camunda:constraint name="required" config="true" />
-            </camunda:validation>
-          </camunda:formField>
-          <camunda:formField id="dnevnik_attachment" label="PDF dnevnika prakse" type="file">
-            <camunda:properties>
-              <camunda:property id="storage_api_post_location" value="https://fipubot.unipu.hr/file_api/post/file" />
-              <camunda:property id="storage_api_get_location" value="https://fipubot.unipu.hr/file_api/public/" />
-            </camunda:properties>
-          </camunda:formField>
-          <camunda:formField id="nastavak_rada" label="Označi ako nastavljaš i dalje raditi u tvrtci ili ćeš ubrzo početi raditi honorarno" type="boolean" />
-        </camunda:formData>
-      </bpmn:extensionElements>
-      <bpmn:incoming>Flow_03i13r1</bpmn:incoming>
-      <bpmn:outgoing>Flow_1btfl5a</bpmn:outgoing>
-    </bpmn:userTask>
-    <bpmn:serviceTask id="azuriranje_podataka_profesor" name="Ažuriranje podataka u baserow">
-      <bpmn:extensionElements>
-        <camunda:connector>
-          <camunda:inputOutput>
-            <camunda:inputParameter name="url">/api/prijavnica</camunda:inputParameter>
-            <camunda:inputParameter name="method">POST</camunda:inputParameter>
-            <camunda:inputParameter name="url_parameter">
-              <camunda:map>
-                <camunda:entry key="Student">${Student}</camunda:entry>
-              </camunda:map>
-            </camunda:inputParameter>
-          </camunda:inputOutput>
-          <camunda:connectorId>baserow</camunda:connectorId>
-        </camunda:connector>
-        <camunda:inputOutput>
-          <camunda:inputParameter name="Student">${Student}</camunda:inputParameter>
-          <camunda:inputParameter name="student_OIB">${student_OIB}</camunda:inputParameter>
-          <camunda:inputParameter name="student_broj_mobitela">${student_broj_mobitela}</camunda:inputParameter>
-          <camunda:inputParameter name="student_email">${student_email}</camunda:inputParameter>
-          <camunda:inputParameter name="mentor_ime">${mentor_ime}</camunda:inputParameter>
-          <camunda:inputParameter name="mentor_prezime">${mentor_prezime}</camunda:inputParameter>
-          <camunda:inputParameter name="mentor_email">${mentor_email}</camunda:inputParameter>
-          <camunda:inputParameter name="detaljan_opis_zadatka">${detaljan_opis_zadatka}</camunda:inputParameter>
-          <camunda:inputParameter name="dogovoreni_broj_sati">${dogovoreni_broj_sati}</camunda:inputParameter>
-          <camunda:inputParameter name="pocetak_prakse">${pocetak_prakse}</camunda:inputParameter>
-          <camunda:inputParameter name="kraj_prakse">${kraj_prakse}</camunda:inputParameter>
-          <camunda:inputParameter name="alokacija_potvrda">${alokacija_potvrda}</camunda:inputParameter>
-          <camunda:inputParameter name="kontakt_potvrda">${kontakt_potvrda}</camunda:inputParameter>
-          <camunda:inputParameter name="Poslodavac">${poslodavac_naziv}</camunda:inputParameter>
-          <camunda:inputParameter name="mjesto_izvrsavanja">${mjesto_izvrsavanja}</camunda:inputParameter>
-          <camunda:outputParameter name="id_prijavnica" />
-        </camunda:inputOutput>
-      </bpmn:extensionElements>
-      <bpmn:incoming>Flow_1l8y47v</bpmn:incoming>
-      <bpmn:outgoing>Flow_1bua3l7</bpmn:outgoing>
-    </bpmn:serviceTask>
-    <bpmn:serviceTask id="kreiranje_potvrde_profesor" name="Kreiranje potvrde">
-      <bpmn:extensionElements>
-        <camunda:connector>
-          <camunda:inputOutput>
-            <camunda:inputParameter name="url">/potvrda</camunda:inputParameter>
-            <camunda:inputParameter name="method">POST</camunda:inputParameter>
-          </camunda:inputOutput>
-          <camunda:connectorId>pdf</camunda:connectorId>
-        </camunda:connector>
-        <camunda:inputOutput>
-          <camunda:outputParameter name="attachment_url" />
-          <camunda:outputParameter name="attachment" />
-        </camunda:inputOutput>
-      </bpmn:extensionElements>
-      <bpmn:incoming>Flow_1bua3l7</bpmn:incoming>
-      <bpmn:outgoing>Flow_1g3f3ei</bpmn:outgoing>
-    </bpmn:serviceTask>
-    <bpmn:sendTask id="slanje_potvrde_email_profesor" name="Slanje potvrde o obavljenoj praksi">
-      <bpmn:extensionElements>
-        <camunda:connector>
-          <camunda:inputOutput>
-            <camunda:inputParameter name="url_parameter">
-              <camunda:map>
-                <camunda:entry key="to">${email_student}</camunda:entry>
-                <camunda:entry key="template">student_pdf</camunda:entry>
-              </camunda:map>
-            </camunda:inputParameter>
-            <camunda:inputParameter name="url">/email</camunda:inputParameter>
-            <camunda:inputParameter name="method">POST</camunda:inputParameter>
-          </camunda:inputOutput>
-          <camunda:connectorId>sendgrid</camunda:connectorId>
-        </camunda:connector>
-        <camunda:inputOutput>
-          <camunda:inputParameter name="attachment_name">potvrda.pdf</camunda:inputParameter>
-          <camunda:inputParameter name="id_instance" />
-          <camunda:inputParameter name="next_task">predavanje_dnevnika_student</camunda:inputParameter>
-          <camunda:inputParameter name="attachment_url">${attachment_url}</camunda:inputParameter>
-        </camunda:inputOutput>
-      </bpmn:extensionElements>
-      <bpmn:incoming>Flow_0rr5pyh</bpmn:incoming>
-      <bpmn:outgoing>Flow_1jgq625</bpmn:outgoing>
-    </bpmn:sendTask>
-    <bpmn:parallelGateway id="Gateway_1b8kjb9">
-      <bpmn:incoming>Flow_1g3f3ei</bpmn:incoming>
-      <bpmn:outgoing>Flow_0rr5pyh</bpmn:outgoing>
-    </bpmn:parallelGateway>
-    <bpmn:parallelGateway id="Gateway_0q2wy8q">
-      <bpmn:incoming>Flow_1jgq625</bpmn:incoming>
-      <bpmn:outgoing>Flow_03i13r1</bpmn:outgoing>
-    </bpmn:parallelGateway>
-    <bpmn:sendTask id="slanje_potvrde_slack_profesor" name="Slanje potvrde o obavljenoj praksi slack">
-      <bpmn:extensionElements>
-        <camunda:connector>
-          <camunda:inputOutput>
-            <camunda:inputParameter name="url">http://127.0.0.1:8090/notify/student/potvrda/pdf</camunda:inputParameter>
-            <camunda:inputParameter name="method">POST</camunda:inputParameter>
-            <camunda:inputParameter name="url_parameter">
-              <camunda:map>
-                <camunda:entry key="to">${email_student}</camunda:entry>
-              </camunda:map>
-            </camunda:inputParameter>
-          </camunda:inputOutput>
-          <camunda:connectorId>http-connector</camunda:connectorId>
-        </camunda:connector>
-        <camunda:inputOutput>
-          <camunda:inputParameter name="id_instance" />
-          <camunda:inputParameter name="next_task">predavanje_dnevnika_student</camunda:inputParameter>
-          <camunda:inputParameter name="attachment_url">${attachment_url}</camunda:inputParameter>
-        </camunda:inputOutput>
-      </bpmn:extensionElements>
-    </bpmn:sendTask>
-    <bpmn:serviceTask id="azuriranje_baserow_student" name="Ažuriranje baserow">
-      <bpmn:extensionElements>
-        <camunda:connector>
-          <camunda:inputOutput>
-            <camunda:inputParameter name="url">/dnevnik</camunda:inputParameter>
-            <camunda:inputParameter name="method">POST</camunda:inputParameter>
-            <camunda:inputParameter name="url_parameter">
-              <camunda:map>
-                <camunda:entry key="prijavnica_id">${prijavnica_id}</camunda:entry>
-              </camunda:map>
-            </camunda:inputParameter>
-          </camunda:inputOutput>
-          <camunda:connectorId>baserow</camunda:connectorId>
-        </camunda:connector>
-        <camunda:inputOutput>
-          <camunda:inputParameter name="nastavak_rada">${nastavak_rada}</camunda:inputParameter>
-          <camunda:inputParameter name="potvrda_attachment">${potvrda_attachment}</camunda:inputParameter>
-          <camunda:inputParameter name="dnevnik_attachment">${dnevnik_attachment}</camunda:inputParameter>
-        </camunda:inputOutput>
-      </bpmn:extensionElements>
-      <bpmn:incoming>Flow_1btfl5a</bpmn:incoming>
-      <bpmn:outgoing>Flow_1cvohty</bpmn:outgoing>
-    </bpmn:serviceTask>
-    <bpmn:endEvent id="end_event_student" name="Student prijavio ispit">
-      <bpmn:incoming>Flow_1cvohty</bpmn:incoming>
-    </bpmn:endEvent>
     <bpmn:parallelGateway id="Gateway_022ukch">
       <bpmn:incoming>Flow_1rdv20r</bpmn:incoming>
       <bpmn:outgoing>Flow_10qrmyc</bpmn:outgoing>
@@ -373,31 +209,6 @@ Dnevnik je potrebno predati prije prijave ispitnoga roka.</bpmn:documentation>
         </camunda:inputOutput>
       </bpmn:extensionElements>
     </bpmn:sendTask>
-    <bpmn:parallelGateway id="Gateway_1v1zql0">
-      <bpmn:incoming>Flow_0k988op</bpmn:incoming>
-      <bpmn:outgoing>Flow_1ry7vwa</bpmn:outgoing>
-    </bpmn:parallelGateway>
-    <bpmn:userTask id="ispunjavanje_prijavnice_student" name="Ispunjavanje prijavnice">
-      <bpmn:documentation>VAŽNO: Prijavnica se popunjava nakon (!) što nastavnik odobri kontakt određenom poduzeću i nakon što student s tim poduzećem dogovori praksu. Popunjenu prijavnicu šaljemo poduzeću na odobrenje i potpis.</bpmn:documentation>
-      <bpmn:extensionElements>
-        <camunda:formData>
-          <camunda:formField id="student_broj_mobitela" type="string" />
-          <camunda:formField id="student_OIB" type="string" />
-          <camunda:formField id="mentor_ime" type="string" />
-          <camunda:formField id="mentor_prezime" type="string" />
-          <camunda:formField id="mentor_email" type="string" />
-          <camunda:formField id="detaljan_opis_zadatka" type="string" />
-          <camunda:formField id="dogovoreni_broj_sati" type="integer" />
-          <camunda:formField id="pocetak_prakse" type="date" />
-          <camunda:formField id="kraj_prakse" type="date" />
-          <camunda:formField id="alokacija_potvrda" type="boolean" />
-          <camunda:formField id="kontakt_potvrda" type="boolean" />
-          <camunda:formField id="mjesto_izvrsavanja" type="string" />
-        </camunda:formData>
-      </bpmn:extensionElements>
-      <bpmn:incoming>Flow_1ry7vwa</bpmn:incoming>
-      <bpmn:outgoing>Flow_1l8y47v</bpmn:outgoing>
-    </bpmn:userTask>
     <bpmn:manualTask id="razgovor_za_praksu_poslodavac" name="Evaluiraj kandidata">
       <bpmn:incoming>Flow_0kt3aem</bpmn:incoming>
       <bpmn:incoming>Flow_177v773</bpmn:incoming>
@@ -540,20 +351,251 @@ Dnevnik je potrebno predati prije prijave ispitnoga roka.</bpmn:documentation>
       <bpmn:incoming>Flow_07vs9rk</bpmn:incoming>
       <bpmn:outgoing>Flow_064rrii</bpmn:outgoing>
     </bpmn:serviceTask>
+    <bpmn:serviceTask id="azuriranje_podataka_profesor" name="Ažuriranje podataka u baserow">
+      <bpmn:extensionElements>
+        <camunda:connector>
+          <camunda:inputOutput>
+            <camunda:inputParameter name="url">/api/prijavnica</camunda:inputParameter>
+            <camunda:inputParameter name="method">POST</camunda:inputParameter>
+            <camunda:inputParameter name="url_parameter">
+              <camunda:map>
+                <camunda:entry key="Student">${Student}</camunda:entry>
+              </camunda:map>
+            </camunda:inputParameter>
+          </camunda:inputOutput>
+          <camunda:connectorId>baserow</camunda:connectorId>
+        </camunda:connector>
+        <camunda:inputOutput>
+          <camunda:inputParameter name="Student">${Student}</camunda:inputParameter>
+          <camunda:inputParameter name="student_OIB">${student_OIB}</camunda:inputParameter>
+          <camunda:inputParameter name="student_broj_mobitela">${student_broj_mobitela}</camunda:inputParameter>
+          <camunda:inputParameter name="student_email">${student_email}</camunda:inputParameter>
+          <camunda:inputParameter name="mentor_ime">${mentor_ime}</camunda:inputParameter>
+          <camunda:inputParameter name="mentor_prezime">${mentor_prezime}</camunda:inputParameter>
+          <camunda:inputParameter name="mentor_email">${mentor_email}</camunda:inputParameter>
+          <camunda:inputParameter name="detaljan_opis_zadatka">${detaljan_opis_zadatka}</camunda:inputParameter>
+          <camunda:inputParameter name="dogovoreni_broj_sati">${dogovoreni_broj_sati}</camunda:inputParameter>
+          <camunda:inputParameter name="pocetak_prakse">${pocetak_prakse}</camunda:inputParameter>
+          <camunda:inputParameter name="kraj_prakse">${kraj_prakse}</camunda:inputParameter>
+          <camunda:inputParameter name="alokacija_potvrda">${alokacija_potvrda}</camunda:inputParameter>
+          <camunda:inputParameter name="kontakt_potvrda">${kontakt_potvrda}</camunda:inputParameter>
+          <camunda:inputParameter name="Poslodavac">${poslodavac_naziv}</camunda:inputParameter>
+          <camunda:inputParameter name="mjesto_izvrsavanja">${mjesto_izvrsavanja}</camunda:inputParameter>
+          <camunda:outputParameter name="id_prijavnica" />
+        </camunda:inputOutput>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_1l8y47v</bpmn:incoming>
+      <bpmn:outgoing>Flow_1bua3l7</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:serviceTask id="kreiranje_potvrde_profesor" name="Kreiranje potvrde">
+      <bpmn:extensionElements>
+        <camunda:connector>
+          <camunda:inputOutput>
+            <camunda:inputParameter name="url">/api/potvrda</camunda:inputParameter>
+            <camunda:inputParameter name="method">POST</camunda:inputParameter>
+          </camunda:inputOutput>
+          <camunda:connectorId>pdf</camunda:connectorId>
+        </camunda:connector>
+        <camunda:inputOutput>
+          <camunda:inputParameter name="student_ime">${student_ime}</camunda:inputParameter>
+          <camunda:inputParameter name="student_prezime">${student_prezime}</camunda:inputParameter>
+          <camunda:inputParameter name="student_broj_mobitela">${student_broj_mobitela}</camunda:inputParameter>
+          <camunda:inputParameter name="student_OIB">${student_OIB}</camunda:inputParameter>
+          <camunda:inputParameter name="student_email">${student_email}</camunda:inputParameter>
+          <camunda:inputParameter name="mentor_ime">${mentor_ime}</camunda:inputParameter>
+          <camunda:inputParameter name="mentor_prezime">${mentor_prezime}</camunda:inputParameter>
+          <camunda:inputParameter name="detaljan_opis_zadatka">${detaljan_opis_zadatka}</camunda:inputParameter>
+          <camunda:inputParameter name="dogovoreni_broj_sati">${dogovoreni_broj_sati}</camunda:inputParameter>
+          <camunda:inputParameter name="pocetak_prakse">${pocetak_prakse}</camunda:inputParameter>
+          <camunda:inputParameter name="kraj_prakse">${kraj_prakse}</camunda:inputParameter>
+          <camunda:inputParameter name="Poslodavac">${poslodavac_naziv}</camunda:inputParameter>
+          <camunda:inputParameter name="mjesto_izvrsavanja">${mjesto_izvrsavanja}</camunda:inputParameter>
+          <camunda:outputParameter name="pdf_attachment_url" />
+        </camunda:inputOutput>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_1bua3l7</bpmn:incoming>
+      <bpmn:outgoing>Flow_1g3f3ei</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:sequenceFlow id="Flow_1bua3l7" sourceRef="azuriranje_podataka_profesor" targetRef="kreiranje_potvrde_profesor" />
+    <bpmn:userTask id="ispunjavanje_prijavnice_student" name="Ispunjavanje prijavnice">
+      <bpmn:documentation>VAŽNO: Prijavnica se popunjava nakon (!) što nastavnik odobri kontakt određenom poduzeću i nakon što student s tim poduzećem dogovori praksu. Popunjenu prijavnicu šaljemo poduzeću na odobrenje i potpis.</bpmn:documentation>
+      <bpmn:extensionElements>
+        <camunda:formData>
+          <camunda:formField id="student_broj_mobitela" type="string" />
+          <camunda:formField id="student_OIB" type="string" />
+          <camunda:formField id="mentor_ime" type="string" />
+          <camunda:formField id="mentor_prezime" type="string" />
+          <camunda:formField id="mentor_email" type="string" />
+          <camunda:formField id="detaljan_opis_zadatka" type="string" />
+          <camunda:formField id="dogovoreni_broj_sati" type="integer" />
+          <camunda:formField id="pocetak_prakse" type="date" />
+          <camunda:formField id="kraj_prakse" type="date" />
+          <camunda:formField id="alokacija_potvrda" type="boolean" />
+          <camunda:formField id="kontakt_potvrda" type="boolean" />
+          <camunda:formField id="mjesto_izvrsavanja" type="string" />
+        </camunda:formData>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_1ry7vwa</bpmn:incoming>
+      <bpmn:outgoing>Flow_1l8y47v</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:parallelGateway id="Gateway_1v1zql0">
+      <bpmn:incoming>Flow_0k988op</bpmn:incoming>
+      <bpmn:outgoing>Flow_1ry7vwa</bpmn:outgoing>
+    </bpmn:parallelGateway>
+    <bpmn:sendTask id="slanje_potvrde_student_email" name="Slanje potvrde o obavljenoj praksi student">
+      <bpmn:extensionElements>
+        <camunda:connector>
+          <camunda:inputOutput>
+            <camunda:inputParameter name="url_parameter">
+              <camunda:map>
+                <camunda:entry key="to">${student_email}</camunda:entry>
+                <camunda:entry key="template">student_potvrda_pdf</camunda:entry>
+              </camunda:map>
+            </camunda:inputParameter>
+            <camunda:inputParameter name="url">/email</camunda:inputParameter>
+            <camunda:inputParameter name="method">POST</camunda:inputParameter>
+          </camunda:inputOutput>
+          <camunda:connectorId>sendgrid</camunda:connectorId>
+        </camunda:connector>
+        <camunda:inputOutput>
+          <camunda:inputParameter name="attachment_name">${student_prezime}_potvrda.pdf</camunda:inputParameter>
+          <camunda:inputParameter name="id_instance" />
+          <camunda:inputParameter name="next_task">predavanje_dnevnika_student</camunda:inputParameter>
+          <camunda:inputParameter name="pdf_attachment_url">${pdf_attachment_url}</camunda:inputParameter>
+          <camunda:inputParameter name="mentor_email">${mentor_email}</camunda:inputParameter>
+        </camunda:inputOutput>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_0rr5pyh</bpmn:incoming>
+      <bpmn:outgoing>Flow_1jgq625</bpmn:outgoing>
+    </bpmn:sendTask>
+    <bpmn:parallelGateway id="Gateway_1b8kjb9">
+      <bpmn:incoming>Flow_1g3f3ei</bpmn:incoming>
+      <bpmn:outgoing>Flow_0rr5pyh</bpmn:outgoing>
+    </bpmn:parallelGateway>
+    <bpmn:sequenceFlow id="Flow_1jgq625" sourceRef="slanje_potvrde_student_email" targetRef="slanje_potvrde_mentor_email" />
+    <bpmn:sequenceFlow id="Flow_0rr5pyh" sourceRef="Gateway_1b8kjb9" targetRef="slanje_potvrde_student_email" />
+    <bpmn:sendTask id="slanje_potvrde_student_slack" name="Slanje potvrde o obavljenoj praksi slack">
+      <bpmn:extensionElements>
+        <camunda:connector>
+          <camunda:inputOutput>
+            <camunda:inputParameter name="url">http://127.0.0.1:8090/notify/student/potvrda/pdf</camunda:inputParameter>
+            <camunda:inputParameter name="method">POST</camunda:inputParameter>
+            <camunda:inputParameter name="url_parameter">
+              <camunda:map>
+                <camunda:entry key="to">${email_student}</camunda:entry>
+              </camunda:map>
+            </camunda:inputParameter>
+          </camunda:inputOutput>
+          <camunda:connectorId>http-connector</camunda:connectorId>
+        </camunda:connector>
+        <camunda:inputOutput>
+          <camunda:inputParameter name="id_instance" />
+          <camunda:inputParameter name="next_task">predavanje_dnevnika_student</camunda:inputParameter>
+          <camunda:inputParameter name="attachment_url">${attachment_url}</camunda:inputParameter>
+        </camunda:inputOutput>
+      </bpmn:extensionElements>
+    </bpmn:sendTask>
+    <bpmn:sendTask id="slanje_potvrde_mentor_email" name="Slanje potvrde o obavljenoj praksi mentor">
+      <bpmn:extensionElements>
+        <camunda:connector>
+          <camunda:inputOutput>
+            <camunda:inputParameter name="url_parameter">
+              <camunda:map>
+                <camunda:entry key="to">${mentor_email}</camunda:entry>
+                <camunda:entry key="template">mentor_potvrda_pdf</camunda:entry>
+              </camunda:map>
+            </camunda:inputParameter>
+            <camunda:inputParameter name="url">/email</camunda:inputParameter>
+            <camunda:inputParameter name="method">POST</camunda:inputParameter>
+          </camunda:inputOutput>
+          <camunda:connectorId>sendgrid</camunda:connectorId>
+        </camunda:connector>
+        <camunda:inputOutput>
+          <camunda:inputParameter name="attachment_name">${student_prezime}_potvrda.pdf</camunda:inputParameter>
+          <camunda:inputParameter name="id_instance" />
+          <camunda:inputParameter name="pdf_attachment_url">${pdf_attachment_url}</camunda:inputParameter>
+          <camunda:inputParameter name="student_email">${student_email}</camunda:inputParameter>
+          <camunda:inputParameter name="student_ime">${student_ime}</camunda:inputParameter>
+          <camunda:inputParameter name="student_prezime">${student_prezime}</camunda:inputParameter>
+        </camunda:inputOutput>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_1jgq625</bpmn:incoming>
+      <bpmn:outgoing>Flow_05znxzo</bpmn:outgoing>
+    </bpmn:sendTask>
+    <bpmn:sequenceFlow id="Flow_05znxzo" sourceRef="slanje_potvrde_mentor_email" targetRef="Gateway_0q2wy8q" />
+    <bpmn:serviceTask id="azuriranje_baserow_student" name="Ažuriranje baserow">
+      <bpmn:extensionElements>
+        <camunda:connector>
+          <camunda:inputOutput>
+            <camunda:inputParameter name="url">/dnevnik</camunda:inputParameter>
+            <camunda:inputParameter name="method">POST</camunda:inputParameter>
+            <camunda:inputParameter name="url_parameter">
+              <camunda:map>
+                <camunda:entry key="prijavnica_id">${prijavnica_id}</camunda:entry>
+              </camunda:map>
+            </camunda:inputParameter>
+          </camunda:inputOutput>
+          <camunda:connectorId>baserow</camunda:connectorId>
+        </camunda:connector>
+        <camunda:inputOutput>
+          <camunda:inputParameter name="nastavak_rada">${nastavak_rada}</camunda:inputParameter>
+          <camunda:inputParameter name="potvrda_attachment">${potvrda_attachment}</camunda:inputParameter>
+          <camunda:inputParameter name="dnevnik_attachment">${dnevnik_attachment}</camunda:inputParameter>
+        </camunda:inputOutput>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_1btfl5a</bpmn:incoming>
+      <bpmn:outgoing>Flow_1cvohty</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:endEvent id="end_event_student" name="Student prijavio ispit">
+      <bpmn:incoming>Flow_1cvohty</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:userTask id="predavanje_dnevnika_student" name="Predavanje dnevnika prakse">
+      <bpmn:documentation>Template za dnevnik dostupan je na http://bit.ly/fipu-praksa-template
+Dnevnik je potrebno predati prije prijave ispitnoga roka.</bpmn:documentation>
+      <bpmn:extensionElements>
+        <camunda:formData>
+          <camunda:formField id="potvrda_attachment" label="PDF sken ispunjene potvrde o obavljenoj praksi,  Dostaviti tajnici ili Nikoli Tankoviću i u fizičkom obliku" type="file">
+            <camunda:properties>
+              <camunda:property id="storage_api_post_location" value="https://fipubot.unipu.hr/file_api/post/file" />
+              <camunda:property id="storage_api_get_location" value="https://fipubot.unipu.hr/file_api/public/" />
+            </camunda:properties>
+            <camunda:validation>
+              <camunda:constraint name="required" config="true" />
+            </camunda:validation>
+          </camunda:formField>
+          <camunda:formField id="dnevnik_attachment" label="PDF dnevnika prakse" type="file">
+            <camunda:properties>
+              <camunda:property id="storage_api_post_location" value="https://fipubot.unipu.hr/file_api/post/file" />
+              <camunda:property id="storage_api_get_location" value="https://fipubot.unipu.hr/file_api/public/" />
+            </camunda:properties>
+          </camunda:formField>
+          <camunda:formField id="nastavak_rada" label="Označi ako nastavljaš i dalje raditi u tvrtci ili ćeš ubrzo početi raditi honorarno" type="boolean" />
+        </camunda:formData>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_03i13r1</bpmn:incoming>
+      <bpmn:outgoing>Flow_1btfl5a</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:parallelGateway id="Gateway_0q2wy8q">
+      <bpmn:incoming>Flow_05znxzo</bpmn:incoming>
+      <bpmn:outgoing>Flow_03i13r1</bpmn:outgoing>
+    </bpmn:parallelGateway>
+    <bpmn:sequenceFlow id="Flow_1btfl5a" sourceRef="predavanje_dnevnika_student" targetRef="azuriranje_baserow_student" />
+    <bpmn:sequenceFlow id="Flow_1cvohty" sourceRef="azuriranje_baserow_student" targetRef="end_event_student" />
+    <bpmn:sequenceFlow id="Flow_03i13r1" sourceRef="Gateway_0q2wy8q" targetRef="predavanje_dnevnika_student" />
   </bpmn:process>
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
     <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="Collaboration_0ojchsi">
       <bpmndi:BPMNShape id="Participant_1yqxmat_di" bpmnElement="sustav_pool" isHorizontal="true">
-        <dc:Bounds x="160" y="80" width="1790" height="570" />
+        <dc:Bounds x="160" y="80" width="2060" height="570" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Lane_01o4d06_di" bpmnElement="profesor_lane" isHorizontal="true">
-        <dc:Bounds x="190" y="430" width="1760" height="220" />
+        <dc:Bounds x="190" y="430" width="2030" height="220" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Lane_12socvm_di" bpmnElement="student_lane" isHorizontal="true">
-        <dc:Bounds x="190" y="250" width="1760" height="180" />
+        <dc:Bounds x="190" y="250" width="2030" height="180" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Lane_002s8sw_di" bpmnElement="poslodavac_lane" isHorizontal="true">
-        <dc:Bounds x="190" y="80" width="1760" height="170" />
+        <dc:Bounds x="190" y="80" width="2030" height="170" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Activity_11cml9m_di" bpmnElement="odabiranje_zadatka_student">
         <dc:Bounds x="311" y="290" width="100" height="80" />
@@ -580,36 +622,6 @@ Dnevnik je potrebno predati prije prijave ispitnoga roka.</bpmn:documentation>
       <bpmndi:BPMNShape id="Activity_1qgovhp_di" bpmnElement="evaluacija_poslodavac">
         <dc:Bounds x="840" y="130" width="100" height="80" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_176843s_di" bpmnElement="predavanje_dnevnika_student">
-        <dc:Bounds x="1660" y="300" width="100" height="80" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_033wzw3_di" bpmnElement="azuriranje_podataka_profesor">
-        <dc:Bounds x="1335" y="450" width="100" height="80" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_0anpsxe_di" bpmnElement="kreiranje_potvrde_profesor">
-        <dc:Bounds x="1335" y="550" width="100" height="80" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_1k8zc7b_di" bpmnElement="slanje_potvrde_email_profesor">
-        <dc:Bounds x="1550" y="450" width="100" height="80" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Gateway_0bcvwef_di" bpmnElement="Gateway_1b8kjb9">
-        <dc:Bounds x="1475" y="565" width="50" height="50" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Gateway_1p6bnhj_di" bpmnElement="Gateway_0q2wy8q">
-        <dc:Bounds x="1685" y="465" width="50" height="50" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_0x083zw_di" bpmnElement="slanje_potvrde_slack_profesor">
-        <dc:Bounds x="1550" y="550" width="100" height="80" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_02sqerr_di" bpmnElement="azuriranje_baserow_student">
-        <dc:Bounds x="1820" y="530" width="100" height="80" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Event_0f6fpdt_di" bpmnElement="end_event_student" bioc:stroke="#000" bioc:fill="#fff">
-        <dc:Bounds x="1852" y="312" width="36" height="36" />
-        <bpmndi:BPMNLabel>
-          <dc:Bounds x="1832" y="275" width="76" height="27" />
-        </bpmndi:BPMNLabel>
-      </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Gateway_10wwbee_di" bpmnElement="Gateway_022ukch">
         <dc:Bounds x="985" y="465" width="50" height="50" />
       </bpmndi:BPMNShape>
@@ -619,12 +631,6 @@ Dnevnik je potrebno predati prije prijave ispitnoga roka.</bpmn:documentation>
       <bpmndi:BPMNShape id="Activity_0oeucpk_di" bpmnElement="obavjestavanje_studenta_nakon_prihvacanja_slack">
         <dc:Bounds x="1070" y="550" width="100" height="80" />
         <bpmndi:BPMNLabel />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Gateway_1i1hvbk_di" bpmnElement="Gateway_1v1zql0">
-        <dc:Bounds x="1205" y="465" width="50" height="50" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_10qy04a_di" bpmnElement="ispunjavanje_prijavnice_student">
-        <dc:Bounds x="1180" y="300" width="100" height="80" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Activity_1amr003_di" bpmnElement="razgovor_za_praksu_poslodavac">
         <dc:Bounds x="720" y="130" width="100" height="80" />
@@ -650,53 +656,67 @@ Dnevnik je potrebno predati prije prijave ispitnoga roka.</bpmn:documentation>
       <bpmndi:BPMNShape id="BPMNShape_0pvrnrj" bpmnElement="uzimanje_podataka_o_poslodavcu_student">
         <dc:Bounds x="446" y="450" width="100" height="80" />
       </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_033wzw3_di" bpmnElement="azuriranje_podataka_profesor">
+        <dc:Bounds x="1290" y="450" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0anpsxe_di" bpmnElement="kreiranje_potvrde_profesor">
+        <dc:Bounds x="1290" y="550" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_10qy04a_di" bpmnElement="ispunjavanje_prijavnice_student">
+        <dc:Bounds x="1190" y="300" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_1i1hvbk_di" bpmnElement="Gateway_1v1zql0">
+        <dc:Bounds x="1215" y="465" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1k8zc7b_di" bpmnElement="slanje_potvrde_student_email">
+        <dc:Bounds x="1530" y="450" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_0bcvwef_di" bpmnElement="Gateway_1b8kjb9">
+        <dc:Bounds x="1455" y="565" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0x083zw_di" bpmnElement="slanje_potvrde_student_slack">
+        <dc:Bounds x="1530" y="550" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_1ujwdyd" bpmnElement="slanje_potvrde_mentor_email">
+        <dc:Bounds x="1680" y="450" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_02sqerr_di" bpmnElement="azuriranje_baserow_student">
+        <dc:Bounds x="1990" y="530" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_0f6fpdt_di" bpmnElement="end_event_student" bioc:stroke="#000" bioc:fill="#fff">
+        <dc:Bounds x="2022" y="312" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="2002" y="275" width="76" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_176843s_di" bpmnElement="predavanje_dnevnika_student">
+        <dc:Bounds x="1880" y="300" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_1p6bnhj_di" bpmnElement="Gateway_0q2wy8q">
+        <dc:Bounds x="1815" y="465" width="50" height="50" />
+      </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge id="Flow_1ry7vwa_di" bpmnElement="Flow_1ry7vwa">
-        <di:waypoint x="1230" y="465" />
-        <di:waypoint x="1230" y="380" />
+        <di:waypoint x="1240" y="465" />
+        <di:waypoint x="1240" y="380" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_0k988op_di" bpmnElement="Flow_0k988op">
         <di:waypoint x="1170" y="490" />
-        <di:waypoint x="1205" y="490" />
+        <di:waypoint x="1215" y="490" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_10qrmyc_di" bpmnElement="Flow_10qrmyc">
         <di:waypoint x="1035" y="490" />
         <di:waypoint x="1070" y="490" />
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_1cvohty_di" bpmnElement="Flow_1cvohty">
-        <di:waypoint x="1870" y="530" />
-        <di:waypoint x="1870" y="348" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_1jgq625_di" bpmnElement="Flow_1jgq625">
-        <di:waypoint x="1650" y="490" />
-        <di:waypoint x="1685" y="490" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_0rr5pyh_di" bpmnElement="Flow_0rr5pyh">
-        <di:waypoint x="1500" y="565" />
-        <di:waypoint x="1500" y="490" />
-        <di:waypoint x="1550" y="490" />
-      </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_1g3f3ei_di" bpmnElement="Flow_1g3f3ei">
-        <di:waypoint x="1435" y="590" />
-        <di:waypoint x="1475" y="590" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_1bua3l7_di" bpmnElement="Flow_1bua3l7">
-        <di:waypoint x="1385" y="530" />
-        <di:waypoint x="1385" y="550" />
+        <di:waypoint x="1390" y="590" />
+        <di:waypoint x="1455" y="590" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_1l8y47v_di" bpmnElement="Flow_1l8y47v">
-        <di:waypoint x="1280" y="340" />
-        <di:waypoint x="1385" y="340" />
-        <di:waypoint x="1385" y="450" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_1btfl5a_di" bpmnElement="Flow_1btfl5a">
-        <di:waypoint x="1760" y="340" />
-        <di:waypoint x="1790" y="340" />
-        <di:waypoint x="1790" y="570" />
-        <di:waypoint x="1820" y="570" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_03i13r1_di" bpmnElement="Flow_03i13r1">
-        <di:waypoint x="1710" y="465" />
-        <di:waypoint x="1710" y="380" />
+        <di:waypoint x="1290" y="340" />
+        <di:waypoint x="1340" y="340" />
+        <di:waypoint x="1340" y="450" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_1cx42m5_di" bpmnElement="Flow_1cx42m5">
         <di:waypoint x="820" y="170" />
@@ -763,6 +783,37 @@ Dnevnik je potrebno predati prije prijave ispitnoga roka.</bpmn:documentation>
       <bpmndi:BPMNEdge id="Flow_064rrii_di" bpmnElement="Flow_064rrii">
         <di:waypoint x="546" y="490" />
         <di:waypoint x="570" y="490" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1bua3l7_di" bpmnElement="Flow_1bua3l7">
+        <di:waypoint x="1340" y="530" />
+        <di:waypoint x="1340" y="550" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1jgq625_di" bpmnElement="Flow_1jgq625">
+        <di:waypoint x="1630" y="490" />
+        <di:waypoint x="1680" y="490" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0rr5pyh_di" bpmnElement="Flow_0rr5pyh">
+        <di:waypoint x="1480" y="565" />
+        <di:waypoint x="1480" y="490" />
+        <di:waypoint x="1530" y="490" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_05znxzo_di" bpmnElement="Flow_05znxzo">
+        <di:waypoint x="1780" y="490" />
+        <di:waypoint x="1815" y="490" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1btfl5a_di" bpmnElement="Flow_1btfl5a">
+        <di:waypoint x="1930" y="380" />
+        <di:waypoint x="1930" y="570" />
+        <di:waypoint x="1990" y="570" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1cvohty_di" bpmnElement="Flow_1cvohty">
+        <di:waypoint x="2040" y="530" />
+        <di:waypoint x="2040" y="348" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_03i13r1_di" bpmnElement="Flow_03i13r1">
+        <di:waypoint x="1840" y="465" />
+        <di:waypoint x="1840" y="340" />
+        <di:waypoint x="1880" y="340" />
       </bpmndi:BPMNEdge>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>

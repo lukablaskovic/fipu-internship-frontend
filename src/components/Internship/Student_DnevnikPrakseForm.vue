@@ -132,7 +132,7 @@ const formErrorSubmit = () => {
       <SectionTitleLineWithButton
         :icon="mdiFileDocumentEdit"
         main
-        title="Prijavnica"
+        title="Dnevnik prakse"
       ></SectionTitleLineWithButton>
       <p>
         <b>Važno!</b> Prijavnica se popunjava nakon što nastavnik odobri kontakt
