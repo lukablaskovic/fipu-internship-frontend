@@ -1,15 +1,6 @@
 <script setup>
 import { ref, computed, onMounted, reactive } from "vue";
-import {
-  mdiFileDocumentEdit,
-  mdiLaptop,
-  mdiBallot,
-  mdiAccount,
-  mdiMail,
-  mdiCheck,
-  mdiClipboardCheck,
-  mdiCardAccountDetails,
-} from "@mdi/js";
+import { mdiLaptop, mdiBallot, mdiNotebook, mdiClipboardCheck } from "@mdi/js";
 
 import SectionMain from "@/components/Section/SectionMain.vue";
 
@@ -28,6 +19,7 @@ import FormControl from "@/components/Form/FormControl.vue";
 import BaseDivider from "@/components/Base/BaseDivider.vue";
 import BaseButton from "@/components/Base/BaseButton.vue";
 import CardBoxComponentTitle from "@/components/Cardbox/CardBoxComponentTitle.vue";
+import FormFilePicker from "@/components/Form/FormFilePicker.vue";
 
 const allocated_assignment = ref(null);
 
@@ -62,36 +54,17 @@ const userAuthenticated = computed(() => mainStore.userAuthenticated);
 
 ///////////////////////////////////////////////////////////////////////////////
 
-const nacinIzvrsavanjeRadioOptions = {
-  "on-site": "on-site",
-  remote: "remote",
-  hybrid: "hybrid",
-};
-
 //ispunjavanje_prijavnice_student
 const form = reactive({
-  student_ime: mainStore.currentUser.ime,
-  student_prezime: mainStore.currentUser.prezime,
-  student_broj_mobitela: "",
-  student_OIB: "",
-  student_email: mainStore.currentUser.email,
-  mentor_ime: "",
-  mentor_prezime: "",
-  mentor_email: "",
-  detaljan_opis_zadatka: "",
-  dogovoreni_broj_sati: null,
-  pocetak_prakse: "",
-  kraj_prakse: "",
-  alokacija_potvrda: false,
-  kontakt_potvrda: false,
-  Poslodavac:
-    studentStore.student_process_instance_data.variables["poslodavac_naziv"],
-  mjesto_izvrsavanja: nacinIzvrsavanjeRadioOptions[0],
+  potvrda_attachment: null,
+  dnevnik_attachment: null,
+  nastavak_radnog_odnosa: null,
+  prijavljen_rok: null,
 });
 
-async function submit_application_form() {
+async function submit_diary_form() {
   console.log(form);
-  await studentStore.submitApplicationForm(form);
+  await studentStore.submitDiaryForm(form);
 }
 
 const formErrorHasError = ref(false);
@@ -119,7 +92,7 @@ const formErrorSubmit = () => {
       <SectionTitleLineWithButton
         :icon="mdiClipboardCheck"
         main
-        title="Alocirani zadatak"
+        title="Izvođenje prakse u tijeku"
       ></SectionTitleLineWithButton>
       <CardboxAllocation
         v-if="allocated_assignment != null"
@@ -128,21 +101,31 @@ const formErrorSubmit = () => {
 
       <br />
       <hr />
+
       <br />
       <SectionTitleLineWithButton
-        :icon="mdiFileDocumentEdit"
+        :icon="mdiNotebook"
         main
         title="Dnevnik prakse"
       ></SectionTitleLineWithButton>
       <p>
-        <b>Važno!</b> Prijavnica se popunjava nakon što nastavnik odobri kontakt
-        određenom poduzeću i nakon što student s tim poduzećem dogovir praksu.
+        Nakon što se završili praksu i ispunili sve vaše obaveze, predajete
+        dnevnik prakse skupa s ispunjenom potvrdom o obavljenoj praksi.
       </p>
       <p>
-        Ispod možete pronaći prijavnicu za praksu. Neki podaci su već u sustavu
-        te su samim time ispisani. Ostale podatke treba popuniti.
+        Potvrdu ispunjava vaš mentor, vi predajete PDF sken ispunjene potvrde.
       </p>
-      <p>Popunjenu prijavnicu šaljemo poduzeću na odobrenje i potpis.</p>
+      <p>Dnevnik prakse je potrebno predati prije prijave ispitnog roka.</p>
+      <br />
+      <p>
+        📓Template za dnevnik prakse možete preuzeti
+        <a
+          href="https://bit.ly/fipu-praksa-template"
+          target="_blank"
+          class="text-fipu_blue cursor-pointer"
+          >ovdje</a
+        >.
+      </p>
       <br />
       <hr />
 
@@ -151,188 +134,47 @@ const formErrorSubmit = () => {
           :icon="mdiBallot"
           class="mb-6 lg:mb-0 lg:col-span-2 xl:col-span-3"
           is-form
-          @submit.prevent="submit_application_form"
+          @submit.prevent="submit_diary_form"
         >
-          <CardBoxComponentTitle title="📃Prijavnica na praksu" />
-          <FormField label="Ime i prezime" horizontal>
-            <FormControl
-              v-model="form.student_ime"
-              :icon-left="mdiAccount"
-              help="Vaše ime"
-              placeholder="Vaše ime"
-              required
-            />
-            <FormControl
-              v-model="form.student_prezime"
-              :icon-left="mdiMail"
-              :icon-right="mdiCheck"
-              help="Vaše prezime"
-              placeholder="Vaše prezime"
-              required
-            />
-          </FormField>
+          <CardBoxComponentTitle title="📓 Dnevnik prakse" />
 
-          <FormField label="UNIPU email" horizontal>
-            <FormControl
-              v-model="form.student_email"
-              :icon-left="mdiMail"
-              :icon-right="mdiCheck"
-              type="email"
-              help="Vaša UNIPU email adresa"
-              placeholder="Email"
-              required
-            />
+          <FormField
+            label="PDF dnevnika prakse"
+            help="obavezno PDF format"
+            horizontal
+          >
+            <FormFilePicker v-model="form.dnevnik_attachment" label="Prenesi" />
           </FormField>
 
           <FormField
-            label="Broj mobitela"
-            help="Neće se trajno pohraniti. Samo za slučajeve brzog dogovora."
+            label="PDF sken ispunjene potvrde o obavljenoj praksi"
+            help="Dostaviti voditelju prakse ili tajnici u fizičkom obliku"
             horizontal
           >
-            <FormField addons>
-              <FormControl type="static" model-value="+385 (0)" first-addon />
-              <FormControl
-                v-model="form.student_broj_mobitela"
-                type="tel"
-                placeholder="Vaš broj mobitela"
-                expanded
-                middle-addon
-                required
-              />
-              <FormControl type="static" model-value="HR" last-addon />
-            </FormField>
-          </FormField>
-
-          <FormField label="OIB" horizontal>
-            <FormControl
-              v-model="form.student_OIB"
-              :icon-left="mdiCardAccountDetails"
-              :icon-right="mdiCheck"
-              type="number"
-              help="Za potrebe prijave osiguranja"
-              placeholder="OIB"
-              required
-            />
+            <FormFilePicker v-model="form.potvrda_attachment" label="Prenesi" />
           </FormField>
 
           <BaseDivider />
 
-          <FormField label="Poduzeće" horizontal>
-            <FormControl
-              v-model="form.Poslodavac"
-              :icon-left="mdiCardAccountDetails"
-              :icon-right="mdiCheck"
-              readonly
-              help="Odabrano poduzeće"
-              placeholder="Odabrano poduzeće"
-              required
-            />
+          <FormField label="Datum ispitnog roka" horizontal>
+            <FormControl v-model="form.prijavljen_rok" type="date" required />
           </FormField>
 
-          <FormField label="Ime i prezime mentora" horizontal>
-            <FormControl
-              v-model="form.mentor_ime"
-              :icon-left="mdiAccount"
-              help="Ime mentora"
-              placeholder="Ime mentora"
-              required
-            />
-            <FormControl
-              v-model="form.mentor_prezime"
-              :icon-left="mdiMail"
-              :icon-right="mdiCheck"
-              help="Prezime mentora"
-              placeholder="Prezime mentora"
-              required
-            />
-          </FormField>
-
-          <FormField label="Email mentora" horizontal>
-            <FormControl
-              v-model="form.mentor_email"
-              :icon-left="mdiMail"
-              :icon-right="mdiCheck"
-              type="email"
-              help="Email vašeg mentora"
-              placeholder="Email mentora"
-              required
-            />
-          </FormField>
-          <BaseDivider />
-          <FormField label="Detaljan opis zadatka" horizontal>
-            <FormControl
-              v-model="form.detaljan_opis_zadatka"
-              type="textarea"
-              placeholder="Detaljno opišite zadatak koji će se izvršavati na praksi."
-              required
-            />
-          </FormField>
-
-          <FormField
-            label="Dogovoreni broj sati"
-            help="Mora biti u rasopnu od 90 do 150 sati."
-            horizontal
-          >
-            <FormField addons>
-              <FormControl type="static" model-value="Sati" first-addon />
-              <FormControl
-                v-model="form.dogovoreni_broj_sati"
-                type="number"
-                placeholder="Dogovoreni broj sati"
-                expanded
-                middle-addon
-                required
-              />
-              <FormControl type="static" model-value="[90 - 150]" last-addon />
-            </FormField>
-          </FormField>
-
-          <FormField label="Datum početka" horizontal>
-            <FormControl v-model="form.pocetak_prakse" type="date" required />
-          </FormField>
-
-          <FormField label="Datum završetka" horizontal>
-            <FormControl v-model="form.kraj_prakse" type="date" required />
-          </FormField>
-
-          <BaseDivider />
-
-          <FormField label="Praksu ću izvršavati" horizontal>
-            <FormCheckRadioGroup
-              v-model="form.mjesto_izvrsavanja"
-              name="sample-radio-two"
-              type="radio"
-              :options="nacinIzvrsavanjeRadioOptions"
-              is-column
-            />
-          </FormField>
-
-          <BaseDivider />
-
-          <FormField label="Potvrde" horizontal>
-            <FormCheckRadio
-              v-model="form.alokacija_potvrda"
-              name="sample-checkbox-two"
-              :options="checkboxOptions"
-              label="Nastavnik mi je odobrio i alocirao me na ovu tvrtku. Što se i vidi na Alokacije."
-              is-column
-              required
-            />
-          </FormField>
           <FormField horizontal>
             <FormCheckRadio
-              v-model="form.kontakt_potvrda"
+              v-model="form.nastavak_radnog_odnosa"
               name="sample-checkbox-two"
               :options="checkboxOptions"
-              label="Potvrđujem da sam kontaktirao poslodavca i dogovorio detalje koji su ovdje uneseni."
+              label="Označi ako nastavljaš i dalje raditi u tvrtci ili ćeš ubrzo početi raditi honorarno."
               is-column
               required
             />
           </FormField>
+
           <BaseDivider />
 
           <FormField horizontal grouped>
-            <BaseButton label="Pošalji" type="submit" color="fipu_blue" />
+            <BaseButton label="Predaj" type="submit" color="fipu_blue" />
           </FormField>
         </CardBox>
       </div>

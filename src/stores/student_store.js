@@ -78,6 +78,48 @@ export const useStudentStore = defineStore("student", {
         console.log("Error:", error);
       }
     },
+    async submitDiaryForm(diary_data) {
+      let post_data = {
+        nastavak_radnog_odnosa: diary_data["nastavak_radnog_odnosa"],
+        prijavljen_rok: diary_data["prijavljen_rok"],
+      };
+      console.log(post_data);
+      let combinedResponses = {};
+      try {
+        let process_instance_id = mainStore.currentUser.internship_process.id;
+        let pending_user_task =
+          mainStore.currentUser.internship_process.pending_user_task;
+        combinedResponses.handleNewInstance =
+          await ProcessInstance.handleNewInstance(
+            process_instance_id,
+            pending_user_task,
+            post_data
+          );
+        console.log(
+          `%c ADMIN_STORE.submitDiaryForm: ProcessInstance.handleNewInstance ${JSON.stringify(
+            combinedResponses.handleNewInstance
+          )}`,
+          "background: #222; color: #bada55"
+        );
+        console.log(
+          "combinedResponses.handleNewInstance",
+          combinedResponses.handleNewInstance
+        );
+        combinedResponses.storeDnevnik = await Student.storeDnevnik(
+          combinedResponses.handleNewInstance.id_dnevnik_prakse,
+          post_data.dnevnik_attachment
+        );
+
+        combinedResponses.storePrijavnica = await Student.storePrijavnica(
+          combinedResponses.handleNewInstance.id_dnevnik_prakse,
+          post_data.prijavnica_attachment
+        );
+
+        return combinedResponses;
+      } catch (error) {
+        console.log("Error:", error);
+      }
+    },
     async getInstanceInfo(process_instance_id) {
       try {
         const response = await ProcessInstance.get(process_instance_id);

@@ -46,6 +46,47 @@ const Student = {
       return null;
     }
   },
+  async storeDnevnik(id_dnevnik_prakse, fileData) {
+    try {
+      const formData = new FormData();
+      formData.append("file", fileData);
+
+      let result = await AxiosWrapper.post(
+        `/upload/pdf-dnevnik/${id_dnevnik_prakse}`,
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
+      return result;
+    } catch (error) {
+      console.log("Error:", error);
+      return null;
+    }
+  },
+
+  async storePrijavnica(id_dnevnik_prakse, fileData) {
+    try {
+      const formData = new FormData();
+      formData.append("file", fileData);
+
+      let result = await AxiosWrapper.post(
+        `/upload/pdf-ispunjena-potvrda/${id_dnevnik_prakse}`,
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
+      return result;
+    } catch (error) {
+      console.log("Error:", error);
+      return null;
+    }
+  },
 };
 
 const Admin = {

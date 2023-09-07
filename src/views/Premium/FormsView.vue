@@ -16,7 +16,7 @@ import SectionMain from "@/components/SectionMain.vue";
 import SectionTitleLineWithButton from "@/components/SectionTitleLineWithButton.vue";
 import CardBox from "@/components/CardBox.vue";
 import FormCheckRadioGroup from "@/components/FormCheckRadioGroup.vue";
-import FormFilePicker from "@/components/FormFilePicker.vue";
+import FormFilePicker from "@/components/Form/FormFilePicker.vue";
 import FormField from "@/components/Premium/FormField.vue";
 import FormControl from "@/components/Premium/FormControl.vue";
 import BaseDivider from "@/components/BaseDivider.vue";

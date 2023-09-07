@@ -37,7 +37,7 @@
         <bpmn:flowNodeRef>Gateway_1b8kjb9</bpmn:flowNodeRef>
         <bpmn:flowNodeRef>slanje_potvrde_student_slack</bpmn:flowNodeRef>
         <bpmn:flowNodeRef>slanje_potvrde_mentor_email</bpmn:flowNodeRef>
-        <bpmn:flowNodeRef>azuriranje_baserow_student</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>spremanje_dnevnika</bpmn:flowNodeRef>
         <bpmn:flowNodeRef>Gateway_0q2wy8q</bpmn:flowNodeRef>
       </bpmn:lane>
     </bpmn:laneSet>
@@ -523,24 +523,21 @@ Napomena: Da biste prijavili preferencije, morate biti prijavljeni u aplikaciji!
       <bpmn:outgoing>Flow_05znxzo</bpmn:outgoing>
     </bpmn:sendTask>
     <bpmn:sequenceFlow id="Flow_05znxzo" sourceRef="slanje_potvrde_mentor_email" targetRef="Gateway_0q2wy8q" />
-    <bpmn:serviceTask id="azuriranje_baserow_student" name="Ažuriranje baserow">
+    <bpmn:serviceTask id="spremanje_dnevnika" name="Ažuriranje podataka u baserow">
       <bpmn:extensionElements>
         <camunda:connector>
           <camunda:inputOutput>
-            <camunda:inputParameter name="url">/dnevnik</camunda:inputParameter>
+            <camunda:inputParameter name="url">/api/dnevnik</camunda:inputParameter>
             <camunda:inputParameter name="method">POST</camunda:inputParameter>
-            <camunda:inputParameter name="url_parameter">
-              <camunda:map>
-                <camunda:entry key="prijavnica_id">${prijavnica_id}</camunda:entry>
-              </camunda:map>
-            </camunda:inputParameter>
           </camunda:inputOutput>
           <camunda:connectorId>baserow</camunda:connectorId>
         </camunda:connector>
         <camunda:inputOutput>
-          <camunda:inputParameter name="nastavak_rada">${nastavak_rada}</camunda:inputParameter>
-          <camunda:inputParameter name="potvrda_attachment">${potvrda_attachment}</camunda:inputParameter>
-          <camunda:inputParameter name="dnevnik_attachment">${dnevnik_attachment}</camunda:inputParameter>
+          <camunda:inputParameter name="nastavak_radnog_odnosa">${nastavak_radnog_odnosa}</camunda:inputParameter>
+          <camunda:inputParameter name="prijavljen_rok">${prijavljen_rok}</camunda:inputParameter>
+          <camunda:inputParameter name="Student">${Student}</camunda:inputParameter>
+          <camunda:inputParameter name="id_prijavnica">${id_prijavnica}</camunda:inputParameter>
+          <camunda:outputParameter name="id_dnevnik_prakse" />
         </camunda:inputOutput>
       </bpmn:extensionElements>
       <bpmn:incoming>Flow_1btfl5a</bpmn:incoming>
@@ -554,22 +551,8 @@ Napomena: Da biste prijavili preferencije, morate biti prijavljeni u aplikaciji!
 Dnevnik je potrebno predati prije prijave ispitnoga roka.</bpmn:documentation>
       <bpmn:extensionElements>
         <camunda:formData>
-          <camunda:formField id="potvrda_attachment" label="PDF sken ispunjene potvrde o obavljenoj praksi,  Dostaviti tajnici ili Nikoli Tankoviću i u fizičkom obliku" type="file">
-            <camunda:properties>
-              <camunda:property id="storage_api_post_location" value="https://fipubot.unipu.hr/file_api/post/file" />
-              <camunda:property id="storage_api_get_location" value="https://fipubot.unipu.hr/file_api/public/" />
-            </camunda:properties>
-            <camunda:validation>
-              <camunda:constraint name="required" config="true" />
-            </camunda:validation>
-          </camunda:formField>
-          <camunda:formField id="dnevnik_attachment" label="PDF dnevnika prakse" type="file">
-            <camunda:properties>
-              <camunda:property id="storage_api_post_location" value="https://fipubot.unipu.hr/file_api/post/file" />
-              <camunda:property id="storage_api_get_location" value="https://fipubot.unipu.hr/file_api/public/" />
-            </camunda:properties>
-          </camunda:formField>
-          <camunda:formField id="nastavak_rada" label="Označi ako nastavljaš i dalje raditi u tvrtci ili ćeš ubrzo početi raditi honorarno" type="boolean" />
+          <camunda:formField id="nastavak_radnog_odnosa" label="Označi ako nastavljaš i dalje raditi u tvrtci ili ćeš ubrzo početi raditi honorarno" type="boolean" />
+          <camunda:formField id="prijavljen_rok" type="date" />
         </camunda:formData>
       </bpmn:extensionElements>
       <bpmn:incoming>Flow_03i13r1</bpmn:incoming>
@@ -579,8 +562,8 @@ Dnevnik je potrebno predati prije prijave ispitnoga roka.</bpmn:documentation>
       <bpmn:incoming>Flow_05znxzo</bpmn:incoming>
       <bpmn:outgoing>Flow_03i13r1</bpmn:outgoing>
     </bpmn:parallelGateway>
-    <bpmn:sequenceFlow id="Flow_1btfl5a" sourceRef="predavanje_dnevnika_student" targetRef="azuriranje_baserow_student" />
-    <bpmn:sequenceFlow id="Flow_1cvohty" sourceRef="azuriranje_baserow_student" targetRef="end_event_student" />
+    <bpmn:sequenceFlow id="Flow_1btfl5a" sourceRef="predavanje_dnevnika_student" targetRef="spremanje_dnevnika" />
+    <bpmn:sequenceFlow id="Flow_1cvohty" sourceRef="spremanje_dnevnika" targetRef="end_event_student" />
     <bpmn:sequenceFlow id="Flow_03i13r1" sourceRef="Gateway_0q2wy8q" targetRef="predavanje_dnevnika_student" />
   </bpmn:process>
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
@@ -682,8 +665,9 @@ Dnevnik je potrebno predati prije prijave ispitnoga roka.</bpmn:documentation>
         <dc:Bounds x="1680" y="450" width="100" height="80" />
         <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_02sqerr_di" bpmnElement="azuriranje_baserow_student">
+      <bpmndi:BPMNShape id="Activity_02sqerr_di" bpmnElement="spremanje_dnevnika">
         <dc:Bounds x="1990" y="530" width="100" height="80" />
+        <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Event_0f6fpdt_di" bpmnElement="end_event_student" bioc:stroke="#000" bioc:fill="#fff">
         <dc:Bounds x="2022" y="312" width="36" height="36" />
