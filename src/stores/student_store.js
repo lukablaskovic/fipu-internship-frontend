@@ -83,6 +83,14 @@ export const useStudentStore = defineStore("student", {
         nastavak_radnog_odnosa: diary_data["nastavak_radnog_odnosa"],
         prijavljen_rok: diary_data["prijavljen_rok"],
       };
+      console.log(
+        "Received dnevnik_attachment:",
+        diary_data.dnevnik_attachment
+      );
+      console.log(
+        "Received prijavnica_attachment:",
+        diary_data.potvrda_attachment
+      );
       console.log(post_data);
       let combinedResponses = {};
       try {
@@ -101,18 +109,17 @@ export const useStudentStore = defineStore("student", {
           )}`,
           "background: #222; color: #bada55"
         );
-        console.log(
-          "combinedResponses.handleNewInstance",
-          combinedResponses.handleNewInstance
-        );
+        const dnevnik_prakse_id =
+          this.student_process_instance_data.variables["id_dnevnik_prakse"];
+        console.log("dnevnik_prakse_id", dnevnik_prakse_id);
         combinedResponses.storeDnevnik = await Student.storeDnevnik(
-          combinedResponses.handleNewInstance.id_dnevnik_prakse,
-          post_data.dnevnik_attachment
+          dnevnik_prakse_id,
+          diary_data.dnevnik_attachment
         );
 
         combinedResponses.storePrijavnica = await Student.storePrijavnica(
-          combinedResponses.handleNewInstance.id_dnevnik_prakse,
-          post_data.prijavnica_attachment
+          dnevnik_prakse_id,
+          diary_data.potvrda_attachment
         );
 
         return combinedResponses;

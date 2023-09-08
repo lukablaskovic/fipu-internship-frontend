@@ -382,6 +382,7 @@ Napomena: Da biste prijavili preferencije, morate biti prijavljeni u aplikaciji!
           <camunda:inputParameter name="Poslodavac">${poslodavac_naziv}</camunda:inputParameter>
           <camunda:inputParameter name="mjesto_izvrsavanja">${mjesto_izvrsavanja}</camunda:inputParameter>
           <camunda:outputParameter name="id_prijavnica" />
+          <camunda:outputParameter name="id_dnevnik_prakse" />
         </camunda:inputOutput>
       </bpmn:extensionElements>
       <bpmn:incoming>Flow_1l8y47v</bpmn:incoming>
@@ -535,9 +536,7 @@ Napomena: Da biste prijavili preferencije, morate biti prijavljeni u aplikaciji!
         <camunda:inputOutput>
           <camunda:inputParameter name="nastavak_radnog_odnosa">${nastavak_radnog_odnosa}</camunda:inputParameter>
           <camunda:inputParameter name="prijavljen_rok">${prijavljen_rok}</camunda:inputParameter>
-          <camunda:inputParameter name="Student">${Student}</camunda:inputParameter>
-          <camunda:inputParameter name="id_prijavnica">${id_prijavnica}</camunda:inputParameter>
-          <camunda:outputParameter name="id_dnevnik_prakse" />
+          <camunda:inputParameter name="id_dnevnik_prakse">${id_dnevnik_prakse}</camunda:inputParameter>
         </camunda:inputOutput>
       </bpmn:extensionElements>
       <bpmn:incoming>Flow_1btfl5a</bpmn:incoming>
