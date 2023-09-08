@@ -18,4 +18,39 @@
   progress::-ms-fill {
     @apply bg-fipu_blue border-0;
   }
+  .progress-red::-webkit-progress-value {
+    @apply bg-red-500;
+  }
+
+  .progress-red::-moz-progress-bar {
+    @apply bg-red-500;
+  }
+
+  .progress-red::-ms-fill {
+    @apply bg-red-500 border-0;
+  }
+
+  .progress-yellow::-webkit-progress-value {
+    @apply bg-yellow-500;
+  }
+
+  .progress-yellow::-moz-progress-bar {
+    @apply bg-yellow-500;
+  }
+
+  .progress-yellow::-ms-fill {
+    @apply bg-yellow-500 border-0;
+  }
+
+  .progress-green::-webkit-progress-value {
+    @apply bg-green-500;
+  }
+
+  .progress-green::-moz-progress-bar {
+    @apply bg-green-500;
+  }
+
+  .progress-green::-ms-fill {
+    @apply bg-green-500 border-0;
+  }
 }

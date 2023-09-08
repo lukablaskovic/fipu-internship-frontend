@@ -14,7 +14,7 @@ const props = defineProps({
   },
   highlightColor: {
     type: String,
-    default: "#79d4f2",
+    default: "#79d4f2", // fipu blue
   },
   highlightElementId: {
     type: String,
@@ -139,7 +139,7 @@ function applyCustomStyling(highlightColor, highlightElementId, viewer) {
       fill: ${highlightColor} !important;
     }
     .highlight-previous:not(.djs-connection) .djs-visual > :nth-child(1) {
-      fill: green !important;
+      fill: #059669 !important;
     }
   `;
   document.head.appendChild(style);

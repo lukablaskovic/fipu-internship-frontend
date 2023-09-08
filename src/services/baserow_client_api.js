@@ -69,8 +69,8 @@ const Student = {
     }
   },
 
-  async storePrijavnica(id_dnevnik_prakse, fileData) {
-    console.log("Received fileData in storePrijavnica:", fileData);
+  async storeIspunjenaPotvrda(id_dnevnik_prakse, fileData) {
+    console.log("Received fileData in storeIspunjenaPotvrda:", fileData);
 
     try {
       const formData = new FormData();

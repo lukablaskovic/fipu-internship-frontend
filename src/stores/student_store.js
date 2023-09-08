@@ -117,10 +117,11 @@ export const useStudentStore = defineStore("student", {
           diary_data.dnevnik_attachment
         );
 
-        combinedResponses.storePrijavnica = await Student.storePrijavnica(
-          dnevnik_prakse_id,
-          diary_data.potvrda_attachment
-        );
+        combinedResponses.storeIspunjenaPotvrda =
+          await Student.storeIspunjenaPotvrda(
+            dnevnik_prakse_id,
+            diary_data.potvrda_attachment
+          );
 
         return combinedResponses;
       } catch (error) {

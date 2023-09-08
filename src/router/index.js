@@ -23,6 +23,16 @@ const routes = [
   },
   {
     meta: {
+      title: "Studenti",
+      requiresAuth: true,
+      requiresAdmin: true,
+    },
+    path: "/studenti/:process_instance_id",
+    name: "student",
+    component: () => import("@/views/admin/StudentsInternshipView.vue"),
+  },
+  {
+    meta: {
       title: "Poslodavci",
       requiresAuth: true,
       requiresAdmin: false,

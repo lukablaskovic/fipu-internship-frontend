@@ -1,5 +1,5 @@
 <script setup>
-import { computed, ref, onMounted } from "vue";
+import { computed, ref, onMounted, watch } from "vue";
 
 import { adminStore, mainStore } from "@/main.js";
 import { mdiAccountMultiple } from "@mdi/js";
@@ -29,6 +29,8 @@ const process_instance_data = ref(null);
 const userAuthenticated = computed(() => mainStore.userAuthenticated);
 
 const disabledCondition = ref(true);
+import { useRouter, useRoute } from "vue-router";
+const router = useRouter();
 
 const updateDisabledCondition = (allFilled) => {
   disabledCondition.value = !allFilled;
@@ -58,6 +60,9 @@ async function handleProcessDiagram() {
   );
   console.log(process_instance_data.value);
   bpmnKey.value++;
+
+  // Navigate to the new URL with the process_instance_id
+  router.push(`/studenti/${process_instance_data.value.id}`);
 }
 
 onMounted(async () => {
@@ -65,6 +70,28 @@ onMounted(async () => {
   await adminStore.getStudents();
   bpmn_model.value = await fetchXML();
 });
+
+const route = useRoute();
+
+// Load data based on process_instance_id from the route
+async function loadDataForStudent() {
+  const id = route.params.process_instance_id;
+
+  if (id) {
+    const student = { process_instance_id: id };
+
+    process_instance_data.value = await adminStore.getProcessInstanceData(
+      student
+    );
+    console.log(process_instance_data.value);
+  }
+}
+
+watch(() => route.params.process_instance_id, loadDataForStudent, {
+  immediate: true,
+});
+
+onMounted(loadDataForStudent);
 </script>
 
 <template>
@@ -82,6 +109,7 @@ onMounted(async () => {
         <CardBox has-table>
           <TableStudents @show-student-diagram="handleProcessDiagram" />
         </CardBox>
+
         <CardBox
           v-if="adminStore.studentsFetched && !adminStore.students.length"
         >

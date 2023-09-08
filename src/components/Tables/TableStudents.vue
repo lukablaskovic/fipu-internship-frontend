@@ -8,24 +8,31 @@ import BaseButton from "@/components/Base/BaseButton.vue";
 import LoadingOverlay from "../LoadingOverlay.vue";
 import { adminStore } from "@/main.js";
 import { StudentMappings, UserTaskMappings } from "@/helpers/maps";
+import { useRoute } from "vue-router";
+const route = useRoute();
 
 defineProps({
   checkable: Boolean,
 });
 
 const students = computed(() => adminStore.students);
-const selectedStudentJMBAG = ref(null);
+const selectedStudentInstanceID = ref(null);
 
 const studentsFetched = computed(() => adminStore.studentsFetched);
 const emit = defineEmits(["show-student-diagram"]);
 
 function showDiagram(student) {
-  selectedStudentJMBAG.value = student["JMBAG"];
+  console.log("student", student);
+  selectedStudentInstanceID.value = student["process_instance_id"];
+
   adminStore.showSelectedStudent(student);
   emit("show-student-diagram", student);
 }
 
 onBeforeMount(async () => {
+  if (route.params.process_instance_id) {
+    selectedStudentInstanceID.value = route.params.process_instance_id;
+  }
   await adminStore.getStudents();
 });
 
@@ -49,6 +56,14 @@ const pagesList = computed(() => {
   }
   return pagesList;
 });
+
+function getProgressValue(student) {
+  return UserTaskMappings.getTaskProperty(
+    student["process_instance_data"]["pending"][0],
+    "order",
+    student["process_instance_data"]["state"]
+  );
+}
 </script>
 
 <template>
@@ -78,7 +93,8 @@ const pagesList = computed(() => {
         v-for="student in studentsPaginated"
         :key="student['JMBAG']"
         :class="{
-          'selected-row': selectedStudentJMBAG === student['JMBAG'],
+          'selected-row':
+            selectedStudentInstanceID === student['process_instance_id'],
         }"
       >
         <td data-label="JMBAG">
@@ -101,27 +117,23 @@ const pagesList = computed(() => {
         <td data-label="Progress" class="lg:w-32">
           <progress
             class="flex w-2/5 self-center lg:w-full"
+            :class="{
+              'progress-red': getProgressValue(student) <= 2,
+              'progress-yellow': getProgressValue(student) == 3,
+              'progress-green': getProgressValue(student) >= 4,
+            }"
             max="5"
-            :value="
-              UserTaskMappings.getTaskProperty(
-                student['process_instance_data']['pending'][0],
-                'order'
-              )
-            "
+            :value="getProgressValue(student)"
           >
-            {{
-              UserTaskMappings.getTaskProperty(
-                student["process_instance_data"]["pending"][0],
-                "order"
-              )
-            }}
+            {{ getProgressValue(student) }}
           </progress>
         </td>
         <td data-label="Stanje">
           {{
             UserTaskMappings.getTaskProperty(
               student["process_instance_data"]["pending"][0],
-              "name"
+              "name",
+              student["process_instance_data"]["state"]
             )
           }}
         </td>

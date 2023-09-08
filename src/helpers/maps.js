@@ -37,7 +37,7 @@ class UserTaskMappings {
       _id: "alociranje_profesor",
       name: "Čeka alokaciju profesora",
       form_title: "Alokacija studenta",
-      bpmn_task_color: "#e25555",
+      bpmn_task_color: "#EF4444", //bg-red-500
       component: Student_WaitingForAllocation,
     },
     {
@@ -45,7 +45,7 @@ class UserTaskMappings {
       _id: "evaluacija_poslodavac",
       name: "Evaluacija poslodavca u tijeku",
       form_title: "Evaluacija poslodavca",
-      bpmn_task_color: "#e25555",
+      bpmn_task_color: "#EF4444",
       component: Student_WaitingForEvaluation,
     },
     {
@@ -62,9 +62,22 @@ class UserTaskMappings {
       form_title: "Dnevnik prakse",
       component: Student_DnevnikPrakseForm, //DnevnikPrakseForm
     },
+    {
+      order: 6,
+      _id: "end_event_student",
+      name: "Završio praksu",
+      form_title: "Završio praksu",
+    },
   ];
 
-  static getTaskProperty(taskId, property) {
+  static getTaskProperty(taskId, property, state = "running") {
+    if (state === "finished")
+      return getMappedProperty(
+        this.tasks,
+        "_id",
+        "end_event_student",
+        property
+      );
     return getMappedProperty(this.tasks, "_id", taskId, property);
   }
 }
@@ -135,6 +148,12 @@ class ActivityEventMappings {
       type: "danger",
       message: "Predao dnevnik prakse",
     },
+    {
+      activity_id: "end_event_student",
+      icon: mdiRayStartArrow,
+      type: "success",
+      message: "Završen proces prakse",
+    },
   ];
   static skipEvents = [
     "spremanje_alokacija",
@@ -146,6 +165,7 @@ class ActivityEventMappings {
     "azuriranje_podataka_profesor",
     "slanje_potvrde_student_email",
     "slanje_potvrde_mentor_email",
+    "spremanje_dnevnika",
   ];
 
   static isGatewayEvent(activityId) {

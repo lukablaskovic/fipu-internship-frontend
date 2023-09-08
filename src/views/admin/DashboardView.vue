@@ -183,7 +183,7 @@ const pagesList = computed(() => {
               :date="event.timestamp"
               :type="event.activity_id"
               :jmbag="event.student_JMBAG"
-              class="rounded-lg"
+              class="rounded-lg cursor-pointer"
             />
           </div>
           <div class="flex flex-col">
@@ -194,7 +194,7 @@ const pagesList = computed(() => {
               :date="event.timestamp"
               :type="event.activity_id"
               :jmbag="event.student_JMBAG"
-              class="rounded-lg"
+              class="rounded-lg cursor-pointer"
             />
           </div>
         </div>
