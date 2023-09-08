@@ -16,9 +16,19 @@ defineProps({
   },
   main: Boolean,
   buttonEnabled: Boolean,
+  buttonIcon: {
+    type: String,
+    default: mdiHelpCircleOutline,
+  },
 });
 
 const hasSlot = computed(() => useSlots().default);
+
+const emit = defineEmits(["click"]);
+
+const emitClick = () => {
+  emit("click");
+};
 </script>
 
 <template>
@@ -42,8 +52,9 @@ const hasSlot = computed(() => useSlots().default);
     <slot v-if="hasSlot" />
     <BaseButton
       v-if="buttonEnabled"
-      :icon="mdiHelpCircleOutline"
+      :icon="buttonIcon"
       color="whiteDark"
+      @click="emitClick"
     />
   </section>
 </template>

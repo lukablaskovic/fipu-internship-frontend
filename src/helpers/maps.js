@@ -90,6 +90,8 @@ import {
   mdiAccountTie,
   mdiBookAccount,
   mdiNotebook,
+  mdiFileDocumentPlus,
+  mdiRayEnd,
 } from "@mdi/js";
 
 class ActivityEventMappings {
@@ -132,8 +134,8 @@ class ActivityEventMappings {
     },
     {
       activity_id: "ispunjavanje_prijavnice_student",
-      icon: mdiBookAccount,
-      type: "success",
+      icon: mdiFileDocumentPlus,
+      type: "info",
       message: "Student ispunio prijavnicu",
     },
     {
@@ -145,14 +147,14 @@ class ActivityEventMappings {
     {
       activity_id: "predavanje_dnevnika_student",
       icon: mdiNotebook,
-      type: "danger",
+      type: "info",
       message: "Predao dnevnik prakse",
     },
     {
       activity_id: "end_event_student",
-      icon: mdiRayStartArrow,
-      type: "success",
-      message: "Završen proces prakse",
+      icon: mdiRayEnd,
+      type: "danger",
+      message: "Završio praksu",
     },
   ];
   static skipEvents = [

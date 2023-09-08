@@ -5,6 +5,7 @@ const SERVICES_CONFIG = {
   internship_gateway_api: import.meta.env.VITE_GATEWAY_API_URL,
   baserow_connector: import.meta.env.VITE_BASEROW_API_URL,
   sendgrid_connector: import.meta.env.VITE_SENDGRID_API_URL,
+  pdf_generator_connector: import.meta.env.VITE_PDF_API_URL,
 };
 
 const MICROSERVICES = Object.fromEntries(

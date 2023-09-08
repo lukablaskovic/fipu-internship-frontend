@@ -17,6 +17,7 @@ export default [
     to: "/studenti",
     icon: mdiAccountMultiple,
     label: "Studenti",
+    updateMark: "danger",
   },
   {
     to: "/dostupni-zadaci",

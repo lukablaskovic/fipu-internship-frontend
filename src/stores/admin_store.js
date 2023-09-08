@@ -16,6 +16,7 @@ export const useAdminStore = defineStore("admin", {
       waiting_for_allocation: 0,
       waiting_for_evaluation: 0,
       events: [],
+      relativeToNowTimestmap: true,
     },
 
     bpmn_diagram: {
@@ -126,6 +127,7 @@ export const useAdminStore = defineStore("admin", {
             event.student_ime = student["ime"];
             event.student_prezime = student["prezime"];
             event.student_JMBAG = student["JMBAG"];
+            event.student_email = student["email"];
           }
         });
         this.events = response;

@@ -6,7 +6,6 @@ import BaseLevel from "@/components/Base/BaseLevel.vue";
 import PillTag from "@/components/PillTag/PillTag.vue";
 import IconRounded from "@/components/IconRounded.vue";
 import { ActivityEventMappings } from "@/helpers/maps";
-import moment from "@/moment-setup";
 
 const props = defineProps({
   student: {
@@ -25,11 +24,10 @@ const props = defineProps({
     type: String,
     required: true,
   },
-});
-
-const momentDate = computed(() => {
-  let date = moment(props.date);
-  return date.fromNow();
+  email: {
+    type: String,
+    required: true,
+  },
 });
 
 const icon = computed(() => {
@@ -59,11 +57,14 @@ const icon = computed(() => {
           <p class="text-gray-500 dark:text-slate-400">
             <b>JMBAG: {{ jmbag }}</b>
           </p>
+          <p class="text-gray-500 dark:text-slate-400">
+            <em>Email: {{ email }}</em>
+          </p>
         </div>
       </BaseLevel>
       <div class="text-center md:text-right space-y-2">
         <p class="text-sm text-gray-500">
-          {{ momentDate }}
+          {{ props.date }}
         </p>
         <div>
           <PillTag

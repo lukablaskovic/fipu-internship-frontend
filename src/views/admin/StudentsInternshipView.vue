@@ -129,7 +129,8 @@ onMounted(loadDataForStudent);
           :title="
             UserTaskMappings.getTaskProperty(
               process_instance_data.pending[0],
-              'form_title'
+              'form_title',
+              process_instance_data['state']
             )
           "
           button-label="Potvrda"
@@ -152,7 +153,8 @@ onMounted(loadDataForStudent);
             {{
               UserTaskMappings.getTaskProperty(
                 adminStore.bpmn_diagram.clicked_task_id,
-                "bpmn_pending_info_msg"
+                "bpmn_pending_info_msg",
+                process_instance_data["state"]
               )
             }}
           </p>
@@ -182,7 +184,8 @@ onMounted(loadDataForStudent);
           :title="
             UserTaskMappings.getTaskProperty(
               adminStore.bpmn_diagram.clicked_task_id,
-              'form_title'
+              'form_title',
+              process_instance_data['state']
             )
           "
           button-label="Povratak"
@@ -198,13 +201,15 @@ onMounted(loadDataForStudent);
         :current-order="
           UserTaskMappings.getTaskProperty(
             process_instance_data.pending[0],
-            'order'
+            'order',
+            process_instance_data['state']
           )
         "
         :highlight-color="
           UserTaskMappings.getTaskProperty(
             process_instance_data.pending[0],
-            'bpmn_task_color'
+            'bpmn_task_color',
+            process_instance_data['state']
           )
         "
         :highlight-element-id="process_instance_data.pending[0]"
