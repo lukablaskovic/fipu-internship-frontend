@@ -7,7 +7,7 @@ import { getButtonColor } from "@/colors.js";
 import BaseIcon from "@/components/Base/BaseIcon.vue";
 import AsideMenuList from "@/components/AsideMenu/AsideMenuList.vue";
 import UpdateMark from "@/components/Premium/UpdateMark.vue";
-
+import { adminStore } from "@/main.js";
 const props = defineProps({
   item: {
     type: Object,
@@ -93,6 +93,11 @@ const subIcon = computed(() => {
 const menuClick = (event) => {
   emit("menu-click", event, props.item);
 
+  if (props.item.externalURL) {
+    window.open(props.item.externalURL, "_blank");
+    return;
+  }
+
   if (hasDropdown.value) {
     isDropdownActive.value = !isDropdownActive.value;
   }
@@ -134,7 +139,10 @@ const updateMarkPosition = computed(() => {
         :size="18"
       >
         <UpdateMark
-          v-if="item.updateMark"
+          v-if="
+            item.updateMark &&
+            adminStore.dashboard_data.waiting_for_allocation > 0
+          "
           :color="item.updateMark"
           :position="updateMarkPosition"
         />

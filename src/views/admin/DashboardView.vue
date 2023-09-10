@@ -240,11 +240,12 @@ const pagesList = computed(() => {
             <PillTagFilter
               class="cursor-pointer"
               trend-type="filter"
-              :trend="'Event'"
+              :trend="'Događaji'"
               :options="latestEvents"
               left="false"
             />
           </div>
+          <!--
           <div class="mb-4">
             <PillTagFilter
               class="cursor-pointer"
@@ -253,6 +254,7 @@ const pagesList = computed(() => {
               :options="buttonMenuOptions"
             />
           </div>
+          -->
         </div>
         <div
           v-if="events.length > 0"

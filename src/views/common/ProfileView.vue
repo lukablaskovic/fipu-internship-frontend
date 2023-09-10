@@ -88,7 +88,12 @@ const passwordForm = reactive({
               </div>
 
               <BaseButtons class="text-gray-500">
-                <PillTagPlain label="Student" :icon="mdiAccountCircle" />
+                <PillTagPlain
+                  v-if="mainStore.userAdmin"
+                  label="Admin"
+                  :icon="mdiAccountCircle"
+                />
+                <PillTagPlain v-else label="Student" :icon="mdiAccountCircle" />
                 <PillTagPlain label="FIPU" :icon="mdiDomain" />
               </BaseButtons>
               <BaseButtons class="mt-6" class-addon="mr-9 last:mr-0 mb-3">

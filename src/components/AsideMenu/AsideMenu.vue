@@ -12,6 +12,7 @@ import OverlayLayer from "@/components/OverlayLayer.vue";
 import AsideMenuLayer from "@/components/AsideMenu/AsideMenuLayer.vue";
 import AsideMenuItem from "@/components/AsideMenu/AsideMenuItem.vue";
 import { styleStore } from "@/main";
+import { MenuItems } from "@headlessui/vue";
 
 defineProps({
   menu: {

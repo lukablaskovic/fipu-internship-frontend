@@ -156,6 +156,10 @@ const upperWrapperClass = computed(() => (props.expanded ? "grow shrink" : ""));
 const wrapperClass = computed(() => {
   const base = [];
 
+  if (props.searchBar) {
+    base.push("rounded");
+  }
+
   if (computedType.value === "button") {
     base.push(getButtonColor(props.buttonColor, props.buttonOutline, true));
   } else {
@@ -196,7 +200,6 @@ const inputElClass = computed(() => {
     computedType.value === "textarea" ? "h-24" : "h-12",
     props.borderless || wrapperBorder.value ? "border-0" : "border",
   ];
-
   if (computedType.value === "button") {
     base.push(getButtonColor(props.buttonColor, props.buttonOutline, true));
   } else {
@@ -229,6 +232,10 @@ const inputElClass = computed(() => {
 
   if (computedIconRight.value) {
     base.push("pr-10");
+  }
+
+  if (props.searchBar) {
+    base.push("rounded");
   }
 
   return base;

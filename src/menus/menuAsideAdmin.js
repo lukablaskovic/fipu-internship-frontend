@@ -53,6 +53,7 @@ export default [
       },
       {
         label: "PDF Generator",
+        externalURL: "https://html-to-pdf-maker.netlify.app/",
       },
     ],
   },

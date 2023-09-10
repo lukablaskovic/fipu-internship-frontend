@@ -53,6 +53,16 @@ const routes = [
   },
   {
     meta: {
+      title: "Dostupni zadaci",
+      requiresAuth: true,
+      requiresAdmin: true,
+    },
+    path: "/dostupni-zadaci",
+    name: "dostupni-zadaci",
+    component: () => import("@/views/admin/AvailableAssignmentsView.vue"),
+  },
+  {
+    meta: {
       title: "Dashboard",
       requiresAuth: true,
       requiresAdmin: true,
@@ -136,6 +146,7 @@ const routes = [
     name: "bpmn-modeler",
     component: () => import("@/views/admin/bpmn/ModelerView.vue"),
   },
+
   {
     meta: {
       title: "Tables",

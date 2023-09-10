@@ -5,6 +5,7 @@ import {
   mdiChevronDown,
   mdiAlertCircleOutline,
   mdiFilter,
+  mdiFilterCheck,
 } from "@mdi/js";
 import PillTag from "@/components/PillTag/PillTag.vue";
 
@@ -79,6 +80,26 @@ onMounted(() => {
   }
 });
 
+const defualtEventsSet = computed(() => {
+  const defaultEvents = ActivityEventMappings.events
+    .filter(
+      (event) =>
+        !ActivityEventMappings.skipEvents.includes(event.activity_id) &&
+        !ActivityEventMappings.isGatewayEvent(event.activity_id)
+    )
+    .map((event) => event.activity_id);
+  console.log(
+    "adminStore.dashboard_data.selectedEvents",
+    adminStore.dashboard_data.selectedEvents
+  );
+  console.log("defaultEvents", defaultEvents);
+
+  return Utils.arraysEqual(
+    adminStore.dashboard_data.selectedEvents,
+    defaultEvents
+  );
+});
+
 const trendStyle = computed(() => {
   if (props.trendType === "up") {
     return {
@@ -103,8 +124,8 @@ const trendStyle = computed(() => {
 
   if (props.trendType === "filter") {
     return {
-      icon: mdiFilter,
-      style: "fipu_blue",
+      icon: defualtEventsSet.value ? mdiFilter : mdiFilterCheck,
+      style: defualtEventsSet.value ? "fipu_blue" : "success",
     };
   }
 
@@ -145,7 +166,6 @@ const setDefaultFilters = () => {
   snackBarStore.pushMessage("Event-Filteri resetirani!", "success");
 };
 
-// Create a method to handle the button click
 const toggleSelection = (option) => {
   const index = selectedOptions.value.indexOf(option.label);
   if (index === -1) {
