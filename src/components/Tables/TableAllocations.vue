@@ -6,14 +6,16 @@ import BaseLevel from "@/components/Base/BaseLevel.vue";
 import BaseButtons from "@/components/Base/BaseButtons.vue";
 import BaseButton from "@/components/Base/BaseButton.vue";
 import LoadingOverlay from "../LoadingOverlay.vue";
-import { studentStore } from "@/main.js";
-
+import { mainStore, studentStore } from "@/main.js";
+import { adminStore } from "@/main.js";
 defineProps({
   checkable: Boolean,
 });
 
 const allocations = ref([]);
+
 let dataLoaded = ref(false);
+
 const filteredAllocations = computed(() => {
   return allocations.value.filter(
     (allocation) =>
@@ -23,7 +25,9 @@ const filteredAllocations = computed(() => {
 
 onMounted(async () => {
   dataLoaded.value = false;
+
   allocations.value = await studentStore.getAllocationsPublic();
+
   console.log(allocations.value);
   dataLoaded.value = true;
 });
@@ -66,7 +70,7 @@ const pagesList = computed(() => {
         <th>JMBAG</th>
         <th>Alocirani zadatak</th>
         <th>Opis zadatka</th>
-        <th>Kontakt</th>
+        <th>Poduzeće kontakt</th>
         <th>Prijavnica ispunjena</th>
         <th>Dnevnik prakse predan</th>
       </tr>
@@ -88,18 +92,41 @@ const pagesList = computed(() => {
         <td data-label="Kontakt">
           {{ allocation["poslodavac_email"] }}
         </td>
-
         <td data-label="Prijavnica ispunjena">
-          <TableCheckboxCell
-            readonly
-            :value="allocation['popunjena_prijavnica']"
-          />
+          <div class="flex items-center">
+            <TableCheckboxCell
+              readonly
+              :value="allocation['popunjena_prijavnica']"
+            />
+            <a
+              v-if="allocation['popunjena_prijavnica']"
+              class="text-sm underline cursor-pointer hover:text-fipu_light_blue ml-8"
+              @click="
+                adminStore.openPDFModal(
+                  allocation,
+                  'Potvrda',
+                  'source_url_for_potvrda'
+                )
+              "
+            >
+              Prikaži potvrdu
+            </a>
+          </div>
         </td>
-        <td data-label="Prijavnica ispunjena">
+        <td data-label="Dnevnik prakse predan">
           <TableCheckboxCell
             readonly
-            :value="allocation['predan_dnevnik_prakse']"
+            :value="allocation[(allocation, 'predan_dnevnik_prakse')]"
           />
+          <p
+            v-if="allocation['predan_dnevnik_prakse']"
+            class="text-sm underline cursor-pointer hover:text-fipu_light_blue ml-8"
+            @click="
+              adminStore.openPDFModal('Dnevnik', 'source_url_for_dnevnik')
+            "
+          >
+            Prikaži dnevnik
+          </p>
         </td>
       </tr>
     </tbody>

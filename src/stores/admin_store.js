@@ -23,8 +23,47 @@ export const useAdminStore = defineStore("admin", {
     bpmn_diagram: {
       clicked_task_id: null,
     },
+
+    pdfModalActive: false,
+    modalTitle: "",
+    pdfSource: "",
   }),
   actions: {
+    async getAllocations() {
+      try {
+        let result = await Admin.getAllocations();
+        return result;
+      } catch (error) {
+        console.log("Error:", error);
+        return null;
+      }
+    },
+    openPDFModal(allocation, type, sourceUrl) {
+      const student = this.students.find((stud) => {
+        return (
+          stud.process_instance_data.variables.id_alokacija ===
+          allocation.id_alokacija
+        );
+      });
+
+      if (type === "Potvrda") {
+        this.modalTitle = "Potvrda o praksi";
+        if (student) {
+          this.pdfSource =
+            student.process_instance_data.variables.pdf_attachment_url;
+        } else {
+          console.error("Student not found");
+          return;
+        }
+      } else if (type === "Dnevnik") {
+        this.modalTitle = "Dnevnik prakse";
+      } else {
+        console.error("Invalid type passed to openPDFModal");
+        return;
+      }
+      this.pdfModalActive = true;
+    },
+
     setSelectedEvents(events) {
       this.dashboard_data.selectedEvents = events;
     },
@@ -66,9 +105,12 @@ export const useAdminStore = defineStore("admin", {
         this.dashboard_data.waiting_for_allocation = 0;
         this.dashboard_data.waiting_for_evaluation = 0;
 
+        this.dashboard_data.finished_internships = 0;
+
         const promises = students.map(async (student) => {
           const data = await this.getProcessInstanceData(student);
           student.process_instance_data = data;
+          console.log(student.process_instance_data);
           student.process_instance_data.pending_task_info =
             await this.getTaskInfo(
               student.process_instance_id,
@@ -83,6 +125,9 @@ export const useAdminStore = defineStore("admin", {
             student.process_instance_data.pending[0] == "evaluacija_poslodavac"
           ) {
             this.dashboard_data.waiting_for_evaluation++;
+          }
+          if (student.process_instance_data.state === "finished") {
+            this.dashboard_data.finished_internships++;
           }
         });
 

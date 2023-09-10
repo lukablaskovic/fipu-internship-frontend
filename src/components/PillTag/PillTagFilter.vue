@@ -129,7 +129,7 @@ const saveSelectedEvents = async () => {
   console.log("Events saved:", selectedOptions.value);
   snackBarStore.pushMessage("Event-Filteri ažurirani!", "success");
   await Utils.wait(0.5);
-  router.go();
+  location.reload();
 };
 
 const setDefaultFilters = () => {

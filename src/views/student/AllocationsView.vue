@@ -1,7 +1,12 @@
 <script setup>
 import { computed } from "vue";
-import { mainStore } from "@/main.js";
-import { mdiMonitorCellphone, mdiClipboardCheck, mdiLaptop } from "@mdi/js";
+import { adminStore, mainStore } from "@/main.js";
+import {
+  mdiMonitorCellphone,
+  mdiClipboardCheck,
+  mdiLaptop,
+  mdiFilePdfBox,
+} from "@mdi/js";
 import SectionMain from "@/components/Section/SectionMain.vue";
 import CardBox from "@/components/Cardbox/CardBox.vue";
 import NotificationBar from "@/components/Notification/NotificationBar.vue";
@@ -12,7 +17,12 @@ import SectionTitleLineWithButton from "@/components/Section/SectionTitleLineWit
 import TableAllocations from "@/components/Tables/TableAllocations.vue";
 import router from "@/router";
 import BaseIcon from "@/components/Base/BaseIcon.vue";
+import CardBoxModal from "@/components/Cardbox/CardBoxModal.vue";
 const userAuthenticated = computed(() => mainStore.userAuthenticated);
+import VuePdfEmbed from "vue-pdf-embed";
+
+const source1 =
+  "http://localhost:8082/api/potvrda/13ffc8894bb4be73784d9032ec68aa0c0b388b6c.pdf";
 </script>
 
 <template>
@@ -58,6 +68,26 @@ const userAuthenticated = computed(() => mainStore.userAuthenticated);
         <CardBox has-table>
           <TableAllocations />
         </CardBox>
+
+        <CardBoxModal
+          v-model="adminStore.pdfModalActive"
+          title=""
+          button-label="Zatvori"
+          has-confirm="false"
+          large=""
+        >
+          <div class="mt-6">
+            <SectionTitleLineWithButton
+              :icon="mdiFilePdfBox"
+              :title="adminStore.modalTitle"
+              main
+            >
+            </SectionTitleLineWithButton>
+            <div class="flex justify-center">
+              <vue-pdf-embed height="1080" :source="adminStore.pdfSource" />
+            </div>
+          </div>
+        </CardBoxModal>
       </SectionMain>
     </LayoutAuthenticated>
   </div>

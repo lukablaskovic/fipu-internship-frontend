@@ -85,14 +85,15 @@ class UserTaskMappings {
   ];
 
   static getTaskProperty(taskId, property, state = "running") {
-    if (state === "finished")
+    if (state === "finished") {
+      console.log("getTaskProperty: ", taskId, property, state);
       return getMappedProperty(
         this.tasks,
         "_id",
         "end_event_student",
         property
       );
-    return getMappedProperty(this.tasks, "_id", taskId, property);
+    } else return getMappedProperty(this.tasks, "_id", taskId, property);
   }
 }
 

@@ -113,8 +113,8 @@ async function handleNewInstance() {
       )
     );
   }
-  await Utils.wait(3);
-  router.go();
+  await Utils.wait(2);
+  location.reload();
 }
 
 onMounted(loadDataForStudent);

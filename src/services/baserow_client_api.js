@@ -94,6 +94,16 @@ const Student = {
 };
 
 const Admin = {
+  async getAllocations() {
+    try {
+      let result = await AxiosWrapper.get("/alokacija");
+      return result.data.results;
+    } catch (error) {
+      console.log("Error:", error);
+      return null;
+    }
+  },
+
   async getPreferencesDetailed(student_JMBAG) {
     try {
       let result = await AxiosWrapper.get(
