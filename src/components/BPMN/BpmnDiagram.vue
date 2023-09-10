@@ -67,6 +67,15 @@ function handleElementHover(event, canvasElement) {
   if (element && element.type === "bpmn:UserTask") {
     const taskOrder = getTaskOrder(element.id);
 
+    // If the task is 'evaluacija_poslodavac' and it's the current task
+    if (
+      element.id === "evaluacija_poslodavac" &&
+      taskOrder === props.currentOrder
+    ) {
+      canvasElement.style.cursor = "not-allowed";
+      return;
+    }
+
     if (taskOrder === props.currentOrder || taskOrder < props.currentOrder) {
       canvasElement.style.cursor = "pointer";
     } else {
@@ -83,6 +92,19 @@ function handleElementClick(event, emitFunction) {
 
   if (element && element.type === "bpmn:UserTask") {
     const taskOrder = getTaskOrder(element.id);
+
+    // Check if the task is 'evaluacija_poslodavac' and if it's the current task
+    if (
+      element.id === "evaluacija_poslodavac" &&
+      taskOrder === props.currentOrder
+    ) {
+      console.log(
+        "%cBPMNDiagram.vue: 'evaluacija_poslodavac' is the current task. Not clickable.",
+        "color: red;"
+      );
+      return;
+    }
+
     adminStore.bpmn_diagram.clicked_task_id = element.id;
 
     if (taskOrder === props.currentOrder) {
@@ -90,7 +112,6 @@ function handleElementClick(event, emitFunction) {
         "%cBPMNDiagram.vue: Emitting currentTaskModal",
         "color: red;"
       );
-
       emitFunction("currentTaskModal", element);
     } else if (taskOrder < props.currentOrder) {
       console.log("%cBPMNDiagram.vue: Emitting pastTaskModal", "color: red;");

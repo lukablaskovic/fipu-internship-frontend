@@ -73,6 +73,7 @@ Napomena: Da biste prijavili preferencije, morate biti prijavljeni u aplikaciji!
           <camunda:formField id="Drugi_odabir" label="Drugi_odabir" type="string" />
           <camunda:formField id="Treci_odabir" label="Treci_odabir" type="string" />
           <camunda:formField id="napomena" label="Napomena" type="string" />
+          <camunda:formField id="process_instance_id" type="string" />
         </camunda:formData>
       </bpmn:extensionElements>
       <bpmn:incoming>Flow_12zi41o</bpmn:incoming>
@@ -105,6 +106,7 @@ Napomena: Da biste prijavili preferencije, morate biti prijavljeni u aplikaciji!
           <camunda:inputParameter name="student_email">${student_email}</camunda:inputParameter>
           <camunda:inputParameter name="Alocirani_zadatak">${Alocirani_zadatak}</camunda:inputParameter>
           <camunda:inputParameter name="id_instance" />
+          <camunda:inputParameter name="evaluacija_url">http://localhost:5173/#/evaluacija/${process_instance_id}</camunda:inputParameter>
         </camunda:inputOutput>
       </bpmn:extensionElements>
       <bpmn:incoming>Flow_064rrii</bpmn:incoming>

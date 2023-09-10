@@ -99,7 +99,7 @@ const pagesList = computed(() => {
               :value="allocation['popunjena_prijavnica']"
             />
             <a
-              v-if="allocation['popunjena_prijavnica']"
+              v-if="allocation['popunjena_prijavnica'] && mainStore.userAdmin"
               class="text-sm underline cursor-pointer hover:text-fipu_light_blue ml-8"
               @click="
                 adminStore.openPDFModal(
@@ -119,7 +119,7 @@ const pagesList = computed(() => {
             :value="allocation[(allocation, 'predan_dnevnik_prakse')]"
           />
           <p
-            v-if="allocation['predan_dnevnik_prakse']"
+            v-if="allocation['predan_dnevnik_prakse'] && mainStore.userAdmin"
             class="text-sm underline cursor-pointer hover:text-fipu_light_blue ml-8"
             @click="
               adminStore.openPDFModal('Dnevnik', 'source_url_for_dnevnik')

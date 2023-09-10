@@ -146,7 +146,6 @@ const routes = [
     name: "bpmn-modeler",
     component: () => import("@/views/admin/bpmn/ModelerView.vue"),
   },
-
   {
     meta: {
       title: "Tables",
@@ -154,6 +153,16 @@ const routes = [
     path: "/tables",
     name: "tables",
     component: () => import("@/views/common/TablesView.vue"),
+  },
+  {
+    meta: {
+      title: "Evaluacija studenta",
+      requiresAuth: false,
+      requiresAdmin: false,
+    },
+    path: "/evaluacija/:process_instance_id",
+    name: "evaluacija",
+    component: () => import("@/views/EvaluationView.vue"),
   },
 ];
 

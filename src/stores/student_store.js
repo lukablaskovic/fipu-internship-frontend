@@ -20,6 +20,7 @@ export const useStudentStore = defineStore("student", {
         Drugi_odabir: [assignmentsData[1]["id_zadatak"]],
         Treci_odabir: [assignmentsData[2]["id_zadatak"]],
         napomena: napomena,
+        process_instance_id: mainStore.currentUser.internship_process.id,
       };
       try {
         let process_instance_id = mainStore.currentUser.internship_process.id;
