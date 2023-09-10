@@ -8,9 +8,9 @@
       <!-- Skeleton for Name -->
       <div class="h-4 w-24 rounded bg-gray-300"></div>
     </td>
-    <td class="animate-pulse bg-pulse">
+    <td class="animate-pulse bg-pulse flex items-center justify-center">
       <!-- Skeleton for Status -->
-      <div class="h-4 w-16 rounded bg-gray-300"></div>
+      <div class="h-8 w-8 rounded-full bg-gray-300"></div>
     </td>
     <td class="animate-pulse bg-pulse">
       <!-- Skeleton for Message -->

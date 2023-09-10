@@ -4,7 +4,7 @@ import { adminStore, mainStore } from "@/main.js";
 import {
   mdiAccountMultiple,
   mdiAccountSchoolOutline,
-  mdiPlayPause,
+  mdiProgressClock,
   mdiViewDashboard,
   mdiCommentProcessing,
   mdiMonitorAccount,
@@ -29,6 +29,11 @@ import CardBox from "@/components/Cardbox/CardBox.vue";
 import PillTag from "@/components/PillTag/PillTag.vue";
 import CardBoxModal from "@/components/Cardbox/CardBoxModal.vue";
 import { useRouter } from "vue-router";
+
+import PillTagFilter from "@/components/PillTag/PillTagFilter.vue";
+import { buttonMenuOptions } from "@/sampleButtonMenuOptions.js";
+import { latestEvents } from "@/filterOptions.js";
+
 import moment from "@/moment-setup";
 
 const router = useRouter();
@@ -59,6 +64,8 @@ onMounted(async () => {
       (event) => !ActivityEventMappings.shouldSkipEvent(event.activity_id)
     )
     .reverse();
+
+  console.log("Dashboard - events", events.value);
 });
 
 const eventsOptionsActive = ref(false);
@@ -138,7 +145,7 @@ const pagesList = computed(() => {
             trend-type="up"
             color="text-red-500"
             class="rounded-lg"
-            :icon="mdiPlayPause"
+            :icon="mdiProgressClock"
             :number="waiting_for_allocation"
             label="Studenti koji čekaju na alokaciju"
           />
@@ -151,7 +158,7 @@ const pagesList = computed(() => {
             v-if="adminStore.studentsFetched"
             trend="10%"
             trend-type="up"
-            color="text-emerald-500"
+            color="text-yellow-500"
             class="rounded-lg"
             :icon="mdiMonitorAccount"
             :number="waiting_for_evaluation"
@@ -163,7 +170,7 @@ const pagesList = computed(() => {
             v-if="adminStore.studentsFetched"
             trend="10%"
             trend-type="up"
-            color="text-emerald-500"
+            color="text-red-500"
             class="rounded-lg"
             :icon="mdiAccountCancel"
             :number="0"
@@ -175,11 +182,11 @@ const pagesList = computed(() => {
             v-if="adminStore.studentsFetched"
             trend="10%"
             trend-type="up"
-            color="text-emerald-500"
+            color="text-yellow-500"
             class="rounded-lg"
             :icon="mdiAlertBox"
             :number="0"
-            label="Čeka upis ocjene"
+            label="Čeka na upis ocjene"
           />
           <SkeletonLoader v-else></SkeletonLoader>
         </div>
@@ -228,7 +235,25 @@ const pagesList = computed(() => {
           @click="eventsOptionsActive = true"
         >
         </SectionTitleLineWithButton>
-
+        <div class="flex flex-row">
+          <div class="mb-4">
+            <PillTagFilter
+              class="cursor-pointer"
+              trend-type="filter"
+              :trend="'Event'"
+              :options="latestEvents"
+              left="false"
+            />
+          </div>
+          <div class="mb-4">
+            <PillTagFilter
+              class="cursor-pointer"
+              trend-type="filter"
+              :trend="'Datum'"
+              :options="buttonMenuOptions"
+            />
+          </div>
+        </div>
         <div
           v-if="events.length > 0"
           class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6"

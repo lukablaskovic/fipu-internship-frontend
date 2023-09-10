@@ -16,11 +16,13 @@ import axios from "axios";
 import CardBoxModal from "@/components/Cardbox/CardBoxModal.vue";
 import { UserTaskMappings } from "@/helpers/maps";
 import TableInstanceData from "@/components/BPMN/TableInstanceData.vue";
+import { snackBarStore } from "@/main.js";
+import Utils from "@/helpers/utils.js";
+import LoadingAnimatedIcon from "@/components/LoadingAnimatedIcon.vue";
 const bpmnKey = ref(0);
 
 const bpmn_model = ref(null);
 let bpmn_diagram_active = ref(false);
-
 const modal_select_bpmn_task = ref(false);
 const modal_past_bpmn_task = ref(false);
 
@@ -66,7 +68,6 @@ async function handleProcessDiagram() {
 }
 
 onMounted(async () => {
-  adminStore.selectedStudent = null;
   await adminStore.getStudents();
   bpmn_model.value = await fetchXML();
 });
@@ -76,20 +77,45 @@ const route = useRoute();
 // Load data based on process_instance_id from the route
 async function loadDataForStudent() {
   const id = route.params.process_instance_id;
-
   if (id) {
     const student = { process_instance_id: id };
 
     process_instance_data.value = await adminStore.getProcessInstanceData(
       student
     );
-    console.log(process_instance_data.value);
   }
 }
 
 watch(() => route.params.process_instance_id, loadDataForStudent, {
   immediate: true,
 });
+
+async function handleNewInstance() {
+  adminStore.handleNewInstance(
+    process_instance_data.value.id,
+    process_instance_data.value.pending[0],
+    formDynamicValues.value
+  );
+  if (
+    UserTaskMappings.getTaskProperty(
+      process_instance_data.value.pending[0],
+      "snackbar_msg"
+    )
+  ) {
+    snackBarStore.pushMessage(
+      UserTaskMappings.getTaskProperty(
+        process_instance_data.value.pending[0],
+        "snackbar_msg"
+      ),
+      UserTaskMappings.getTaskProperty(
+        process_instance_data.value.pending[0],
+        "snackbar_color"
+      )
+    );
+  }
+  await Utils.wait(3);
+  router.go();
+}
 
 onMounted(loadDataForStudent);
 </script>
@@ -136,13 +162,7 @@ onMounted(loadDataForStudent);
           button-label="Potvrda"
           has-cancel
           :disabled-condition="disabledCondition"
-          @confirm="
-            adminStore.handleNewInstance(
-              process_instance_data.id,
-              process_instance_data.pending[0],
-              formDynamicValues
-            )
-          "
+          @confirm="handleNewInstance()"
         >
           <p
             v-if="
@@ -190,10 +210,11 @@ onMounted(loadDataForStudent);
           "
           button-label="Povratak"
         >
-          <p>Ovaj zadatak je već obavljen.</p>
+          <p class="mb-2">Ovaj zadatak je već obavljen.</p>
           <TableInstanceData></TableInstanceData>
         </CardBoxModal>
       </SectionMain>
+
       <BpmnDiagram
         v-if="bpmn_model && process_instance_data"
         :key="bpmnKey"
@@ -216,6 +237,12 @@ onMounted(loadDataForStudent);
         @current-task-modal="modal_select_bpmn_task = true"
         @past-task-modal="modal_past_bpmn_task = true"
       />
+      <div
+        v-else-if="process_instance_data"
+        class="flex items-center justify-center pt-36"
+      >
+        <LoadingAnimatedIcon></LoadingAnimatedIcon>
+      </div>
     </LayoutAuthenticated>
   </div>
 </template>

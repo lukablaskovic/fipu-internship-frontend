@@ -1,14 +1,19 @@
 <script setup>
 import { ref } from "vue";
 import { Control } from "@/services/microservices_control";
-import { mdiRefresh, mdiRestartAlert } from "@mdi/js";
+import {
+  mdiRefresh,
+  mdiRestartAlert,
+  mdiCheckCircleOutline,
+  mdiAlertCircle,
+} from "@mdi/js";
 import TableCheckboxCell from "@/components/Tables/TableCheckboxCell.vue";
 import BaseButtons from "@/components/Base/BaseButtons.vue";
 import BaseButton from "@/components/Base/BaseButton.vue";
 import SkeletonLoaderTable from "@/components/SkeletonLoaderTable.vue";
-
+import IconRounded from "@/components/IconRounded.vue";
 import moment from "@/moment-setup";
-
+import CardBoxModal from "../Cardbox/CardBoxModal.vue";
 const props = defineProps({
   checkable: Boolean,
   services: {
@@ -20,6 +25,7 @@ const props = defineProps({
 // Making a local reactive copy of services
 const localServices = ref({ ...props.services });
 
+const restartConfirmModal = ref(false);
 async function checkServiceStatus(serviceName) {
   localServices.value[serviceName].loading = true;
 
@@ -66,14 +72,19 @@ async function checkServiceStatus(serviceName) {
           <td data-label="Naziv">
             {{ serviceName }}
           </td>
-          <td data-label="Status">
-            {{ service["status"] }}
+          <td data-label="Status" class="flex items-center justify-center">
+            <IconRounded
+              v-if="service['status'] == 'OK'"
+              :icon="mdiCheckCircleOutline"
+              color="success"
+            />
+            <IconRounded v-else :icon="mdiAlertCircle" color="danger" />
           </td>
           <td data-label="Poruka">
             {{ service["message"] }}
           </td>
-          <td data-label="URL">
-            {{ service["url"] }}
+          <td data-label="URL" class="underline text-fipu_dark_blue">
+            <a :href="service['url']" target="_blank"> {{ service["url"] }}</a>
           </td>
           <td data-label="Zadnji put aktivan">
             {{ moment(service["status_check_timestamp"]).fromNow() }}
@@ -90,12 +101,24 @@ async function checkServiceStatus(serviceName) {
                 color="danger"
                 :icon="mdiRestartAlert"
                 small
-                @click="isModalDangerActive = true"
+                @click="restartConfirmModal = true"
               />
             </BaseButtons>
           </td>
         </tr>
       </template>
+      <CardBoxModal
+        v-model="restartConfirmModal"
+        title="Jeste li sigurni da želite restartirati odabrani servis?"
+        button-label="Restart"
+        has-cancel
+        @cancel="console.log('NO')"
+        @confirm="console.log('restart')"
+      >
+        <p class="text-center mb-4">
+          To može dovesti do prekida rada aplikacije.
+        </p>
+      </CardBoxModal>
     </tbody>
   </table>
 </template>

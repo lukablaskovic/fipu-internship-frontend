@@ -9,6 +9,10 @@ export default defineComponent({
       type: String,
       default: "justify-between",
     },
+    fullWidth: {
+      type: Boolean,
+      default: false,
+    },
   },
   render() {
     const parentClass = [this.type, "items-center"];
@@ -17,7 +21,13 @@ export default defineComponent({
 
     const parentBaseClass = ["block", "md:flex"];
 
-    const childBaseClass = ["flex", "items-center", "justify-center"];
+    let childBaseClass = ["flex", "items-center"];
+
+    if (this.fullWidth) {
+      childBaseClass.push("w-full");
+    } else {
+      childBaseClass.push("justify-center");
+    }
 
     return h(
       "div",

@@ -1,5 +1,5 @@
 <script setup>
-import { ref, onMounted } from "vue";
+import { ref, onMounted, computed } from "vue";
 
 import LoadingOverlay from "@/components/LoadingOverlay.vue";
 import { adminStore } from "@/main.js";
@@ -31,6 +31,17 @@ onMounted(async () => {
     tableAttributes.value = ["Alocirani_zadatak"];
   }
 });
+
+const formattedVariables = computed(() => {
+  return Object.keys(variables.value).reduce((acc, key) => {
+    if (Array.isArray(variables.value[key])) {
+      acc[key] = variables.value[key].join(", ");
+    } else {
+      acc[key] = variables.value[key];
+    }
+    return acc;
+  }, {});
+});
 </script>
 
 <template>
@@ -43,7 +54,7 @@ onMounted(async () => {
   >
   </LoadingOverlay>
 -->
-  <table>
+  <table class="mb-4">
     <thead class="text-sm">
       <tr>
         <th v-for="(attribute, index) in tableAttributes" :key="index">
@@ -58,7 +69,7 @@ onMounted(async () => {
           :key="index"
           :data-label="attribute"
         >
-          {{ variables[attribute] }}
+          {{ formattedVariables[attribute] }}
         </td>
       </tr>
     </tbody>

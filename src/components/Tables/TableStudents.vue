@@ -26,14 +26,21 @@ function showDiagram(student) {
   console.log("student", student);
   selectedStudentInstanceID.value = student["process_instance_id"];
 
-  adminStore.showSelectedStudent(student);
+  adminStore.setSelectedStudent(student);
   emit("show-student-diagram", student);
 }
 
 onBeforeMount(async () => {
   if (route.params.process_instance_id) {
     selectedStudentInstanceID.value = route.params.process_instance_id;
+    adminStore.setSelectedStudent(
+      students.value.find(
+        (student) =>
+          student["process_instance_id"] === route.params.process_instance_id
+      )
+    );
   }
+  console.log("adminStore.selectedStudent", adminStore.selectedStudent);
   await adminStore.getStudents();
 });
 

@@ -1,6 +1,6 @@
 <template>
-  <BaseLevel type="justify-start ">
-    <div class="shadow rounded-md p-6 max-w-sm w-full mx-auto m-2">
+  <BaseLevel full-width>
+    <div class="shadow rounded-md p-6 w-full mx-auto m-2">
       <div class="flex-1 space-y-6 py-1">
         <div class="animate-pulse h-2 rounded"></div>
         <div class="space-y-3">

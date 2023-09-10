@@ -10,7 +10,7 @@
         <bpmn:flowNodeRef>student_prihvacen</bpmn:flowNodeRef>
         <bpmn:flowNodeRef>evaluacija_poslodavac</bpmn:flowNodeRef>
         <bpmn:flowNodeRef>razgovor_za_praksu_poslodavac</bpmn:flowNodeRef>
-        <bpmn:flowNodeRef>obavijest_odbijanje</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>obavjestavanje_studenta_nakon_odbijanja_email</bpmn:flowNodeRef>
       </bpmn:lane>
       <bpmn:lane id="student_lane" name="Student">
         <bpmn:flowNodeRef>odabiranje_zadatka_student</bpmn:flowNodeRef>
@@ -52,7 +52,7 @@
     </bpmn:sequenceFlow>
     <bpmn:sequenceFlow id="Flow_0eu1nfh" sourceRef="evaluacija_poslodavac" targetRef="student_prihvacen" />
     <bpmn:sequenceFlow id="Flow_0kt3aem" sourceRef="obavjestavanje_alociranje_student_slack" targetRef="razgovor_za_praksu_poslodavac" />
-    <bpmn:sequenceFlow id="Flow_1npalzz" name="Ne" sourceRef="student_prihvacen" targetRef="obavijest_odbijanje">
+    <bpmn:sequenceFlow id="Flow_1npalzz" name="Ne" sourceRef="student_prihvacen" targetRef="obavjestavanje_studenta_nakon_odbijanja_email">
       <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">kandidat_odobren:false</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
     <bpmn:sequenceFlow id="Flow_12zi41o" sourceRef="start_event_student" targetRef="odabiranje_zadatka_student" />
@@ -236,32 +236,6 @@ Napomena: Da biste prijavili preferencije, morate biti prijavljeni u aplikaciji!
       </bpmn:extensionElements>
       <bpmn:outgoing>Flow_0kt3aem</bpmn:outgoing>
     </bpmn:sendTask>
-    <bpmn:sendTask id="obavijest_odbijanje" name="Obavještavanje studenta email">
-      <bpmn:extensionElements>
-        <camunda:connector>
-          <camunda:inputOutput>
-            <camunda:inputParameter name="url">/email</camunda:inputParameter>
-            <camunda:inputParameter name="method">POST</camunda:inputParameter>
-            <camunda:inputParameter name="url_parameter">
-              <camunda:map>
-                <camunda:entry key="to">${email_student}</camunda:entry>
-                <camunda:entry key="decision">Reject</camunda:entry>
-                <camunda:entry key="template">student_after_approval</camunda:entry>
-              </camunda:map>
-            </camunda:inputParameter>
-          </camunda:inputOutput>
-          <camunda:connectorId>notification</camunda:connectorId>
-        </camunda:connector>
-        <camunda:inputOutput>
-          <camunda:inputParameter name="next_task">ispunjavanje_prijavnice_student</camunda:inputParameter>
-          <camunda:inputParameter name="id_instance" />
-          <camunda:inputParameter name="kompanija" />
-        </camunda:inputOutput>
-      </bpmn:extensionElements>
-      <bpmn:incoming>Flow_1npalzz</bpmn:incoming>
-      <bpmn:outgoing>SequenceFlow_0v5m4rx</bpmn:outgoing>
-    </bpmn:sendTask>
-    <bpmn:sequenceFlow id="SequenceFlow_0v5m4rx" sourceRef="obavijest_odbijanje" targetRef="odabiranje_zadatka_student" />
     <bpmn:sequenceFlow id="Flow_1duw845" sourceRef="odabiranje_zadatka_student" targetRef="spremanje_preferencije" />
     <bpmn:sequenceFlow id="Flow_0ti6tpk" sourceRef="spremanje_preferencije" targetRef="alociranje_profesor" />
     <bpmn:serviceTask id="spremanje_preferencije" name="Spremanje preferencija u baserow">
@@ -275,12 +249,12 @@ Napomena: Da biste prijavili preferencije, morate biti prijavljeni u aplikaciji!
         </camunda:connector>
         <camunda:inputOutput>
           <camunda:inputParameter name="id_instance" />
-          <camunda:inputParameter name="JMBAG">${JMBAG}</camunda:inputParameter>
           <camunda:inputParameter name="Student">${Student}</camunda:inputParameter>
           <camunda:inputParameter name="Prvi_odabir">${Prvi_odabir}</camunda:inputParameter>
           <camunda:inputParameter name="Drugi_odabir">${Drugi_odabir}</camunda:inputParameter>
           <camunda:inputParameter name="Treci_odabir">${Treci_odabir}</camunda:inputParameter>
           <camunda:inputParameter name="napomena">${napomena}</camunda:inputParameter>
+          <camunda:inputParameter name="JMBAG">${JMBAG}</camunda:inputParameter>
           <camunda:outputParameter name="student_id" />
           <camunda:outputParameter name="alokacija_id" />
         </camunda:inputOutput>
@@ -381,6 +355,7 @@ Napomena: Da biste prijavili preferencije, morate biti prijavljeni u aplikaciji!
           <camunda:inputParameter name="kontakt_potvrda">${kontakt_potvrda}</camunda:inputParameter>
           <camunda:inputParameter name="Poslodavac">${poslodavac_naziv}</camunda:inputParameter>
           <camunda:inputParameter name="mjesto_izvrsavanja">${mjesto_izvrsavanja}</camunda:inputParameter>
+          <camunda:inputParameter name="id_instance" />
           <camunda:outputParameter name="id_prijavnica" />
           <camunda:outputParameter name="id_dnevnik_prakse" />
         </camunda:inputOutput>
@@ -537,6 +512,7 @@ Napomena: Da biste prijavili preferencije, morate biti prijavljeni u aplikaciji!
           <camunda:inputParameter name="nastavak_radnog_odnosa">${nastavak_radnog_odnosa}</camunda:inputParameter>
           <camunda:inputParameter name="prijavljen_rok">${prijavljen_rok}</camunda:inputParameter>
           <camunda:inputParameter name="id_dnevnik_prakse">${id_dnevnik_prakse}</camunda:inputParameter>
+          <camunda:inputParameter name="id_instance" />
         </camunda:inputOutput>
       </bpmn:extensionElements>
       <bpmn:incoming>Flow_1btfl5a</bpmn:incoming>
@@ -552,6 +528,7 @@ Dnevnik je potrebno predati prije prijave ispitnoga roka.</bpmn:documentation>
         <camunda:formData>
           <camunda:formField id="nastavak_radnog_odnosa" label="Označi ako nastavljaš i dalje raditi u tvrtci ili ćeš ubrzo početi raditi honorarno" type="boolean" />
           <camunda:formField id="prijavljen_rok" type="date" />
+          <camunda:formField id="student_OIB" type="string" defaultValue="${student_OIB}" />
         </camunda:formData>
       </bpmn:extensionElements>
       <bpmn:incoming>Flow_03i13r1</bpmn:incoming>
@@ -564,6 +541,30 @@ Dnevnik je potrebno predati prije prijave ispitnoga roka.</bpmn:documentation>
     <bpmn:sequenceFlow id="Flow_1btfl5a" sourceRef="predavanje_dnevnika_student" targetRef="spremanje_dnevnika" />
     <bpmn:sequenceFlow id="Flow_1cvohty" sourceRef="spremanje_dnevnika" targetRef="end_event_student" />
     <bpmn:sequenceFlow id="Flow_03i13r1" sourceRef="Gateway_0q2wy8q" targetRef="predavanje_dnevnika_student" />
+    <bpmn:sendTask id="obavjestavanje_studenta_nakon_odbijanja_email" name="Obavještavanje studenta email">
+      <bpmn:extensionElements>
+        <camunda:connector>
+          <camunda:inputOutput>
+            <camunda:inputParameter name="url">/email</camunda:inputParameter>
+            <camunda:inputParameter name="method">POST</camunda:inputParameter>
+            <camunda:inputParameter name="url_parameter">
+              <camunda:map>
+                <camunda:entry key="to">${student_email}</camunda:entry>
+                <camunda:entry key="template">student_after_refusal</camunda:entry>
+              </camunda:map>
+            </camunda:inputParameter>
+          </camunda:inputOutput>
+          <camunda:connectorId>sendgrid</camunda:connectorId>
+        </camunda:connector>
+        <camunda:inputOutput>
+          <camunda:inputParameter name="next_task">odabiranje_zadatka_student</camunda:inputParameter>
+          <camunda:inputParameter name="id_instance" />
+        </camunda:inputOutput>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_1npalzz</bpmn:incoming>
+      <bpmn:outgoing>SequenceFlow_0v5m4rx</bpmn:outgoing>
+    </bpmn:sendTask>
+    <bpmn:sequenceFlow id="SequenceFlow_0v5m4rx" sourceRef="obavjestavanje_studenta_nakon_odbijanja_email" targetRef="odabiranje_zadatka_student" />
   </bpmn:process>
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
     <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="Collaboration_0ojchsi">
@@ -621,7 +622,7 @@ Dnevnik je potrebno predati prije prijave ispitnoga roka.</bpmn:documentation>
         <dc:Bounds x="720" y="550" width="100" height="80" />
         <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="SendTask_1e2ea7n_di" bpmnElement="obavijest_odbijanje">
+      <bpmndi:BPMNShape id="SendTask_1e2ea7n_di" bpmnElement="obavjestavanje_studenta_nakon_odbijanja_email">
         <dc:Bounds x="311" y="130" width="100" height="80" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Activity_1qsfox4_di" bpmnElement="spremanje_preferencije">

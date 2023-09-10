@@ -47,7 +47,11 @@ async function fetchXML() {
   <div>
     <LayoutAuthenticated v-if="userAuthenticated">
       <SectionMain>
-        <SectionTitleLineWithButton :icon="mdiFileTree" title="Models" main>
+        <SectionTitleLineWithButton
+          :icon="mdiFileTree"
+          title="BPMN Models"
+          main
+        >
         </SectionTitleLineWithButton>
 
         <NotificationBar color="info" :icon="mdiMonitorCellphone">

@@ -15,6 +15,7 @@ export const useAdminStore = defineStore("admin", {
       ongoing_internships: 0,
       waiting_for_allocation: 0,
       waiting_for_evaluation: 0,
+      selectedEvents: [],
       events: [],
       relativeToNowTimestmap: true,
     },
@@ -24,10 +25,13 @@ export const useAdminStore = defineStore("admin", {
     },
   }),
   actions: {
-    showSelectedStudent(student) {
+    setSelectedEvents(events) {
+      this.dashboard_data.selectedEvents = events;
+    },
+    setSelectedStudent(student) {
       this.selectedStudent = student;
       console.log(
-        "%cadmin_store: showSelectedStudent() - this.selectedStudent",
+        "%cadmin_store: setSelectedStudent() - this.selectedStudent",
         "color: green;",
         this.selectedStudent
       );
@@ -144,6 +148,7 @@ export const useAdminStore = defineStore("admin", {
           current_task,
           post_data
         );
+
         return response;
       } catch (error) {
         console.log("Error:", error);
