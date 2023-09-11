@@ -84,7 +84,6 @@ function getProgressValue(student) {
   <table>
     <thead>
       <tr>
-        <th />
         <th>JMBAG</th>
         <th>Ime</th>
         <th>Prezime</th>
@@ -105,12 +104,14 @@ function getProgressValue(student) {
             selectedStudentInstanceID === student['process_instance_id'],
         }"
       >
+        <!--
         <td v-if="student['avatar'][0]" class="border-b-0 lg:w-6 before:hidden">
           <UserAvatar
             :avatar="student['avatar'][0]['url']"
             class="w-8 h-8 mx-auto"
           />
         </td>
+        -->
         <td data-label="JMBAG">
           {{ student["JMBAG"] }}
         </td>

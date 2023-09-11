@@ -28,7 +28,8 @@ import FormControl from "@/components/Form/FormControl.vue";
 import BaseDivider from "@/components/Base/BaseDivider.vue";
 import BaseButton from "@/components/Base/BaseButton.vue";
 import CardBoxComponentTitle from "@/components/Cardbox/CardBoxComponentTitle.vue";
-
+import { UserTaskMappings } from "@/helpers/maps";
+import Utils from "@/helpers/utils.js";
 const allocated_assignment = ref(null);
 
 onMounted(async () => {
@@ -92,6 +93,26 @@ const form = reactive({
 async function submit_application_form() {
   console.log(form);
   await studentStore.submitApplicationForm(form);
+  if (
+    UserTaskMappings.getTaskProperty(
+      studentStore.student_process_instance_data.pending[0],
+      "snackbar_msg"
+    )
+  ) {
+    console.log("snackbar_msg");
+    snackBarStore.pushMessage(
+      UserTaskMappings.getTaskProperty(
+        studentStore.student_process_instance_data.pending[0],
+        "snackbar_msg"
+      ),
+      UserTaskMappings.getTaskProperty(
+        studentStore.student_process_instance_data.pending[0],
+        "snackbar_color"
+      )
+    );
+  }
+  await Utils.wait(2);
+  location.reload();
 }
 
 const formErrorHasError = ref(false);

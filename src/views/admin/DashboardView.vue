@@ -43,6 +43,7 @@ const userAuthenticated = computed(() => mainStore.userAuthenticated);
 const ongoing_internships = ref(0);
 const waiting_for_allocation = ref(0);
 const waiting_for_evaluation = ref(0);
+const waiting_for_mark = ref(0);
 const events = ref([]);
 
 snackBarStore.pushMessage(
@@ -58,6 +59,7 @@ onMounted(async () => {
     adminStore.dashboard_data.waiting_for_allocation;
   waiting_for_evaluation.value =
     adminStore.dashboard_data.waiting_for_evaluation;
+  waiting_for_mark.value = adminStore.dashboard_data.waiting_for_mark;
   await adminStore.getEvents();
   events.value = adminStore.events
     .filter(
@@ -185,7 +187,7 @@ const pagesList = computed(() => {
             color="text-yellow-500"
             class="rounded-lg"
             :icon="mdiAlertBox"
-            :number="0"
+            :number="waiting_for_mark"
             label="Čeka na upis ocjene"
           />
           <SkeletonLoader v-else></SkeletonLoader>

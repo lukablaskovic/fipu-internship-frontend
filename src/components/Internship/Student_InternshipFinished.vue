@@ -1,6 +1,11 @@
 <script setup>
 import { ref, computed, onMounted, reactive } from "vue";
-import { mdiLaptop, mdiBallot, mdiNotebook, mdiClipboardCheck } from "@mdi/js";
+import {
+  mdiLaptop,
+  mdiBallot,
+  mdiCheckDecagram,
+  mdiClipboardCheck,
+} from "@mdi/js";
 
 import SectionMain from "@/components/Section/SectionMain.vue";
 
@@ -10,16 +15,6 @@ import LayoutGuest from "@/layouts/LayoutGuest.vue";
 import SectionTitleLineWithButton from "@/components/Section/SectionTitleLineWithButton.vue";
 import CardboxAllocation from "@/components/Cardbox/CardBoxAllocation.vue";
 import { mainStore, snackBarStore, studentStore } from "@/main.js";
-
-import CardBox from "@/components/Cardbox/CardBox.vue";
-import FormCheckRadioGroup from "@/components/Form/FormCheckRadioGroup.vue";
-import FormCheckRadio from "@/components/Form/FormCheckRadio.vue";
-import FormField from "@/components/Form/FormField.vue";
-import FormControl from "@/components/Form/FormControl.vue";
-import BaseDivider from "@/components/Base/BaseDivider.vue";
-import BaseButton from "@/components/Base/BaseButton.vue";
-import CardBoxComponentTitle from "@/components/Cardbox/CardBoxComponentTitle.vue";
-import FormFilePicker from "@/components/Form/FormFilePicker.vue";
 
 const allocated_assignment = ref(null);
 
@@ -62,9 +57,23 @@ const userAuthenticated = computed(() => mainStore.userAuthenticated);
       <hr />
       <br />
       <SectionTitleLineWithButton
+        :icon="mdiCheckDecagram"
+        main
+        title="Praksa gotova!"
+      ></SectionTitleLineWithButton>
+      <p>
+        Vaš proces prakse je završio. Nakon što vam profesor pregleda potvrdu i
+        odobori dnevnik prakse, ocjena će vam biti unesena u Studomat.
+      </p>
+      <p>
+        Ako čekate više od 7 dana, molimo vas da se obratite voditelju prakse.
+      </p>
+      <hr />
+      <br />
+      <SectionTitleLineWithButton
         :icon="mdiClipboardCheck"
         main
-        title="Izvođenje prakse u tijeku"
+        title="Odrađeni zadatak"
       ></SectionTitleLineWithButton>
       <CardboxAllocation
         v-if="allocated_assignment != null"
@@ -75,22 +84,7 @@ const userAuthenticated = computed(() => mainStore.userAuthenticated);
       <hr />
 
       <br />
-      <SectionTitleLineWithButton
-        :icon="mdiNotebook"
-        main
-        title="Praksa gotova!"
-      ></SectionTitleLineWithButton>
-      <p>
-        Nakon što se završili praksu i ispunili sve vaše obaveze, predajete
-        dnevnik prakse skupa s ispunjenom potvrdom o obavljenoj praksi.
-      </p>
-      <p>
-        Potvrdu ispunjava vaš mentor, vi predajete PDF sken ispunjene potvrde.
-      </p>
-      <p>Dnevnik prakse je potrebno predati prije prijave ispitnog roka.</p>
-      <br />
 
-      <br />
       <hr />
     </SectionMain>
   </component>

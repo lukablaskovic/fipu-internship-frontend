@@ -14,6 +14,42 @@ class StudentMappings {
     const gs = this.GodinaStudijaMappings.find((gs) => gs.dbLabel === dbLabel);
     return gs ? gs.label : dbLabel;
   }
+
+  static statusZahtjeva = [
+    {
+      id: 1,
+      label: "Student prihvaćen",
+      dbLabel: "student_prihvaćen",
+      color: "success",
+    },
+    {
+      id: 2,
+      label: "Student odbijen",
+      dbLabel: "student_odbijen",
+      color: "danger",
+    },
+    {
+      id: 3,
+      label: "Evaluacija u tijeku",
+      dbLabel: "evaluacija_u_tijeku",
+      color: "warning",
+    },
+    {
+      id: 4,
+      label: "Student odustao",
+      dbLabel: "student_odustao",
+      color: "danger",
+    },
+    {
+      id: 5,
+      label: "Profesor poništio",
+      dbLabel: "profesor_ponistio",
+      color: "warning",
+    },
+  ];
+  static getStatusProperty(dbLabel, property) {
+    return getMappedProperty(this.statusZahtjeva, "dbLabel", dbLabel, property);
+  }
 }
 import Student_DnevnikPrakseForm from "@/components/Internship/Student_DnevnikPrakseForm.vue";
 import Student_PrijavnicaForm from "@/components/Internship/Student_PrijavnicaForm.vue";
@@ -60,8 +96,8 @@ class UserTaskMappings {
       order: 4,
       _id: "ispunjavanje_prijavnice_student",
       name: "Mora ispuniti prijavnicu",
-      snackbar_msg: "",
-      snackbar_color: "",
+      snackbar_msg: "Prijavnica pohranjena. Hvala!",
+      snackbar_color: "success",
       form_title: "Ispunjena prijavnica",
       component: Student_PrijavnicaForm,
     },
@@ -69,8 +105,8 @@ class UserTaskMappings {
       order: 5,
       _id: "predavanje_dnevnika_student",
       name: "Mora predati dnevnik prakse",
-      snackbar_msg: "",
-      snackbar_color: "",
+      snackbar_msg: "Dnevnik predan. Hvala!",
+      snackbar_color: "success",
       form_title: "Dnevnik prakse",
       component: Student_DnevnikPrakseForm, //DnevnikPrakseForm
     },
@@ -81,6 +117,7 @@ class UserTaskMappings {
       snackbar_msg: "",
       snackbar_color: "",
       form_title: "Završio praksu",
+      component: Student_InternshipFinished,
     },
   ];
 
@@ -111,6 +148,7 @@ import {
   mdiApi,
   mdiEmailArrowRight,
 } from "@mdi/js";
+import Student_InternshipFinished from "@/components/Internship/Student_InternshipFinished.vue";
 
 class ActivityEventMappings {
   static events = [

@@ -135,8 +135,8 @@ function showNotificationBar(type) {
         <div>
           <img
             src="fipu_hr.png"
-            alt=""
-            class="w-1/4 lg:w-1/5 2xl:1/6 object-contain mx-auto"
+            alt="fipu logo"
+            class="w-2/4 lg:w-2/5 2xl:2/6 object-contain mx-auto"
           />
         </div>
         <h2

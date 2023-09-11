@@ -11,6 +11,7 @@ export const useAdminStore = defineStore("admin", {
     studentsFetched: false,
 
     dashboard_data: {
+      waiting_for_mark: 0,
       finished_internships: 0,
       ongoing_internships: 0,
       waiting_for_allocation: 0,
@@ -104,7 +105,7 @@ export const useAdminStore = defineStore("admin", {
 
         this.dashboard_data.waiting_for_allocation = 0;
         this.dashboard_data.waiting_for_evaluation = 0;
-
+        this.dashboard_data.waiting_for_mark = 0;
         this.dashboard_data.finished_internships = 0;
 
         const promises = students.map(async (student) => {
@@ -128,6 +129,7 @@ export const useAdminStore = defineStore("admin", {
           }
           if (student.process_instance_data.state === "finished") {
             this.dashboard_data.finished_internships++;
+            this.dashboard_data.waiting_for_mark++;
           }
         });
 

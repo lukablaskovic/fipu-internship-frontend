@@ -13,7 +13,7 @@ onBeforeMount(async () => {
   if (mainStore.userAuthenticated) {
     try {
       processInstance.value = mainStore.currentUser.internship_process.id;
-
+      console.log("processInstance", processInstance.value);
       pendingProcessTask.value = await studentStore.getPendingUserTask(
         processInstance.value
       );
@@ -23,6 +23,14 @@ onBeforeMount(async () => {
       console.error(error);
     }
   }
+
+  console.log(
+    UserTaskMappings.getTaskProperty(
+      pendingProcessTask.value,
+      "component",
+      studentStore.student_process_instance_data.state
+    )
+  );
 });
 
 const currentRenderingComponent = computed(() => {
@@ -34,13 +42,17 @@ const currentRenderingComponent = computed(() => {
   if (!mainStore.userAuthenticated) {
     return UserTaskMappings.getTaskProperty(
       "odabiranje_zadatka_student",
-      "component"
+      "component",
+      studentStore.student_process_instance_data.state
     );
   }
 
   return (
-    UserTaskMappings.getTaskProperty(pendingProcessTask.value, "component") ||
-    LoadingOverlay
+    UserTaskMappings.getTaskProperty(
+      pendingProcessTask.value,
+      "component",
+      studentStore.student_process_instance_data.state
+    ) || LoadingOverlay
   );
 });
 </script>

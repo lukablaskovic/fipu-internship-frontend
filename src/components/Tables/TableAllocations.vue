@@ -8,6 +8,8 @@ import BaseButton from "@/components/Base/BaseButton.vue";
 import LoadingOverlay from "../LoadingOverlay.vue";
 import { mainStore, studentStore } from "@/main.js";
 import { adminStore } from "@/main.js";
+import { StudentMappings } from "@/helpers/maps";
+import PillTag from "../PillTag/PillTag.vue";
 defineProps({
   checkable: Boolean,
 });
@@ -71,6 +73,7 @@ const pagesList = computed(() => {
         <th>Alocirani zadatak</th>
         <th>Opis zadatka</th>
         <th>Poduzeće kontakt</th>
+        <th v-if="mainStore.userAdmin">Status zahtjeva</th>
         <th>Prijavnica ispunjena</th>
         <th>Dnevnik prakse predan</th>
       </tr>
@@ -91,6 +94,22 @@ const pagesList = computed(() => {
 
         <td data-label="Kontakt">
           {{ allocation["poslodavac_email"] }}
+        </td>
+        <td v-if="mainStore.userAdmin" data-label="Status zahtjeva">
+          <PillTag
+            :label="
+              StudentMappings.getStatusProperty(
+                allocation['status_zahtjeva']['value'],
+                'label'
+              )
+            "
+            :color="
+              StudentMappings.getStatusProperty(
+                allocation['status_zahtjeva']['value'],
+                'color'
+              )
+            "
+          ></PillTag>
         </td>
         <td data-label="Prijavnica ispunjena">
           <div class="flex items-center">
