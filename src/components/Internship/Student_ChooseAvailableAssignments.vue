@@ -96,6 +96,16 @@ const registerPreferences = async () => {
     router.go();
   }
 };
+let wiggleEnabled = ref(true);
+
+const isFadedOut = ref(false);
+function fadeOutAnimation() {
+  isFadedOut.value = true;
+  wiggleEnabled.value = false;
+}
+const isDraggableEnabled = computed(
+  () => checkedAssignments.value.length === 3
+);
 </script>
 
 <template>
@@ -138,17 +148,21 @@ const registerPreferences = async () => {
         <div class="flex flex-row text-center">
           <draggable
             :list="checkedAssignments"
-            :disabled="!enabled"
+            :disabled="!isDraggableEnabled"
             item-key="id"
             class="list-group flex flex-col md:flex-row space-y-4 md:space-y-0 md:space-x-4"
             ghost-class="ghost"
-            @start="vueDraggableDragging = true"
+            @start="fadeOutAnimation"
             @end="vueDraggableDragging = false"
           >
             <template #item="{ element, index }">
               <div
-                class="list-group-item flex-shrink-0 w-60 h-30 text-white bg-fipu_light_blue dark:bg-fipu_blue rounded-lg shadow-lg flex flex-col items-center justify-center text-lg p-4"
-                :class="{ 'not-draggable': !enabled, 'cursor-move': enabled }"
+                class="drag-handle list-group-item flex-shrink-0 w-60 h-30 text-white bg-fipu_light_blue dark:bg-fipu_blue rounded-lg shadow-lg flex flex-col items-center justify-center text-lg p-4"
+                :class="{
+                  wiggle: wiggleEnabled && isDraggableEnabled,
+                  'not-draggable': !enabled,
+                  'cursor-move': enabled,
+                }"
               >
                 <span class="mb-2 font-bold">{{ index + 1 }}. odabir</span>
                 {{ element["id_zadatak"] }}
@@ -157,8 +171,15 @@ const registerPreferences = async () => {
           </draggable>
         </div>
       </div>
+
       <div v-else>Niste odabrali ni jedan zadatak.</div>
       <div v-if="checkedAssignments.length == 3">
+        <div
+          class="animation bg-center bg-no-repeat bg-[url('../../../swipe-vertical.png')] md:bg-[url('../../../swipe-horizontal.png')]"
+          :class="{ 'fade-out': isFadedOut }"
+          @click="fadeOutAnimation"
+        ></div>
+
         <FormField
           class="mt-6"
           label="Napomena (nije obavezno)"
@@ -222,5 +243,81 @@ const registerPreferences = async () => {
 .ghost {
   opacity: 0.5;
   background: #c8ebfb;
+}
+.drag-handle {
+  cursor: grab;
+}
+.drag-handle:active {
+  cursor: grabbing;
+}
+.drag-handle:hover {
+  transform: scale(1.03);
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+}
+@keyframes wiggle {
+  0% {
+    transform: rotate(-2deg);
+  }
+  50% {
+    transform: rotate(2deg);
+  }
+  100% {
+    transform: rotate(-2deg);
+  }
+}
+
+@keyframes up-down {
+  0% {
+    top: -30px;
+  }
+  50% {
+    top: 30px;
+  }
+  100% {
+    top: -30px;
+  }
+}
+
+.drag-handle.wiggle {
+  animation: wiggle 0.5s ease-in-out infinite;
+}
+
+@keyframes left-right {
+  0% {
+    left: -30px;
+  }
+  50% {
+    left: 30px;
+  }
+  100% {
+    left: -30px;
+  }
+}
+
+div.animation {
+  position: relative;
+  width: 115px;
+  height: 143px;
+  margin: auto;
+  margin-top: 20px;
+  animation: up-down 1.8s ease-out infinite;
+
+  @media (min-width: 768px) {
+    animation: left-right 1.8s ease-out infinite;
+  }
+}
+
+@keyframes fade-out-anim {
+  0% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
+div.animation.fade-out {
+  animation: fade-out-anim 0.5s ease 1;
+  opacity: 0;
 }
 </style>

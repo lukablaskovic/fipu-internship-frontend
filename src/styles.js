@@ -13,15 +13,15 @@ export const white = {
   navBarItemLabelActiveColor: "text-fipu_text_blue",
   overlay: "from-white via-gray-100 to-white",
 };
-
+//Currently active
 export const basic = {
   aside: "bg-gray-800",
   asideScrollbars: "aside-scrollbars-[slate]",
   asideBrand: "items-center justify-center bg-gray-900 text-white",
-  asideMenuItem: "text-gray-300 hover:text-white",
-  asideMenuItemActive: "text-fipu_text_blue font-bold ",
+  asideMenuItem: "text-gray-300",
+  asideMenuItemActive: "text-fipu_text_blue font-bold",
   asideMenuItemActiveBg: "bg-gray-600/25",
-  asideMenuItemInactive: "text-gray-300",
+  asideMenuItemInactive: "text-gray-300 hover:text-fipu_light_blue",
   asideMenuDropdown: "bg-gray-700/50",
   navBarItemLabel: "text-black",
   navBarItemLabelHover: "hover:text-fipu_text_blue",
