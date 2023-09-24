@@ -10,7 +10,7 @@ import FormField from "@/components/Premium/FormField.vue";
 import FormControl from "@/components/Premium/FormControl.vue";
 import FormCheckRadioGroup from "@/components/FormCheckRadioGroup.vue";
 import LayoutAuthenticated from "@/layouts/LayoutAuthenticated.vue";
-import { useSnackBarStore } from "../../stores/snackBar";
+import { useSnackBarStore } from "../../stores/snackbar_store";
 
 const snackBarColor = ref("info");
 

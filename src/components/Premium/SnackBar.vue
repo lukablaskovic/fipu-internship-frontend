@@ -1,5 +1,5 @@
 <script setup>
-import { useSnackBarStore } from "@/stores/snackBar";
+import { useSnackBarStore } from "@/stores/snackbar_store";
 import SnackBarItem from "@/components/Premium/SnackBarItem.vue";
 
 const snackBarStore = useSnackBarStore();

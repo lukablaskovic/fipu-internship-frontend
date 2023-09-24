@@ -1,4 +1,12 @@
 <script setup>
+import { useVuelidate } from "@vuelidate/core";
+import {
+  required,
+  email,
+  minLength,
+  sameAs,
+  helpers,
+} from "@vuelidate/validators";
 import { ref, computed, reactive } from "vue";
 import { useRouter } from "vue-router";
 import { mdiAccount, mdiAsterisk } from "@mdi/js";
@@ -11,18 +19,42 @@ import FormField from "@/components/Form/FormField.vue";
 import FormControl from "@/components/Form/FormControl.vue";
 import BaseButton from "@/components/Base/BaseButton.vue";
 import BaseButtons from "@/components/Base/BaseButtons.vue";
-
-import { mainStore } from "@/main";
 import Utils from "@/helpers/utils";
+import { getFirstErrorForField, isUnipuEmail } from "@/helpers/validators";
+import { mainStore } from "@/main";
+const router = useRouter();
 
 const loginForm = reactive({
   email: "admin@fipu.hr",
   password: "123456",
   remember_me: false,
 });
-const router = useRouter();
+
+const rules = {
+  email: {
+    required: helpers.withMessage("Polje je obavezno", required),
+    email: helpers.withMessage("Molimo unesite ispravnu e-mail adresu", email),
+    isUnipuEmail: helpers.withMessage(
+      "Molimo unesite vašu UNIPU e-mail adresu",
+      isUnipuEmail
+    ),
+  },
+  password: {
+    required: helpers.withMessage("Polje je obavezno", required),
+    minLength: helpers.withMessage(
+      "Lozinka mora sadržavati minimalno 6 znakova",
+      minLength(6)
+    ),
+  },
+};
+
+const v$ = useVuelidate(rules, loginForm);
 
 async function onSubmit() {
+  console.log("Submitting form...");
+  v$.value.$touch();
+  if (v$.value.$invalid) return;
+
   let loginResult = await mainStore.login(loginForm);
   if (mainStore.userAuthenticated) {
     showNotificationBar("success");
@@ -110,7 +142,7 @@ function showNotificationBar(type) {
           prijavili zadatke. Ukoliko želite samo pregledati dostupne zadatke i
           poduzeća, molimo nastavite kao gost
           <a
-            class="text-fipu_blue cursor-pointer"
+            class="hover-underline-animation cursor-pointer text-fipu_text_blue hover:text-fipu_blue"
             @click="router.push('/moja-praksa')"
             >ovdje</a
           >.
@@ -122,8 +154,10 @@ function showNotificationBar(type) {
               v-model="loginForm.email"
               :icon="mdiAccount"
               name="email"
+              :error="getFirstErrorForField('email')"
               autocomplete="username"
-            />
+            >
+            </FormControl>
           </FormField>
 
           <FormField label="Lozinka">
@@ -131,15 +165,19 @@ function showNotificationBar(type) {
               v-model="loginForm.password"
               :icon="mdiAsterisk"
               type="password"
+              :error="getFirstErrorForField('password')"
               name="password"
               placeholder="Password"
               autocomplete="current-password"
               @right-icon-click="passShowHideClicked = true"
-            />
+            >
+            </FormControl>
           </FormField>
 
           <div class="text-right">
-            <a href="#" class="text-sm">Zaboravili ste lozinku?</a>
+            <a href="#" class="text-sm hover:text-fipu_blue"
+              >Zaboravili ste lozinku?</a
+            >
           </div>
 
           <FormCheckRadio
@@ -195,3 +233,27 @@ function showNotificationBar(type) {
     </div>
   </SectionSplitLogin>
 </template>
+
+<style>
+.hover-underline-animation {
+  position: relative;
+}
+
+.hover-underline-animation:after {
+  content: "";
+  position: absolute;
+  width: 100%;
+  transform: scaleX(0);
+  height: 2px;
+  bottom: 0;
+  left: 0;
+  background-color: #9de0f7;
+  transform-origin: bottom right;
+  transition: transform 0.25s ease-out;
+}
+
+.hover-underline-animation:hover:after {
+  transform: scaleX(1);
+  transform-origin: bottom left;
+}
+</style>

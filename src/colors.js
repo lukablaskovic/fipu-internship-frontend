@@ -50,8 +50,8 @@ export const getButtonColor = (
       success: "ring-emerald-300 dark:ring-emerald-700",
       danger: "ring-red-300 dark:ring-red-700",
       warning: "ring-yellow-300 dark:ring-yellow-700",
-      info: "ring-fipu_blue dark:ring-fipu_dark_blue",
-      fipu_blue: "ring-fipu_blue dark:ring-blue-500",
+      info: "ring-fipu_blue dark:ring-fipu_blue",
+      fipu_blue: "ring-fipu_blue dark:ring-fipu_blue",
     },
     active: {
       white: "bg-gray-100",

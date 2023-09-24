@@ -1,5 +1,5 @@
 <script setup>
-import { ref, computed } from "vue";
+import { ref, computed, watch, nextTick } from "vue";
 import draggable from "vuedraggable";
 import {
   mdiClipboardCheckOutline,
@@ -9,6 +9,7 @@ import {
   mdiCheckCircle,
   mdiAlert,
   mdiClose,
+  mdiConsoleNetworkOutline,
 } from "@mdi/js";
 
 import SectionMain from "@/components/Section/SectionMain.vue";
@@ -96,6 +97,14 @@ const registerPreferences = async () => {
     router.go();
   }
 };
+
+const vas_odabir = ref(null);
+const scrollToSelection = () => {
+  nextTick(() => {
+    vas_odabir.value.$el.scrollIntoView({ behavior: "smooth" });
+  });
+};
+
 let wiggleEnabled = ref(true);
 
 const isFadedOut = ref(false);
@@ -137,10 +146,12 @@ const isDraggableEnabled = computed(
       <hr />
       <br />
       <SectionTitleLineWithButton
+        ref="vas_odabir"
         :icon="mdiClipboardCheckOutline"
         main
         title="Vaš odabir"
       ></SectionTitleLineWithButton>
+
       <div
         v-if="checkedAssignments.length"
         class="flex justify-center items-center"
@@ -299,7 +310,7 @@ div.animation {
   width: 115px;
   height: 143px;
   margin: auto;
-  margin-top: 20px;
+
   animation: up-down 1.8s ease-out infinite;
 
   @media (min-width: 768px) {

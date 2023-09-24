@@ -1,7 +1,7 @@
 <script setup>
 import { ref, computed, watch, onMounted } from "vue";
 import { useMainStore } from "@/stores/main.js";
-import { useSnackBarStore } from "@/stores/snackBar.js";
+import { useSnackBarStore } from "@/stores/snackbar_store.js";
 import { useLayoutStore } from "@/stores/layout.js";
 import {
   mdiAccountMultiple,
