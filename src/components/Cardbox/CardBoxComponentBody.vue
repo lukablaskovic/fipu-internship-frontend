@@ -2,6 +2,7 @@
 defineProps({
   noPadding: Boolean,
   centeredContent: Boolean,
+  verticalCentered: Boolean,
 });
 </script>
 
@@ -9,9 +10,10 @@ defineProps({
   <div
     class="flex-1"
     :class="{
-      'p-6': !noPadding,
+      'p-6 ': !noPadding,
       'flex flex-col justify-center items-center w-full h-screen':
         centeredContent,
+      'flex flex-col justify-center w-full h-screen': verticalCentered,
     }"
   >
     <slot />

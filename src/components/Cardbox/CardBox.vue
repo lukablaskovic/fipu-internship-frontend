@@ -10,6 +10,7 @@ const props = defineProps({
   isHoverable: Boolean,
   isModal: Boolean,
   centeredContent: Boolean,
+  verticalCentered: Boolean,
 });
 
 const emit = defineEmits(["submit"]);
@@ -45,6 +46,7 @@ const submit = (event) => {
       <CardBoxComponentBody
         :no-padding="hasTable"
         :centered-content="centeredContent"
+        :vertical-centered="verticalCentered"
       >
         <slot />
       </CardBoxComponentBody>

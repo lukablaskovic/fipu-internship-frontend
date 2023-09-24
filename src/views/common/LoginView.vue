@@ -109,10 +109,7 @@ function showNotificationBar(type) {
       class="flex flex-col flex-shrink md:flex-row overflow-hidden md:rounded-lg md:p-4 2xl:p-16 md:h-screen lg:px-12"
     >
       <!--This is graphics image cardbox-->
-      <CardBox
-        class="hidden md:block flex-1 md:rounded-l-lg justify-center items-center"
-        centered-content
-      >
+      <CardBox class="hidden md:block flex-1 md:rounded-l-lg" centered-content>
         <img
           src="login_art.jpg"
           alt="Login graphics"
@@ -121,23 +118,24 @@ function showNotificationBar(type) {
       </CardBox>
       <!--This is cardbox with form-->
       <CardBox
-        class="flex flex-col flex-shrink flex-1 justify-center items-center space-y-4 md:rounded-r-lg"
+        class="flex flex-col flex-shrink flex-1 space-y-4 lg:pr-32 md:rounded-r-lg"
+        vertical-centered
         is-form
-        centered-content
         @submit.prevent="onSubmit"
       >
-        <img
-          src="fipu_hr.png"
-          alt="fipu logo"
-          class="w-1/4 lg:w-1/5 2xl:1/6 object-contain mx-auto"
-        />
-
+        <a href="https://fipu.unipu.hr/" target="_blank">
+          <img
+            src="fipu_unipu.png"
+            alt="fipu logo"
+            class="lg:w-1/2 2xl:1/6 mb-6 object-contain"
+          />
+        </a>
         <h2
-          class="text-2xl lg:text-3xl 2xl:text-4xl text-center text-fipu_gray font-bold xl:mb-1 mb-4 md:mb-0 2xl:mb-4"
+          class="text-2xl lg:text-3xl 2xl:text-4xl text-fipu_gray font-bold xl:mb-1 mb-2 md:mb-0 2xl:mb-4"
         >
           Dobrodošli u <span class="text-fipu_blue">FIPU Praksa</span>
         </h2>
-        <h2 class="md:text-sm lg:text-sm 2xl:text-base text-center 2xl:mb-4">
+        <h2 class="md:text-sm lg:text-sm 2xl:text-base mb-2 2xl:mb-4">
           Molimo prijavite se kako biste pregledali stanje vaše prakse ili
           prijavili zadatke. Ukoliko želite samo pregledati dostupne zadatke i
           poduzeća, molimo nastavite kao gost
@@ -148,7 +146,7 @@ function showNotificationBar(type) {
           >.
         </h2>
 
-        <div class="w-full px-2 lg:px-12">
+        <div class="w-full">
           <FormField label="E-mail">
             <FormControl
               v-model="loginForm.email"
@@ -184,7 +182,7 @@ function showNotificationBar(type) {
             v-model="loginForm.remember_me"
             name="remember"
             label="Zapamti me!"
-            class="mb-1 2xl:mb-4"
+            class="mb-4 2xl:mb-4"
             :input-value="true"
           />
 

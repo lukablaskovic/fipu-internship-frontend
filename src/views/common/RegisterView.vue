@@ -1,7 +1,24 @@
 <script setup>
 import { ref, reactive, computed } from "vue";
-
+import { useVuelidate } from "@vuelidate/core";
+import {
+  required,
+  email,
+  minLength,
+  sameAs,
+  helpers,
+  numeric,
+} from "@vuelidate/validators";
 import { useRouter } from "vue-router";
+import {
+  croatianAlpha,
+  getFirstErrorForField,
+  isUnipuEmail,
+  exactLength,
+  containsAlpha,
+  containsNumeric,
+} from "@/helpers/validators";
+
 import {
   mdiAccount,
   mdiAsterisk,
@@ -26,25 +43,92 @@ const router = useRouter();
 
 let data_confirmed = ref(false);
 
-const form = reactive({
+const registerForm = reactive({
   ime: "Luka",
   prezime: "Blašković",
   email: "lblaskovi@unipu.hr",
   JMBAG: "0303088177",
   godina_studija: StudentMappings.GodinaStudijaMappings[1],
-  password: "123456",
+  password: "",
+  passwordConfirm: "",
 });
+const password = computed(() => registerForm.password);
 
-let passwordConfirm = "";
+const rules = {
+  ime: {
+    required: helpers.withMessage("Polje je obavezno", required),
+    croatianAlpha: helpers.withMessage(
+      "Polje smije sadržavati samo slova",
+      croatianAlpha
+    ),
+  },
+  prezime: {
+    required: helpers.withMessage("Polje je obavezno", required),
+    croatianAlpha: helpers.withMessage(
+      "Polje smije sadržavati samo slova",
+      croatianAlpha
+    ),
+  },
+  JMBAG: {
+    required: helpers.withMessage("Polje je obavezno", required),
+    numeric: helpers.withMessage(
+      "Polje smije sadržavati samo brojeve",
+      numeric
+    ),
+    exactLength: helpers.withMessage(
+      "JMBAG mora sadržavati točno 10 znamenki",
+      exactLength(10)
+    ),
+  },
+  godina_studija: {
+    required: helpers.withMessage("Polje je obavezno", required),
+  },
+  email: {
+    required: helpers.withMessage("Polje je obavezno", required),
+    email: helpers.withMessage("Molimo unesite ispravnu e-mail adresu", email),
+    isUnipuEmail: helpers.withMessage(
+      "Molimo unesite vašu UNIPU e-mail adresu",
+      isUnipuEmail
+    ),
+  },
+  password: {
+    required: helpers.withMessage("Polje je obavezno", required),
+    minLength: helpers.withMessage(
+      "Lozinka mora sadržavati minimalno 6 znakova",
+      minLength(6)
+    ),
+
+    containsAlpha: helpers.withMessage(
+      "Lozinka mora sadržavati barem jedno slovo",
+      containsAlpha
+    ),
+    containsNumeric: helpers.withMessage(
+      "Lozinka mora sadržavati barem jedan broj",
+      containsNumeric
+    ),
+  },
+
+  passwordConfirm: {
+    required: helpers.withMessage("Polje je obavezno", required),
+    sameAs: helpers.withMessage("Lozinke se ne podudaraju", sameAs(password)),
+  },
+};
+
+const v$ = useVuelidate(rules, registerForm);
 
 async function onSubmit() {
+  console.log("Submitting form...");
+
+  v$.value.$touch();
+  if (v$.value.$invalid) return;
+
   let postData = {
-    ...form,
-    godina_studija: form.godina_studija.dbLabel,
+    ...registerForm,
+    godina_studija: registerForm.godina_studija.dbLabel,
   };
+  delete postData.passwordConfirm;
 
   let registrationResult = await guestStore.registerStudent(postData);
-  console.log(registrationResult);
   if (
     registrationResult.response &&
     registrationResult.response.status === 400
@@ -127,41 +211,45 @@ function showNotificationBar(type) {
       <!--This is cardbox with register form-->
 
       <CardBox
-        class="flex flex-col flex-shrink flex-1 justify-center items-center space-y-4 md:rounded-r-lg"
+        class="flex flex-col flex-shrink flex-1 space-y-4 md:rounded-r-lg"
         is-form
-        centered-content
+        vertical-centered
         @submit.prevent="onSubmit"
       >
         <div>
-          <img
-            src="fipu_hr.png"
-            alt="fipu logo"
-            class="w-2/4 lg:w-2/5 2xl:2/6 object-contain mx-auto"
-          />
+          <a href="https://fipu.unipu.hr/" target="_blank">
+            <img
+              src="fipu_unipu.png"
+              alt="fipu logo"
+              class="lg:w-1/2 2xl:1/6 mb-6 object-contain"
+            />
+          </a>
         </div>
+
         <h2
-          class="text-2xl lg:text-3xl 2xl:text-4xl text-center text-fipu_gray font-bold xl:mb-1 md:mb-0 2xl:mb-4"
+          class="text-2xl lg:text-3xl 2xl:text-4xl text-fipu_gray font-bold xl:mb-1 mb-2 md:mb-0 2xl:mb-4"
         >
           Molimo unesite vaše podatke
         </h2>
-        <h2 class="mb-4 text-center text-fipu_gray">
+        <h2 class="mb-4 text-fipu_gray">
           Već imate račun ili želite samo pregledati zadatke? Povratak na
           prijavu
           <a
-            class="text-fipu_blue cursor-pointer"
+            class="hover-underline-animation cursor-pointer text-fipu_text_blue hover:text-fipu_blue"
             @click="router.push('/login')"
             >ovdje</a
           >.
         </h2>
 
-        <div class="w-full 2xl:px-4 lg:flex lg:flex-wrap lg:items-stretch">
+        <div class="w-full lg:flex lg:flex-wrap lg:items-stretch">
           <!-- Column 1 -->
-          <div class="lg:w-1/2 md:px-4 lg:flex lg:flex-col lg:justify-between">
+          <div class="lg:w-1/2 md:pr-4 lg:flex lg:flex-col lg:justify-between">
             <div>
               <FormField label="Ime">
                 <FormControl
-                  v-model="form.ime"
+                  v-model="registerForm.ime"
                   :icon="mdiAccount"
+                  :error="getFirstErrorForField('ime')"
                   name="ime"
                   autocomplete="ime"
                 />
@@ -169,8 +257,9 @@ function showNotificationBar(type) {
 
               <FormField label="Prezime">
                 <FormControl
-                  v-model="form.prezime"
+                  v-model="registerForm.prezime"
                   :icon="mdiAccount"
+                  :error="getFirstErrorForField('prezime')"
                   name="prezime"
                   autocomplete="prezime"
                 />
@@ -178,8 +267,9 @@ function showNotificationBar(type) {
 
               <FormField label="JMBAG">
                 <FormControl
-                  v-model="form.JMBAG"
+                  v-model="registerForm.JMBAG"
                   :icon="mdiAccount"
+                  :error="getFirstErrorForField('JMBAG')"
                   name="JMBAG"
                   autocomplete="JMBAG"
                 />
@@ -187,8 +277,9 @@ function showNotificationBar(type) {
 
               <FormField label="UNIPU E-mail">
                 <FormControl
-                  v-model="form.email"
+                  v-model="registerForm.email"
                   :icon="mdiAccount"
+                  :error="getFirstErrorForField('email')"
                   name="email"
                   autocomplete="username"
                 />
@@ -203,15 +294,17 @@ function showNotificationBar(type) {
             <div>
               <FormField label="Godina studija">
                 <FormControl
-                  v-model="form.godina_studija"
+                  v-model="registerForm.godina_studija"
+                  :error="getFirstErrorForField('godina_studija')"
                   :options="StudentMappings.GodinaStudijaMappings"
                 />
               </FormField>
 
               <FormField label="Lozinka">
                 <FormControl
-                  v-model="form.password"
+                  v-model="registerForm.password"
                   :icon="mdiAsterisk"
+                  :error="getFirstErrorForField('password')"
                   type="password"
                   name="password"
                   autocomplete="current-password"
@@ -220,11 +313,11 @@ function showNotificationBar(type) {
 
               <FormField label="Potvrda lozinke">
                 <FormControl
-                  v-model="passwordConfirm"
+                  v-model="registerForm.passwordConfirm"
                   :icon="mdiAsterisk"
+                  :error="getFirstErrorForField('passwordConfirm')"
                   type="password"
-                  name="password-confirmation"
-                  autocomplete="current-password"
+                  name="passwordConfirm"
                 />
               </FormField>
 
@@ -269,3 +362,27 @@ function showNotificationBar(type) {
     </div>
   </SectionSplitRegister>
 </template>
+
+<style>
+.hover-underline-animation {
+  position: relative;
+}
+
+.hover-underline-animation:after {
+  content: "";
+  position: absolute;
+  width: 100%;
+  transform: scaleX(0);
+  height: 2px;
+  bottom: 0;
+  left: 0;
+  background-color: #9de0f7;
+  transform-origin: bottom right;
+  transition: transform 0.25s ease-out;
+}
+
+.hover-underline-animation:hover:after {
+  transform: scaleX(1);
+  transform-origin: bottom left;
+}
+</style>
