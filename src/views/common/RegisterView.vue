@@ -41,6 +41,8 @@ import { guestStore } from "@/main";
 import Utils from "@/helpers/utils";
 const router = useRouter();
 
+const transitioning = ref(false);
+
 let data_confirmed = ref(false);
 
 const registerForm = reactive({
@@ -190,180 +192,200 @@ function showNotificationBar(type) {
   }
   notificationBar.value.show();
 }
+
+function onPrijavaClick() {
+  transitioning.value = true;
+}
+function navigateToLogin() {
+  router.push("/login");
+}
 </script>
 
 <template>
   <SectionSplitRegister bg="blue">
-    <div
-      class="flex flex-col flex-shrink md:flex-row overflow-hidden md:rounded-lg md:p-4 2xl:p-16 md:h-screen 2xl:px-12"
+    <Transition
+      appear
+      enter-active-class="animate__animated animate__slideInLeft fast-animation"
+      leave-active-class="animate__animated animate__slideOutLeft fast-animation"
+      @after-leave="navigateToLogin"
     >
-      <!--This is graphics image cardbox-->
-      <CardBox
-        class="hidden md:block flex-1 md:rounded-l-lg justify-center items-center"
-        centered-content
+      <div
+        v-if="!transitioning"
+        class="flex flex-col flex-shrink md:flex-row overflow-hidden md:rounded-lg md:p-4 2xl:p-16 md:h-screen lg:px-12"
       >
-        <img
-          src="register_art.jpg"
-          alt="Register graphics"
-          class="w-3/4 object-contain mx-auto"
-        />
-      </CardBox>
-      <!--This is cardbox with register form-->
-
-      <CardBox
-        class="flex flex-col flex-shrink flex-1 space-y-4 md:rounded-r-lg"
-        is-form
-        vertical-centered
-        @submit.prevent="onSubmit"
-      >
-        <div>
-          <a href="https://fipu.unipu.hr/" target="_blank">
-            <img
-              src="fipu_unipu.png"
-              alt="fipu logo"
-              class="lg:w-1/2 2xl:1/6 mb-6 object-contain"
-            />
-          </a>
-        </div>
-
-        <h2
-          class="text-2xl lg:text-3xl 2xl:text-4xl text-fipu_gray font-bold xl:mb-1 mb-2 md:mb-0 2xl:mb-4"
+        <!--This is graphics image cardbox-->
+        <CardBox
+          class="hidden md:block flex-1 md:rounded-l-lg justify-center items-center"
+          centered-content
         >
-          Molimo unesite vaše podatke
-        </h2>
-        <h2 class="mb-4 text-fipu_gray">
-          Već imate račun ili želite samo pregledati zadatke? Povratak na
-          prijavu
-          <a
-            class="hover-underline-animation cursor-pointer text-fipu_text_blue hover:text-fipu_blue"
-            @click="router.push('/login')"
-            >ovdje</a
-          >.
-        </h2>
+          <img
+            src="register_art.jpg"
+            alt="Register graphics"
+            class="w-3/4 object-contain mx-auto"
+          />
+        </CardBox>
+        <!--This is cardbox with register form-->
 
-        <div class="w-full lg:flex lg:flex-wrap lg:items-stretch">
-          <!-- Column 1 -->
-          <div class="lg:w-1/2 md:pr-4 lg:flex lg:flex-col lg:justify-between">
-            <div>
-              <FormField label="Ime">
-                <FormControl
-                  v-model="registerForm.ime"
-                  :icon="mdiAccount"
-                  :error="getFirstErrorForField('ime')"
-                  name="ime"
-                  autocomplete="ime"
-                />
-              </FormField>
-
-              <FormField label="Prezime">
-                <FormControl
-                  v-model="registerForm.prezime"
-                  :icon="mdiAccount"
-                  :error="getFirstErrorForField('prezime')"
-                  name="prezime"
-                  autocomplete="prezime"
-                />
-              </FormField>
-
-              <FormField label="JMBAG">
-                <FormControl
-                  v-model="registerForm.JMBAG"
-                  :icon="mdiAccount"
-                  :error="getFirstErrorForField('JMBAG')"
-                  name="JMBAG"
-                  autocomplete="JMBAG"
-                />
-              </FormField>
-
-              <FormField label="UNIPU E-mail">
-                <FormControl
-                  v-model="registerForm.email"
-                  :icon="mdiAccount"
-                  :error="getFirstErrorForField('email')"
-                  name="email"
-                  autocomplete="username"
-                />
-              </FormField>
-            </div>
+        <CardBox
+          class="flex flex-col flex-shrink flex-1 space-y-4 lg:pr-32 md:rounded-r-lg"
+          is-form
+          vertical-centered
+          @submit.prevent="onSubmit"
+        >
+          <div>
+            <a href="https://fipu.unipu.hr/" target="_blank">
+              <img
+                src="fipu_unipu.png"
+                alt="fipu logo"
+                class="lg:w-1/2 2xl:1/6 mb-6 object-contain"
+              />
+            </a>
           </div>
 
-          <!-- Column 2 -->
-          <div
-            class="lg:w-1/2 mt-2 md:mt-0 lg:flex lg:flex-col lg:justify-between"
+          <h2
+            class="text-2xl lg:text-3xl 2xl:text-4xl text-fipu_gray font-bold xl:mb-1 mb-2 md:mb-0 2xl:mb-4"
           >
-            <div>
-              <FormField label="Godina studija">
-                <FormControl
-                  v-model="registerForm.godina_studija"
-                  :error="getFirstErrorForField('godina_studija')"
-                  :options="StudentMappings.GodinaStudijaMappings"
-                />
-              </FormField>
+            Molimo unesite vaše podatke
+          </h2>
+          <h2 class="mb-4 text-fipu_gray">
+            Već imate račun ili želite samo pregledati zadatke? Povratak na
+            prijavu
+            <a
+              class="hover-underline-animation cursor-pointer text-fipu_text_blue hover:text-fipu_blue"
+              @click.prevent="onPrijavaClick()"
+              >ovdje</a
+            >.
+          </h2>
 
-              <FormField label="Lozinka">
-                <FormControl
-                  v-model="registerForm.password"
-                  :icon="mdiAsterisk"
-                  :error="getFirstErrorForField('password')"
-                  type="password"
-                  name="password"
-                  autocomplete="current-password"
-                />
-              </FormField>
+          <div class="w-full lg:flex lg:flex-wrap lg:items-stretch">
+            <!-- Column 1 -->
+            <div
+              class="lg:w-1/2 md:pr-4 lg:flex lg:flex-col lg:justify-between"
+            >
+              <div>
+                <FormField label="Ime">
+                  <FormControl
+                    v-model="registerForm.ime"
+                    :icon="mdiAccount"
+                    :error="getFirstErrorForField('ime')"
+                    name="ime"
+                    autocomplete="ime"
+                  />
+                </FormField>
 
-              <FormField label="Potvrda lozinke">
-                <FormControl
-                  v-model="registerForm.passwordConfirm"
-                  :icon="mdiAsterisk"
-                  :error="getFirstErrorForField('passwordConfirm')"
-                  type="password"
-                  name="passwordConfirm"
-                />
-              </FormField>
+                <FormField label="Prezime">
+                  <FormControl
+                    v-model="registerForm.prezime"
+                    :icon="mdiAccount"
+                    :error="getFirstErrorForField('prezime')"
+                    name="prezime"
+                    autocomplete="prezime"
+                  />
+                </FormField>
 
-              <FormCheckRadio
-                v-model="data_confirmed"
-                name="data_confirmed"
-                type="checkbox"
-                label="Potvrđujem ispravnost podataka."
-                :input-value="true"
-              />
+                <FormField label="JMBAG">
+                  <FormControl
+                    v-model="registerForm.JMBAG"
+                    :icon="mdiAccount"
+                    :error="getFirstErrorForField('JMBAG')"
+                    name="JMBAG"
+                    autocomplete="JMBAG"
+                  />
+                </FormField>
+
+                <FormField label="UNIPU E-mail">
+                  <FormControl
+                    v-model="registerForm.email"
+                    :icon="mdiAccount"
+                    :error="getFirstErrorForField('email')"
+                    name="email"
+                    autocomplete="username"
+                  />
+                </FormField>
+              </div>
             </div>
 
-            <BaseButtons class="space-y-2 mt-4 lg:mt-0">
-              <BaseButton
-                :disabled="!data_confirmed"
-                type="submit"
-                color="fipu_light_blue"
-                label="Registriraj se"
-                class="w-full"
-              />
-            </BaseButtons>
+            <!-- Column 2 -->
+            <div
+              class="lg:w-1/2 mt-2 md:mt-0 lg:flex lg:flex-col lg:justify-between"
+            >
+              <div>
+                <FormField label="Godina studija">
+                  <FormControl
+                    v-model="registerForm.godina_studija"
+                    :error="getFirstErrorForField('godina_studija')"
+                    :options="StudentMappings.GodinaStudijaMappings"
+                  />
+                </FormField>
+
+                <FormField label="Lozinka">
+                  <FormControl
+                    v-model="registerForm.password"
+                    :icon="mdiAsterisk"
+                    :error="getFirstErrorForField('password')"
+                    type="password"
+                    name="password"
+                    autocomplete="current-password"
+                  />
+                </FormField>
+
+                <FormField label="Potvrda lozinke">
+                  <FormControl
+                    v-model="registerForm.passwordConfirm"
+                    :icon="mdiAsterisk"
+                    :error="getFirstErrorForField('passwordConfirm')"
+                    type="password"
+                    name="passwordConfirm"
+                  />
+                </FormField>
+
+                <FormCheckRadio
+                  v-model="data_confirmed"
+                  name="data_confirmed"
+                  type="checkbox"
+                  label="Potvrđujem ispravnost podataka."
+                  :input-value="true"
+                />
+              </div>
+
+              <BaseButtons class="space-y-2 mt-4 lg:mt-0">
+                <BaseButton
+                  :disabled="!data_confirmed"
+                  type="submit"
+                  color="fipu_light_blue"
+                  label="Registriraj se"
+                  class="w-full"
+                />
+              </BaseButtons>
+            </div>
           </div>
-        </div>
-        <NotificationBar
-          ref="notificationBar"
-          class="animate__animated animate__fadeInUp mt-4 w-full"
-          :outline="notificationsOutline"
-        >
-          <b>{{ notificationStatus }}</b> {{ notificationMessage }}
-          <template #right>
-            <BaseButton
-              :icon="mdiClose"
-              :color="notificationsOutline ? 'success' : 'white'"
-              :outline="notificationsOutline"
-              rounded-full
-              small
-            />
-          </template>
-        </NotificationBar>
-        <!-- Form Ends -->
-      </CardBox>
-    </div>
+          <NotificationBar
+            ref="notificationBar"
+            class="animate__animated animate__fadeInUp mt-4 w-full"
+            :outline="notificationsOutline"
+          >
+            <b>{{ notificationStatus }}</b> {{ notificationMessage }}
+            <template #right>
+              <BaseButton
+                :icon="mdiClose"
+                :color="notificationsOutline ? 'success' : 'white'"
+                :outline="notificationsOutline"
+                rounded-full
+                small
+              />
+            </template>
+          </NotificationBar>
+          <!-- Form Ends -->
+        </CardBox>
+      </div>
+    </Transition>
   </SectionSplitRegister>
 </template>
 
 <style>
+.fast-animation {
+  animation-duration: 0.4s;
+}
 .hover-underline-animation {
   position: relative;
 }

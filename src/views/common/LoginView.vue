@@ -1,5 +1,7 @@
 <script setup>
 import { useVuelidate } from "@vuelidate/core";
+import { watchEffect } from "vue";
+
 import {
   required,
   email,
@@ -8,7 +10,6 @@ import {
   helpers,
 } from "@vuelidate/validators";
 import { ref, computed, reactive } from "vue";
-import { useRouter } from "vue-router";
 import { mdiAccount, mdiAsterisk } from "@mdi/js";
 import { mdiAlertCircle, mdiCheckCircle, mdiAlert, mdiClose } from "@mdi/js";
 import SectionSplitLogin from "@/components/Section/SectionSplitLogin.vue";
@@ -21,7 +22,11 @@ import BaseButton from "@/components/Base/BaseButton.vue";
 import BaseButtons from "@/components/Base/BaseButtons.vue";
 import Utils from "@/helpers/utils";
 import { getFirstErrorForField, isUnipuEmail } from "@/helpers/validators";
+
 import { mainStore } from "@/main";
+
+import { useRouter, useRoute } from "vue-router";
+
 const router = useRouter();
 
 const loginForm = reactive({
@@ -47,15 +52,21 @@ const rules = {
     ),
   },
 };
-
 const v$ = useVuelidate(rules, loginForm);
+const isLoading = ref(false);
 
 async function onSubmit() {
+  isLoading.value = true;
   console.log("Submitting form...");
   v$.value.$touch();
-  if (v$.value.$invalid) return;
+  if (v$.value.$invalid) {
+    isLoading.value = false;
+    return;
+  }
 
   let loginResult = await mainStore.login(loginForm);
+  isLoading.value = false;
+
   if (mainStore.userAuthenticated) {
     showNotificationBar("success");
     await Utils.wait(1);
@@ -101,142 +112,163 @@ function showNotificationBar(type) {
   }
   notificationBar.value.show();
 }
+
+const transitioning = ref(false);
+
+function onRegisterClick() {
+  transitioning.value = true;
+}
+function navigateToRegister() {
+  router.push("/register");
+}
 </script>
 
 <template>
   <SectionSplitLogin bg="blue" class="flex items-start min-h-screen">
-    <div
-      class="flex flex-col flex-shrink md:flex-row overflow-hidden md:rounded-lg md:p-4 2xl:p-16 md:h-screen lg:px-12"
+    <Transition
+      appear
+      enter-active-class="animate__animated animate__fadeIn"
+      leave-active-class="animate__animated animate__slideOutRight fast-animation"
+      @after-leave="navigateToRegister"
     >
-      <!--This is graphics image cardbox-->
-      <CardBox class="hidden md:block flex-1 md:rounded-l-lg" centered-content>
-        <img
-          src="login_art.jpg"
-          alt="Login graphics"
-          class="w-3/4 object-contain mx-auto"
-        />
-      </CardBox>
-      <!--This is cardbox with form-->
-      <CardBox
-        class="flex flex-col flex-shrink flex-1 space-y-4 lg:pr-32 md:rounded-r-lg"
-        vertical-centered
-        is-form
-        @submit.prevent="onSubmit"
+      <div
+        v-if="!transitioning"
+        class="flex flex-col flex-shrink md:flex-row overflow-hidden md:rounded-lg md:p-4 2xl:p-16 md:h-screen lg:px-12"
       >
-        <a href="https://fipu.unipu.hr/" target="_blank">
-          <img
-            src="fipu_unipu.png"
-            alt="fipu logo"
-            class="lg:w-1/2 2xl:1/6 mb-6 object-contain"
-          />
-        </a>
-        <h2
-          class="text-2xl lg:text-3xl 2xl:text-4xl text-fipu_gray font-bold xl:mb-1 mb-2 md:mb-0 2xl:mb-4"
+        <!--This is graphics image cardbox-->
+        <CardBox
+          class="hidden md:block flex-1 md:rounded-l-lg"
+          centered-content
         >
-          Dobrodošli u <span class="text-fipu_blue">FIPU Praksa</span>
-        </h2>
-        <h2 class="md:text-sm lg:text-sm 2xl:text-base mb-2 2xl:mb-4">
-          Molimo prijavite se kako biste pregledali stanje vaše prakse ili
-          prijavili zadatke. Ukoliko želite samo pregledati dostupne zadatke i
-          poduzeća, molimo nastavite kao gost
-          <a
-            class="hover-underline-animation cursor-pointer text-fipu_text_blue hover:text-fipu_blue"
-            @click="router.push('/moja-praksa')"
-            >ovdje</a
-          >.
-        </h2>
-
-        <div class="w-full">
-          <FormField label="E-mail">
-            <FormControl
-              v-model="loginForm.email"
-              :icon="mdiAccount"
-              name="email"
-              :error="getFirstErrorForField('email')"
-              autocomplete="username"
-            >
-            </FormControl>
-          </FormField>
-
-          <FormField label="Lozinka">
-            <FormControl
-              v-model="loginForm.password"
-              :icon="mdiAsterisk"
-              type="password"
-              :error="getFirstErrorForField('password')"
-              name="password"
-              placeholder="Password"
-              autocomplete="current-password"
-              @right-icon-click="passShowHideClicked = true"
-            >
-            </FormControl>
-          </FormField>
-
-          <div class="text-right">
-            <a href="#" class="text-sm hover:text-fipu_blue"
-              >Zaboravili ste lozinku?</a
-            >
-          </div>
-
-          <FormCheckRadio
-            v-model="loginForm.remember_me"
-            name="remember"
-            label="Zapamti me!"
-            class="mb-4 2xl:mb-4"
-            :input-value="true"
+          <img
+            src="login_art.jpg"
+            alt="Login graphics"
+            class="w-3/4 object-contain mx-auto"
           />
-
-          <BaseButtons class="space-y-2">
-            <BaseButton
-              type="submit"
-              color="fipu_blue"
-              label="Prijavi se"
-              class="w-full"
+        </CardBox>
+        <!--This is cardbox with form-->
+        <CardBox
+          class="flex flex-col flex-shrink flex-1 space-y-4 lg:pr-32 md:rounded-r-lg"
+          vertical-centered
+          is-form
+          @submit.prevent="onSubmit"
+        >
+          <a href="https://fipu.unipu.hr/" target="_blank">
+            <img
+              src="fipu_unipu.png"
+              alt="fipu logo"
+              class="lg:w-1/2 2xl:1/6 mb-6 object-contain"
             />
-          </BaseButtons>
-          <div
-            class="my-2 2xl:my-4 flex items-center before:mt-0.5 before:flex-1 before:border-t before:border-neutral-300 after:mt-0.5 after:flex-1 after:border-t after:border-neutral-300"
+          </a>
+          <h2
+            class="text-2xl lg:text-3xl 2xl:text-4xl text-fipu_gray font-bold xl:mb-1 mb-2 md:mb-0 2xl:mb-4"
           >
-            <p class="mx-4 mb-0 text-center dark:text-white">ili</p>
-          </div>
-          <BaseButtons class="space-y-2">
-            <BaseButton
-              color="fipu_blue"
-              outline
-              to="/register"
-              label="Registriraj se"
-              class="w-full"
-            />
-          </BaseButtons>
+            Dobrodošli u <span class="text-fipu_blue">FIPU Praksa</span>
+          </h2>
+          <h2 class="md:text-sm lg:text-sm 2xl:text-base mb-2 2xl:mb-4">
+            Molimo prijavite se kako biste pregledali stanje vaše prakse ili
+            prijavili zadatke. Ukoliko želite samo pregledati dostupne zadatke i
+            poduzeća, molimo nastavite kao gost
+            <a
+              class="hover-underline-animation cursor-pointer text-fipu_text_blue hover:text-fipu_blue"
+              @click="router.push('/moja-praksa')"
+              >ovdje</a
+            >.
+          </h2>
 
-          <!-- Form Ends -->
-          <NotificationBar
-            ref="notificationBar"
-            class="animate__animated animate__fadeInUp mt-2"
-            :outline="notificationsOutline"
-          >
-            <b>{{ notificationStatus }}</b> {{ notificationMessage }}
-            <template #right>
+          <div class="w-full">
+            <FormField label="E-mail">
+              <FormControl
+                v-model="loginForm.email"
+                :icon="mdiAccount"
+                name="email"
+                :error="getFirstErrorForField('email')"
+                autocomplete="username"
+              >
+              </FormControl>
+            </FormField>
+
+            <FormField label="Lozinka">
+              <FormControl
+                v-model="loginForm.password"
+                :icon="mdiAsterisk"
+                type="password"
+                :error="getFirstErrorForField('password')"
+                name="password"
+                placeholder="Password"
+                autocomplete="current-password"
+                @right-icon-click="passShowHideClicked = true"
+              >
+              </FormControl>
+            </FormField>
+
+            <div class="text-right">
+              <a href="#" class="text-sm hover:text-fipu_blue"
+                >Zaboravili ste lozinku?</a
+              >
+            </div>
+
+            <FormCheckRadio
+              v-model="loginForm.remember_me"
+              name="remember"
+              label="Zapamti me!"
+              class="mb-4 2xl:mb-4"
+              :input-value="true"
+            />
+
+            <BaseButtons class="space-y-2">
               <BaseButton
-                :icon="mdiClose"
-                :color="notificationsOutline ? 'success' : 'white'"
-                :outline="notificationsOutline"
-                rounded-full
-                small
+                type="submit"
+                color="fipu_blue"
+                label="Prijavi se"
+                :loading="isLoading"
+                class="w-full"
               />
-            </template>
-          </NotificationBar>
-        </div>
-      </CardBox>
-    </div>
+            </BaseButtons>
+
+            <div
+              class="my-2 2xl:my-4 flex items-center before:mt-0.5 before:flex-1 before:border-t before:border-neutral-300 after:mt-0.5 after:flex-1 after:border-t after:border-neutral-300"
+            >
+              <p class="mx-4 mb-0 text-center dark:text-white">ili</p>
+            </div>
+            <BaseButtons class="space-y-2">
+              <BaseButton
+                color="fipu_blue"
+                outline
+                label="Registriraj se"
+                class="w-full"
+                @click.prevent="onRegisterClick"
+              />
+            </BaseButtons>
+
+            <!-- Form Ends -->
+            <NotificationBar
+              ref="notificationBar"
+              class="animate__animated animate__fadeInUp mt-2"
+              :outline="notificationsOutline"
+            >
+              <b>{{ notificationStatus }}</b> {{ notificationMessage }}
+              <template #right>
+                <BaseButton
+                  :icon="mdiClose"
+                  :color="notificationsOutline ? 'success' : 'white'"
+                  :outline="notificationsOutline"
+                  rounded-full
+                  small
+                />
+              </template>
+            </NotificationBar>
+          </div>
+        </CardBox>
+      </div>
+    </Transition>
   </SectionSplitLogin>
 </template>
 
-<style>
-.hover-underline-animation {
-  position: relative;
+<style scoped>
+.fast-animation {
+  animation-duration: 0.5s;
 }
-
 .hover-underline-animation:after {
   content: "";
   position: absolute;

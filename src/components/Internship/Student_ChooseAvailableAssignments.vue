@@ -26,7 +26,7 @@ import TableAvailableAssignments from "@/components/Tables/TableAvailableAssignm
 import FormField from "@/components/Form/FormField.vue";
 import FormControl from "@/components/Form/FormControl.vue";
 
-import router from "@/router";
+import { router } from "@/router";
 import Utils from "@/helpers/utils.js";
 import { mainStore, guestStore, studentStore } from "@/main.js";
 
@@ -151,7 +151,9 @@ const isDraggableEnabled = computed(
         main
         title="Vaš odabir"
       ></SectionTitleLineWithButton>
-
+      <p v-if="checkedAssignments.length === 3" class="mb-4">
+        Zadatke možete rasporediti po vašim preferencijama.
+      </p>
       <div
         v-if="checkedAssignments.length"
         class="flex justify-center items-center"
@@ -192,7 +194,7 @@ const isDraggableEnabled = computed(
         ></div>
 
         <FormField
-          class="mt-6"
+          class="lg:mt-4"
           label="Napomena (nije obavezno)"
           help="Maksimalno 255 znakova"
         >

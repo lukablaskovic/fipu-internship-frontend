@@ -23,7 +23,7 @@ import SnackBar from "@/components/Premium/SnackBar.vue";
 import Utils from "@/helpers/utils.js";
 import { snackBarStore } from "@/main.js";
 import BaseButton from "@/components/Base/BaseButton.vue";
-import router from "@/router";
+import { router } from "@/router";
 const process_instance_id = ref(null);
 
 const assignemntDetails = ref(null);

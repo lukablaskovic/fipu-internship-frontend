@@ -15,14 +15,11 @@ import LayoutAuthenticated from "@/layouts/LayoutAuthenticated.vue";
 import SectionTitleLineWithButton from "@/components/Section/SectionTitleLineWithButton.vue";
 
 import TableAllocations from "@/components/Tables/TableAllocations.vue";
-import router from "@/router";
+import { router } from "@/router";
 import BaseIcon from "@/components/Base/BaseIcon.vue";
 import CardBoxModal from "@/components/Cardbox/CardBoxModal.vue";
 const userAuthenticated = computed(() => mainStore.userAuthenticated);
 import VuePdfEmbed from "vue-pdf-embed";
-
-const source1 =
-  "http://localhost:8082/api/potvrda/13ffc8894bb4be73784d9032ec68aa0c0b388b6c.pdf";
 </script>
 
 <template>

@@ -6,6 +6,9 @@ import axios from "axios";
 
 export const useMainStore = defineStore("main", {
   state: () => ({
+    transition_name: "",
+    enter_active_class: "",
+    leave_active_class: "",
     bpmn_process_name: "strucna_praksa_edited",
     currentUser: {
       id: "",

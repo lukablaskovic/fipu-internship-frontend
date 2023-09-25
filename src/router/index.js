@@ -1,6 +1,5 @@
 import { createRouter, createWebHashHistory } from "vue-router";
 import { mainStore } from "@/main.js";
-
 const routes = [
   {
     path: "/",
@@ -102,6 +101,7 @@ const routes = [
     meta: {
       title: "Prijava",
       requiresAuth: false,
+      transition: "login",
     },
     path: "/login",
     name: "login",
@@ -111,6 +111,7 @@ const routes = [
     meta: {
       title: "Registracija",
       requiresAuth: false,
+      transition: "register",
     },
     path: "/register",
     name: "register",
@@ -201,4 +202,4 @@ router.beforeEach((to, from, next) => {
   next();
 });
 
-export default router;
+export { router };

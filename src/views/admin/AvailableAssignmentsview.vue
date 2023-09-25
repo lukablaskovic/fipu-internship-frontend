@@ -10,7 +10,7 @@ import LayoutAuthenticated from "@/layouts/LayoutAuthenticated.vue";
 import SectionTitleLineWithButton from "@/components/Section/SectionTitleLineWithButton.vue";
 
 import TableCompanies from "@/components/Tables/TableCompanies.vue";
-import router from "@/router";
+import { router } from "@/router";
 import BaseIcon from "@/components/Base/BaseIcon.vue";
 import TableAvailableAssignments from "@/components/Tables/TableAvailableAssignments.vue";
 const userAuthenticated = computed(() => mainStore.userAuthenticated);

@@ -4,7 +4,7 @@ import "animate.css";
 import { createApp, markRaw } from "vue";
 import { createPinia } from "pinia";
 import App from "./App.vue";
-import router from "./router";
+import { router } from "./router";
 
 /* Pinia global stores */
 import { useMainStore } from "@/stores/main_store.js";

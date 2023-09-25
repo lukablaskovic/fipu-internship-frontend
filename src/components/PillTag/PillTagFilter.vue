@@ -14,7 +14,7 @@ import BaseIcon from "@/components/Base/BaseIcon.vue";
 import BaseButton from "@/components/Base/BaseButton.vue";
 import { adminStore, snackBarStore } from "@/main";
 
-import router from "@/router";
+import { router } from "@/router";
 import Utils from "@/helpers/utils.js";
 
 import { ActivityEventMappings } from "@/helpers/maps";
