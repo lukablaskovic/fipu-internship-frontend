@@ -44,12 +44,12 @@ import VuePdfEmbed from "vue-pdf-embed";
           <p class="flex flex-wrap items-center text-sm md:text-base">
             Ako još niste prijavili zadatak, to možete učiniti u
             <span
-              class="text-fipu_blue cursor-pointer inline-flex items-center md:ml-2 whitespace-normal"
+              class="text-fipu_blue cursor-pointer inline-flex items-center md:ml-1 whitespace-normal"
               @click="router.push('/moja-praksa')"
             >
               <BaseIcon
                 :path="mdiLaptop"
-                class="flex-none align-middle mr-1"
+                class="flex-none align-middle"
                 :size="18"
               ></BaseIcon>
 

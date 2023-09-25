@@ -7,6 +7,7 @@ import {
   mdiNumeric1Circle,
   mdiNumeric2CircleOutline,
   mdiNumeric3CircleOutline,
+  mdiEmail,
 } from "@mdi/js";
 
 const isModalActive = ref(null);
@@ -18,7 +19,8 @@ import LayoutGuest from "@/layouts/LayoutGuest.vue";
 
 import SectionTitleLineWithButton from "@/components/Section/SectionTitleLineWithButton.vue";
 import CardBoxWidget from "@/components/Cardbox/CardBoxWidget.vue";
-
+import BaseIcon from "@/components/Base/BaseIcon.vue";
+import { router } from "@/router";
 import CardBoxModal from "@/components/Cardbox/CardBoxModal.vue";
 import { mainStore, studentStore } from "@/main.js";
 
@@ -67,12 +69,24 @@ const userAuthenticated = computed(() => mainStore.userAuthenticated);
       <SectionTitleLineWithButton
         :icon="mdiProgressClock"
         main
-        title="U procesu alokacije"
+        title="U procesu alokacije..."
       ></SectionTitleLineWithButton>
-      <p>
+      <div class="flex flex-wrap text-base">
         Zadatak vam još nije dodijeljen. Ako čekate više od 10 dana, javite se
-        profesoru.
-      </p>
+        voditelju prakse putem
+        <span
+          class="text-fipu_blue cursor-pointer inline-flex whitespace-normal items-center"
+          @click="router.push('/moja-praksa')"
+        >
+          <BaseIcon
+            :path="mdiEmail"
+            class="flex-none align-middle"
+            :size="18"
+          ></BaseIcon>
+
+          Poruke </span
+        >.
+      </div>
       <br />
       <SectionTitleLineWithButton
         :icon="mdiClipboardCheckOutline"

@@ -117,12 +117,17 @@ const rules = {
 };
 
 const v$ = useVuelidate(rules, registerForm);
+const isLoading = ref(false);
 
 async function onSubmit() {
   console.log("Submitting form...");
+  isLoading.value = true;
 
   v$.value.$touch();
-  if (v$.value.$invalid) return;
+  if (v$.value.$invalid) {
+    isLoading.value = false;
+    return;
+  }
 
   let postData = {
     ...registerForm,
@@ -131,6 +136,8 @@ async function onSubmit() {
   delete postData.passwordConfirm;
 
   let registrationResult = await guestStore.registerStudent(postData);
+  isLoading.value = false;
+
   if (
     registrationResult.response &&
     registrationResult.response.status === 400
@@ -354,6 +361,7 @@ function navigateToLogin() {
                   type="submit"
                   color="fipu_light_blue"
                   label="Registriraj se"
+                  :loading="isLoading"
                   class="w-full"
                 />
               </BaseButtons>

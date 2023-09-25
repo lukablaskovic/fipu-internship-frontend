@@ -217,7 +217,7 @@ const toggleSelection = (option) => {
             <button
               :class="[
                 option.label === 'Spremi'
-                  ? 'hover:bg-emerald-500'
+                  ? 'hover:bg-lime-500'
                   : active
                   ? 'bg-gray-100 dark:bg-slate-700'
                   : '',

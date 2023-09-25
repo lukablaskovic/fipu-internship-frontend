@@ -22,7 +22,7 @@ const styles = {
   zinc: "bg-zinc-500 border-zinc-500 hover:bg-zinc-600",
   neutral: "bg-neutral-500 border-neutral-500 hover:bg-neutral-600",
   stone: "bg-stone-500 border-stone-500 hover:bg-stone-600",
-  emerald: "bg-emerald-500 border-emerald-500 hover:bg-emerald-600",
+  lime: "bg-lime-500 border-lime-500 hover:bg-lime-600",
   teal: "bg-teal-500 border-teal-500 hover:bg-teal-600",
   cyan: "bg-cyan-500 border-cyan-500 hover:bg-cyan-600",
   sky: "bg-sky-500 border-sky-500 hover:bg-sky-600",

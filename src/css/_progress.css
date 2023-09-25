@@ -43,14 +43,14 @@
   }
 
   .progress-green::-webkit-progress-value {
-    @apply bg-emerald-500;
+    @apply bg-lime-500;
   }
 
   .progress-green::-moz-progress-bar {
-    @apply bg-emerald-500;
+    @apply bg-lime-500;
   }
 
   .progress-green::-ms-fill {
-    @apply bg-emerald-500 border-0;
+    @apply bg-lime-500 border-0;
   }
 }

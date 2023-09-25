@@ -122,7 +122,7 @@ const borderColor = computed(() => {
   }
 
   if (props.success) {
-    return "border-emerald-600";
+    return "border-lime-600";
   }
 
   return "border-gray-700";
@@ -138,7 +138,7 @@ const placeholderColor = computed(() => {
   }
 
   if (props.success) {
-    return "placeholder-emerald-600";
+    return "placeholder-lime-600";
   }
 
   return null;

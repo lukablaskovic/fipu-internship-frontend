@@ -89,19 +89,19 @@ export const stone = {
   overlay: "from-stone-700 via-stone-900 to-stone-700",
 };
 
-export const emerald = {
-  aside: "bg-emerald-800",
-  asideScrollbars: "aside-scrollbars-[emerald]",
-  asideBrand: "bg-emerald-900 text-white",
-  asideMenuItem: "hover:bg-emerald-600/50",
+export const lime = {
+  aside: "bg-lime-800",
+  asideScrollbars: "aside-scrollbars-[lime]",
+  asideBrand: "bg-lime-900 text-white",
+  asideMenuItem: "hover:bg-lime-600/50",
   asideMenuItemActive: "font-bold text-white",
-  asideMenuItemActiveBg: "bg-emerald-600/25",
-  asideMenuItemInactive: "text-emerald-300",
-  asideMenuDropdown: "bg-emerald-700/50",
+  asideMenuItemActiveBg: "bg-lime-600/25",
+  asideMenuItemInactive: "text-lime-300",
+  asideMenuDropdown: "bg-lime-700/50",
   navBarItemLabel: "text-black",
-  navBarItemLabelHover: "hover:text-emerald-500",
-  navBarItemLabelActiveColor: "text-emerald-600",
-  overlay: "from-emerald-50 via-emerald-200 to-emerald-50",
+  navBarItemLabelHover: "hover:text-lime-500",
+  navBarItemLabelActiveColor: "text-lime-600",
+  overlay: "from-lime-50 via-lime-200 to-lime-50",
 };
 
 export const teal = {

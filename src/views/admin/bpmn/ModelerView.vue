@@ -74,7 +74,7 @@ async function fetchXML() {
           <CardBoxWidget
             trend="12%"
             trend-type="up"
-            color="text-emerald-500"
+            color="text-lime-500"
             :icon="mdiAccountSchoolOutline"
             :number="512"
             label="Uspješno odrađenih praksi"

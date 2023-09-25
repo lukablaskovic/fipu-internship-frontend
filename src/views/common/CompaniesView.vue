@@ -26,17 +26,18 @@ const userAdmin = computed(() => mainStore.userAdmin);
         <div v-if="!userAdmin" class="mb-4">
           <p class="text-sm md:text-base">
             Ukoliko ne možete naći zadatak koji vam se sviđa, javite se
-            poslodavcu, predstavite se i zamolite ih da ispune zadatak.
+            poslodavcu, predstavite se i zamolite ih da ispune zadatak
+            <a href="">putem ove poveznice</a>.
           </p>
           <p class="flex flex-wrap items-center text-sm md:text-base">
-            Nakon što poslodavac ispuni zadatak, prijavite ge u
+            Nakon što poslodavac ispuni zadatak, prijavite ga u
             <span
-              class="text-fipu_blue cursor-pointer inline-flex items-center md:ml-2 whitespace-normal"
+              class="text-fipu_blue cursor-pointer inline-flex items-center md:ml-1 whitespace-normal"
               @click="router.push('/moja-praksa')"
             >
               <BaseIcon
                 :path="mdiLaptop"
-                class="flex-none align-middle mr-1"
+                class="flex-none align-middle"
                 :size="18"
               ></BaseIcon>
 

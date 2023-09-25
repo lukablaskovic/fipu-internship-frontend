@@ -122,7 +122,7 @@ const pagesList = computed(() => {
             v-if="adminStore.studentsFetched"
             trend="10%"
             trend-type="up"
-            color="text-emerald-500"
+            color="text-lime-500"
             class="rounded-lg"
             :icon="mdiAccountSchoolOutline"
             :number="512"
