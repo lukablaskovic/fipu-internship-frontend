@@ -1,8 +1,10 @@
 import { defineStore } from "pinia";
+import { mainStore } from "@/main";
+
 import { User } from "@/services/gateway_api";
 import { Model, ProcessInstance } from "@/services/bpmn_engine_api";
 import { Admin } from "@/services/baserow_client_api";
-import { mainStore } from "@/main";
+
 export const useAdminStore = defineStore("admin", {
   state: () => ({
     students: [],
@@ -70,11 +72,6 @@ export const useAdminStore = defineStore("admin", {
     },
     setSelectedStudent(student) {
       this.selectedStudent = student;
-      console.log(
-        "%cadmin_store: setSelectedStudent() - this.selectedStudent",
-        "color: green;",
-        this.selectedStudent
-      );
     },
     async getProcessInstanceData(student) {
       try {
@@ -100,7 +97,7 @@ export const useAdminStore = defineStore("admin", {
         if (!students || students.length === 0) {
           this.students = [];
           this.studentsFetched = true;
-          return; // Exit the method if no students are fetched
+          return;
         }
 
         this.dashboard_data.waiting_for_allocation = 0;
@@ -139,7 +136,7 @@ export const useAdminStore = defineStore("admin", {
       } catch (error) {
         console.log("Error:", error);
       } finally {
-        this.studentsFetched = true; // Ensure this is always set to true at the end, regardless of any error
+        this.studentsFetched = true;
       }
     },
     async getPreferencesDetailed(student_JMBAG) {
@@ -187,7 +184,6 @@ export const useAdminStore = defineStore("admin", {
         console.log("Error:", error);
       }
     },
-    //POST handle_new_instance
     async handleNewInstance(instance_id, current_task, post_data) {
       try {
         const response = await ProcessInstance.handleNewInstance(

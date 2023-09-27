@@ -6,8 +6,8 @@
       >
         <ComboboxInput
           v-model="displayValue"
-          placeholder="Pritisni [/] za pretraživanje"
-          class="inputClass w-full border-none py-2 pl-3 pr-10 text-sm leading-5 text-gray-900 focus:ring-0"
+          placeholder="CTRL + k ili [ / ] za pretraživanje"
+          class="inputClass w-64 md:w-96 border-none py-2 pl-3 pr-10 text-sm leading-5 text-gray-900 focus:ring-0"
           @change="query = $event.target.value"
         />
         <ComboboxButton
@@ -33,19 +33,28 @@
             v-if="query === ''"
             class="relative cursor-default select-none py-2 px-4 text-gray-700"
           >
-            <b>Unesi:</b>
+            <b>Kratke upute kako koristiti tražilicu</b>
+            <hr />
+            <br />
             <div>
-              <i class="bg-fipu_blue px-0.5">s:</i> pretraži studenta po imenu i
+              <b class="bg-fipu_blue px-0.5">s:</b> pretraži studenta po imenu i
               prezimenu
             </div>
             <div>
-              <i class="bg-fipu_blue px-0.5">sj:</i> pretraži studenta po JMBAGu
+              <b class="bg-fipu_blue px-0.5">sj:</b> pretraži studenta po JMBAGu
             </div>
             <div>
-              <i class="bg-fipu_blue px-0.5">se:</i> pretraži studenta po emailu
+              <b class="bg-fipu_blue px-0.5">se:</b> pretraži studenta po emailu
             </div>
             <div>
-              <i class="bg-fipu_blue px-0.5">e:</i> za pretraživanje događaja
+              <b class="bg-fipu_blue px-0.5">t:</b> za pretraživanje po
+              trenutnom tasku
+            </div>
+            <div>
+              <b class="bg-fipu_blue px-0.5">p:</b> za pretraživanje po poduzeću
+            </div>
+            <div>
+              <b class="bg-fipu_blue px-0.5">e:</b> za pretraživanje eventa
             </div>
           </div>
 
@@ -133,10 +142,17 @@ let displayValue = computed(() => {
 
 onMounted(() => {
   function onKeydown(event) {
+    // Check for the '/' key
     if (event.key === "/") {
       event.preventDefault();
       searchInput.value = document.querySelector(".inputClass");
+      searchInput.value && searchInput.value.focus();
+    }
 
+    // Check for the 'CTRL + K' combination
+    if (event.key.toLowerCase() === "k" && event.ctrlKey) {
+      event.preventDefault(); // Prevent default behavior
+      searchInput.value = document.querySelector(".inputClass");
       searchInput.value && searchInput.value.focus();
     }
   }

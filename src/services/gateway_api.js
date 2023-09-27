@@ -1,5 +1,4 @@
 import createAxiosInstance from "@/helpers/axios-wrapper";
-
 const AxiosWrapper = createAxiosInstance(import.meta.env.VITE_GATEWAY_API_URL);
 
 const Auth = {

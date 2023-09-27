@@ -40,6 +40,7 @@ const adminStore = useAdminStore(pinia);
 const styleStore = useStyleStore(pinia);
 const layoutStore = useLayoutStore(pinia);
 const snackBarStore = useSnackBarStore(pinia);
+
 app.use(router);
 app.mount("#app");
 

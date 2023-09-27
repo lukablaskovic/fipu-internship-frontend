@@ -24,15 +24,15 @@ function serviceStatusError(serviceName, url) {
   return {
     [serviceName]: {
       status: "Down",
-      message: "Service is not available",
+      message: "Servis nije dostupan.",
       url,
     },
   };
 }
 
 const Control = {
-  checkAllServiceStatuses() {
-    return Promise.all(
+  async checkAllServiceStatuses() {
+    const statuses = await Promise.all(
       Object.entries(MICROSERVICES).map(([serviceName, serviceData]) =>
         serviceData.instance
           .get("/status")
@@ -46,25 +46,28 @@ const Control = {
           }))
           .catch(() => serviceStatusError(serviceName, serviceData.url))
       )
-    ).then((statuses) => Object.assign({}, ...statuses));
+    );
+    return Object.assign({}, ...statuses);
   },
 
-  checkServiceStatus(serviceName) {
+  async checkServiceStatus(serviceName) {
     const service = MICROSERVICES[serviceName];
     if (!service) {
-      throw new Error(`Service ${serviceName} not found.`);
+      throw new Error(`Servis ${serviceName} nije pronađen.`);
     }
 
-    return service.instance
-      .get("/status")
-      .then((response) => ({
+    try {
+      const response = await service.instance.get("/status");
+      return {
         [serviceName]: {
           status: response.status,
           message: response.message,
           url: service.url,
         },
-      }))
-      .catch(() => serviceStatusError(serviceName, service.url));
+      };
+    } catch {
+      return serviceStatusError(serviceName, service.url);
+    }
   },
 
   autoRefreshServiceStatus(intervalMinutes = 5) {

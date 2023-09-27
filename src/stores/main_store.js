@@ -1,8 +1,9 @@
 import { defineStore } from "pinia";
+import axios from "axios";
+
 import { Auth } from "@/services/gateway_api";
 import { User } from "@/services/gateway_api";
 import { Guest } from "@/services/baserow_client_api";
-import axios from "axios";
 
 export const useMainStore = defineStore("main", {
   state: () => ({

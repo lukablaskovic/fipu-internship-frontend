@@ -11,6 +11,7 @@ import {
   mdiAccountCancel,
   mdiAlertBox,
   mdiClockTimeEight,
+  mdiCalendarClock,
 } from "@mdi/js";
 import { useRouter } from "vue-router";
 import moment from "@/moment-setup";
@@ -100,6 +101,11 @@ const pagesList = computed(() => {
 
   return pagesList;
 });
+
+const toggleDateType = () => {
+  adminStore.dashboard_data.relativeToNowTimestmap =
+    !adminStore.dashboard_data.relativeToNowTimestmap;
+};
 </script>
 
 <template>
@@ -211,7 +217,11 @@ const pagesList = computed(() => {
               <PillTag
                 class="cursor-pointer"
                 left="false"
-                :icon="mdiClockTimeEight"
+                :icon="
+                  adminStore.dashboard_data.relativeToNowTimestmap
+                    ? mdiClockTimeEight
+                    : mdiCalendarClock
+                "
                 :color="
                   adminStore.dashboard_data.relativeToNowTimestmap
                     ? 'info'
@@ -219,9 +229,10 @@ const pagesList = computed(() => {
                 "
                 :label="
                   adminStore.dashboard_data.relativeToNowTimestmap
-                    ? 'Relativno'
+                    ? 'Relativno vrijeme'
                     : 'Datum'
                 "
+                @click="toggleDateType"
               />
             </div>
           </div>

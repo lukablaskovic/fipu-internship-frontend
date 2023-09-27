@@ -17,20 +17,11 @@ onBeforeMount(async () => {
       pendingProcessTask.value = await studentStore.getPendingUserTask(
         processInstance.value
       );
-      console.log("pendingProcessTask", pendingProcessTask.value);
     } catch (error) {
       error.value = "An error occurred while fetching instance info.";
       console.error(error);
     }
   }
-
-  console.log(
-    UserTaskMappings.getTaskProperty(
-      pendingProcessTask.value,
-      "component",
-      studentStore.student_process_instance_data.state
-    )
-  );
 });
 
 const currentRenderingComponent = computed(() => {

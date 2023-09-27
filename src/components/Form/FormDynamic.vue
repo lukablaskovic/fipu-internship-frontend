@@ -29,9 +29,9 @@
 
 <script setup>
 import { onMounted, computed, reactive, watch } from "vue";
+
 import CardBox from "../Cardbox/CardBox.vue";
 import FormField from "./FormField.vue";
-import FormCheckRadio from "./FormCheckRadio.vue";
 import FormCheckRadioGroup from "./FormCheckRadioGroup.vue";
 import TaskTable from "../BPMN/TaskTable.vue";
 
@@ -73,10 +73,6 @@ const handleRowSelected = (assignmentId) => {
   formValues["Alocirani_zadatak"] = assignmentId;
 };
 
-const allFieldsFilled = computed(() => {
-  return Object.values(formValues).every((value) => value);
-});
-
 const getTableType = (type) => {
   const matches = type.match(/selectFromTable-["']?([^"']+)["']?/);
   if (matches) {
@@ -84,6 +80,9 @@ const getTableType = (type) => {
   }
 };
 
+const allFieldsFilled = computed(() => {
+  return Object.values(formValues).every((value) => value);
+});
 watch(allFieldsFilled, (newValue) => {
   emit("allFieldsFilled", newValue);
 });

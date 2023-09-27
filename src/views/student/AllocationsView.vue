@@ -1,5 +1,4 @@
 <script setup>
-import { computed } from "vue";
 import { adminStore, mainStore } from "@/main.js";
 import {
   mdiMonitorCellphone,
@@ -7,24 +6,23 @@ import {
   mdiLaptop,
   mdiFilePdfBox,
 } from "@mdi/js";
+import { router } from "@/router";
+import VuePdfEmbed from "vue-pdf-embed";
+
+import LayoutAuthenticated from "@/layouts/LayoutAuthenticated.vue";
+
 import SectionMain from "@/components/Section/SectionMain.vue";
 import CardBox from "@/components/Cardbox/CardBox.vue";
 import NotificationBar from "@/components/Notification/NotificationBar.vue";
-
-import LayoutAuthenticated from "@/layouts/LayoutAuthenticated.vue";
 import SectionTitleLineWithButton from "@/components/Section/SectionTitleLineWithButton.vue";
-
 import TableAllocations from "@/components/Tables/TableAllocations.vue";
-import { router } from "@/router";
 import BaseIcon from "@/components/Base/BaseIcon.vue";
 import CardBoxModal from "@/components/Cardbox/CardBoxModal.vue";
-const userAuthenticated = computed(() => mainStore.userAuthenticated);
-import VuePdfEmbed from "vue-pdf-embed";
 </script>
 
 <template>
   <div>
-    <LayoutAuthenticated v-if="userAuthenticated">
+    <LayoutAuthenticated v-if="mainStore.userAuthenticated">
       <SectionMain>
         <SectionTitleLineWithButton
           :icon="mdiClipboardCheck"

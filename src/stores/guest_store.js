@@ -1,8 +1,9 @@
 import { defineStore } from "pinia";
+import { mainStore } from "@/main.js";
+
 import { Guest } from "@/services/baserow_client_api.js";
 import { ProcessInstance } from "@/services/bpmn_engine_api.js";
 import { Auth } from "@/services/gateway_api.js";
-import { mainStore } from "@/main.js";
 
 export const useGuestStore = defineStore("guest", {
   state: () => ({

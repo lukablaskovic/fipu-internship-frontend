@@ -1,6 +1,5 @@
 <script setup>
 import { RouterView } from "vue-router";
-import { mainStore } from "@/main.js";
 </script>
 
 <template>
@@ -8,7 +7,6 @@ import { mainStore } from "@/main.js";
 </template>
 
 <style scoped>
-/* Slide-right Transition */
 .slide-right-enter-active,
 .slide-right-leave-active {
   transition: transform 0.5s;
@@ -18,7 +16,6 @@ import { mainStore } from "@/main.js";
   transform: translateX(-100%);
 }
 
-/* Slide-left Transition */
 .slide-left-enter-active,
 .slide-left-leave-active {
   transition: transform 0.5s;
