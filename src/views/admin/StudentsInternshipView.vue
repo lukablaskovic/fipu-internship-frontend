@@ -1,39 +1,32 @@
 <script setup>
-import { computed, ref, onMounted, watch } from "vue";
-
-import { adminStore, mainStore } from "@/main.js";
+import { ref, onMounted, watch } from "vue";
+import { useRouter, useRoute } from "vue-router";
+import axios from "axios";
 import { mdiAccountMultiple } from "@mdi/js";
+
+import { adminStore, mainStore, snackBarStore } from "@/main.js";
+import { UserTaskMappings } from "@/helpers/maps";
+import Utils from "@/helpers/utils.js";
+
 import SectionMain from "@/components/Section/SectionMain.vue";
 import CardBox from "@/components/Cardbox/CardBox.vue";
-import NotificationBar from "@/components/Notification/NotificationBar.vue";
 import FormDynamic from "@/components/Form/FormDynamic.vue";
 import CardBoxComponentEmpty from "@/components/Cardbox/CardBoxComponentEmpty.vue";
-import LayoutAuthenticated from "@/layouts/LayoutAuthenticated.vue";
 import SectionTitleLineWithButton from "@/components/Section/SectionTitleLineWithButton.vue";
 import TableStudents from "@/components/Tables/TableStudents.vue";
 import BpmnDiagram from "@/components/BPMN/BpmnDiagram.vue";
-import axios from "axios";
 import CardBoxModal from "@/components/Cardbox/CardBoxModal.vue";
-import { UserTaskMappings } from "@/helpers/maps";
 import TableInstanceData from "@/components/BPMN/TableInstanceData.vue";
-import { snackBarStore } from "@/main.js";
-import Utils from "@/helpers/utils.js";
 import LoadingAnimatedIcon from "@/components/LoadingAnimatedIcon.vue";
-const bpmnKey = ref(0);
 
-const bpmn_model = ref(null);
+import LayoutAuthenticated from "@/layouts/LayoutAuthenticated.vue";
+
 let bpmn_diagram_active = ref(false);
+
 const modal_select_bpmn_task = ref(false);
 const modal_past_bpmn_task = ref(false);
 
-const process_instance_data = ref(null);
-
-const userAuthenticated = computed(() => mainStore.userAuthenticated);
-
 const disabledCondition = ref(true);
-import { useRouter, useRoute } from "vue-router";
-const router = useRouter();
-
 const updateDisabledCondition = (allFilled) => {
   disabledCondition.value = !allFilled;
 };
@@ -55,6 +48,10 @@ async function fetchXML() {
   }
 }
 
+const router = useRouter();
+const process_instance_data = ref(null);
+const bpmnKey = ref(0);
+
 async function handleProcessDiagram() {
   bpmn_diagram_active.value = true;
   process_instance_data.value = await adminStore.getProcessInstanceData(
@@ -67,13 +64,7 @@ async function handleProcessDiagram() {
   router.push(`/studenti/${process_instance_data.value.id}`);
 }
 
-onMounted(async () => {
-  await adminStore.getStudents();
-  bpmn_model.value = await fetchXML();
-});
-
 const route = useRoute();
-
 // Load data based on process_instance_id from the route
 async function loadDataForStudent() {
   const id = route.params.process_instance_id;
@@ -88,6 +79,13 @@ async function loadDataForStudent() {
 
 watch(() => route.params.process_instance_id, loadDataForStudent, {
   immediate: true,
+});
+
+const bpmn_model = ref(null);
+onMounted(async () => {
+  await adminStore.getStudents();
+  bpmn_model.value = await fetchXML();
+  loadDataForStudent();
 });
 
 async function handleNewInstance() {
@@ -116,13 +114,11 @@ async function handleNewInstance() {
   await Utils.wait(2);
   location.reload();
 }
-
-onMounted(loadDataForStudent);
 </script>
 
 <template>
   <div>
-    <LayoutAuthenticated v-if="userAuthenticated">
+    <LayoutAuthenticated v-if="mainStore.userAuthenticated">
       <SectionMain>
         <SectionTitleLineWithButton
           :icon="mdiAccountMultiple"

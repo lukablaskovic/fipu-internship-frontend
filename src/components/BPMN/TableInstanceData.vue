@@ -1,14 +1,7 @@
 <script setup>
 import { ref, onMounted, computed } from "vue";
 
-import LoadingOverlay from "@/components/LoadingOverlay.vue";
 import { adminStore } from "@/main.js";
-
-const props = defineProps({
-  checkable: Boolean,
-});
-
-const isModalActive = ref(null);
 
 const variables = ref({});
 
@@ -45,15 +38,6 @@ const formattedVariables = computed(() => {
 </script>
 
 <template>
-  <!--
-  <LoadingOverlay
-    v-if="!variables.length"
-    :is-active="!variables.length"
-    title="Učitavanje..."
-    description="Može potrajati nekoliko sekundi, molimo ne zatvarajte stranicu."
-  >
-  </LoadingOverlay>
--->
   <table class="mb-4">
     <thead class="text-sm">
       <tr>

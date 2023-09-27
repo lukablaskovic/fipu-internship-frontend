@@ -1,23 +1,17 @@
 <script setup>
-import { ref, computed, onMounted, reactive } from "vue";
-import {
-  mdiLaptop,
-  mdiBallot,
-  mdiCheckDecagram,
-  mdiClipboardCheck,
-} from "@mdi/js";
-
-import SectionMain from "@/components/Section/SectionMain.vue";
+import { ref, computed, onMounted } from "vue";
+import { mdiLaptop, mdiCheckDecagram, mdiClipboardCheck } from "@mdi/js";
 
 import LayoutAuthenticated from "@/layouts/LayoutAuthenticated.vue";
 import LayoutGuest from "@/layouts/LayoutGuest.vue";
 
+import SectionMain from "@/components/Section/SectionMain.vue";
 import SectionTitleLineWithButton from "@/components/Section/SectionTitleLineWithButton.vue";
 import CardboxAllocation from "@/components/Cardbox/CardBoxAllocation.vue";
-import { mainStore, snackBarStore, studentStore } from "@/main.js";
+
+import { mainStore, studentStore, snackBarStore } from "@/main.js";
 
 const allocated_assignment = ref(null);
-
 onMounted(async () => {
   await studentStore.getInstanceInfo(
     mainStore.currentUser.internship_process.id
@@ -37,14 +31,12 @@ onMounted(async () => {
 });
 
 const Layout = computed(() => {
-  if (userAuthenticated.value) {
+  if (mainStore.userAuthenticated) {
     return LayoutAuthenticated;
   } else {
     return LayoutGuest;
   }
 });
-
-const userAuthenticated = computed(() => mainStore.userAuthenticated);
 </script>
 
 <template>

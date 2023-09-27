@@ -6,7 +6,7 @@
       >
         <ComboboxInput
           v-model="displayValue"
-          placeholder="Unesi [/] za pretraživanje"
+          placeholder="Pritisni [/] za pretraživanje"
           class="inputClass w-full border-none py-2 pl-3 pr-10 text-sm leading-5 text-gray-900 focus:ring-0"
           @change="query = $event.target.value"
         />

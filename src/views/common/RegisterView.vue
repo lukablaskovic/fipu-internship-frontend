@@ -9,7 +9,6 @@ import {
   helpers,
   numeric,
 } from "@vuelidate/validators";
-import { useRouter } from "vue-router";
 import {
   croatianAlpha,
   getFirstErrorForField,
@@ -26,22 +25,19 @@ import {
   mdiAlert,
   mdiAlertCircle,
 } from "@mdi/js";
+import { useRouter } from "vue-router";
 
 import SectionSplitRegister from "@/components/Section/SectionSplitRegister.vue";
-
 import CardBox from "@/components/Cardbox/CardBox.vue";
 import FormCheckRadio from "@/components/Form/FormCheckRadio.vue";
 import FormField from "@/components/Form/FormField.vue";
 import FormControl from "@/components/Form/FormControl.vue";
 import BaseButton from "@/components/Base/BaseButton.vue";
 import BaseButtons from "@/components/Base/BaseButtons.vue";
+
 import { StudentMappings } from "@/helpers/maps";
-import { guestStore } from "@/main";
-
 import Utils from "@/helpers/utils";
-const router = useRouter();
-
-const transitioning = ref(false);
+import { guestStore } from "@/main";
 
 let data_confirmed = ref(false);
 
@@ -55,7 +51,6 @@ const registerForm = reactive({
   passwordConfirm: "",
 });
 const password = computed(() => registerForm.password);
-
 const rules = {
   ime: {
     required: helpers.withMessage("Polje je obavezno", required),
@@ -109,15 +104,15 @@ const rules = {
       containsNumeric
     ),
   },
-
   passwordConfirm: {
     required: helpers.withMessage("Polje je obavezno", required),
     sameAs: helpers.withMessage("Lozinke se ne podudaraju", sameAs(password)),
   },
 };
-
 const v$ = useVuelidate(rules, registerForm);
+
 const isLoading = ref(false);
+const router = useRouter();
 
 async function onSubmit() {
   console.log("Submitting form...");
@@ -200,6 +195,7 @@ function showNotificationBar(type) {
   notificationBar.value.show();
 }
 
+const transitioning = ref(false);
 function onPrijavaClick() {
   transitioning.value = true;
 }
@@ -220,7 +216,6 @@ function navigateToLogin() {
         v-if="!transitioning"
         class="flex flex-col flex-shrink md:flex-row overflow-hidden md:rounded-lg md:p-4 2xl:p-16 md:h-screen lg:px-12"
       >
-        <!--This is graphics image cardbox-->
         <CardBox
           class="hidden md:block flex-1 md:rounded-l-lg justify-center items-center"
           centered-content
@@ -231,7 +226,6 @@ function navigateToLogin() {
             class="w-3/4 object-contain mx-auto"
           />
         </CardBox>
-        <!--This is cardbox with register form-->
 
         <CardBox
           class="flex flex-col flex-shrink flex-1 space-y-4 lg:pr-32 md:rounded-r-lg"
@@ -383,7 +377,6 @@ function navigateToLogin() {
               />
             </template>
           </NotificationBar>
-          <!-- Form Ends -->
         </CardBox>
       </div>
     </Transition>

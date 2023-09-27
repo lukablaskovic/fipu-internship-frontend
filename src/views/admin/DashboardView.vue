@@ -1,6 +1,6 @@
 <script setup>
 import { ref, computed, onMounted } from "vue";
-import { adminStore, mainStore } from "@/main.js";
+import { adminStore, mainStore, snackBarStore } from "@/main.js";
 import {
   mdiAccountMultiple,
   mdiAccountSchoolOutline,
@@ -10,9 +10,11 @@ import {
   mdiMonitorAccount,
   mdiAccountCancel,
   mdiAlertBox,
-  mdiCog,
   mdiClockTimeEight,
 } from "@mdi/js";
+import { useRouter } from "vue-router";
+import moment from "@/moment-setup";
+
 import SectionMain from "@/components/Section/SectionMain.vue";
 import CardBoxWidget from "@/components/Cardbox/CardBoxWidget.vue";
 import CardBoxEvents from "@/components/Cardbox/CardBoxEvents.vue";
@@ -23,23 +25,18 @@ import SkeletonLoaderEvent from "@/components/SkeletonLoaderEvent.vue";
 import BaseLevel from "@/components/Base/BaseLevel.vue";
 import BaseButtons from "@/components/Base/BaseButtons.vue";
 import BaseButton from "@/components/Base/BaseButton.vue";
-import { ActivityEventMappings } from "@/helpers/maps.js";
-import { snackBarStore } from "@/main.js";
-import FormCheckRadio from "@/components/Form/FormCheckRadio.vue";
-import CardBox from "@/components/Cardbox/CardBox.vue";
 import PillTag from "@/components/PillTag/PillTag.vue";
-import CardBoxModal from "@/components/Cardbox/CardBoxModal.vue";
-import { useRouter } from "vue-router";
-
 import PillTagFilter from "@/components/PillTag/PillTagFilter.vue";
-import { buttonMenuOptions } from "@/sampleButtonMenuOptions.js";
-import { latestEvents } from "@/filterOptions.js";
 
-import moment from "@/moment-setup";
+import { ActivityEventMappings } from "@/helpers/maps.js";
+import { latestEvents } from "@/filterOptions.js";
 
 const router = useRouter();
 
-const userAuthenticated = computed(() => mainStore.userAuthenticated);
+snackBarStore.pushMessage(
+  `Dobrodošli natrag! ${mainStore.currentUser.username} `,
+  "contrast"
+);
 
 const ongoing_internships = ref(0);
 const waiting_for_allocation = ref(0);
@@ -47,21 +44,19 @@ const waiting_for_evaluation = ref(0);
 const waiting_for_mark = ref(0);
 const events = ref([]);
 
-snackBarStore.pushMessage(
-  `Dobrodošli natrag! ${mainStore.currentUser.username} `,
-  "contrast"
-);
-
 onMounted(async () => {
   await adminStore.getStudents();
   await adminStore.searchModels();
+
   ongoing_internships.value = adminStore.dashboard_data.ongoing_internships;
   waiting_for_allocation.value =
     adminStore.dashboard_data.waiting_for_allocation;
   waiting_for_evaluation.value =
     adminStore.dashboard_data.waiting_for_evaluation;
   waiting_for_mark.value = adminStore.dashboard_data.waiting_for_mark;
+
   await adminStore.getEvents();
+
   events.value = adminStore.events
     .filter(
       (event) => !ActivityEventMappings.shouldSkipEvent(event.activity_id)
@@ -72,7 +67,6 @@ onMounted(async () => {
 });
 
 const eventsOptionsActive = ref(false);
-
 const formattedDate = (timestamp) => {
   if (adminStore.dashboard_data.relativeToNowTimestmap == true) {
     return moment(timestamp).fromNow();
@@ -110,7 +104,7 @@ const pagesList = computed(() => {
 
 <template>
   <div>
-    <LayoutAuthenticated v-if="userAuthenticated">
+    <LayoutAuthenticated v-if="mainStore.userAuthenticated">
       <SectionMain>
         <SectionTitleLineWithButton
           :icon="mdiViewDashboard"

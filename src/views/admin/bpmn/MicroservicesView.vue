@@ -1,18 +1,17 @@
 <script setup>
-import { computed, ref, onMounted } from "vue";
-import { mainStore } from "@/main.js";
+import { ref, onMounted } from "vue";
 import { mdiMonitorCellphone, mdiCloudCog } from "@mdi/js";
+
 import SectionMain from "@/components/Section/SectionMain.vue";
 import CardBox from "@/components/Cardbox/CardBox.vue";
 import NotificationBar from "@/components/Notification/NotificationBar.vue";
+import SectionTitleLineWithButton from "@/components/Section/SectionTitleLineWithButton.vue";
+import TableMicroservices from "@/components/Tables/TableMicroservices.vue";
+import LoadingOverlay from "@/components/LoadingOverlay.vue";
 
 import LayoutAuthenticated from "@/layouts/LayoutAuthenticated.vue";
-import SectionTitleLineWithButton from "@/components/Section/SectionTitleLineWithButton.vue";
-
-import TableMicroservices from "@/components/Tables/TableMicroservices.vue";
 
 import { Control } from "@/services/microservices_control";
-import LoadingOverlay from "@/components/LoadingOverlay.vue";
 
 const servicesStatus = ref({});
 const loading = ref(true);
@@ -20,7 +19,6 @@ const loading = ref(true);
 onMounted(async () => {
   try {
     servicesStatus.value = await Control.checkAllServiceStatuses();
-    console.log(servicesStatus.value);
   } catch (error) {
     console.error("Failed to fetch service statuses:", error);
   } finally {

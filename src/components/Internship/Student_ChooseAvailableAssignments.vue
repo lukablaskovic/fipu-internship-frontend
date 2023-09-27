@@ -1,5 +1,5 @@
 <script setup>
-import { ref, computed, watch, nextTick } from "vue";
+import { ref, computed, nextTick } from "vue";
 import draggable from "vuedraggable";
 import {
   mdiClipboardCheckOutline,
@@ -9,24 +9,22 @@ import {
   mdiCheckCircle,
   mdiAlert,
   mdiClose,
-  mdiConsoleNetworkOutline,
 } from "@mdi/js";
+import { router } from "@/router";
+
+import LayoutAuthenticated from "@/layouts/LayoutAuthenticated.vue";
+import LayoutGuest from "@/layouts/LayoutGuest.vue";
 
 import SectionMain from "@/components/Section/SectionMain.vue";
 import CardBox from "@/components/Cardbox/CardBox.vue";
 import CardBoxModal from "@/components/Cardbox/CardBoxModal.vue";
-
-import LayoutAuthenticated from "@/layouts/LayoutAuthenticated.vue";
-import LayoutGuest from "@/layouts/LayoutGuest.vue";
 import BaseButtons from "@/components/Base/BaseButtons.vue";
 import BaseButton from "@/components/Base/BaseButton.vue";
 import SectionTitleLineWithButton from "@/components/Section/SectionTitleLineWithButton.vue";
-
 import TableAvailableAssignments from "@/components/Tables/TableAvailableAssignments.vue";
 import FormField from "@/components/Form/FormField.vue";
 import FormControl from "@/components/Form/FormControl.vue";
 
-import { router } from "@/router";
 import Utils from "@/helpers/utils.js";
 import { mainStore, guestStore, studentStore } from "@/main.js";
 
@@ -37,8 +35,6 @@ const Layout = computed(() => {
     return LayoutGuest;
   }
 });
-
-let napomena = ref(null);
 
 const checkedAssignments = computed(() => guestStore.checkedAssignments);
 const modalConfirmPreferences = ref(false);
@@ -53,6 +49,7 @@ const notificationSettingsModel = ref([]);
 const notificationsOutline = computed(
   () => notificationSettingsModel.value.indexOf("outline") > -1
 );
+
 function showNotificationBar(type) {
   switch (type) {
     case "success":
@@ -79,6 +76,8 @@ function showNotificationBar(type) {
   console.log("notificationBar", notificationBar.value);
   notificationBar.value.show();
 }
+
+let napomena = ref(null);
 const registerPreferences = async () => {
   if (!mainStore.userAuthenticated) {
     showNotificationBar("warning");
@@ -106,12 +105,13 @@ const scrollToSelection = () => {
 };
 
 let wiggleEnabled = ref(true);
-
 const isFadedOut = ref(false);
+
 function fadeOutAnimation() {
   isFadedOut.value = true;
   wiggleEnabled.value = false;
 }
+
 const isDraggableEnabled = computed(
   () => checkedAssignments.value.length === 3
 );

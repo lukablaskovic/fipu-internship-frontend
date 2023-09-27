@@ -1,33 +1,30 @@
 <script setup>
-import { useVuelidate } from "@vuelidate/core";
-import { watchEffect } from "vue";
+import { ref, computed, reactive } from "vue";
 
 import {
-  required,
-  email,
-  minLength,
-  sameAs,
-  helpers,
-} from "@vuelidate/validators";
-import { ref, computed, reactive } from "vue";
-import { mdiAccount, mdiAsterisk } from "@mdi/js";
-import { mdiAlertCircle, mdiCheckCircle, mdiAlert, mdiClose } from "@mdi/js";
-import SectionSplitLogin from "@/components/Section/SectionSplitLogin.vue";
+  mdiAccount,
+  mdiAsterisk,
+  mdiAlertCircle,
+  mdiCheckCircle,
+  mdiAlert,
+  mdiClose,
+} from "@mdi/js";
+import { useVuelidate } from "@vuelidate/core";
+import { useRouter } from "vue-router";
 
+import { required, email, minLength, helpers } from "@vuelidate/validators";
+
+import SectionSplitLogin from "@/components/Section/SectionSplitLogin.vue";
 import CardBox from "@/components/Cardbox/CardBox.vue";
 import FormCheckRadio from "@/components/Form/FormCheckRadio.vue";
 import FormField from "@/components/Form/FormField.vue";
 import FormControl from "@/components/Form/FormControl.vue";
 import BaseButton from "@/components/Base/BaseButton.vue";
 import BaseButtons from "@/components/Base/BaseButtons.vue";
+
 import Utils from "@/helpers/utils";
 import { getFirstErrorForField, isUnipuEmail } from "@/helpers/validators";
-
 import { mainStore } from "@/main";
-
-import { useRouter, useRoute } from "vue-router";
-
-const router = useRouter();
 
 const loginForm = reactive({
   email: "admin@fipu.hr",
@@ -53,12 +50,13 @@ const rules = {
   },
 };
 const v$ = useVuelidate(rules, loginForm);
-const isLoading = ref(false);
+const passShowHideClicked = ref(false);
 
+const isLoading = ref(false);
 async function onSubmit() {
   isLoading.value = true;
-  console.log("Submitting form...");
   v$.value.$touch();
+
   if (v$.value.$invalid) {
     isLoading.value = false;
     return;
@@ -70,13 +68,12 @@ async function onSubmit() {
   if (mainStore.userAuthenticated) {
     showNotificationBar("success");
     await Utils.wait(1);
+
     mainStore.handleSuccessfulLogin();
   } else if (loginResult.response.status === 403)
     showNotificationBar("warning");
   else showNotificationBar("danger");
 }
-
-const passShowHideClicked = ref(false);
 
 const notificationBar = ref(null);
 let notificationStatus = ref();
@@ -86,6 +83,7 @@ const notificationSettingsModel = ref([]);
 const notificationsOutline = computed(
   () => notificationSettingsModel.value.indexOf("outline") > -1
 );
+
 function showNotificationBar(type) {
   switch (type) {
     case "success":
@@ -114,10 +112,11 @@ function showNotificationBar(type) {
 }
 
 const transitioning = ref(false);
-
 function onRegisterClick() {
   transitioning.value = true;
 }
+
+const router = useRouter();
 function navigateToRegister() {
   router.push("/register");
 }
@@ -135,7 +134,6 @@ function navigateToRegister() {
         v-if="!transitioning"
         class="flex flex-col flex-shrink md:flex-row overflow-hidden md:rounded-lg md:p-4 2xl:p-16 md:h-screen lg:px-12"
       >
-        <!--This is graphics image cardbox-->
         <CardBox
           class="hidden md:block flex-1 md:rounded-l-lg"
           centered-content
@@ -146,7 +144,7 @@ function navigateToRegister() {
             class="w-3/4 object-contain mx-auto"
           />
         </CardBox>
-        <!--This is cardbox with form-->
+
         <CardBox
           class="flex flex-col flex-shrink flex-1 space-y-4 lg:pr-32 md:rounded-r-lg"
           vertical-centered

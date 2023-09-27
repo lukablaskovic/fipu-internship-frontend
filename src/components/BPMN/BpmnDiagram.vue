@@ -5,8 +5,9 @@
 <script setup>
 import { ref, onMounted } from "vue";
 import BpmnViewer from "bpmn-js";
-import { UserTaskMappings } from "@/helpers/maps";
 import { adminStore } from "@/main";
+import { UserTaskMappings } from "@/helpers/maps";
+
 const props = defineProps({
   xml: {
     type: String,

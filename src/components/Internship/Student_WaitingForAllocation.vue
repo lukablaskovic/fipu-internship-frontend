@@ -9,26 +9,22 @@ import {
   mdiNumeric3CircleOutline,
   mdiEmail,
 } from "@mdi/js";
-
-const isModalActive = ref(null);
-
-import SectionMain from "@/components/Section/SectionMain.vue";
+import { router } from "@/router";
 
 import LayoutAuthenticated from "@/layouts/LayoutAuthenticated.vue";
 import LayoutGuest from "@/layouts/LayoutGuest.vue";
 
+import SectionMain from "@/components/Section/SectionMain.vue";
 import SectionTitleLineWithButton from "@/components/Section/SectionTitleLineWithButton.vue";
 import CardBoxWidget from "@/components/Cardbox/CardBoxWidget.vue";
 import BaseIcon from "@/components/Base/BaseIcon.vue";
-import { router } from "@/router";
 import CardBoxModal from "@/components/Cardbox/CardBoxModal.vue";
+
 import { mainStore, studentStore } from "@/main.js";
 
 const prviOdabir = ref(null);
 const drugiOdabir = ref(null);
 const treciOdabir = ref(null);
-
-let modalLoading = ref(false);
 
 onMounted(async () => {
   let result = await studentStore.getInstanceInfo(
@@ -40,21 +36,21 @@ onMounted(async () => {
 });
 
 const Layout = computed(() => {
-  if (userAuthenticated.value) {
+  if (mainStore.userAuthenticated) {
     return LayoutAuthenticated;
   } else {
     return LayoutGuest;
   }
 });
 
+const isModalActive = ref(null);
+let modalLoading = ref(false);
 async function getAssignmentDetailsInModal(assignment_id) {
   modalLoading.value = true;
   let assignment = await studentStore.getAssignmentDetails(assignment_id);
   isModalActive.value = assignment.data.results[0];
   modalLoading.value = false;
 }
-
-const userAuthenticated = computed(() => mainStore.userAuthenticated);
 </script>
 
 <template>

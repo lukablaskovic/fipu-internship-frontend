@@ -2,17 +2,13 @@
 import { ref, computed, onMounted, reactive } from "vue";
 import { mdiLaptop, mdiBallot, mdiNotebook, mdiClipboardCheck } from "@mdi/js";
 
-import SectionMain from "@/components/Section/SectionMain.vue";
-
 import LayoutAuthenticated from "@/layouts/LayoutAuthenticated.vue";
 import LayoutGuest from "@/layouts/LayoutGuest.vue";
 
+import SectionMain from "@/components/Section/SectionMain.vue";
 import SectionTitleLineWithButton from "@/components/Section/SectionTitleLineWithButton.vue";
 import CardboxAllocation from "@/components/Cardbox/CardBoxAllocation.vue";
-import { mainStore, snackBarStore, studentStore } from "@/main.js";
-
 import CardBox from "@/components/Cardbox/CardBox.vue";
-import FormCheckRadioGroup from "@/components/Form/FormCheckRadioGroup.vue";
 import FormCheckRadio from "@/components/Form/FormCheckRadio.vue";
 import FormField from "@/components/Form/FormField.vue";
 import FormControl from "@/components/Form/FormControl.vue";
@@ -20,12 +16,13 @@ import BaseDivider from "@/components/Base/BaseDivider.vue";
 import BaseButton from "@/components/Base/BaseButton.vue";
 import CardBoxComponentTitle from "@/components/Cardbox/CardBoxComponentTitle.vue";
 import FormFilePicker from "@/components/Form/FormFilePicker.vue";
-import { UserTaskMappings } from "@/helpers/maps";
+
+import { mainStore, snackBarStore, studentStore } from "@/main.js";
 
 import Utils from "@/helpers/utils.js";
+import { UserTaskMappings } from "@/helpers/maps";
 
 const allocated_assignment = ref(null);
-
 onMounted(async () => {
   await studentStore.getInstanceInfo(
     mainStore.currentUser.internship_process.id
@@ -46,16 +43,12 @@ onMounted(async () => {
 });
 
 const Layout = computed(() => {
-  if (userAuthenticated.value) {
+  if (mainStore.userAuthenticated) {
     return LayoutAuthenticated;
   } else {
     return LayoutGuest;
   }
 });
-
-const userAuthenticated = computed(() => mainStore.userAuthenticated);
-
-///////////////////////////////////////////////////////////////////////////////
 
 //ispunjavanje_prijavnice_student
 const form = reactive({
@@ -88,18 +81,6 @@ async function submit_diary_form() {
   await Utils.wait(2);
   location.reload();
 }
-
-const formErrorHasError = ref(false);
-
-const formErrorSubmit = () => {
-  formErrorHasError.value = true;
-
-  setTimeout(() => {
-    formErrorHasError.value = false;
-  }, 2000);
-};
-
-//////////////////////////////////////////////////////////////////////
 </script>
 
 <template>
