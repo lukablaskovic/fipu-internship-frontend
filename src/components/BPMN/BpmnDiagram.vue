@@ -160,7 +160,7 @@ function applyCustomStyling(highlightColor, highlightElementId, viewer) {
       fill: ${highlightColor} !important;
     }
     .highlight-previous:not(.djs-connection) .djs-visual > :nth-child(1) {
-      fill: #84cc16 !important;
+      fill: #86efac !important;
     }
   `;
   document.head.appendChild(style);

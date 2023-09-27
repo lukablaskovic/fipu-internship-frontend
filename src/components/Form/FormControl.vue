@@ -15,6 +15,7 @@ import FormFieldHelp from "@/components/Premium/FormFieldHelp.vue";
 import FormControlListbox from "@/components/Premium/FormControlListbox.vue";
 import BaseIcon from "@/components/Base/BaseIcon.vue";
 import TipTag from "@/components/Premium/TipTag.vue";
+import SearchOptions from "@/components/SearchOptions.vue";
 
 const props = defineProps({
   firstAddon: Boolean,
@@ -111,6 +112,7 @@ const props = defineProps({
 });
 
 const emit = defineEmits(["update:modelValue", "right-icon-click"]);
+const showSearchBar = computed(() => props.searchBar);
 
 const computedValue = computed({
   get: () => props.modelValue,
@@ -125,7 +127,7 @@ const borderColor = computed(() => {
   }
 
   if (props.success) {
-    return "border-lime-600";
+    return "border-green-600";
   }
 
   return "border-gray-700";
@@ -141,7 +143,7 @@ const placeholderColor = computed(() => {
   }
 
   if (props.success) {
-    return "placeholder-lime-600";
+    return "placeholder-green-600";
   }
 
   return null;
@@ -335,6 +337,9 @@ if (props.ctrlKFocus) {
         class="inline-flex items-center whitespace-nowrap"
       >
         {{ modelValue }}
+      </div>
+      <div v-if="showSearchBar" class="relative" :class="wrapperClass">
+        <SearchOptions />
       </div>
       <FormControlListbox
         v-else-if="computedType === 'list'"

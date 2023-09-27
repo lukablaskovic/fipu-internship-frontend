@@ -1,5 +1,6 @@
 import { createRouter, createWebHashHistory } from "vue-router";
 import { mainStore } from "@/main.js";
+
 const routes = [
   {
     path: "/",
@@ -119,7 +120,7 @@ const routes = [
   },
   {
     meta: {
-      title: "BPMN - Models",
+      title: "BPMN - Procesi",
       requiresAuth: true,
       requiresAdmin: true,
     },
@@ -129,7 +130,7 @@ const routes = [
   },
   {
     meta: {
-      title: "BPMN - Microservices",
+      title: "BPMN - Mikroservisi",
       requiresAuth: true,
       requiresAdmin: true,
     },
@@ -137,16 +138,7 @@ const routes = [
     name: "bpmn-microservices",
     component: () => import("@/views/admin/bpmn/MicroservicesView.vue"),
   },
-  {
-    meta: {
-      title: "BPMN - Modeler",
-      requiresAuth: true,
-      requiresAdmin: true,
-    },
-    path: "/bpmn/modeler",
-    name: "bpmn-modeler",
-    component: () => import("@/views/admin/bpmn/ModelerView.vue"),
-  },
+
   {
     meta: {
       title: "Tables",

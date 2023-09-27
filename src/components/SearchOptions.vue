@@ -1,121 +1,176 @@
-<script setup>
-import { Menu, MenuButton, MenuItems, MenuItem } from "@headlessui/vue";
-import { computed } from "vue";
-import { mdiChevronDown } from "@mdi/js";
-import BaseIcon from "@/components/Base/BaseIcon.vue";
-import BaseButton from "@/components/Base/BaseButton.vue";
-
-const props = defineProps({
-  icon: {
-    type: String,
-    default: null,
-  },
-  iconRight: {
-    type: String,
-    default: null,
-  },
-  label: {
-    type: String,
-    default: null,
-  },
-  options: {
-    type: Array,
-    required: true,
-  },
-  modelValue: {
-    type: Object,
-    default: null,
-  },
-  left: Boolean,
-  iconW: {
-    type: String,
-    default: null,
-  },
-  iconH: {
-    type: String,
-    default: null,
-  },
-  iconSize: {
-    type: [String, Number],
-    default: null,
-  },
-  small: Boolean,
-  color: {
-    type: String,
-    default: "lightDark",
-  },
-  outline: Boolean,
-  disabled: Boolean,
-});
-
-const emit = defineEmits(["update:modelValue"]);
-
-computed({
-  get: () => props.modelValue,
-  set: (value) => {
-    emit("update:modelValue", value);
-  },
-});
-
-const iconRightComputed = computed(() =>
-  props.label && !props.icon && !props.iconRight
-    ? mdiChevronDown
-    : props.iconRight
-);
-</script>
-
 <template>
-  <Menu as="div" class="relative inline-block text-left">
-    <div>
-      <MenuButton v-slot="{ open }" :disabled="disabled">
-        <BaseButton
-          :label="label"
-          :icon="icon"
-          :icon-right="iconRightComputed"
-          :active="open"
-          :small="small"
-          :icon-w="iconW"
-          :icon-h="iconH"
-          :icon-size="iconSize"
-          :color="color"
-          :outline="outline"
-          :disabled="disabled"
-        />
-      </MenuButton>
-    </div>
-
-    <transition
-      enter-active-class="transition duration-100 ease-out"
-      enter-from-class="transform scale-95 opacity-0"
-      enter-to-class="transform scale-100 opacity-100"
-      leave-active-class="transition duration-75 ease-in"
-      leave-from-class="transform scale-100 opacity-100"
-      leave-to-class="transform scale-95 opacity-0"
-    >
-      <MenuItems
-        :class="left ? 'left-0' : 'right-0'"
-        class="absolute z-50 w-56 mt-2 origin-top-right bg-white divide-y divide-gray-100 rounded-md shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none dark:bg-slate-800 dark:divide-gray-700"
+  <Combobox v-model="selectedValue">
+    <div class="relative">
+      <div
+        class="relative w-full cursor-default overflow-hidden rounded-lg bg-white text-left shadow-md focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75 focus-visible:ring-offset-2 focus-visible:ring-offset-blue-300 sm:text-sm"
       >
-        <div
-          v-for="(optionsGroup, index) in options"
-          :key="index"
-          class="px-1 py-1"
+        <ComboboxInput
+          v-model="displayValue"
+          placeholder="Unesi [/] za pretraživanje"
+          class="inputClass w-full border-none py-2 pl-3 pr-10 text-sm leading-5 text-gray-900 focus:ring-0"
+          @change="query = $event.target.value"
+        />
+        <ComboboxButton
+          class="absolute inset-y-0 right-0 flex items-center pr-2"
         >
-          <MenuItem
-            v-for="option in optionsGroup"
-            :key="option.id"
-            v-slot="{ active }"
+          <MdiMagnify
+            class="h-5 w-5 text-gray-700 hover:text-fipu_blue"
+            aria-hidden="true"
+          />
+        </ComboboxButton>
+      </div>
+      <TransitionRoot
+        leave="transition ease-in duration-100"
+        leave-from="opacity-100"
+        leave-to="opacity-0"
+        @after-leave="query = ''"
+      >
+        <ComboboxOptions
+          class="absolute mt-1 max-h-60 w-full overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm"
+        >
+          <!-- Display help when query doesn't match any specific command -->
+          <div
+            v-if="query === ''"
+            class="relative cursor-default select-none py-2 px-4 text-gray-700"
           >
-            <button
-              :class="{ 'bg-gray-100 dark:bg-slate-700': active }"
-              class="group flex rounded-md items-center w-full px-2 py-2 text-sm"
+            <b>Unesi:</b>
+            <div>
+              <i class="bg-fipu_blue px-0.5">s:</i> pretraži studenta po imenu i
+              prezimenu
+            </div>
+            <div>
+              <i class="bg-fipu_blue px-0.5">sj:</i> pretraži studenta po JMBAGu
+            </div>
+            <div>
+              <i class="bg-fipu_blue px-0.5">se:</i> pretraži studenta po emailu
+            </div>
+            <div>
+              <i class="bg-fipu_blue px-0.5">e:</i> za pretraživanje događaja
+            </div>
+          </div>
+
+          <!-- Display "No results found" when there's no matching data -->
+          <div
+            v-else-if="filteredResults.length === 0"
+            class="relative cursor-default select-none py-2 px-4 text-gray-700"
+          >
+            Nema rezultata.
+          </div>
+
+          <ComboboxOption
+            v-for="result in filteredResults"
+            :key="result.id"
+            v-slot="{ selected, active }"
+            as="template"
+            :value="result"
+            @select="selectedValue = $event"
+          >
+            <li
+              class="relative cursor-default select-none py-2 pl-10 pr-4"
+              :class="{
+                'bg-fipu_blue text-white': active,
+                'text-gray-900': !active,
+              }"
             >
-              <BaseIcon :path="option.icon" class="mr-3" />
-              <span>{{ option.label }}</span>
-            </button>
-          </MenuItem>
-        </div>
-      </MenuItems>
-    </transition>
-  </Menu>
+              <MdiAccount
+                class="absolute left-3 h-5 w-5"
+                :class="{ 'text-white': active, 'text-gray-900': !active }"
+                aria-hidden="true"
+              />
+              <span
+                class="block truncate"
+                :class="{ 'font-medium': selected, 'font-normal': !selected }"
+              >
+                {{ result.name }}
+              </span>
+              <span
+                v-if="selected"
+                class="absolute inset-y-0 left-0 flex items-center pl-3"
+                :class="{ 'text-white': active, 'text-fipu_blue': !active }"
+              >
+                <MdiCheck class="h-5 w-5" aria-hidden="true" />
+              </span>
+            </li>
+          </ComboboxOption>
+        </ComboboxOptions>
+      </TransitionRoot>
+    </div>
+  </Combobox>
 </template>
+
+<script setup>
+import { ref, computed, onMounted, onUnmounted } from "vue";
+
+import {
+  Combobox,
+  ComboboxInput,
+  ComboboxButton,
+  ComboboxOptions,
+  ComboboxOption,
+  TransitionRoot,
+} from "@headlessui/vue";
+import MdiCheck from "vue-material-design-icons/Check.vue";
+import MdiMagnify from "vue-material-design-icons/Magnify.vue";
+import MdiAccount from "vue-material-design-icons/Account.vue";
+
+const people = [
+  { id: 1, name: "Wade Cooper" },
+  { id: 2, name: "Arlene Mccoy" },
+  { id: 3, name: "Devon Webb" },
+  { id: 4, name: "Tom Cook" },
+  { id: 5, name: "Tanya Fox" },
+  { id: 6, name: "Hellen Schmidt" },
+];
+const events = [{ id: 1, name: "Some event" }];
+const searchInput = ref(null);
+
+let selectedValue = ref("");
+
+let displayValue = computed(() => {
+  if (!selectedValue.value) return "";
+  return selectedValue.value.name;
+});
+
+onMounted(() => {
+  function onKeydown(event) {
+    if (event.key === "/") {
+      event.preventDefault();
+      searchInput.value = document.querySelector(".inputClass");
+
+      searchInput.value && searchInput.value.focus();
+    }
+  }
+
+  document.addEventListener("keydown", onKeydown);
+
+  onUnmounted(() => {
+    document.removeEventListener("keydown", onKeydown);
+  });
+});
+
+let selected = ref();
+let query = ref("");
+
+let filteredResults = computed(() => {
+  // Handle search for students
+  if (query.value.toLowerCase().startsWith("s:")) {
+    const searchTerm = query.value.slice(2).toLowerCase().replace(/\s+/g, "");
+    console.log(searchTerm);
+    return people.filter((person) =>
+      person.name.toLowerCase().replace(/\s+/g, "").includes(searchTerm)
+    );
+  }
+  // Handle search for events (you'll need to have a list of events defined somewhere)
+  else if (query.value.startsWith("e:")) {
+    const searchTerm = query.value.slice(2).toLowerCase().replace(/\s+/g, "");
+    // Assuming you have an "events" array defined similarly to the "people" array
+    return events.filter((event) =>
+      event.name.toLowerCase().replace(/\s+/g, "").includes(searchTerm)
+    );
+  }
+  // If the query doesn't start with "s:" or "e:", return an empty array
+  else {
+    return [];
+  }
+});
+</script>

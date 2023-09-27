@@ -13,7 +13,6 @@ import {
   mdiCheckDecagram,
   mdiPencil,
   mdiDomain,
-  mdiMapMarker,
 } from "@mdi/js";
 
 import SectionMain from "@/components/Section/SectionMain.vue";
@@ -29,7 +28,6 @@ import SectionTitleLineWithButton from "@/components/Section/SectionTitleLineWit
 import { StudentMappings } from "@/helpers/maps.js";
 import UserAvatarCurrentUserWithUpload from "@/components/Premium/UserAvatarCurrentUserWithUpload.vue";
 import BaseIcon from "@/components/Base/BaseIcon.vue";
-import UserCardProfileNumber from "@/components/Premium/UserCardProfileNumber.vue";
 import SectionBannerProfile from "@/components/Premium/SectionBannerProfile.vue";
 import PillTagPlain from "@/components/PillTag/PillTagPlain.vue";
 

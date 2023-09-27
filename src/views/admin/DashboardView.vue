@@ -11,6 +11,7 @@ import {
   mdiAccountCancel,
   mdiAlertBox,
   mdiCog,
+  mdiClockTimeEight,
 } from "@mdi/js";
 import SectionMain from "@/components/Section/SectionMain.vue";
 import CardBoxWidget from "@/components/Cardbox/CardBoxWidget.vue";
@@ -122,7 +123,7 @@ const pagesList = computed(() => {
             v-if="adminStore.studentsFetched"
             trend="10%"
             trend-type="up"
-            color="text-lime-500"
+            color="text-green-500"
             class="rounded-lg"
             :icon="mdiAccountSchoolOutline"
             :number="512"
@@ -193,50 +194,14 @@ const pagesList = computed(() => {
           <SkeletonLoader v-else></SkeletonLoader>
         </div>
 
-        <CardBoxModal
-          v-if="eventsOptionsActive"
-          v-model="eventsOptionsActive"
-          title="⚙️Postavke"
-          button-label="Povratak"
-        >
-          <CardBox class="mb-6">
-            <div class="flex items-center justify-between">
-              <div class="flex items-center justify-start">
-                <p class="mr-3 leading-none">Vremenski prikaz</p>
-                <PillTag
-                  :color="
-                    adminStore.dashboard_data.relativeToNowTimestmap
-                      ? 'info'
-                      : 'success'
-                  "
-                  :label="
-                    adminStore.dashboard_data.relativeToNowTimestmap
-                      ? 'Relativno'
-                      : 'Datum'
-                  "
-                  small
-                />
-              </div>
-
-              <FormCheckRadio
-                v-model="adminStore.dashboard_data.relativeToNowTimestmap"
-                type="switch"
-                name="two-factor"
-                :input-value="true"
-              />
-            </div>
-          </CardBox>
-        </CardBoxModal>
-
         <SectionTitleLineWithButton
           :icon="mdiCommentProcessing"
           title="Najnoviji događaji"
           main
-          button-enabled
-          :button-icon="mdiCog"
           @click="eventsOptionsActive = true"
         >
         </SectionTitleLineWithButton>
+
         <div class="flex flex-row">
           <div class="mb-4">
             <PillTagFilter
@@ -247,16 +212,25 @@ const pagesList = computed(() => {
               left="false"
             />
           </div>
-          <!--
-          <div class="mb-4">
-            <PillTagFilter
-              class="cursor-pointer"
-              trend-type="filter"
-              :trend="'Datum'"
-              :options="buttonMenuOptions"
-            />
+          <div class="flex flex-row">
+            <div class="mb-4">
+              <PillTag
+                class="cursor-pointer"
+                left="false"
+                :icon="mdiClockTimeEight"
+                :color="
+                  adminStore.dashboard_data.relativeToNowTimestmap
+                    ? 'info'
+                    : 'success'
+                "
+                :label="
+                  adminStore.dashboard_data.relativeToNowTimestmap
+                    ? 'Relativno'
+                    : 'Datum'
+                "
+              />
+            </div>
           </div>
-          -->
         </div>
         <div
           v-if="events.length > 0"

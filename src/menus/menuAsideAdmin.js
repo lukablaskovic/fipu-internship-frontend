@@ -41,16 +41,13 @@ export default [
     menu: [
       {
         to: "/bpmn/models",
-        label: "Models",
+        label: "Procesi",
       },
       {
         to: "/bpmn/microservices",
         label: "Mikroservisi",
       },
-      {
-        to: "/bpmn/modeler",
-        label: "Modeler",
-      },
+
       {
         label: "PDF Generator",
         externalURL: "https://html-to-pdf-maker.netlify.app/",

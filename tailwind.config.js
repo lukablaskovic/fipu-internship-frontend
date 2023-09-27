@@ -13,7 +13,7 @@ module.exports = {
     },
     checkRadioSwitchStates: {
       info: "blue",
-      success: "lime",
+      success: "green",
       warning: "yellow",
       danger: "red",
     },

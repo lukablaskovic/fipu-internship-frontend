@@ -9,7 +9,7 @@ export const controlTextColor = (error, success) => {
   }
 
   if (success) {
-    return "text-lime-600";
+    return "text-green-600";
   }
 
   return null;

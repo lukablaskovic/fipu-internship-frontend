@@ -1,18 +1,11 @@
 <script setup>
-import { ref, computed, onMounted } from "vue";
-import { mainStore } from "@/main.js";
-import {
-  mdiMonitorCellphone,
-  mdiAccountTie,
-  mdiAccount,
-  mdiClipboardCheck,
-} from "@mdi/js";
+import { ref, onMounted } from "vue";
+import { mdiAccountTie, mdiAccount, mdiClipboardCheck } from "@mdi/js";
 import SectionMain from "@/components/Section/SectionMain.vue";
-import CardBox from "@/components/Cardbox/CardBox.vue";
-import NotificationBar from "@/components/Notification/NotificationBar.vue";
+
 import CardBoxAllocation from "@/components/Cardbox/CardBoxAllocation.vue";
 import SectionTitleLineWithButton from "@/components/Section/SectionTitleLineWithButton.vue";
-import { useRouter, useRoute } from "vue-router";
+import { useRoute } from "vue-router";
 import { studentStore } from "@/main.js";
 import { StudentMappings } from "@/helpers/maps";
 import { adminStore } from "@/main.js";

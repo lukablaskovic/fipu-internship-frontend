@@ -9,6 +9,7 @@ import {
 } from "@mdi/js";
 import { ref, onMounted, computed } from "vue";
 import { mainStore, styleStore } from "@/main.js";
+import SearchOptions from "@/components/SearchOptions.vue";
 
 import menuAsideAdmin from "@/menus/menuAsideAdmin.js";
 import AsideMenu from "@/components/AsideMenu/AsideMenu.vue";
@@ -115,13 +116,7 @@ const menuClick = (event, item) => {
           />
         </NavBarItemPlain>
         <NavBarItemPlain use-margin>
-          <FormControl
-            placeholder="Pretraži... (ctrl+k)"
-            ctrl-k-focus
-            :icon="mdiMagnify"
-            search-bar
-            borderless
-          />
+          <FormControl :icon="mdiMagnify" search-bar borderless />
         </NavBarItemPlain>
       </NavBar>
 
