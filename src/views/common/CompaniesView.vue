@@ -22,7 +22,10 @@ const userAdmin = computed(() => mainStore.userAdmin);
       <SectionMain>
         <SectionTitleLineWithButton :icon="mdiDomain" title="Poslodavci" main>
         </SectionTitleLineWithButton>
-
+        <p>
+          U tablici se nalaze poduzeća koja su registrirana za provođenje
+          studentske prakse u suradnji s Fakultetom informatike u Puli.
+        </p>
         <div v-if="!userAdmin" class="mb-4">
           <p class="text-sm md:text-base">
             Ukoliko ne možete naći zadatak koji vam se sviđa, javite se
