@@ -6,7 +6,7 @@ import {
   mdiHelpBoxOutline,
 } from "@mdi/js";
 
-export default [
+export default [ 
   {
     isCurrentUser: true,
     menu: [
@@ -19,14 +19,6 @@ export default [
         icon: mdiEmail,
         label: "Poruke",
       },
-      {
-        isDivider: true,
-      },
-      {
-        icon: mdiLogout,
-        label: "Odjava",
-        isLogout: true,
-      },
     ],
   },
   {
@@ -34,6 +26,7 @@ export default [
     label: "Pomoć",
     isDesktopNoLabel: true,
     isHelp: true,
+    size: 32
   },
   {
     icon: mdiThemeLightDark,

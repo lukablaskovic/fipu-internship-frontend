@@ -1,9 +1,11 @@
 <script setup>
 import { RouterView } from "vue-router";
+import Tooltip from '@/components/Base/Tooltip.vue';
 </script>
 
 <template>
-  <router-view> </router-view>
+    <Tooltip/>
+    <router-view></router-view>
 </template>
 
 <style scoped>

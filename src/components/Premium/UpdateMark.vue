@@ -24,7 +24,7 @@ setTimeout(() => {
 
 <template>
   <div
-    class="w-2.5 h-2.5 rounded-full absolute"
+    class="w-2 h-2 rounded-full absolute transition-all duration-300"
     :class="[position, colorsBgLight[color], { 'animate-ping': hasPing }]"
   />
 </template>

@@ -11,7 +11,6 @@ import BaseIcon from "@/components/Base/BaseIcon.vue";
 import OverlayLayer from "@/components/OverlayLayer.vue";
 import AsideMenuLayer from "@/components/AsideMenu/AsideMenuLayer.vue";
 import AsideMenuItem from "@/components/AsideMenu/AsideMenuItem.vue";
-
 defineProps({
   menu: {
     type: Array,

@@ -4,6 +4,12 @@ export const useLayoutStore = defineStore("layout", {
   state: () => ({
     isAsideMobileExpanded: false,
     isAsideLgActive: true,
+    tooltip: {
+        content: '',
+        offsetx: 0,
+        offsety: 0,
+        justify: ''
+    },
 
     /* Breakpoints */
     isXl: false,
