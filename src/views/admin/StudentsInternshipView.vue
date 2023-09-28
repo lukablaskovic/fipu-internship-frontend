@@ -85,7 +85,6 @@ const bpmn_model = ref(null);
 onMounted(async () => {
   await adminStore.getStudents();
   bpmn_model.value = await fetchXML();
-  loadDataForStudent();
 });
 
 async function handleNewInstance() {
@@ -114,6 +113,8 @@ async function handleNewInstance() {
   await Utils.wait(2);
   location.reload();
 }
+
+onMounted(loadDataForStudent);
 </script>
 
 <template>

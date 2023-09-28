@@ -124,9 +124,11 @@ export const useAdminStore = defineStore("admin", {
           ) {
             this.dashboard_data.waiting_for_evaluation++;
           }
+          if (student.process_instance_data.pending[0] == "upis_ocjene") {
+            this.dashboard_data.waiting_for_mark++;
+          }
           if (student.process_instance_data.state === "finished") {
             this.dashboard_data.finished_internships++;
-            this.dashboard_data.waiting_for_mark++;
           }
         });
 

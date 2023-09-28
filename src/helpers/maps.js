@@ -112,11 +112,19 @@ class UserTaskMappings {
     },
     {
       order: 6,
+      _id: "upis_ocjene",
+      name: "Potrebno je potvrditi upis ocjene",
+      snackbar_msg: "Upis ocjene potvrđen. Hvala!",
+      snackbar_color: "success",
+      form_title: "Upis ocjene (ISVU)",
+    },
+    {
+      order: 7,
       _id: "end_event_student",
-      name: "Završio praksu",
+      name: "Student ocjenjen",
       snackbar_msg: "",
       snackbar_color: "",
-      form_title: "Završio praksu",
+      form_title: "Student ocjenjen",
       component: Student_InternshipFinished,
     },
   ];
@@ -137,16 +145,15 @@ class UserTaskMappings {
 import {
   mdiRayStartArrow,
   mdiThumbsUpDownOutline,
-  mdiAlertBox,
   mdiNoteCheck,
   mdiAccountTie,
-  mdiBookAccount,
   mdiNotebook,
   mdiFileDocumentPlus,
   mdiRayEnd,
   mdiContentSaveOutline,
   mdiApi,
   mdiEmailArrowRight,
+  mdiCertificate,
 } from "@mdi/js";
 import Student_InternshipFinished from "@/components/Internship/Student_InternshipFinished.vue";
 
@@ -261,10 +268,16 @@ class ActivityEventMappings {
       message: "Dnevnik prakse spremljen u bazu",
     },
     {
+      activity_id: "upis_ocjene",
+      icon: mdiCertificate,
+      type: "success",
+      message: "Upis ocjene potvrđen",
+    },
+    {
       activity_id: "end_event_student",
       icon: mdiRayEnd,
       type: "success",
-      message: "Završio praksu",
+      message: "Student ocjenjen",
     },
   ];
   static skipEvents = [

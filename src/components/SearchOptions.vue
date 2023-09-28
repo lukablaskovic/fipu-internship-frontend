@@ -8,6 +8,7 @@
           v-model="displayValue"
           placeholder="CTRL + k ili [ / ] za pretraživanje"
           class="inputClass w-64 md:w-96 border-none py-2 pl-3 pr-10 text-sm leading-5 text-gray-900 focus:ring-0"
+          autocomplete="off"
           @change="query = $event.target.value"
         />
         <ComboboxButton
@@ -39,8 +40,8 @@
             <div
               v-for="helpItem in helpItems"
               :key="helpItem.prefix"
-              @click="insertPrefix(helpItem.prefix)"
               class="cursor-pointer hover:bg-fipu_blue hover:text-white py-1 px-2 rounded"
+              @click="insertPrefix(helpItem.prefix)"
             >
               <b class="bg-fipu_blue px-0.5">{{ helpItem.prefix }}</b>
               {{ helpItem.description }}
@@ -61,10 +62,10 @@
             v-slot="{ selected, active }"
             as="template"
             :value="result"
-            @select="selectedValue = $event"
           >
             <li
-              class="relative cursor-default select-none py-2 pl-10 pr-4"
+              tabindex="0"
+              class="relative cursor-pointer select-none py-2 pl-10 pr-4"
               :class="{
                 'bg-fipu_blue text-white': active,
                 'text-gray-900': !active,
@@ -79,16 +80,8 @@
                 class="block truncate"
                 :class="{ 'font-medium': selected, 'font-normal': !selected }"
               >
-                {{ result.student_ime }} {{ result.student_prezime }} ({{
-                  result.JMBAG
-                }}) - {{ result.student_email }}
-              </span>
-              <span
-                v-if="selected"
-                class="absolute inset-y-0 left-0 flex items-center pl-3"
-                :class="{ 'text-white': active, 'text-fipu_blue': !active }"
-              >
-                <MdiCheck class="h-5 w-5" aria-hidden="true" />
+                {{ result.ime }} {{ result.prezime }} ({{ result.JMBAG }}) -
+                {{ result.email }}
               </span>
             </li>
           </ComboboxOption>
@@ -99,7 +92,7 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted, onUnmounted } from "vue";
+import { ref, computed, onMounted, onUnmounted, watch } from "vue";
 import { adminStore } from "@/main";
 import {
   Combobox,
@@ -109,7 +102,8 @@ import {
   ComboboxOption,
   TransitionRoot,
 } from "@headlessui/vue";
-import MdiCheck from "vue-material-design-icons/Check.vue";
+import { router } from "@/router";
+
 import MdiMagnify from "vue-material-design-icons/Magnify.vue";
 import MdiAccount from "vue-material-design-icons/Account.vue";
 
@@ -132,7 +126,6 @@ let displayValue = computed(() => {
 
 onMounted(() => {
   function onKeydown(event) {
-    // Check for the '/' key
     if (event.key === "/") {
       event.preventDefault();
       searchInput.value = document.querySelector(".inputClass");
@@ -146,6 +139,9 @@ onMounted(() => {
       searchInput.value && searchInput.value.focus();
     }
   }
+  document.addEventListener("keydown", (e) => {
+    console.log("Key pressed:", e.key);
+  });
 
   document.addEventListener("keydown", onKeydown);
 
@@ -154,9 +150,9 @@ onMounted(() => {
   });
 });
 
-let selected = ref();
 let query = ref("");
 
+//Currently not in use
 let studentData = computed(() => {
   return adminStore.students.map(
     (student) => student.process_instance_data.variables
@@ -165,34 +161,39 @@ let studentData = computed(() => {
 
 let filteredResults = computed(() => {
   const searchTerm = query.value.slice(2).toLowerCase().replace(/\s+/g, "");
-  console.log(studentData.value);
+  console.log("query", query.value);
+  console.log("adminStore.students", adminStore.students);
+
   if (query.value.toLowerCase().startsWith("s:")) {
-    return studentData.value.filter(
+    return adminStore.students.filter(
       (student) =>
-        student.student_ime
-          .toLowerCase()
-          .replace(/\s+/g, "")
-          .includes(searchTerm) ||
-        student.student_prezime
-          .toLowerCase()
-          .replace(/\s+/g, "")
-          .includes(searchTerm)
+        student.ime.toLowerCase().replace(/\s+/g, "").includes(searchTerm) ||
+        student.prezime.toLowerCase().replace(/\s+/g, "").includes(searchTerm)
     );
   } else if (query.value.startsWith("se:")) {
-    return studentData.value.filter((student) =>
-      student.student_email
-        .toLowerCase()
-        .replace(/\s+/g, "")
-        .includes(searchTerm)
+    return adminStore.students.filter((student) =>
+      student.email.toLowerCase().replace(/\s+/g, "").includes(searchTerm)
     );
   } else if (query.value.startsWith("sj:")) {
-    return studentData.value.filter((student) =>
+    return adminStore.students.filter((student) =>
       student.JMBAG.toLowerCase().replace(/\s+/g, "").includes(searchTerm)
     );
   } else {
     return [];
   }
 });
+
+watch(selectedValue, (newValue, oldValue) => {
+  if (newValue && newValue !== oldValue) {
+    navigateToStudent(newValue);
+  }
+});
+
+function navigateToStudent(student) {
+  const instanceId = student.process_instance_data.id;
+  console.log("Navigating to student with instanceId:", instanceId);
+  router.push(`/studenti/${instanceId}`);
+}
 
 const helpItems = [
   { prefix: "s:", description: "pretraži studenta po imenu i prezimenu" },

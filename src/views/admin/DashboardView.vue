@@ -43,6 +43,7 @@ const ongoing_internships = ref(0);
 const waiting_for_allocation = ref(0);
 const waiting_for_evaluation = ref(0);
 const waiting_for_mark = ref(0);
+const finished_internships = ref(0);
 const events = ref([]);
 
 onMounted(async () => {
@@ -55,7 +56,7 @@ onMounted(async () => {
   waiting_for_evaluation.value =
     adminStore.dashboard_data.waiting_for_evaluation;
   waiting_for_mark.value = adminStore.dashboard_data.waiting_for_mark;
-
+  finished_internships.value = adminStore.dashboard_data.finished_internships;
   await adminStore.getEvents();
 
   events.value = adminStore.events
@@ -121,10 +122,10 @@ const toggleDateType = () => {
             v-if="adminStore.studentsFetched"
             trend="10%"
             trend-type="up"
-            color="text-green-500"
+            color="text-fipu_blue"
             class="rounded-lg"
             :icon="mdiAccountSchoolOutline"
-            :number="512"
+            :number="finished_internships"
             label="Uspješno odrađenih praksi"
           />
           <SkeletonLoader v-else></SkeletonLoader>
@@ -144,11 +145,11 @@ const toggleDateType = () => {
             v-if="adminStore.studentsFetched"
             trend="10%"
             trend-type="up"
-            color="text-red-500"
+            color="text-fipu_blue"
             class="rounded-lg"
             :icon="mdiProgressClock"
             :number="waiting_for_allocation"
-            label="Studenti koji čekaju na alokaciju"
+            label="Čeka na alokaciju"
           />
 
           <SkeletonLoader v-else></SkeletonLoader>
@@ -159,11 +160,11 @@ const toggleDateType = () => {
             v-if="adminStore.studentsFetched"
             trend="10%"
             trend-type="up"
-            color="text-yellow-500"
+            color="text-fipu_blue"
             class="rounded-lg"
             :icon="mdiMonitorAccount"
             :number="waiting_for_evaluation"
-            label="Studenti u procesu evaluacije"
+            label="U procesu evaluacije"
           />
           <SkeletonLoader v-else></SkeletonLoader>
 
@@ -171,7 +172,7 @@ const toggleDateType = () => {
             v-if="adminStore.studentsFetched"
             trend="10%"
             trend-type="up"
-            color="text-red-500"
+            color="text-fipu_blue"
             class="rounded-lg"
             :icon="mdiAccountCancel"
             :number="0"
@@ -183,7 +184,7 @@ const toggleDateType = () => {
             v-if="adminStore.studentsFetched"
             trend="10%"
             trend-type="up"
-            color="text-yellow-500"
+            color="text-fipu_blue"
             class="rounded-lg"
             :icon="mdiAlertBox"
             :number="waiting_for_mark"

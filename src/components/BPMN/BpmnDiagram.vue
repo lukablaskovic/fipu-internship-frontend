@@ -3,7 +3,7 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from "vue";
+import { ref, onMounted, onBeforeUnmount } from "vue";
 import BpmnViewer from "bpmn-js";
 import { adminStore } from "@/main";
 import { UserTaskMappings } from "@/helpers/maps";
@@ -30,6 +30,9 @@ const props = defineProps({
 const canvas = ref(null);
 const emit = defineEmits(["currentTaskModal", "pastTaskModal"]);
 
+function handleWindowResize(viewer) {
+  viewer.get("canvas").zoom("fit-viewport");
+}
 onMounted(async () => {
   const viewer = initializeBpmnViewer(canvas.value);
 
@@ -37,9 +40,15 @@ onMounted(async () => {
     await importBpmnDiagram(viewer, props.xml);
     setupEventListeners(viewer);
     applyCustomStyling(props.highlightColor, props.highlightElementId, viewer);
+    handleWindowResize(viewer);
+    window.addEventListener("resize", () => handleWindowResize(viewer));
   } catch (err) {
     handleError(err);
   }
+
+  onBeforeUnmount(() => {
+    window.removeEventListener("resize", () => handleWindowResize(viewer));
+  });
 });
 
 function initializeBpmnViewer(container) {
