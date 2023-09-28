@@ -44,7 +44,7 @@ const submit = (event) => {
     <slot v-if="hasComponentLayout" />
     <template v-else>
       <CardBoxComponentBody
-        :no-padding="hasTable"
+        :no-padding="hasTable || centeredContent || verticalCentered"
         :centered-content="centeredContent"
         :vertical-centered="verticalCentered"
       >

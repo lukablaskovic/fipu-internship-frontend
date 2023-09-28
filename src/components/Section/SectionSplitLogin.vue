@@ -18,7 +18,7 @@ const colorClass = computed(() => {
 
   switch (props.bg) {
     case "blue":
-      return gradientBgBlue;
+      return "bg-gradient-to-tr from-blue-500 via-blue-300 to-fipu_blue";
   }
 
   return "";
@@ -26,7 +26,7 @@ const colorClass = computed(() => {
 </script>
 
 <template>
-  <div class="md:pl-36 md:pr-36" :class="colorClass">
+  <div class="md:px-16 lg:px-20 xl:px-28 2xl:px-36 transition-all duration-300" :class="colorClass">
     <slot card-class="shadow-2xl" />
   </div>
 </template>
