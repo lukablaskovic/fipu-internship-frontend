@@ -88,11 +88,6 @@ const defualtEventsSet = computed(() => {
         !ActivityEventMappings.isGatewayEvent(event.activity_id)
     )
     .map((event) => event.activity_id);
-  console.log(
-    "adminStore.dashboard_data.selectedEvents",
-    adminStore.dashboard_data.selectedEvents
-  );
-  console.log("defaultEvents", defaultEvents);
 
   return Utils.arraysEqual(
     adminStore.dashboard_data.selectedEvents,
@@ -147,7 +142,6 @@ const selectedOptions = ref([]);
 
 const saveSelectedEvents = async () => {
   adminStore.setSelectedEvents(selectedOptions.value);
-  console.log("Events saved:", selectedOptions.value);
   snackBarStore.pushMessage("Event-Filteri ažurirani!", "success");
   await Utils.wait(0.5);
   location.reload();

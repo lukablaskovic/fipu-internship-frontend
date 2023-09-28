@@ -115,7 +115,10 @@ const expandCollapseItem = computed(() => ({
         :class="styleStore.asideBrandStyle"
         class="flex flex-row h-14 items-center justify-center dark:bg-slate-900"
       >
-        <img src="fipu_hr.png" class="max-h-12 object-contain" />
+        <img
+          src="FIPU_praksa_logo_transparent.svg"
+          class="max-h-12 object-contain"
+        />
       </div>
     </router-link>
 

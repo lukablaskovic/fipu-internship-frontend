@@ -36,7 +36,7 @@ export default [
   },
 
   {
-    label: "BPMN Engine",
+    label: "Admin",
     icon: mdiEngine,
     menu: [
       {

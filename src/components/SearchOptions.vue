@@ -36,25 +36,14 @@
             <b>Kratke upute kako koristiti tražilicu</b>
             <hr />
             <br />
-            <div>
-              <b class="bg-fipu_blue px-0.5">s:</b> pretraži studenta po imenu i
-              prezimenu
-            </div>
-            <div>
-              <b class="bg-fipu_blue px-0.5">sj:</b> pretraži studenta po JMBAGu
-            </div>
-            <div>
-              <b class="bg-fipu_blue px-0.5">se:</b> pretraži studenta po emailu
-            </div>
-            <div>
-              <b class="bg-fipu_blue px-0.5">t:</b> za pretraživanje po
-              trenutnom tasku
-            </div>
-            <div>
-              <b class="bg-fipu_blue px-0.5">p:</b> za pretraživanje po poduzeću
-            </div>
-            <div>
-              <b class="bg-fipu_blue px-0.5">e:</b> za pretraživanje eventa
+            <div
+              v-for="helpItem in helpItems"
+              :key="helpItem.prefix"
+              @click="insertPrefix(helpItem.prefix)"
+              class="cursor-pointer hover:bg-fipu_blue hover:text-white py-1 px-2 rounded"
+            >
+              <b class="bg-fipu_blue px-0.5">{{ helpItem.prefix }}</b>
+              {{ helpItem.description }}
             </div>
           </div>
 
@@ -90,7 +79,9 @@
                 class="block truncate"
                 :class="{ 'font-medium': selected, 'font-normal': !selected }"
               >
-                {{ result.name }}
+                {{ result.student_ime }} {{ result.student_prezime }} ({{
+                  result.JMBAG
+                }}) - {{ result.student_email }}
               </span>
               <span
                 v-if="selected"
@@ -109,7 +100,7 @@
 
 <script setup>
 import { ref, computed, onMounted, onUnmounted } from "vue";
-
+import { adminStore } from "@/main";
 import {
   Combobox,
   ComboboxInput,
@@ -122,21 +113,20 @@ import MdiCheck from "vue-material-design-icons/Check.vue";
 import MdiMagnify from "vue-material-design-icons/Magnify.vue";
 import MdiAccount from "vue-material-design-icons/Account.vue";
 
-const people = [
-  { id: 1, name: "Wade Cooper" },
-  { id: 2, name: "Arlene Mccoy" },
-  { id: 3, name: "Devon Webb" },
-  { id: 4, name: "Tom Cook" },
-  { id: 5, name: "Tanya Fox" },
-  { id: 6, name: "Hellen Schmidt" },
-];
 const events = [{ id: 1, name: "Some event" }];
 const searchInput = ref(null);
 
 let selectedValue = ref("");
 
+function insertPrefix(prefix) {
+  query.value = prefix; // Set the input's value to the clicked prefix
+  // Optionally, if you want the focus to go back to the input after clicking
+  const searchInputElement = document.querySelector(".inputClass");
+  searchInputElement && searchInputElement.focus();
+}
+
 let displayValue = computed(() => {
-  if (!selectedValue.value) return "";
+  if (!selectedValue.value) return query.value;
   return selectedValue.value.name;
 });
 
@@ -167,26 +157,49 @@ onMounted(() => {
 let selected = ref();
 let query = ref("");
 
+let studentData = computed(() => {
+  return adminStore.students.map(
+    (student) => student.process_instance_data.variables
+  );
+});
+
 let filteredResults = computed(() => {
-  // Handle search for students
+  const searchTerm = query.value.slice(2).toLowerCase().replace(/\s+/g, "");
+  console.log(studentData.value);
   if (query.value.toLowerCase().startsWith("s:")) {
-    const searchTerm = query.value.slice(2).toLowerCase().replace(/\s+/g, "");
-    console.log(searchTerm);
-    return people.filter((person) =>
-      person.name.toLowerCase().replace(/\s+/g, "").includes(searchTerm)
+    return studentData.value.filter(
+      (student) =>
+        student.student_ime
+          .toLowerCase()
+          .replace(/\s+/g, "")
+          .includes(searchTerm) ||
+        student.student_prezime
+          .toLowerCase()
+          .replace(/\s+/g, "")
+          .includes(searchTerm)
     );
-  }
-  // Handle search for events (you'll need to have a list of events defined somewhere)
-  else if (query.value.startsWith("e:")) {
-    const searchTerm = query.value.slice(2).toLowerCase().replace(/\s+/g, "");
-    // Assuming you have an "events" array defined similarly to the "people" array
-    return events.filter((event) =>
-      event.name.toLowerCase().replace(/\s+/g, "").includes(searchTerm)
+  } else if (query.value.startsWith("se:")) {
+    return studentData.value.filter((student) =>
+      student.student_email
+        .toLowerCase()
+        .replace(/\s+/g, "")
+        .includes(searchTerm)
     );
-  }
-  // If the query doesn't start with "s:" or "e:", return an empty array
-  else {
+  } else if (query.value.startsWith("sj:")) {
+    return studentData.value.filter((student) =>
+      student.JMBAG.toLowerCase().replace(/\s+/g, "").includes(searchTerm)
+    );
+  } else {
     return [];
   }
 });
+
+const helpItems = [
+  { prefix: "s:", description: "pretraži studenta po imenu i prezimenu" },
+  { prefix: "sj:", description: "pretraži studenta po JMBAGu" },
+  { prefix: "se:", description: "pretraži studenta po emailu" },
+  { prefix: "t:", description: "za pretraživanje po trenutnom tasku" },
+  { prefix: "p:", description: "za pretraživanje po poduzeću" },
+  { prefix: "e:", description: "za pretraživanje eventa" },
+];
 </script>

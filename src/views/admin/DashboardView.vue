@@ -63,8 +63,6 @@ onMounted(async () => {
       (event) => !ActivityEventMappings.shouldSkipEvent(event.activity_id)
     )
     .reverse();
-
-  console.log("Dashboard - events", events.value);
 });
 
 const eventsOptionsActive = ref(false);
