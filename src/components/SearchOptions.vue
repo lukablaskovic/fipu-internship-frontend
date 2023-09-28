@@ -139,9 +139,6 @@ onMounted(() => {
       searchInput.value && searchInput.value.focus();
     }
   }
-  document.addEventListener("keydown", (e) => {
-    console.log("Key pressed:", e.key);
-  });
 
   document.addEventListener("keydown", onKeydown);
 

@@ -22,7 +22,10 @@ const allAvailableAssignments = ref([]);
 let checkedAssignments = computed(() => guestStore.checkedAssignments);
 
 onMounted(async () => {
-  allAvailableAssignments.value = await guestStore.fetchAvailableAssignments();
+  const result = await guestStore.fetchAvailableAssignments();
+  allAvailableAssignments.value = result.filter(
+    (task) => task.dostupno_mjesta > 0
+  );
   guestStore.resetAssignments();
 });
 

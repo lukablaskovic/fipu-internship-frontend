@@ -1,7 +1,7 @@
 import {
   mdiMonitor,
   mdiAccountMultiple,
-  mdiEngine,
+  mdiSecurity,
   mdiDomain,
   mdiClipboardText,
   mdiClipboardCheck,
@@ -20,15 +20,16 @@ export default [
     updateMark: "danger",
   },
   {
-    to: "/dostupni-zadaci",
-    icon: mdiClipboardText,
-    label: "Zadaci",
-  },
-  {
     to: "/alokacije",
     icon: mdiClipboardCheck,
     label: "Alokacije",
   },
+  {
+    to: "/dostupni-zadaci",
+    icon: mdiClipboardText,
+    label: "Zadaci",
+  },
+
   {
     to: "/poslodavci",
     icon: mdiDomain,
@@ -37,7 +38,7 @@ export default [
 
   {
     label: "Admin",
-    icon: mdiEngine,
+    icon: mdiSecurity,
     menu: [
       {
         to: "/bpmn/models",

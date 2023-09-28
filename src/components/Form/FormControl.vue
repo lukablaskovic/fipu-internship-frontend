@@ -303,15 +303,14 @@ const openPasswordToggle = (e) => {
   }
 };
 
-const copyToClipboard = () => {
+const copyToClipboard = async () => {
   if (props.copyable) {
-    const el = document.createElement("textarea");
-    el.value = props.modelValue;
-    document.body.appendChild(el);
-    el.select();
-    document.execCommand("copy");
-    document.body.removeChild(el);
-    snackBarStore.pushMessage("Kopirano u međuspremnik.", "success");
+    try {
+      await navigator.clipboard.writeText(props.modelValue);
+      snackBarStore.pushMessage("Kopirano u međuspremnik.", "success");
+    } catch (err) {
+      console.error("Failed to copy text: ", err);
+    }
   }
 };
 
