@@ -9,6 +9,7 @@ import {
   mdiCheckCircle,
   mdiAsterisk,
   mdiLockOff,
+  mdiContentCopy,
 } from "@mdi/js";
 import FormControlIcon from "@/components/Premium/FormControlIcon.vue";
 import FormFieldHelp from "@/components/Premium/FormFieldHelp.vue";
@@ -16,6 +17,7 @@ import FormControlListbox from "@/components/Premium/FormControlListbox.vue";
 import BaseIcon from "@/components/Base/BaseIcon.vue";
 import TipTag from "@/components/Premium/TipTag.vue";
 import SearchOptions from "@/components/SearchOptions.vue";
+import { snackBarStore } from "@/main";
 
 const props = defineProps({
   firstAddon: Boolean,
@@ -109,6 +111,7 @@ const props = defineProps({
   searchBar: Boolean,
   transparent: Boolean,
   readonly: Boolean,
+  copyable: Boolean,
 });
 
 const emit = defineEmits(["update:modelValue", "right-icon-click"]);
@@ -300,6 +303,18 @@ const openPasswordToggle = (e) => {
   }
 };
 
+const copyToClipboard = () => {
+  if (props.copyable) {
+    const el = document.createElement("textarea");
+    el.value = props.modelValue;
+    document.body.appendChild(el);
+    el.select();
+    document.execCommand("copy");
+    document.body.removeChild(el);
+    snackBarStore.pushMessage("Kopirano u međuspremnik.", "success");
+  }
+};
+
 const inputEl = ref(null);
 
 if (props.ctrlKFocus) {
@@ -413,14 +428,16 @@ if (props.ctrlKFocus) {
         :text-color="textColor"
       />
       <FormControlIcon
-        v-if="computedIconRight"
-        :icon="computedIconRight"
+        v-if="computedIconRight || props.copyable"
+        :icon="props.copyable ? mdiContentCopy : computedIconRight"
         :h="controlIconH"
         :text-color="textColor"
-        :clickable="rightIconClickable"
+        :clickable="rightIconClickable || props.copyable"
         is-right
-        @icon-click="openPasswordToggle"
+        :class="props.copyable ? 'hover:text-fipu_blue' : ''"
+        @icon-click="props.copyable ? copyToClipboard() : openPasswordToggle"
       />
+
       <TipTag v-if="tipLeft" :tip="tipLeft" left />
       <TipTag v-if="tipRight" :tip="tipRight" right />
     </div>
@@ -432,3 +449,9 @@ if (props.ctrlKFocus) {
     />
   </div>
 </template>
+
+<style>
+.copy-icon {
+  transition: opacity 0.2s;
+}
+</style>

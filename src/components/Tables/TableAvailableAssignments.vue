@@ -103,8 +103,13 @@ const checked = (value, assignment) => {
     @cancel="mainStore.activateLogoutModal(false)"
   >
     <hr />
-    <div><b>Zadatak studenta:</b> {{ isModalActive["opis_zadatka"] }}</div>
     <div><b>Poslodavac: </b>{{ isModalActive["Poslodavac"][0].value }}</div>
+
+    <div><b>Zadatak studenta:</b> {{ isModalActive["opis_zadatka"] }}</div>
+    <div>
+      <b>Broj studenata (max):</b> {{ isModalActive["broj_studenata"] }}
+    </div>
+
     <div>
       <b>Preferirane tehnologije:</b>
       {{ isModalActive["preferirane_tehnologije"] }}
@@ -132,7 +137,10 @@ const checked = (value, assignment) => {
       <b>Angažman FIPU: </b>
       {{ isModalActive["angazman_fipu"] }}
     </div>
-    <div><b>Kontakt email: </b>{{ isModalActive["poslodavac_email"] }}</div>
+    <div>
+      <b>Kontakt email: </b>
+      <span class="underline">{{ isModalActive["poslodavac_email"] }}</span>
+    </div>
     <div><b>Lokacija: </b>{{ isModalActive["lokacija"] }}</div>
     <div>
       <b>Napomena</b>

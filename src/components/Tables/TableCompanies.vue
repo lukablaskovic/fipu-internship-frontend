@@ -59,14 +59,25 @@ const pagesList = computed(() => {
   </LoadingOverlay>
   <table>
     <thead>
-      <tr>
+      <tr v-if="!mainStore.userAdmin">
         <th />
         <th>Naziv</th>
         <th>Web mjesto</th>
         <th />
       </tr>
+      <tr v-else>
+        <th />
+        <th>Naziv</th>
+        <th>Web mjesto</th>
+        <th>Direktor</th>
+        <th>Matični broj</th>
+        <th>OIB</th>
+        <th>Adresa</th>
+
+        <th />
+      </tr>
     </thead>
-    <tbody>
+    <tbody v-if="!mainStore.userAdmin">
       <tr v-for="company in companiesPaginated" :key="company['JMBAG']">
         <TableCheckboxCell v-if="checkable" :assignment-data="company" />
 
@@ -90,6 +101,59 @@ const pagesList = computed(() => {
           <a class="underline" :href="company['web']" target="_blank">{{
             company["web"]
           }}</a>
+        </td>
+
+        <td class="before:hidden lg:w-1 whitespace-nowrap">
+          <BaseButtons type="justify-start lg:justify-end" no-wrap>
+            <BaseButton
+              color="fipu_blue"
+              :icon="mdiWeb"
+              small
+              @click="goToCompanyWeb(company['web'])"
+            />
+          </BaseButtons>
+        </td>
+      </tr>
+    </tbody>
+    <tbody v-else>
+      <tr v-for="company in companiesPaginated" :key="company['JMBAG']">
+        <TableCheckboxCell v-if="checkable" :assignment-data="company" />
+
+        <td v-if="company['logo'][0]" class="border-b-0 lg:w-6 before:hidden">
+          <UserAvatar
+            :avatar="company['logo'][0]['url']"
+            class="w-24 h-24 mx-auto lg:w-6 lg:h-6"
+          />
+        </td>
+        <td v-else>
+          <UserAvatar
+            avatar="No-Logo.png"
+            class="w-24 h-24 mx-auto lg:w-6 lg:h-6"
+          />
+        </td>
+
+        <td data-label="Naziv">
+          {{ company["naziv"] }}
+        </td>
+        <td data-label="Web mjesto">
+          <a class="underline" :href="company['web']" target="_blank">{{
+            company["web"]
+          }}</a>
+        </td>
+        <td data-label="Direktor">
+          {{ company["direktor"] }}
+        </td>
+
+        <td data-label="Matični broj">
+          {{ company["maticni_broj"] }}
+        </td>
+
+        <td data-label="OIB">
+          {{ company["OIB"] }}
+        </td>
+
+        <td data-label="Adresa">
+          {{ company["adresa"] }}
         </td>
 
         <td class="before:hidden lg:w-1 whitespace-nowrap">

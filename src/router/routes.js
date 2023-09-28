@@ -156,6 +156,16 @@ const routes = [
     name: "evaluacija",
     component: () => import("@/views/EvaluationView.vue"),
   },
+  {
+    meta: {
+      title: "Dodavanje zadatka",
+      requiresAuth: false,
+      requiresAdmin: false,
+    },
+    path: "/poslodavci/novi-zadatak",
+    name: "dodavanje zadatka",
+    component: () => import("@/views/NewAssignmentFormPublic.vue"),
+  },
 ];
 
 export { routes };
