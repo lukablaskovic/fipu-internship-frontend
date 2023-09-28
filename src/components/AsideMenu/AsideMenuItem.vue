@@ -111,73 +111,31 @@ const updateMarkPosition = computed(() => {
 </script>
 
 <template>
-  <li>
-    <component
-      :is="item.to ? RouterLink : 'a'"
-      v-slot="vSlot"
-      :to="item.to ?? null"
-      :href="item.href ?? null"
-      :target="item.target ?? null"
-      :exact-active-class="
-        activeSecondaryMenuKey ? null : asideMenuItemActiveBgStyle
-      "
-      class="flex cursor-pointer"
-      :class="componentClass"
-      @click="menuClick"
-    >
-      <BaseIcon
-        v-if="item.icon"
-        :path="item.icon"
-        class="flex-none transition-size"
-        :class="[
-          vSlot && vSlot.isExactActive
-            ? asideMenuItemActiveStyle
-            : asideMenuItemInactiveStyle,
-          { relative: item.updateMark },
-        ]"
-        :w="isCompact ? 'w-16 lg:w-20' : 'w-16'"
-        :size="18"
-      >
-        <UpdateMark
-          v-if="
-            item.updateMark &&
-            adminStore.dashboard_data.waiting_for_allocation > 0
-          "
-          :color="item.updateMark"
-          :position="updateMarkPosition"
-        />
-      </BaseIcon>
-      <span
-        class="grow animate-fade-in text-ellipsis line-clamp-1"
-        :class="[
-          { 'lg:hidden': isCompact, 'pr-12': !hasSub },
-          vSlot && vSlot.isExactActive
-            ? asideMenuItemActiveStyle
-            : asideMenuItemInactiveStyle,
-        ]"
-        >{{ item.label }}</span
-      >
-      <BaseIcon
-        v-if="hasSub"
-        :path="subIcon"
-        class="flex-none animate-fade-in-fast"
-        :class="[
-          { 'lg:hidden': isCompact },
-          vSlot && vSlot.isExactActive
-            ? asideMenuItemActiveStyle
-            : asideMenuItemInactiveStyle,
-        ]"
-        w="w-12"
-      />
-    </component>
-    <AsideMenuList
-      v-if="hasDropdown"
-      :menu="item.menu"
-      :class="[
-        styleStore.asideMenuDropdownStyle,
-        isDropdownActive ? 'block dark:bg-slate-800/50' : 'hidden',
-      ]"
-      is-dropdown-list
-    />
-  </li>
+    <li>
+        <component v-slot="vSlot" :is="item.to ? RouterLink : 'a'" @click="menuClick"
+            :to="item.to ?? null" :href="item.href ?? null" :target="item.target ?? null"
+            :exact-active-class="activeSecondaryMenuKey ? null : asideMenuItemActiveBgStyle"
+            class="flex cursor-pointer" :class="[componentClass, isCompact ? 'justify-center' : 'justify-start']">
+
+            <BaseIcon v-if="item.icon" :path="item.icon" class="flex-none transition-all duration-300" :w="isCompact ? 'w-8 lg:w-16' : 'w-8'" :size="item.size ? item.size : 18"
+                :class="[ vSlot && vSlot.isExactActive ? asideMenuItemActiveStyle : asideMenuItemInactiveStyle,
+                        { relative: item.updateMark },
+                        item.color == 'info' ? 'text-slate-800' : '']">
+                <UpdateMark v-if="item.updateMark && adminStore.dashboard_data.waiting_for_allocation > 0" :color="item.updateMark" :position="updateMarkPosition"/>
+            </BaseIcon>
+
+            <span class="transition-all duration-300 overflow-hidden text-ellipsis line-clamp-1"
+                :class="[{ '': isCompact, '': !hasSub },
+                        vSlot && vSlot.isExactActive ? asideMenuItemActiveStyle : asideMenuItemInactiveStyle,
+                        isCompact ? (item.menu == undefined ? 'w-52 lg:w-0' : 'w-40 lg:w-0') : 'w-40',
+                        item.color == 'info' ? 'text-slate-800 font-bold hover:underline' : '']">
+                {{ item.label }}
+            </span>
+
+            <BaseIcon v-if="hasSub" :path="subIcon" class="flex-none animate-fade-in-fast" w="w-12"
+                :class="[{ 'lg:hidden': isCompact }, vSlot && vSlot.isExactActive ? asideMenuItemActiveStyle : asideMenuItemInactiveStyle]"/>
+                
+        </component>
+        <AsideMenuList v-if="hasDropdown" :menu="item.menu" is-dropdown-list :class="[styleStore.asideMenuDropdownStyle, isDropdownActive ? 'block dark:bg-slate-800/50' : 'hidden']"/>
+    </li>
 </template>

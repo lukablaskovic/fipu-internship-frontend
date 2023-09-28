@@ -208,14 +208,14 @@ const toggleDateType = () => {
               trend-type="filter"
               :trend="'Događaji'"
               :options="latestEvents"
-              left="false"
+              :left="false"
             />
           </div>
           <div class="flex flex-row">
             <div class="mb-4">
               <PillTag
                 class="cursor-pointer"
-                left="false"
+                :left="false"
                 :icon="
                   adminStore.dashboard_data.relativeToNowTimestmap
                     ? mdiClockTimeEight
@@ -247,8 +247,8 @@ const toggleDateType = () => {
               :student="event.student_ime + ' ' + event.student_prezime"
               :date="formattedDate(event.timestamp)"
               :type="event.activity_id"
-              :jmbag="event.student_JMBAG"
-              :email="event.student_email"
+              :jmbag="event.student_JMBAG == undefined ? 'Failed to load JMBAG' : event.student_JMBAG"
+              :email="event.student_email == undefined ? 'Failed to load email' : event.student_email"
               class="rounded-lg cursor-pointer"
               @click="router.push(`/studenti/${event.instance_id}`)"
             />
@@ -260,8 +260,8 @@ const toggleDateType = () => {
               :student="event.student_ime + ' ' + event.student_prezime"
               :date="formattedDate(event.timestamp)"
               :type="event.activity_id"
-              :jmbag="event.student_JMBAG"
-              :email="event.student_email"
+              :jmbag="event.student_JMBAG == undefined ? 'Failed to load JMBAG' : event.student_JMBAG"
+              :email="event.student_email == undefined ? 'Failed to load email' : event.student_email"
               class="rounded-lg cursor-pointer"
               @click="router.push(`/studenti/${event.instance_id}`)"
             />
