@@ -109,9 +109,9 @@ onBeforeUnmount(() => {
         
         </div>
 
-        <div v-if="item.menu" :class="{ 'lg:hidden': !isDropdownActive }"
-            class="text-sm border-b border-gray-100 lg:border lg:bg-white lg:absolute lg:top-full lg:left-0 lg:min-w-full
-                lg:z-20 lg:rounded-lg lg:shadow-lg lg:dark:bg-slate-800 dark:border-slate-700">
+        <div v-if="item.menu" :style="isDropdownActive ? 'height: '+item.menu.length*42+'px;' : 'height: 0px;'"
+            class="text-sm border-b border-gray-100 lg:border lg:bg-white lg:absolute lg:top-full lg:left-0 lg:min-w-full overflow-hidden
+                lg:z-20 lg:rounded-lg lg:shadow-lg lg:dark:bg-slate-800 dark:border-slate-700 transition-size duration-300">
             <NavBarMenuList :menu="item.menu" @menu-click="menuClickDropdown" />
         </div>
 

@@ -53,9 +53,11 @@ const submit = (event) => {
 <style scoped>
 ::-webkit-scrollbar {
     width: 8px;
+    border-radius: 100px;
 }
 ::-webkit-scrollbar-track-piece {
-    background: #f9fafb
+    background: #f9fafb;
+    border-radius: 100px;
 }
 ::-webkit-scrollbar-thumb {
     background: #9ca3af;

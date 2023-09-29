@@ -62,37 +62,21 @@ window.addEventListener("keydown", (e) => {
 </script>
 
 <template>
-  <OverlayLayer v-show="value" @overlay-click="cancel">
-    <CardBox
-      v-show="value"
-      :class="{
-        'rounded shadow-lg max-h-modal w-11/12 md:w-3/5 lg:w-2/5 xl:w-4/12 z-50 modal-scrollable':
-          !large,
-        'rounded shadow-lg max-h-modal w-full md:w-4/5 lg:w-3/5 xl:w-3/5 z-50 modal-scrollable':
-          large,
-      }"
-      is-modal
-    >
-      <CardBoxComponentTitle :title="title"> </CardBoxComponentTitle>
-      <slot :assignment="modelValue"></slot>
-      <BaseButtons class="justify-center">
-        <BaseButton
-          v-if="hasConfirm"
-          :label="buttonLabel"
-          :color="button"
-          :disabled="disabledCondition"
-          @click="confirm"
-        />
-        <BaseButton
-          v-if="hasCancel"
-          label="Natrag"
-          :color="button"
-          outline
-          @click="cancel"
-        />
-      </BaseButtons>
-    </CardBox>
-  </OverlayLayer>
+    <OverlayLayer :type="value ? '' : 'pointer-events-none'" @overlay-click="cancel">
+        <CardBox v-show="value" :class="{ 'rounded shadow-lg max-h-modal w-11/12 md:w-3/5 lg:w-2/5 xl:w-4/12 z-50 modal-scrollable': !large,
+                                          'rounded shadow-lg max-h-modal w-full md:w-4/5 lg:w-3/5 xl:w-3/5 z-50 modal-scrollable': large}" is-modal>
+
+            <CardBoxComponentTitle :title="title"> </CardBoxComponentTitle>
+
+            <slot :assignment="modelValue"></slot>
+
+            <BaseButtons class="justify-center">
+                <BaseButton v-if="hasConfirm" :label="buttonLabel" :color="button" :disabled="disabledCondition" @click="confirm"/>
+                <BaseButton v-if="hasCancel" label="Natrag" :color="button" outline @click="cancel"/>
+            </BaseButtons>
+
+        </CardBox>
+    </OverlayLayer>
 </template>
 
 <style scoped>
