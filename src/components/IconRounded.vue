@@ -30,6 +30,10 @@ defineProps({
     :h="h"
     :size="color == 'fipu_blue' ? 24 : 48"
     class="rounded-full"
-    :class="bg ? colorsBgLight[color] : [colorsText[color], 'bg-transparent', color == 'fipu_blue' ? '' : '']"
+    :class="
+      bg
+        ? colorsBgLight[color]
+        : [colorsText[color], 'bg-transparent', color == 'fipu_blue' ? '' : '']
+    "
   />
 </template>
