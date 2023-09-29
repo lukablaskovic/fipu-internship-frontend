@@ -7,20 +7,20 @@ export const colorsBgLight = {
   white: "bg-white text-black",
   light: "bg-white text-black dark:bg-slate-900/70 dark:text-white",
   contrast: "bg-gray-800 text-white dark:bg-white dark:text-black",
-  success: "bg-green-300 border-green-300 text-white",
-  danger: "bg-red-500 border-red-500 text-white",
-  warning: "bg-yellow-500 border-yellow-500 text-white",
-  info: "bg-fipu_blue border-fipu_blue text-white",
-  fipu_blue: "bg-fipu_blue border-fipu_blue text-white",
+  success: "bg-emerald-500 border-emerald-500 text-white dark:text-emerald-950 font-medium dark:font-bold",
+  danger: "bg-rose-600 border-rose-600 text-white dark:text-rose-950 font-medium dark:font-bold",
+  warning: "bg-amber-500 border-amber-500 text-white dark:text-amber-950 font-medium dark:font-bold",
+  info: "bg-fipu_blue border-fipu_blue text-white dark:text-slate-900 font-medium",
+  fipu_blue: "bg-fipu_blue border-fipu_blue text-white dark:text-slate-900 font-medium",
 };
 
 export const colorsText = {
   white: "text-black dark:text-slate-100",
   light: "text-gray-700 dark:text-slate-400",
   contrast: "dark:text-white",
-  success: "text-green-300",
-  danger: "text-red-500",
-  warning: "text-yellow-500",
+  success: "text-emerald-500",
+  danger: "text-rose-600",
+  warning: "text-amber-500",
   info: "text-fipu_blue",
   fipu_blue: "text-fipu_blue",
 };
@@ -29,9 +29,9 @@ export const colorsOutline = {
   white: [colorsText.white, "border-gray-100"],
   light: [colorsText.light, "border-gray-100"],
   contrast: [colorsText.contrast, "border-gray-900 dark:border-slate-100"],
-  success: [colorsText.success, "border-green-300"],
-  danger: [colorsText.danger, "border-red-500"],
-  warning: [colorsText.warning, "border-yellow-500"],
+  success: [colorsText.success, "border-emerald-500"],
+  danger: [colorsText.danger, "border-rose-600"],
+  warning: [colorsText.warning, "border-amber-500"],
   info: [colorsText.fipu_blue, "border-fipu_blue"],
 };
 

@@ -34,6 +34,6 @@ const trendStyle = computed(() => {
     :label="trend"
     :color="trendStyle.style"
     :icon="trendStyle.icon"
-    :small="small"
+    :small="false"
   />
 </template>

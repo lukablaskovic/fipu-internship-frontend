@@ -60,8 +60,7 @@ defineProps({
       <PillTagTrend :trend="trend" :trend-type="trendType" small />
       <BaseButton
         :icon="mdiCog"
-        icon-w="w-4"
-        icon-h="h-4"
+        iconSize="18"
         color="lightDark"
         small
       />

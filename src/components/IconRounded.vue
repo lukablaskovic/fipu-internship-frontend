@@ -28,8 +28,8 @@ defineProps({
     :path="icon"
     :w="w"
     :h="h"
-    size="24"
+    :size="color == 'fipu_blue' ? 24 : 48"
     class="rounded-full"
-    :class="bg ? colorsBgLight[color] : [colorsText[color], 'bg-transparent']"
+    :class="bg ? colorsBgLight[color] : [colorsText[color], 'bg-transparent', color == 'fipu_blue' ? '' : '']"
   />
 </template>
