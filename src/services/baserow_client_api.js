@@ -114,5 +114,22 @@ const Admin = {
       return null;
     }
   },
+
+  async handleTask(id_zadatak, value) {
+    let post_data = {
+      id_zadatak: id_zadatak,
+      voditelj_odobrio: value,
+    };
+    try {
+      let result = await AxiosWrapper.patch(
+        `/zadaci_za_odabir/odobrenje`,
+        post_data
+      );
+      return result;
+    } catch (error) {
+      console.log("Error:", error);
+      return null;
+    }
+  },
 };
 export { Guest, Admin, Student };

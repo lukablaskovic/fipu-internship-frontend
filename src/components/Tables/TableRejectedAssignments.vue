@@ -1,14 +1,14 @@
 <script setup>
 import { computed, ref, onMounted, watch } from "vue";
 
-import { mdiEye, mdiCheckCircle, mdiCloseBox } from "@mdi/js";
+import { mdiEye } from "@mdi/js";
 import CardBoxModal from "@/components/Cardbox/CardBoxModal.vue";
 import TableCheckboxCell from "@/components/Tables/TableCheckboxCell.vue";
 import BaseLevel from "@/components/Base/BaseLevel.vue";
 import BaseButtons from "@/components/Base/BaseButtons.vue";
 import BaseButton from "@/components/Base/BaseButton.vue";
-import { mainStore, guestStore, adminStore, snackBarStore } from "@/main.js";
-import Utils from "@/helpers/utils.js";
+import LoadingOverlay from "@/components/LoadingOverlay.vue";
+import { mainStore, guestStore } from "@/main.js";
 
 defineProps({
   checkable: Boolean,
@@ -23,9 +23,9 @@ let checkedAssignments = computed(() => guestStore.checkedAssignments);
 
 onMounted(async () => {
   const result = await guestStore.fetchAvailableAssignments();
+  console.log(result);
   allAvailableAssignments.value = result.filter(
-    (task) =>
-      task.dostupno_mjesta > 0 && task.voditelj_odobrio.value == "u razradi"
+    (task) => task.voditelj_odobrio.value == "odbijeno"
   );
 
   guestStore.resetAssignments();
@@ -86,41 +86,15 @@ const checked = (value, assignment) => {
     guestStore.removeAssignment(assignment);
   }
 };
-const confirmationModal = ref({
-  isActive: false,
-  action: null,
-  assignment: { id_zadatak: null },
-});
-
-const handleConfirmation = (action, assignment) => {
-  confirmationModal.value = {
-    isActive: true,
-    action,
-    assignment: assignment,
-  };
-};
-
-const confirmTaskAction = async () => {
-  const actionStr =
-    confirmationModal.value.action === "accept" ? "odobreno" : "odbijeno";
-  let result = adminStore.handleTask(
-    confirmationModal.value.assignment["id_zadatak"],
-    actionStr
-  );
-  if (result) {
-    snackBarStore.pushMessage("Ažurirano stanje zadatka", "success");
-    await Utils.wait(0.5);
-    location.reload();
-  }
-  confirmationModal.value.isActive = false;
-};
-
-const cancelTaskAction = () => {
-  confirmationModal.value.isActive = false;
-};
 </script>
 
 <template>
+  <LoadingOverlay
+    :is-active="!allAvailableAssignments.length"
+    title="Učitavanje..."
+    description="Može potrajati nekoliko sekundi, molimo ne zatvarajte stranicu."
+  >
+  </LoadingOverlay>
   <CardBoxModal
     v-if="isModalActive"
     v-model="isModalActive"
@@ -177,24 +151,6 @@ const cancelTaskAction = () => {
     <br />
   </CardBoxModal>
 
-  <CardBoxModal
-    v-model="confirmationModal.isActive"
-    title="Potvrda akcije"
-    :button-label="confirmationModal.action === 'accept' ? 'Prihvati' : 'Odbij'"
-    has-cancel
-    @cancel="cancelTaskAction"
-    @confirm="confirmTaskAction"
-  >
-    <div v-if="confirmationModal.action === 'accept'" class="mb-4">
-      Jeste li sigurni da želite prihvatiti zadatak -
-      <b>{{ confirmationModal.assignment["id_zadatak"] }}</b> ?
-    </div>
-    <div v-else class="mb-4">
-      Jeste li sigurni da želite odbiti zadatak -
-      <b>{{ confirmationModal.assignment["id_zadatak"] }}</b> ?
-    </div>
-  </CardBoxModal>
-
   <table>
     <thead>
       <tr>
@@ -205,8 +161,6 @@ const cancelTaskAction = () => {
         <th>Preferirane tehnologije</th>
         <th>Trajanje (sati)</th>
         <th>Lokacija</th>
-        <th />
-        <th />
         <th />
       </tr>
     </thead>
@@ -245,26 +199,6 @@ const cancelTaskAction = () => {
               :icon="mdiEye"
               small
               @click="isModalActive = assignment"
-            />
-          </BaseButtons>
-        </td>
-        <td class="before:hidden lg:w-1 whitespace-nowrap">
-          <BaseButtons type="justify-start lg:justify-end" no-wrap>
-            <BaseButton
-              color="success"
-              :icon="mdiCheckCircle"
-              small
-              @click="handleConfirmation('accept', assignment)"
-            />
-          </BaseButtons>
-        </td>
-        <td class="before:hidden lg:w-1 whitespace-nowrap">
-          <BaseButtons type="justify-start lg:justify-end" no-wrap>
-            <BaseButton
-              color="danger"
-              :icon="mdiCloseBox"
-              small
-              @click="handleConfirmation('decline', assignment)"
             />
           </BaseButtons>
         </td>

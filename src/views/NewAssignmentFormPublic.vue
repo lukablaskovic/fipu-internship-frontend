@@ -10,6 +10,10 @@ import {
   mdiClipboardTextClockOutline,
   mdiAccountGroup,
   mdiSchool,
+  mdiTextLong,
+  mdiXml,
+  mdiThumbsUpDown,
+  mdiClockTimeFiveOutline,
 } from "@mdi/js";
 import SectionMain from "@/components/Section/SectionMain.vue";
 
@@ -28,7 +32,13 @@ import FormCheckRadioGroup from "@/components/Form/FormCheckRadioGroup.vue";
 import BaseDivider from "@/components/Base/BaseDivider.vue";
 import CardBoxComponentTitle from "@/components/Cardbox/CardBoxComponentTitle.vue";
 
-import { mainStore } from "@/main.js";
+import { useVuelidate } from "@vuelidate/core";
+import { required, email, minLength, helpers } from "@vuelidate/validators";
+import { getFirstErrorForField, isUnipuEmail } from "@/helpers/validators";
+
+import Utils from "@/helpers/utils";
+
+import { mainStore, snackBarStore } from "@/main.js";
 
 const form = reactive({
   Poslodavac: "",
@@ -42,15 +52,71 @@ const form = reactive({
   trajanje_sati: "",
   lokacija: "",
   zeljeno_okvirno_vrijeme_pocetka: "",
+  angazman_selekcija: false,
   angazman_fipu: "",
   napomena: "",
   selekcija: false,
   proces_selekcije: "",
 });
+const greaterThanZero = (value) => value > 0;
+
+const rules = {
+  Poslodavac: {
+    required: helpers.withMessage("Polje je obavezno", required),
+  },
+  Poslodavac_novi_naziv: {
+    required: helpers.withMessage("Polje je obavezno", required),
+  },
+  poslodavac_email: {
+    required: helpers.withMessage("Polje je obavezno", required),
+    email: helpers.withMessage("Molimo unesite ispravnu e-mail adresu", email),
+  },
+  opis_zadatka: {
+    required: helpers.withMessage("Polje je obavezno", required),
+  },
+  preferirane_tehnologije: {},
+  broj_studenata: {
+    required: helpers.withMessage("Polje je obavezno", required),
+    maxValue: helpers.withMessage("Minimalno 1 student", greaterThanZero),
+  },
+  preferencije_za_studenta: {},
+  potrebno_imati: {},
+  trajanje_sati: {
+    required: helpers.withMessage("Polje je obavezno", required),
+    maxValue: helpers.withMessage("Mora biti veće od 0", greaterThanZero),
+  },
+  lokacija: {
+    required: helpers.withMessage("Polje je obavezno", required),
+  },
+  zeljeno_okvirno_vrijeme_pocetka: {
+    required: helpers.withMessage("Polje je obavezno", required),
+  },
+  angazman_selekcija: {
+    required: helpers.withMessage("Polje je obavezno", required),
+  },
+  angazman_fipu: {},
+  napomena: {},
+  selekcija: {
+    required: helpers.withMessage("Polje je obavezno", required),
+  },
+  proces_selekcije: {},
+};
+
+const v$ = useVuelidate(rules, form);
+
+async function onSubmit() {
+  v$.value.$touch();
+  if (v$.value.$invalid) {
+    return;
+  }
+  console.log("form", form);
+  console.log("Submitted!");
+  snackBarStore.pushMessage("Uspješno ste prijavili zadatak!", "success");
+}
 
 const allCompanies = ref([]);
 const mappedCompanies = ref([]);
-const angazman_selekcija = ref(false);
+
 const angazmanSelect = { true: "Da", false: "Ne" };
 const selectionSelect = { true: "Da", false: "Ne" };
 
@@ -58,12 +124,10 @@ onMounted(async () => {
   let result = await mainStore.fetchCompanies();
   allCompanies.value = result.data.results;
 
-  // Map to objects with id (auto-increment) and naziv
   mappedCompanies.value = allCompanies.value.map((items, index) => ({
     id: index + 1,
     label: items.naziv,
   }));
-  console.log(mappedCompanies.value);
 });
 </script>
 
@@ -121,7 +185,7 @@ onMounted(async () => {
           :icon="mdiBallot"
           class="mb-6 lg:mb-0 lg:col-span-2 xl:col-span-3"
           is-form
-          @submit.prevent="submit_application_form"
+          @submit.prevent="onSubmit"
         >
           <CardBoxComponentTitle
             class="text-center"
@@ -145,8 +209,8 @@ onMounted(async () => {
               v-model="form.Poslodavac_novi_naziv"
               :icon-left="mdiDomain"
               help="Naziv poduzeća ako ste novi partner"
+              :error="getFirstErrorForField('Poslodavac_novi_naziv')"
               placeholder="Naziv poduzeća ako ste novi partner"
-              required
             />
           </FormField>
 
@@ -155,9 +219,9 @@ onMounted(async () => {
               v-model="form.poslodavac_email"
               :icon-left="mdiEmail"
               type="email"
+              :error="getFirstErrorForField('poslodavac_email')"
               help="E-mail adresa pri kojoj će se student obratiti oko dogovora za izvođenje studentske prakse ili provedbu selekcije. Ne mora nužno biti budući mentor."
               placeholder="Email"
-              required
             />
           </FormField>
 
@@ -166,9 +230,9 @@ onMounted(async () => {
             <FormControl
               v-model="form.opis_zadatka"
               type="textarea"
-              placeholder="Detaljan opis zadatka"
+              :error="getFirstErrorForField('opis_zadatka')"
+              :icon-left="mdiTextLong"
               help="Opis zadataka koji bi student izvršavao. Može biti: mala (web, mobilna, desktop) aplikacija, program za obradu podataka, analiza podataka, poboljšanje postojećeg koda (engl. code refactoring), pomoć pri održavanju računalne ili aplikacijske infrastrukture - DevOps poslovi, ... Preporuča se što detaljniji opis kako bi mogli alocirati idealnog kandidata."
-              required
             />
           </FormField>
 
@@ -180,10 +244,10 @@ onMounted(async () => {
             <FormControl
               v-model="form.preferirane_tehnologije"
               type="textarea"
-              placeholder="Preferirane tehnologije ili platforme"
+              :error="getFirstErrorForField('preferirane_tehnologije')"
+              :icon-left="mdiXml"
               help="Što sve koristi vaša tvrtka ili na čemu će se temeljiti rad studenta? Npr. PHP, Laravel, Python, Django, JavaScript, Vue.js, Unity, WordPress, TensorFlow...
 "
-              required
             />
           </FormField>
 
@@ -193,10 +257,11 @@ onMounted(async () => {
                 v-model="form.broj_studenata"
                 type="number"
                 :icon-left="mdiAccountGroup"
+                :error="getFirstErrorForField('broj_studenata')"
+                :min="1"
                 placeholder="Maksimalni broj studenata"
                 help="Koliko studenata možete primiti u rješavanju ovog zadatka? Studenti mogu raditi odvojeno ili u timu. Ako imate više zadataka, možete ponovno popuniti formu za svaki zadatak posebno."
                 expanded
-                required
               />
             </FormField>
           </FormField>
@@ -209,23 +274,22 @@ onMounted(async () => {
             <FormControl
               v-model="form.preferencije_za_studenta"
               type="textarea"
+              :error="getFirstErrorForField('preferencije_za_studenta')"
+              :icon-left="mdiThumbsUpDown"
               help="U koliko smatrate važnim, opišite odlike poželjnog kandidata na praksi."
-              required
             />
           </FormField>
 
           <FormField
-            label="Potrebna infrastruktura koju student mora posjedovati
-"
+            label="Potrebna infrastruktura koju student mora posjedovati"
             horizontal
           >
             <FormControl
               v-model="form.potrebno_imati"
+              :error="getFirstErrorForField('potrebno_imati')"
               :icon-left="mdiDomain"
-              help="Potrebna infrastruktura koju student mora posjedovati
-"
+              help="Potrebna infrastruktura koju student mora posjedovati"
               placeholder="Potrebna infrastruktura koju student mora posjedovati"
-              required
             />
           </FormField>
 
@@ -234,11 +298,12 @@ onMounted(async () => {
               <FormControl
                 v-model="form.trajanje_sati"
                 type="number"
+                :error="getFirstErrorForField('trajanje_sati')"
+                :icon-left="mdiClockTimeFiveOutline"
                 placeholder="Preporuča se između 90 i 150 radnih sati"
                 help="Preporučeno trajanje studentske prakse je između 90 i 150 radnih sati. U dogovoru sa studentom može se kasnije taj angažman produljiti. Dogovor kako će se izvršiti tih 90-150 sati je između vas i studenta (npr. koncentrirano u 2-3 tjedna ili par puta tjedno kroz dulje vrijeme).
 "
                 expanded
-                required
               />
             </FormField>
           </FormField>
@@ -247,9 +312,9 @@ onMounted(async () => {
             <FormControl
               v-model="form.lokacija"
               help="Moguća je 'remote' praksa"
+              :error="getFirstErrorForField('lokacija')"
               :icon-left="mdiMapMarker"
               placeholder="Lokacija održavanja studentske prakse"
-              required
             />
           </FormField>
 
@@ -257,8 +322,8 @@ onMounted(async () => {
             <FormControl
               v-model="form.zeljeno_okvirno_vrijeme_pocetka"
               :icon-left="mdiClipboardTextClockOutline"
+              :error="getFirstErrorForField('zeljeno_okvirno_vrijeme_pocetka')"
               help="Praksa se mora obaviti najkasnije do 1. rujna sljedeće godine."
-              required
             />
           </FormField>
 
@@ -269,6 +334,7 @@ onMounted(async () => {
           >
             <FormCheckRadioGroup
               v-model="form.angazman_selekcija"
+              :error="getFirstErrorForField('angazman_selekcija')"
               name="angazman_selection"
               type="radio"
               :options="angazmanSelect"
@@ -283,18 +349,19 @@ onMounted(async () => {
           >
             <FormControl
               v-model="form.angazman_fipu"
+              :error="getFirstErrorForField('angazman_fipu')"
               type="textarea"
               :icon-left="mdiSchool"
-              required
+              :disabled="form.angazman_selekcija === false"
             />
           </FormField>
 
-          <FormField
-            label="Dodatna napomena
-"
-            horizontal
-          >
-            <FormControl v-model="form.napomena" type="textarea" />
+          <FormField label="Dodatna napomena" horizontal>
+            <FormControl
+              v-model="form.napomena"
+              :error="getFirstErrorForField('napomena')"
+              type="textarea"
+            />
           </FormField>
 
           <FormField
@@ -306,22 +373,20 @@ onMounted(async () => {
             <FormCheckRadioGroup
               v-model="form.selekcija"
               name="selekcija_selection"
+              :error="getFirstErrorForField('selekcija')"
               type="radio"
               :options="selectionSelect"
               component-class="check-radio-warning"
             />
           </FormField>
 
-          <FormField
-            label="Proces selekcije
-"
-            horizontal
-          >
+          <FormField label="Proces selekcije" horizontal>
             <FormControl
               v-model="form.proces_selekcije"
+              :error="getFirstErrorForField('proces_selekcije')"
               type="textarea"
+              :disabled="form.selekcija === false"
               help="Ako se provodi selekcija, kratko opišite postupak, da studenti otprilike znaju što očekivati."
-              required
             />
           </FormField>
 

@@ -100,34 +100,30 @@ export const useAdminStore = defineStore("admin", {
           return;
         }
 
-        this.dashboard_data.waiting_for_allocation = 0;
-        this.dashboard_data.waiting_for_evaluation = 0;
-        this.dashboard_data.waiting_for_mark = 0;
-        this.dashboard_data.finished_internships = 0;
+        this.dashboard_data = {
+          waiting_for_allocation: 0,
+          waiting_for_evaluation: 0,
+          waiting_for_mark: 0,
+          finished_internships: 0,
+        };
+
+        const taskToDashboardMapping = {
+          alociranje_profesor: "waiting_for_allocation",
+          evaluacija_poslodavac: "waiting_for_evaluation",
+          upis_ocjene: "waiting_for_mark",
+        };
 
         const promises = students.map(async (student) => {
           const data = await this.getProcessInstanceData(student);
           student.process_instance_data = data;
-          console.log(student.process_instance_data);
+
+          const pendingTask = student.process_instance_data.pending[0];
           student.process_instance_data.pending_task_info =
-            await this.getTaskInfo(
-              student.process_instance_id,
-              student.process_instance_data.pending[0]
-            );
-          if (
-            student.process_instance_data.pending[0] == "alociranje_profesor"
-          ) {
-            this.dashboard_data.waiting_for_allocation++;
-          }
-          if (
-            student.process_instance_data.pending[0] == "evaluacija_poslodavac"
-          ) {
-            this.dashboard_data.waiting_for_evaluation++;
-          }
-          if (student.process_instance_data.pending[0] == "upis_ocjene") {
-            this.dashboard_data.waiting_for_mark++;
-          }
-          if (student.process_instance_data.state === "finished") {
+            await this.getTaskInfo(student.process_instance_id, pendingTask);
+
+          if (taskToDashboardMapping[pendingTask]) {
+            this.dashboard_data[taskToDashboardMapping[pendingTask]]++;
+          } else if (student.process_instance_data.state === "finished") {
             this.dashboard_data.finished_internships++;
           }
         });
@@ -182,6 +178,14 @@ export const useAdminStore = defineStore("admin", {
         });
         this.events = response;
         return this.events;
+      } catch (error) {
+        console.log("Error:", error);
+      }
+    },
+    async handleTask(id_zadatak, action) {
+      try {
+        const response = await Admin.handleTask(id_zadatak, action);
+        return response;
       } catch (error) {
         console.log("Error:", error);
       }

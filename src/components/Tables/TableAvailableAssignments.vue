@@ -23,9 +23,12 @@ let checkedAssignments = computed(() => guestStore.checkedAssignments);
 
 onMounted(async () => {
   const result = await guestStore.fetchAvailableAssignments();
+  console.log(result);
   allAvailableAssignments.value = result.filter(
-    (task) => task.dostupno_mjesta > 0
+    (task) =>
+      task.dostupno_mjesta > 0 && task.voditelj_odobrio.value == "odobreno"
   );
+
   guestStore.resetAssignments();
 });
 
@@ -80,10 +83,7 @@ const checked = (value, assignment) => {
       return;
     }
     guestStore.addAssignment(assignment);
-  }
-
-  // When unchecking
-  else {
+  } else {
     guestStore.removeAssignment(assignment);
   }
 };
