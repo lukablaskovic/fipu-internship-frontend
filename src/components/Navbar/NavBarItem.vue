@@ -98,7 +98,7 @@ onBeforeUnmount(() => {
 
             <UserAvatarCurrentUser v-if="item.isCurrentUser" class="w-6 h-6 mr-3 inline-flex"/>
             <BaseIcon v-if="item.icon" :size="item.size ? item.size : 19" :path="item.icon" 
-                class="transition-colors text-fipu_gray hover:text-gray-600 dark:text-white dark:hover:text-gray-300"  
+                class="transition-colors text-fipu_gray hover:text-fipu_blue dark:text-white dark:hover:text-fipu_blue"  
                 @mouseover="item.isDesktopNoLabel ? layoutStore.tooltip = { content: itemLabel, offsetx: 0, offsety: 40, justify: 'justify-center items-center' } : ''" 
                 @mouseleave="layoutStore.tooltip = { content: '', offsetx: 0, offsety: 0 }"/>
 

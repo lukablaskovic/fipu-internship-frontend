@@ -1,9 +1,11 @@
 <script setup>
 import { RouterView } from "vue-router";
 import Tooltip from '@/components/Base/Tooltip.vue';
+import GlobalStoreDebug from '@/components/Helpers/GlobalStoreDebug.vue';
 </script>
 
 <template>
+    <GlobalStoreDebug/>
     <Tooltip/>
     <router-view></router-view>
 </template>
