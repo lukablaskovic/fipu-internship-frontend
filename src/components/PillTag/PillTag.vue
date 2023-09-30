@@ -21,7 +21,7 @@ const props = defineProps({
 });
 
 const componentClass = computed(() => [
-  props.small ? "py-1 px-3" : "py-1.5 px-4 m-1",
+  props.small ? "py-1 px-3" : "py-0.5 px-4 m-1",
   props.outline ? colorsOutline[props.color] : colorsBgLight[props.color],
 ]);
 </script>

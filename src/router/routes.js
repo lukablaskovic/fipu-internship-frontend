@@ -58,7 +58,7 @@ const routes = [
     },
     path: "/dostupni-zadaci",
     name: "dostupni-zadaci",
-    component: () => import("@/views/admin/AvailableAssignmentsView.vue"),
+    component: () => import("@/views/admin/AvailableAssignmentsview.vue"),
   },
   {
     meta: {
@@ -96,6 +96,15 @@ const routes = [
     path: "/profile",
     name: "profile",
     component: () => import("@/views/common/ProfileView.vue"),
+  },
+  {
+    meta: {
+      title: "Poruke",
+      requiresAuth: true,
+    },
+    path: "/messages",
+    name: "messages",
+    component: () => import("@/views/common/MessagesView.vue"),
   },
   {
     meta: {

@@ -2,12 +2,12 @@
   <Combobox v-model="selectedValue">
     <div class="relative">
       <div
-        class="relative w-full cursor-default overflow-hidden rounded-lg bg-white text-left shadow-md focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75 focus-visible:ring-offset-2 focus-visible:ring-offset-blue-300 sm:text-sm"
+        class="relative w-full cursor-default overflow-hidden rounded-lg bg-white dark:bg-gray-900 text-left shadow-md focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75 focus-visible:ring-offset-2 focus-visible:ring-offset-blue-300 sm:text-sm"
       >
         <ComboboxInput
           v-model="displayValue"
           placeholder="CTRL + k ili [ / ] za pretraživanje"
-          class="inputClass w-64 md:w-96 border-none py-2 pl-3 pr-10 text-sm leading-5 text-gray-900 focus:ring-0"
+          class="inputClass w-64 md:w-96 border-none py-2 pl-3 pr-10 text-sm leading-5 text-gray-900 dark:text-gray-300 bg-gray-50 dark:bg-gray-900 focus:ring-0"
           autocomplete="off"
           @change="query = $event.target.value"
         />
@@ -27,12 +27,12 @@
         @after-leave="query = ''"
       >
         <ComboboxOptions
-          class="absolute mt-1 max-h-60 w-full overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm"
+          class="absolute mt-1 max-h-60 w-full overflow-auto rounded-md text-gray-900 dark:text-gray-300 bg-gray-50 dark:bg-gray-900 py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm"
         >
           <!-- Display help when query doesn't match any specific command -->
           <div
             v-if="query === ''"
-            class="relative cursor-default select-none py-2 px-4 text-gray-700"
+            class="relative cursor-default select-none py-2 px-4 text-gray-700 dark:text-gray-200"
           >
             <b>Kratke upute kako koristiti tražilicu</b>
             <hr />
@@ -40,10 +40,11 @@
             <div
               v-for="helpItem in helpItems"
               :key="helpItem.prefix"
-              class="cursor-pointer hover:bg-fipu_blue hover:text-white py-1 px-2 rounded"
+              class="cursor-pointer hover:bg-fipu_blue hover:text-white hover:font-medium dark:hover:text-gray-900 py-1 px-2 rounded flex gap-1 group"
               @click="insertPrefix(helpItem.prefix)"
             >
-              <b class="bg-fipu_blue px-0.5">{{ helpItem.prefix }}</b>
+              <div class="bg-fipu_blue text-gray-900 px-0.5 rounded w-6 flex justify-center items-center font-bold 
+              group-hover:bg-gray-50 group-hover:text-gray-700 dark:group-hover:bg-gray-900 dark:group-hover:text-gray-300">{{ helpItem.prefix }}</div>
               {{ helpItem.description }}
             </div>
           </div>
@@ -51,7 +52,7 @@
           <!-- Display "No results found" when there's no matching data -->
           <div
             v-else-if="filteredResults.length === 0"
-            class="relative cursor-default select-none py-2 px-4 text-gray-700"
+            class="relative cursor-default select-none py-2 px-4 text-gray-700 dark:text-gray-200"
           >
             Nema rezultata.
           </div>

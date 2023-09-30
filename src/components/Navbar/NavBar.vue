@@ -5,6 +5,9 @@ import { containerMaxW } from "@/config.js";
 import BaseIcon from "@/components/Base/BaseIcon.vue";
 import NavBarMenuList from "@/components/Navbar/NavBarMenuList.vue";
 import NavBarItemPlain from "@/components/Navbar/NavBarItemPlain.vue";
+import { useLayoutStore } from "@/stores/layout.js";
+
+const layoutStore = useLayoutStore();
 
 defineProps({
   menu: {
@@ -33,6 +36,7 @@ const isMenuNavBarActive = ref(false);
             </div>
             <div class="max-h-screen-menu overflow-y-auto lg:overflow-visible absolute w-screen top-14 -left-2 transition-size duration-300
                 bg-gray-50 shadow-lg lg:w-auto lg:flex lg:static lg:shadow-none dark:bg-slate-800"
+                :style="isMenuNavBarActive && !layoutStore.isLg ? 'height: '+menu[1].length*42+'px;' : ''"
                 :class="[isMenuNavBarActive ? 'h-64 lg:h-auto' : 'h-0 lg:h-auto']">
                 <NavBarMenuList :menu="menu" @menu-click="menuClick" />
             </div>
