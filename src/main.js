@@ -11,9 +11,9 @@ import { useMainStore } from "@/stores/main_store.js";
 import { useStyleStore } from "@/stores/style_store.js";
 import { useGuestStore } from "@/stores/guest_store.js";
 import { useAdminStore } from "@/stores/admin_store.js";
-import { useStudentStore } from "./stores/student_store";
-import { useLayoutStore } from "./stores/layout";
-import { useSnackBarStore } from "./stores/snackbar_store";
+import { useStudentStore } from "@/stores/student_store";
+import { useLayoutStore } from "@/stores/layout";
+import { useSnackBarStore } from "@/stores/snackbar_store";
 
 import { darkModeKey, styleKey } from "@/config.js";
 

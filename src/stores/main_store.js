@@ -7,6 +7,10 @@ import { Guest } from "@/services/baserow_client_api";
 
 export const useMainStore = defineStore("main", {
   state: () => ({
+    depth: 5,
+    debug: false,
+    storeSelected: "mainStore",
+
     transition_name: "",
     enter_active_class: "",
     leave_active_class: "",
