@@ -113,6 +113,8 @@ const checked = (value, assignment) => {
       <b>Broj studenata (max):</b> {{ isModalActive["broj_studenata"] }}
     </div>
 
+    <div><b>Dostupno mjesta:</b> {{ isModalActive["dostupno_mjesta"] }}</div>
+
     <div>
       <b>Preferirane tehnologije:</b>
       {{ isModalActive["preferirane_tehnologije"] }}

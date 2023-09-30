@@ -1,5 +1,5 @@
 <script setup>
-import { ref, reactive, onMounted } from "vue";
+import { ref, reactive, onMounted, watch } from "vue";
 import {
   mdiBallot,
   mdiEmail,
@@ -14,6 +14,7 @@ import {
   mdiXml,
   mdiThumbsUpDown,
   mdiClockTimeFiveOutline,
+  mdiNoteTextOutline,
 } from "@mdi/js";
 import SectionMain from "@/components/Section/SectionMain.vue";
 
@@ -38,7 +39,7 @@ import { getFirstErrorForField, isUnipuEmail } from "@/helpers/validators";
 
 import Utils from "@/helpers/utils";
 
-import { mainStore, snackBarStore } from "@/main.js";
+import { guestStore, mainStore, snackBarStore } from "@/main.js";
 
 const form = reactive({
   Poslodavac: "",
@@ -101,17 +102,37 @@ const rules = {
   },
   proces_selekcije: {},
 };
+const isLoading = ref(false);
 
 const v$ = useVuelidate(rules, form);
 
 async function onSubmit() {
+  console.log("form", form);
+
   v$.value.$touch();
   if (v$.value.$invalid) {
     return;
   }
+
+  if (form.angazman_selekcija === "false") {
+    form.angazman_fipu = "Nema";
+  }
+
+  if (!form.selekcija) {
+    form.proces_selekcije = "Nema";
+  }
+
   console.log("form", form);
   console.log("Submitted!");
-  snackBarStore.pushMessage("Uspješno ste prijavili zadatak!", "success");
+
+  let result = await guestStore.submitNewInternshipProject(form);
+  isLoading.value = false;
+
+  if (result) {
+    snackBarStore.pushMessage("Uspješno ste prijavili zadatak!", "success");
+    await Utils.wait(1);
+    location.reload();
+  }
 }
 
 const allCompanies = ref([]);
@@ -129,6 +150,21 @@ onMounted(async () => {
     label: items.naziv,
   }));
 });
+
+watch(
+  () => form.selekcija,
+  (newValue) => {
+    if (typeof newValue === "string") {
+      form.selekcija = newValue === "true";
+    }
+  }
+);
+
+const onCompanyChange = () => {
+  if (form.Poslodavac) {
+    form.Poslodavac_novi_naziv = "";
+  }
+};
 </script>
 
 <template>
@@ -193,6 +229,7 @@ onMounted(async () => {
           />
 
           <FormField
+            v-if="!form.Poslodavac_novi_naziv"
             label="Poduzeće partner"
             help="Ako niste partner, unesite naziv poduzeća ispod"
             horizontal
@@ -201,10 +238,11 @@ onMounted(async () => {
               v-model="form.Poslodavac"
               :options="mappedCompanies"
               placeholder="Odaberite poduzeće ako ste postojeći partner"
+              @change="onCompanyChange"
             />
           </FormField>
 
-          <FormField label="Naziv poduzeća" horizontal>
+          <FormField v-if="!form.Poslodavac" label="Naziv poduzeća" horizontal>
             <FormControl
               v-model="form.Poslodavac_novi_naziv"
               :icon-left="mdiDomain"
@@ -343,6 +381,7 @@ onMounted(async () => {
           </FormField>
 
           <FormField
+            v-if="form.angazman_selekcija === 'true'"
             label="Opis angažmana nastavnika"
             help="Molimo da navedete Vaše potrebe angažmana."
             horizontal
@@ -359,6 +398,7 @@ onMounted(async () => {
           <FormField label="Dodatna napomena" horizontal>
             <FormControl
               v-model="form.napomena"
+              :icon-left="mdiNoteTextOutline"
               :error="getFirstErrorForField('napomena')"
               type="textarea"
             />
@@ -380,7 +420,11 @@ onMounted(async () => {
             />
           </FormField>
 
-          <FormField label="Proces selekcije" horizontal>
+          <FormField
+            v-if="form.selekcija === true"
+            label="Proces selekcije"
+            horizontal
+          >
             <FormControl
               v-model="form.proces_selekcije"
               :error="getFirstErrorForField('proces_selekcije')"
@@ -391,7 +435,12 @@ onMounted(async () => {
           </FormField>
 
           <FormField horizontal grouped>
-            <BaseButton label="Pošalji" type="submit" color="fipu_blue" />
+            <BaseButton
+              label="Pošalji"
+              type="submit"
+              :loading="isLoading"
+              color="fipu_blue"
+            />
           </FormField>
         </CardBox>
       </div>

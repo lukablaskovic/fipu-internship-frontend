@@ -23,6 +23,14 @@ const Guest = {
       return null;
     }
   },
+  async submitNewInternshipProject(postData) {
+    try {
+      let result = await AxiosWrapper.post("/zadaci_za_odabir", postData);
+      return result.data;
+    } catch (e) {
+      return null;
+    }
+  },
 };
 
 const Student = {

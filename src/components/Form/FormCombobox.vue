@@ -120,4 +120,13 @@ watch(
     emit("update:modelValue", newVal);
   }
 );
+
+watch(
+  () => query.value,
+  (newQuery) => {
+    if (!newQuery) {
+      selected.value = ref();
+    }
+  }
+);
 </script>
