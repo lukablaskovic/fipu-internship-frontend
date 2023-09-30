@@ -25,8 +25,7 @@ onMounted(async () => {
   const result = await guestStore.fetchAvailableAssignments();
   console.log(result);
   allAvailableAssignments.value = result.filter(
-    (task) =>
-      task.dostupno_mjesta > 0 && task.voditelj_odobrio.value == "odobreno"
+    (task) => task.voditelj_odobrio.value == "odbijeno"
   );
 
   guestStore.resetAssignments();
@@ -112,8 +111,6 @@ const checked = (value, assignment) => {
     <div>
       <b>Broj studenata (max):</b> {{ isModalActive["broj_studenata"] }}
     </div>
-
-    <div><b>Dostupno mjesta:</b> {{ isModalActive["dostupno_mjesta"] }}</div>
 
     <div>
       <b>Preferirane tehnologije:</b>

@@ -8,6 +8,8 @@
     "lint": "eslint . --ext .vue,.js,.jsx,.cjs,.mjs --fix --ignore-path .gitignore"
   },
   "dependencies": {
+    "@bugsnag/js": "^7.21.0",
+    "@bugsnag/plugin-vue": "^7.19.0",
     "@headlessui/vue": "^1.7.16",
     "@mdi/js": "^7.0.96",
     "@vuelidate/core": "^2.0.3",

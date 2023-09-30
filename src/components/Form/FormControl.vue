@@ -112,6 +112,7 @@ const props = defineProps({
   transparent: Boolean,
   readonly: Boolean,
   copyable: Boolean,
+  disabled: Boolean,
 });
 
 const emit = defineEmits(["update:modelValue", "right-icon-click"]);
@@ -369,6 +370,7 @@ if (props.ctrlKFocus) {
         :readonly="readonly"
         :name="name"
         :class="inputElClass"
+        :disabled="disabled"
       >
         <option
           v-for="option in options"
@@ -388,11 +390,13 @@ if (props.ctrlKFocus) {
         :readonly="readonly"
         :placeholder="placeholder"
         :required="required"
+        :disabled="disabled"
       />
       <button
         v-else-if="computedType === 'button'"
         :class="inputElClass"
-        class="ring-blue-700"
+        class="ring-fipu_blue"
+        :disabled="disabled"
       >
         <BaseIcon
           v-if="buttonIcon"
@@ -419,6 +423,7 @@ if (props.ctrlKFocus) {
         :min="min"
         :max="max"
         :class="inputElClass"
+        :disabled="disabled"
       />
       <FormControlIcon
         v-if="computedIconLeft"

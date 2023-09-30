@@ -9,6 +9,7 @@ import {
   mdiCheck,
   mdiClipboardCheck,
   mdiCardAccountDetails,
+  mdiXml,
 } from "@mdi/js";
 
 import LayoutAuthenticated from "@/layouts/LayoutAuthenticated.vue";
@@ -17,7 +18,6 @@ import LayoutGuest from "@/layouts/LayoutGuest.vue";
 import SectionMain from "@/components/Section/SectionMain.vue";
 import SectionTitleLineWithButton from "@/components/Section/SectionTitleLineWithButton.vue";
 import CardboxAllocation from "@/components/Cardbox/CardBoxAllocation.vue";
-
 import CardBox from "@/components/Cardbox/CardBox.vue";
 import FormCheckRadioGroup from "@/components/Form/FormCheckRadioGroup.vue";
 import FormCheckRadio from "@/components/Form/FormCheckRadio.vue";
@@ -195,16 +195,13 @@ async function submit_application_form() {
             horizontal
           >
             <FormField addons>
-              <FormControl type="static" model-value="+385 (0)" first-addon />
               <FormControl
                 v-model="form.student_broj_mobitela"
                 type="tel"
                 placeholder="Vaš broj mobitela"
                 expanded
-                middle-addon
                 required
               />
-              <FormControl type="static" model-value="HR" last-addon />
             </FormField>
           </FormField>
 
@@ -279,16 +276,13 @@ async function submit_application_form() {
             horizontal
           >
             <FormField addons>
-              <FormControl type="static" model-value="Sati" first-addon />
               <FormControl
                 v-model="form.dogovoreni_broj_sati"
                 type="number"
                 placeholder="Dogovoreni broj sati"
                 expanded
-                middle-addon
                 required
               />
-              <FormControl type="static" model-value="[90 - 150]" last-addon />
             </FormField>
           </FormField>
 

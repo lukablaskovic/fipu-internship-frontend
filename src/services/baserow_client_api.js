@@ -23,6 +23,14 @@ const Guest = {
       return null;
     }
   },
+  async submitNewInternshipProject(postData) {
+    try {
+      let result = await AxiosWrapper.post("/zadaci_za_odabir", postData);
+      return result.data;
+    } catch (e) {
+      return null;
+    }
+  },
 };
 
 const Student = {
@@ -109,6 +117,32 @@ const Admin = {
         `/student_preferencije/detailed/${student_JMBAG}`
       );
       return result.data;
+    } catch (error) {
+      console.log("Error:", error);
+      return null;
+    }
+  },
+
+  async handleTask(id_zadatak, value) {
+    let post_data = {
+      id_zadatak: id_zadatak,
+      voditelj_odobrio: value,
+    };
+    try {
+      let result = await AxiosWrapper.patch(
+        `/zadaci_za_odabir/odobrenje`,
+        post_data
+      );
+      return result;
+    } catch (error) {
+      console.log("Error:", error);
+      return null;
+    }
+  },
+  async saveUpdatedCompany(postData) {
+    try {
+      let result = await AxiosWrapper.patch(`/poslodavac/update`, postData);
+      return result;
     } catch (error) {
       console.log("Error:", error);
       return null;

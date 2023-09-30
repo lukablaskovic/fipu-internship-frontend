@@ -1,25 +1,30 @@
 <script setup>
 import { ref } from "vue";
 import {
-  mdiMonitorCellphone,
   mdiClipboardTextOutline,
+  mdiClipboardPlusOutline,
   mdiClipboardCheck,
   mdiContentCopy,
+  mdiClipboardTextOff,
 } from "@mdi/js";
-import SectionMain from "@/components/Section/SectionMain.vue";
-import CardBox from "@/components/Cardbox/CardBox.vue";
-import NotificationBar from "@/components/Notification/NotificationBar.vue";
+import { mainStore, adminStore } from "@/main";
 
 import LayoutAuthenticated from "@/layouts/LayoutAuthenticated.vue";
-import SectionTitleLineWithButton from "@/components/Section/SectionTitleLineWithButton.vue";
 
+import SectionTitleLineWithButton from "@/components/Section/SectionTitleLineWithButton.vue";
+import SectionMain from "@/components/Section/SectionMain.vue";
+import CardBox from "@/components/Cardbox/CardBox.vue";
+import CardBoxComponentEmpty from "@/components/Cardbox/CardBoxComponentEmpty.vue";
 import TableAvailableAssignments from "@/components/Tables/TableAvailableAssignments.vue";
+import TableRejectedAssignments from "@/components/Tables/TableRejectedAssignments.vue";
+import TableNewAssignments from "@/components/Tables/TableNewAssignments.vue";
 import FormField from "@/components/Form/FormField.vue";
 import FormControl from "@/components/Form/FormControl.vue";
-import { mainStore } from "@/main";
+
+const VITE_DASHBOARD_URL = import.meta.env.VITE_DASHBOARD_URL;
 
 const addNewAssignmentLink = ref(
-  "http://localhost:5173/#/poslodavci/novi-zadatak"
+  `${VITE_DASHBOARD_URL}/#/poslodavci/novi-zadatak`
 );
 </script>
 
@@ -28,16 +33,12 @@ const addNewAssignmentLink = ref(
     <LayoutAuthenticated v-if="mainStore.userAuthenticated">
       <SectionMain>
         <SectionTitleLineWithButton
-          :icon="mdiClipboardTextOutline"
-          title="Dostupni zadaci"
+          :icon="mdiClipboardPlusOutline"
+          title="Novi zadaci (u razradi)"
           main
         >
         </SectionTitleLineWithButton>
 
-        <p>
-          U tablici ispod se nalaze svi prijavljeni zadaci za obavljanje
-          studentske prakse.
-        </p>
         <FormField class="md:w-1/2" label="Forma za prijavu novog zadatka">
           <FormControl
             v-model="addNewAssignmentLink"
@@ -48,12 +49,43 @@ const addNewAssignmentLink = ref(
             copyable
           />
         </FormField>
-        <NotificationBar color="info" :icon="mdiMonitorCellphone">
-          <b>Responsive table.</b> Collapses on mobile
-        </NotificationBar>
+
+        <p class="mb-4">
+          U tablici ispod se nalaze novo-prijavljeni zadaci koje je potrebno
+          proučiti te odobriti kako bi ih studenti mogli prijaviti, ili odbiti
+          ukoliko ne zadovoljavaju definirane zahtjeve.
+        </p>
+
+        <CardBox has-table>
+          <TableNewAssignments />
+        </CardBox>
+
+        <CardBox v-if="!adminStore.newAssignments.length">
+          <CardBoxComponentEmpty />
+        </CardBox>
+
+        <SectionTitleLineWithButton
+          class="mt-8"
+          :icon="mdiClipboardTextOutline"
+          title="Aktivni (Odobreni) Zadaci"
+          main
+        >
+        </SectionTitleLineWithButton>
 
         <CardBox has-table>
           <TableAvailableAssignments />
+        </CardBox>
+
+        <SectionTitleLineWithButton
+          class="mt-8"
+          :icon="mdiClipboardTextOff"
+          title="Odbijeni zadaci"
+          main
+        >
+        </SectionTitleLineWithButton>
+
+        <CardBox has-table>
+          <TableRejectedAssignments />
         </CardBox>
       </SectionMain>
     </LayoutAuthenticated>

@@ -1,22 +1,22 @@
 <script setup>
 import { ref, onMounted } from "vue";
 import { mdiAccountTie, mdiAccount, mdiClipboardCheck } from "@mdi/js";
-import SectionMain from "@/components/Section/SectionMain.vue";
+import Utils from "@/helpers/utils.js";
+import { useRoute } from "vue-router";
+import { router } from "@/router";
 
+import { adminStore, studentStore, snackBarStore } from "@/main.js";
+import { StudentMappings } from "@/helpers/maps";
+import { UserTaskMappings } from "@/helpers/maps";
+
+import SectionMain from "@/components/Section/SectionMain.vue";
 import CardBoxAllocation from "@/components/Cardbox/CardBoxAllocation.vue";
 import SectionTitleLineWithButton from "@/components/Section/SectionTitleLineWithButton.vue";
-import { useRoute } from "vue-router";
-import { studentStore } from "@/main.js";
-import { StudentMappings } from "@/helpers/maps";
-import { adminStore } from "@/main.js";
 import FooterBar from "@/components/FooterBar.vue";
 import FormDynamic from "@/components/Form/FormDynamic.vue";
-import { UserTaskMappings } from "@/helpers/maps";
 import SnackBar from "@/components/Premium/SnackBar.vue";
-import Utils from "@/helpers/utils.js";
-import { snackBarStore } from "@/main.js";
 import BaseButton from "@/components/Base/BaseButton.vue";
-import { router } from "@/router";
+
 const process_instance_id = ref(null);
 
 const assignemntDetails = ref(null);
@@ -26,6 +26,7 @@ const route = useRoute();
 
 let assignment = ref(null);
 let studentInfo = ref(null);
+
 onMounted(async () => {
   process_instance_id.value = route.params.process_instance_id;
 
@@ -95,7 +96,12 @@ const updateDisabledCondition = (allFilled) => {
         title="Evaluacija kandidata"
         main
       >
-      </SectionTitleLineWithButton>
+        <a href="" target="_blank">
+          <img
+            src="FIPU_praksa_logo_transparent.svg"
+            class="max-h-14 object-contain"
+          /> </a
+      ></SectionTitleLineWithButton>
 
       <p class="mb-4">
         Molimo da nakon što evaluirate studenta (bilo to kroz intervju, tehnički
