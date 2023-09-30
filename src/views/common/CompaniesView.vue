@@ -1,7 +1,12 @@
 <script setup>
 import { computed } from "vue";
 import { mainStore } from "@/main.js";
-import { mdiMonitorCellphone, mdiDomain, mdiLaptop } from "@mdi/js";
+import {
+  mdiMonitorCellphone,
+  mdiDomain,
+  mdiDomainPlus,
+  mdiLaptop,
+} from "@mdi/js";
 import SectionMain from "@/components/Section/SectionMain.vue";
 import CardBox from "@/components/Cardbox/CardBox.vue";
 import NotificationBar from "@/components/Notification/NotificationBar.vue";
@@ -10,6 +15,7 @@ import LayoutAuthenticated from "@/layouts/LayoutAuthenticated.vue";
 import SectionTitleLineWithButton from "@/components/Section/SectionTitleLineWithButton.vue";
 
 import TableCompanies from "@/components/Tables/TableCompanies.vue";
+import TableNewCompanies from "@/components/Tables/TableNewCompanies.vue";
 import { router } from "@/router";
 import BaseIcon from "@/components/Base/BaseIcon.vue";
 const userAuthenticated = computed(() => mainStore.userAuthenticated);
@@ -20,7 +26,28 @@ const userAdmin = computed(() => mainStore.userAdmin);
   <div>
     <LayoutAuthenticated v-if="userAuthenticated">
       <SectionMain>
-        <SectionTitleLineWithButton :icon="mdiDomain" title="Poslodavci" main>
+        <SectionTitleLineWithButton
+          :icon="mdiDomainPlus"
+          title="Novi Poslodavci"
+          main
+        >
+        </SectionTitleLineWithButton>
+        <p class="mb-4">
+          U tablici se nalaze poduzeća koja su prijavili zadatke za izvođenje
+          prakse međutim još nisu registrirani za provođenje - potrebno je ručno
+          unijeti podatke o poduzeću.
+        </p>
+
+        <CardBox has-table>
+          <TableNewCompanies />
+        </CardBox>
+
+        <SectionTitleLineWithButton
+          class="mt-4"
+          :icon="mdiDomain"
+          title="Svi Poslodavci"
+          main
+        >
         </SectionTitleLineWithButton>
         <p class="mb-4">
           U tablici se nalaze poduzeća koja su registrirana za provođenje
@@ -48,10 +75,6 @@ const userAdmin = computed(() => mainStore.userAdmin);
             </span>
           </p>
         </div>
-
-        <NotificationBar color="info" :icon="mdiMonitorCellphone">
-          <b>Responsive table.</b> Collapses on mobile
-        </NotificationBar>
 
         <CardBox has-table>
           <TableCompanies />

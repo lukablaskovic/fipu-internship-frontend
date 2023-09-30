@@ -8,6 +8,7 @@ import BaseLevel from "@/components/Base/BaseLevel.vue";
 import BaseButtons from "@/components/Base/BaseButtons.vue";
 import BaseButton from "@/components/Base/BaseButton.vue";
 import { mainStore, guestStore, adminStore, snackBarStore } from "@/main.js";
+
 import Utils from "@/helpers/utils.js";
 
 defineProps({
@@ -27,7 +28,7 @@ onMounted(async () => {
     (task) =>
       task.dostupno_mjesta > 0 && task.voditelj_odobrio.value == "u razradi"
   );
-
+  adminStore.newAssignments = allAvailableAssignments.value;
   guestStore.resetAssignments();
 });
 

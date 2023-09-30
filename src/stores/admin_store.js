@@ -11,6 +11,7 @@ export const useAdminStore = defineStore("admin", {
     selectedStudent: null,
     companies: [],
     studentsFetched: false,
+    newAssignments: [],
 
     dashboard_data: {
       waiting_for_mark: 0,
@@ -35,6 +36,16 @@ export const useAdminStore = defineStore("admin", {
     async getAllocations() {
       try {
         let result = await Admin.getAllocations();
+        return result;
+      } catch (error) {
+        console.log("Error:", error);
+        return null;
+      }
+    },
+    async saveUpdatedCompany(postData) {
+      try {
+        console.log("post data", postData);
+        let result = await Admin.saveUpdatedCompany(postData);
         return result;
       } catch (error) {
         console.log("Error:", error);

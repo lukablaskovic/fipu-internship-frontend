@@ -139,5 +139,14 @@ const Admin = {
       return null;
     }
   },
+  async saveUpdatedCompany(postData) {
+    try {
+      let result = await AxiosWrapper.patch(`/poslodavac/update`, postData);
+      return result;
+    } catch (error) {
+      console.log("Error:", error);
+      return null;
+    }
+  },
 };
 export { Guest, Admin, Student };

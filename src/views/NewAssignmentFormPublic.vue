@@ -1,5 +1,5 @@
 <script setup>
-import { ref, reactive, onMounted, watch } from "vue";
+import { ref, reactive, onMounted, watch, computed } from "vue";
 import {
   mdiBallot,
   mdiEmail,
@@ -61,13 +61,20 @@ const form = reactive({
 });
 const greaterThanZero = (value) => value > 0;
 
-const rules = {
-  Poslodavac: {
-    required: helpers.withMessage("Polje je obavezno", required),
-  },
-  Poslodavac_novi_naziv: {
-    required: helpers.withMessage("Polje je obavezno", required),
-  },
+const rules = reactive({
+  // ... other fields
+  Poslodavac: computed(() => {
+    if (form.Poslodavac_novi_naziv) return {};
+    return {
+      required: helpers.withMessage("Polje je obavezno", required),
+    };
+  }),
+  Poslodavac_novi_naziv: computed(() => {
+    if (form.Poslodavac) return {};
+    return {
+      required: helpers.withMessage("Polje je obavezno", required),
+    };
+  }),
   poslodavac_email: {
     required: helpers.withMessage("Polje je obavezno", required),
     email: helpers.withMessage("Molimo unesite ispravnu e-mail adresu", email),
@@ -95,13 +102,28 @@ const rules = {
   angazman_selekcija: {
     required: helpers.withMessage("Polje je obavezno", required),
   },
-  angazman_fipu: {},
+  angazman_fipu: computed(() => {
+    if (form.angazman_selekcija === "true") {
+      return {
+        required: helpers.withMessage("Polje je obavezno", required),
+      };
+    }
+    return {};
+  }),
+  proces_selekcije: computed(() => {
+    if (form.selekcija === true) {
+      return {
+        required: helpers.withMessage("Polje je obavezno", required),
+      };
+    }
+    return {};
+  }),
   napomena: {},
   selekcija: {
     required: helpers.withMessage("Polje je obavezno", required),
   },
-  proces_selekcije: {},
-};
+});
+
 const isLoading = ref(false);
 
 const v$ = useVuelidate(rules, form);
@@ -111,6 +133,11 @@ async function onSubmit() {
 
   v$.value.$touch();
   if (v$.value.$invalid) {
+    console.log("angazman_selekcija:", form.angazman_selekcija);
+    console.log("selekcija:", form.selekcija);
+
+    console.log("Vuelidate state:", v$.value);
+
     return;
   }
 
