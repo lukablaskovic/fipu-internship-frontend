@@ -22,13 +22,14 @@ const companyForms = ref({});
 
 onMounted(async () => {
   let result = await mainStore.fetchCompanies();
+  console.log(result);
   const filteredCompanies = result.data.results.filter((company) => {
     return (
-      company.web === "" &&
-      company.OIB === "" &&
-      company.adresa === "" &&
-      company.maticni_broj === "" &&
-      company.direktor === ""
+      (company.web === "" || company.web === null) &&
+      (company.OIB === "" || company.OIB === null) &&
+      (company.adresa === "" || company.adresa === null) &&
+      (company.maticni_broj === "" || company.maticni_broj === null) &&
+      (company.direktor === "" || company.direktor === null)
     );
   });
 
