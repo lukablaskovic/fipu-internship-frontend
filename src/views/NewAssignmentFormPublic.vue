@@ -41,6 +41,8 @@ import Utils from "@/helpers/utils";
 
 import { guestStore, mainStore, snackBarStore } from "@/main.js";
 
+import FIPU_praksa_logo_transparent from "/FIPU_praksa_logo_transparent.svg";
+
 const form = reactive({
   Poslodavac: "",
   Poslodavac_novi_naziv: "",
@@ -200,7 +202,7 @@ const onCompanyChange = () => {
       <SectionTitleLineWithButton :icon="mdiLaptop" title="FIPU Praksa" main>
         <a href="" target="_blank">
           <img
-            src="FIPU_praksa_logo_transparent.svg"
+            :src="FIPU_praksa_logo_transparent"
             class="max-h-14 object-contain"
           />
         </a>

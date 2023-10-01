@@ -98,7 +98,7 @@ const updateDisabledCondition = (allFilled) => {
       >
         <a href="" target="_blank">
           <img
-            src="FIPU_praksa_logo_transparent.svg"
+            :src="FIPU_praksa_logo_transparent"
             class="max-h-14 object-contain"
           /> </a
       ></SectionTitleLineWithButton>
