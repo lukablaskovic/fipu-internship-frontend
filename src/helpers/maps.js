@@ -59,6 +59,81 @@ import Student_ChooseAvailableAssignments from "@/components/Internship/Student_
 
 import { adminStore } from "@/main";
 
+// Custom - Hardcoded frontend functionality
+class SendTaskMappings {
+  static tasks = [
+    {
+      _id: "obavjestavanje_studenta_nakon_ponistavanja_email",
+      to: "student_email",
+      template: "student_after_return",
+      body: {},
+    },
+    {
+      _id: "obavjestavanje_poslodavca_nakon_alokacije",
+      to: "poslodavac_email",
+      template: "poslodavac_after_allocation",
+      body: {
+        student_ime: "",
+        student_prezime: "",
+        student_godina_studija: "",
+        student_email: "",
+        Alocirani_zadatak: "",
+        id_instance: "",
+        evaluacija_url: "",
+      },
+    },
+    {
+      _id: "obavjestavanje_studenta_nakon_alokacije",
+      to: "student_email",
+      template: "student_after_allocation",
+      body: {
+        poslodavac_email: "",
+        Alocirani_zadatak: "",
+        opis_zadatka: "",
+      },
+    },
+    {
+      _id: "obavjestavanje_studenta_nakon_odbijanja_email",
+      to: "student_email",
+      template: "student_after_refusal",
+      body: {},
+    },
+    {
+      _id: "obavjestavanje_studenta_nakon_prihvacanja_email",
+      to: "student_email",
+      template: "student_after_approval",
+      body: {
+        id_instance: "",
+        poslodavac_naziv: "",
+      },
+    },
+    {
+      _id: "slanje_potvrde_student_email",
+      to: "student_email",
+      template: "student_potvrda_pdf",
+      body: {
+        attachment_name: "", //${student_prezime}_potvrda.pdf
+        id_instance: "",
+        pdf_attachment_url: "",
+        mentor_email: "",
+      },
+    },
+    {
+      _id: "slanje_potvrde_mentor_email",
+      to: "mentor_email",
+      template: "mentor_potvrda_pdf",
+      body: {
+        attachment_name: "", //${student_prezime}_potvrda.pdf
+        id_instance: "",
+        pdf_attachment_url: "",
+        student_email: "",
+        student_ime: "",
+        student_prezime: "",
+      },
+    },
+  ];
+}
+
 class UserTaskMappings {
   static tasks = [
     {
@@ -182,7 +257,7 @@ class ActivityEventMappings {
     {
       activity_id: "alociranje_profesor",
       icon: mdiNoteCheck,
-      type: "danger",
+      type: "success",
       message: "Zadatak alociran",
     },
     {
@@ -349,4 +424,9 @@ class ActivityEventMappings {
   }
 }
 
-export { StudentMappings, UserTaskMappings, ActivityEventMappings };
+export {
+  StudentMappings,
+  UserTaskMappings,
+  ActivityEventMappings,
+  SendTaskMappings,
+};

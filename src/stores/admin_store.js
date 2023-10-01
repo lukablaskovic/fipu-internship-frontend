@@ -4,6 +4,7 @@ import { mainStore } from "@/main";
 import { User } from "@/services/gateway_api";
 import { Model, ProcessInstance } from "@/services/bpmn_engine_api";
 import { Admin } from "@/services/baserow_client_api";
+import { SendGrid } from "@/services/sendgrid_client_api";
 
 export const useAdminStore = defineStore("admin", {
   state: () => ({
@@ -27,6 +28,7 @@ export const useAdminStore = defineStore("admin", {
 
     bpmn_diagram: {
       clicked_task_id: null,
+      selected_send_task_id: null,
     },
 
     pdfModalActive: false,
@@ -132,6 +134,8 @@ export const useAdminStore = defineStore("admin", {
           student.process_instance_data.pending_task_info =
             await this.getTaskInfo(student.process_instance_id, pendingTask);
 
+          console.log(pendingTask);
+
           if (taskToDashboardMapping[pendingTask]) {
             this.dashboard_data[taskToDashboardMapping[pendingTask]]++;
           } else if (student.process_instance_data.state === "finished") {
@@ -212,6 +216,15 @@ export const useAdminStore = defineStore("admin", {
           post_data
         );
 
+        return response;
+      } catch (error) {
+        console.log("Error:", error);
+      }
+    },
+    async sendAnAdditionalEmail(postData, to, template) {
+      try {
+        const response = await SendGrid.sendEmail(postData, to, template);
+        console.log("sendAnAdditionalEmail", response);
         return response;
       } catch (error) {
         console.log("Error:", error);

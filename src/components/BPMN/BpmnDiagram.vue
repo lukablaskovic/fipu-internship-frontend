@@ -6,7 +6,7 @@
 import { ref, onMounted, onBeforeUnmount } from "vue";
 import BpmnViewer from "bpmn-js";
 import { adminStore } from "@/main";
-import { UserTaskMappings } from "@/helpers/maps";
+import { UserTaskMappings, SendTaskMappings } from "@/helpers/maps";
 
 const props = defineProps({
   xml: {
@@ -28,11 +28,18 @@ const props = defineProps({
 });
 
 const canvas = ref(null);
-const emit = defineEmits(["currentTaskModal", "pastTaskModal"]);
+const emit = defineEmits([
+  "currentTaskModal",
+  "pastTaskModal",
+  "sendTaskModal",
+]);
 
 function handleWindowResize(viewer) {
   viewer.get("canvas").zoom("fit-viewport");
 }
+
+const transversedSendTasks = ref([]);
+
 onMounted(async () => {
   const viewer = initializeBpmnViewer(canvas.value);
 
@@ -67,7 +74,7 @@ function setupEventListeners(viewer) {
   });
 
   viewer.on("element.click", (event) => {
-    handleElementClick(event, emit);
+    handleElementClick(event, emit, viewer);
   });
 }
 
@@ -89,8 +96,9 @@ function handleElementHover(event, canvasElement) {
   const element = event.element;
 
   if (isHighlightableElement(element.type)) {
-    const taskOrder = getTaskOrder(element.id);
+    const taskOrder = getUserTaskOrder(element.id);
 
+    // Checking for 'evaluacija_poslodavac' task remains unchanged
     if (
       element.id === "evaluacija_poslodavac" &&
       taskOrder === props.currentOrder
@@ -99,58 +107,102 @@ function handleElementHover(event, canvasElement) {
       return;
     }
 
+    // Check if the task is 'ServiceTask' or if it's a future task
+    if (
+      element.type === "bpmn:ServiceTask" ||
+      element.type === "bpmn:ParallelGateway" ||
+      element.type === "bpmn:ExclusiveGateway" ||
+      taskOrder > props.currentOrder
+    ) {
+      canvasElement.style.cursor = "not-allowed";
+      return;
+    }
+
+    // If the task is current or past
     if (taskOrder === props.currentOrder || taskOrder < props.currentOrder) {
       canvasElement.style.cursor = "pointer";
-    } else {
-      canvasElement.style.cursor = "not-allowed";
     }
   } else {
     canvasElement.style.cursor = "default";
   }
 }
 
-function handleElementClick(event, emitFunction) {
+function handleElementClick(event, emitFunction, viewer) {
   const element = event.element;
   console.log("%cBPMNDiagram.vue: Element clicked:", "color: red;", element);
+  if (element.type === "bpmn:SendTask") {
+    const sendTask = getSendTask(element.id);
+    console.log("transversedSendTasks", transversedSendTasks.value);
+    console.log("sendTask", sendTask);
+    if (transversedSendTasks.value.includes(sendTask._id)) {
+      emitFunction("sendTaskModal", element);
+      adminStore.bpmn_diagram.clicked_task_id = element.id;
 
-  if (element && element.type === "bpmn:UserTask") {
-    const taskOrder = getTaskOrder(element.id);
-
-    // Check if the task is 'evaluacija_poslodavac' and if it's the current task
-    if (
-      element.id === "evaluacija_poslodavac" &&
-      taskOrder === props.currentOrder
-    ) {
-      console.log(
-        "%cBPMNDiagram.vue: 'evaluacija_poslodavac' is the current task. Not clickable.",
-        "color: red;"
-      );
       return;
     }
-
-    adminStore.bpmn_diagram.clicked_task_id = element.id;
-
-    if (taskOrder === props.currentOrder) {
-      console.log(
-        "%cBPMNDiagram.vue: Emitting currentTaskModal",
-        "color: red;"
+  }
+  if (element) {
+    // Fetch the path from the start to the current task
+    const elementRegistry = viewer.get("elementRegistry");
+    const startEvents = elementRegistry.filter(
+      (el) => el.type === "bpmn:StartEvent"
+    );
+    let pathToCurrent = [];
+    startEvents.forEach((startElement) => {
+      const path = traverseFromStartToCurrent(
+        startElement,
+        element.id,
+        elementRegistry
       );
-      emitFunction("currentTaskModal", element);
-    } else if (taskOrder < props.currentOrder) {
-      console.log("%cBPMNDiagram.vue: Emitting pastTaskModal", "color: red;");
-      emitFunction("pastTaskModal", element);
-    } else {
-      console.log(
-        "%cBPMNDiagram.vue: Task in the future. Not clickable.",
-        "color: red;"
-      );
+      if (path.length > 0) {
+        pathToCurrent = path;
+      }
+    });
+
+    if (element.type === "bpmn:UserTask") {
+      const taskOrder = getUserTaskOrder(element.id);
+
+      // Check if the task is 'evaluacija_poslodavac' and if it's the current task
+      if (
+        element.id === "evaluacija_poslodavac" &&
+        taskOrder === props.currentOrder
+      ) {
+        console.log(
+          "%cBPMNDiagram.vue: 'evaluacija_poslodavac' is the current task. Not clickable.",
+          "color: red;"
+        );
+        return;
+      }
+
+      adminStore.bpmn_diagram.clicked_task_id = element.id;
+
+      if (taskOrder === props.currentOrder) {
+        console.log(
+          "%cBPMNDiagram.vue: Emitting currentTaskModal",
+          "color: red;"
+        );
+        emitFunction("currentTaskModal", element);
+      } else if (taskOrder < props.currentOrder) {
+        console.log("%cBPMNDiagram.vue: Emitting pastTaskModal", "color: red;");
+        emitFunction("pastTaskModal", element);
+      } else {
+        console.log(
+          "%cBPMNDiagram.vue: Task in the future. Not clickable.",
+          "color: red;"
+        );
+      }
     }
   }
 }
 
-function getTaskOrder(taskId) {
+function getUserTaskOrder(taskId) {
   const task = UserTaskMappings.tasks.find((task) => task._id === taskId);
   return task ? task.order : -1;
+}
+
+function getSendTask(taskId) {
+  const task = SendTaskMappings.tasks.find((task) => task._id === taskId);
+  return task;
 }
 
 function traverseFromStartToCurrent(
@@ -209,6 +261,14 @@ function applyCustomStyling(highlightColor, highlightElementId, viewer) {
   function applyHighlight(element, styleClass) {
     if (element.type && isHighlightableElement(element.type)) {
       canvasInstance.addMarker(element.id, styleClass);
+
+      // If the element is a SendTask, mark it as traversed
+      if (element.type === "bpmn:SendTask") {
+        const task = getSendTask(element.id);
+        if (task && !transversedSendTasks.value.includes(task._id)) {
+          transversedSendTasks.value.push(task._id);
+        }
+      }
     }
   }
 
