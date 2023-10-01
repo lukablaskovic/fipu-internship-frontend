@@ -205,18 +205,23 @@ function applyCustomStyling(highlightColor, highlightElementId, viewer) {
     );
   });
 
-  // Highlight all elements on the direct path EXCEPT the current task
-  directPath.forEach((element) => {
-    if (
-      element.id !== highlightElementId &&
-      isHighlightableElement(element.type)
-    ) {
-      canvasInstance.addMarker(element.id, "highlight-previous");
+  // Function to apply the highlight, given an element and a style
+  function applyHighlight(element, styleClass) {
+    if (element.type && isHighlightableElement(element.type)) {
+      canvasInstance.addMarker(element.id, styleClass);
     }
-  });
+  }
 
-  // Highlight the current task (do this after highlighting the preceding tasks)
-  canvasInstance.addMarker(highlightElementId, "highlight");
+  // Animate the highlighting in order
+  directPath.forEach((element, index) => {
+    setTimeout(() => {
+      if (element.id !== highlightElementId) {
+        applyHighlight(element, "highlight-previous");
+      } else {
+        applyHighlight(element, "highlight");
+      }
+    }, 0.05 * 1000 * index);
+  });
 
   // Add styles
   const style = document.createElement("style");

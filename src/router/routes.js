@@ -126,16 +126,7 @@ const routes = [
     name: "register",
     component: () => import("@/views/common/RegisterView.vue"),
   },
-  {
-    meta: {
-      title: "BPMN - Procesi",
-      requiresAuth: true,
-      requiresAdmin: true,
-    },
-    path: "/bpmn/models",
-    name: "bpmn-models",
-    component: () => import("@/views/admin/bpmn/ModelsView.vue"),
-  },
+
   {
     meta: {
       title: "BPMN - Mikroservisi",
