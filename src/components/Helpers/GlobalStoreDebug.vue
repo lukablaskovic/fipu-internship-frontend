@@ -15,9 +15,10 @@ guestStore,
 styleStore,
 layoutStore,
 snackBarStore, 
+chatStore, 
 } from "@/main.js";
 
-const storeNames = ["mainStore", "studentStore", "adminStore", "guestStore", "styleStore", "layoutStore", "snackBarStore"]
+const storeNames = ["mainStore", "studentStore", "adminStore", "guestStore", "styleStore", "layoutStore", "snackBarStore", "chatStore"]
 
 const newValueFormatted = computed(() => {
     switch (mainStore.storeSelected) {
@@ -28,6 +29,7 @@ const newValueFormatted = computed(() => {
         case "styleStore": return styleStore.$state
         case "layoutStore": return layoutStore.$state
         case "snackBarStore": return snackBarStore.$state
+        case "chatStore": return chatStore.$state
     }
 });
 

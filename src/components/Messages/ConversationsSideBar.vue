@@ -4,6 +4,10 @@ import AddConversationButton from "@/components/Messages/AddConversationButton.v
 import ConversationDivider from "@/components/Messages/ConversationDivider.vue";
 import ConversationsSearch from "@/components/Messages/ConversationsSearch.vue";
 import ConversationItem from "@/components/Messages/ConversationItem.vue";
+
+import { chatStore } from "@/main.js";
+import { mainStore } from "@/main.js";
+
 </script>
 <template>
     <div class="flex flex-row flex-shrink-0 bg-gray-100 dark:bg-gray-900 p-4 w-36 lg:w-96 transition-size duration-300">
@@ -11,17 +15,10 @@ import ConversationItem from "@/components/Messages/ConversationItem.vue";
             <ConversationsSearch/>
             <ConversationsGroupsNavbar/>
             <div class="flxe flex-col">
-                <ConversationDivider text="Studenti"/>
-                <ConversationItem name="User 1" last_text="Hi" :messages_unread="0" status="online" :last_time_read="1696082920285"/>
-                <ConversationItem name="User 2" last_text="Hi" :messages_unread="0" status="away" :last_time_read="1696092820285"/>
-                <ConversationItem name="User 3" last_text="Hi" :messages_unread="0" status="idle" :last_time_read="1696051120285"/>
-                <ConversationItem selected name="Kenobi" last_text="Hello there." :messages_unread="0" status="online" :last_time_read="1696092920285"/>
-                <ConversationItem name="User 4" last_text="Hi" :messages_unread="0" status="idle" :last_time_read="1686092920285"/>
-                <ConversationItem name="Bob Ross" last_text="Happy Little Trees!" :messages_unread="0" status="away" :last_time_read="1296091920285"/>
-                <ConversationDivider text="Ostalo"/>
-                <AddConversationButton/>
+                <ConversationItem v-for="c in chatStore.conversations" :conversation="c" 
+                :selected="chatStore.selectedConversation == (c.user_1_id == mainStore.currentUser.id ? c.user_2_id : c.user_1_id)"/>
             </div>
-        
+            <AddConversationButton/>
         </div>
     </div>
 </template>

@@ -1,10 +1,13 @@
 <script setup>
-import LayoutAuthenticated from "@/layouts/LayoutAuthenticated.vue";
+import LayoutAuthenticated from "@/layouts/LayoutAuthenticated.vue"; 
 import MessageInput from "@/components/Messages/MessageInput.vue";
 import ConversationsSideBar from "@/components/Messages/ConversationsSideBar.vue";
 import ConversationPanel from "@/components/Messages/ConversationPanel.vue";
 import Conversation from "@/components/Messages/Conversation.vue";
 import Message from "@/components/Messages/Message.vue";
+ 
+import { chatStore } from "@/main.js";
+chatStore.getAllUsers();
 </script>
 
 <template>
@@ -15,12 +18,14 @@ import Message from "@/components/Messages/Message.vue";
             <div class="grow flex flex-col justify-end">
                 <div class="flex flex-row grow antialiased text-gray-800 dark:text-gray-300 rounded overflow-hidden">
                     <ConversationsSideBar/>
-                    <ConversationPanel>
+                    <ConversationPanel v-if="chatStore.selectedConversation != ''">
                         <Conversation>
-                            <Message user="Kenobi" text="Hello there"/>
-                            <Message reverse user="Grievous" text="General Kenobi"/>
+                            <Message v-for="m in chatStore.messages" :text="m.content" :user="chatStore.getUserName(m)" :reverse="m.receiver_id == chatStore.selectedConversation" />
                         </Conversation>
                         <MessageInput/>
+                    </ConversationPanel>
+                    <ConversationPanel v-else>
+                        <div class="w-full h-full flex justify-center items-center">Select Conversation</div>
                     </ConversationPanel>
                 </div>
             </div>
