@@ -78,10 +78,14 @@ class SendTaskMappings {
         student_godina_studija: "",
         student_email: "",
         Alocirani_zadatak: "",
-        id_instance: "",
-        evaluacija_url: "",
+        process_instance_id: "",
+        evaluacija_url: (processInstanceId) =>
+          `${
+            import.meta.env.VITE_DASHBOARD_URL
+          }/#/evaluacija/${processInstanceId}`,
       },
     },
+
     {
       _id: "obavjestavanje_studenta_nakon_alokacije",
       to: "student_email",
@@ -103,7 +107,7 @@ class SendTaskMappings {
       to: "student_email",
       template: "student_after_approval",
       body: {
-        id_instance: "",
+        process_instance_id: "",
         poslodavac_naziv: "",
       },
     },
@@ -113,7 +117,7 @@ class SendTaskMappings {
       template: "student_potvrda_pdf",
       body: {
         attachment_name: "", //${student_prezime}_potvrda.pdf
-        id_instance: "",
+        process_instance_id: "",
         pdf_attachment_url: "",
         mentor_email: "",
       },
@@ -124,7 +128,7 @@ class SendTaskMappings {
       template: "mentor_potvrda_pdf",
       body: {
         attachment_name: "", //${student_prezime}_potvrda.pdf
-        id_instance: "",
+        process_instance_id: "",
         pdf_attachment_url: "",
         student_email: "",
         student_ime: "",

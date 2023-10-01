@@ -89,8 +89,15 @@ function getPostDataForSendEmail() {
   // Extract required fields from process_instance_data.variables
   const postData = {};
   for (let key in taskMapping.body) {
-    postData[key] =
-      adminStore.selectedStudent.process_instance_data.variables[key] || "";
+    if (typeof taskMapping.body[key] === "function") {
+      postData[key] = taskMapping.body[key](
+        adminStore.selectedStudent.process_instance_data.variables
+          .process_instance_id
+      );
+    } else {
+      postData[key] =
+        adminStore.selectedStudent.process_instance_data.variables[key] || "";
+    }
   }
 
   // Extract the 'to' value

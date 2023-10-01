@@ -112,7 +112,9 @@ Napomena: Da biste prijavili preferencije, morate biti prijavljeni u aplikaciji!
       <bpmn:outgoing>Flow_1cbfvw0</bpmn:outgoing>
     </bpmn:serviceTask>
     <bpmn:sequenceFlow id="Flow_1cbfvw0" sourceRef="spremanje_preferencije" targetRef="alociranje_profesor" />
-    <bpmn:sequenceFlow id="Flow_1xv4qjm" sourceRef="student_prihvacen" targetRef="spremanje_zahtjeva_odbijanje" />
+    <bpmn:sequenceFlow id="Flow_1xv4qjm" sourceRef="student_prihvacen" targetRef="spremanje_zahtjeva_odbijanje">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">kandidat_odobren:false</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
     <bpmn:sequenceFlow id="Flow_02synkt" sourceRef="spremanje_zahtjeva_profesor_ponistio" targetRef="obavjestavanje_studenta_nakon_ponistavanja_email" />
     <bpmn:sequenceFlow id="Flow_1hbk011" sourceRef="obavjestavanje_studenta_nakon_ponistavanja_email" targetRef="odabiranje_zadatka_student" />
     <bpmn:sendTask id="obavjestavanje_studenta_nakon_odbijanja_email" name="Obavještavanje studenta email">
