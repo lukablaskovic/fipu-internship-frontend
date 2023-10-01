@@ -77,8 +77,12 @@ function showNotificationBar(type) {
   notificationBar.value.show();
 }
 
+const isLoading = ref(false);
+
 let napomena = ref(null);
 const registerPreferences = async () => {
+  isLoading.value = true;
+
   if (!mainStore.userAuthenticated) {
     showNotificationBar("warning");
     return;
@@ -92,12 +96,15 @@ const registerPreferences = async () => {
     } else {
       showNotificationBar("danger");
     }
-    await Utils.wait(3);
-    router.go();
+    isLoading.value = false;
+
+    await Utils.wait(2);
+    location.reload();
   }
 };
 
 const vas_odabir = ref(null);
+
 const scrollToSelection = () => {
   nextTick(() => {
     vas_odabir.value.$el.scrollIntoView({ behavior: "smooth" });
@@ -209,6 +216,7 @@ const isDraggableEnabled = computed(
             type="submit"
             color="fipu_light_blue"
             label="Prijavi preferencije"
+            :loading="isLoading"
             @click="modalConfirmPreferences = true"
           />
         </BaseButtons>

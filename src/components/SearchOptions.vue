@@ -43,8 +43,11 @@
               class="cursor-pointer hover:bg-fipu_blue hover:text-white hover:font-medium dark:hover:text-gray-900 py-1 px-2 rounded flex gap-1 group"
               @click="insertPrefix(helpItem.prefix)"
             >
-              <div class="bg-fipu_blue text-gray-900 px-0.5 rounded w-6 flex justify-center items-center font-bold 
-              group-hover:bg-gray-50 group-hover:text-gray-700 dark:group-hover:bg-gray-900 dark:group-hover:text-gray-300">{{ helpItem.prefix }}</div>
+              <div
+                class="bg-fipu_blue text-gray-900 px-0.5 rounded w-6 flex justify-center items-center font-bold group-hover:bg-gray-50 group-hover:text-gray-700 dark:group-hover:bg-gray-900 dark:group-hover:text-gray-300"
+              >
+                {{ helpItem.prefix }}
+              </div>
               {{ helpItem.description }}
             </div>
           </div>
@@ -77,13 +80,33 @@
                 :class="{ 'text-white': active, 'text-gray-900': !active }"
                 aria-hidden="true"
               />
-              <span
-                class="block truncate"
-                :class="{ 'font-medium': selected, 'font-normal': !selected }"
-              >
-                {{ result.ime }} {{ result.prezime }} ({{ result.JMBAG }}) -
-                {{ result.email }}
-              </span>
+              <!-- Check if the result is a student or company -->
+              <template v-if="result.ime && result.prezime">
+                <span
+                  class="block truncate"
+                  :class="{ 'font-medium': selected, 'font-normal': !selected }"
+                >
+                  {{ result.ime }} {{ result.prezime }} ({{ result.JMBAG }}) -
+                  {{ result.email }}
+                </span>
+              </template>
+              <template v-else-if="result.id_zadatak">
+                <span
+                  class="block truncate"
+                  :class="{ 'font-medium': selected, 'font-normal': !selected }"
+                >
+                  Zadatak ID: {{ result.id_zadatak }}
+                </span>
+              </template>
+              <template v-else>
+                <span
+                  class="block truncate"
+                  :class="{ 'font-medium': selected, 'font-normal': !selected }"
+                >
+                  {{ result.naziv }}
+                  <!-- Company name -->
+                </span>
+              </template>
             </li>
           </ComboboxOption>
         </ComboboxOptions>
@@ -104,7 +127,7 @@ import {
   TransitionRoot,
 } from "@headlessui/vue";
 import { router } from "@/router";
-
+import { mainStore, guestStore } from "@/main";
 import MdiMagnify from "vue-material-design-icons/Magnify.vue";
 import MdiAccount from "vue-material-design-icons/Account.vue";
 
@@ -124,8 +147,10 @@ let displayValue = computed(() => {
   if (!selectedValue.value) return query.value;
   return selectedValue.value.name;
 });
+const allCompanies = ref([]);
+const allAssignments = ref([]);
 
-onMounted(() => {
+onMounted(async () => {
   function onKeydown(event) {
     if (event.key === "/") {
       event.preventDefault();
@@ -146,6 +171,11 @@ onMounted(() => {
   onUnmounted(() => {
     document.removeEventListener("keydown", onKeydown);
   });
+
+  let result = await mainStore.fetchCompanies();
+  allCompanies.value = result.data.results;
+  result = await guestStore.fetchAvailableAssignments();
+  allAssignments.value = result;
 });
 
 let query = ref("");
@@ -158,17 +188,30 @@ let studentData = computed(() => {
 });
 
 let filteredResults = computed(() => {
-  const searchTerm = query.value.slice(2).toLowerCase().replace(/\s+/g, "");
-  console.log("query", query.value);
-  console.log("adminStore.students", adminStore.students);
+  const searchTerm = query.value
+    .slice(query.value.indexOf(":") + 1)
+    .toLowerCase()
+    .replace(/\s+/g, " ")
+    .trim();
+  console.log(searchTerm);
 
+  const terms = searchTerm.split(" ");
+  console.log(adminStore.students);
   if (query.value.toLowerCase().startsWith("s:")) {
-    return adminStore.students.filter(
-      (student) =>
-        student.ime.toLowerCase().replace(/\s+/g, "").includes(searchTerm) ||
-        student.prezime.toLowerCase().replace(/\s+/g, "").includes(searchTerm)
-    );
+    return adminStore.students.filter((student) => {
+      const ime = student.ime.toLowerCase();
+      const prezime = student.prezime.toLowerCase();
+
+      // If the user has typed both first and last names
+      if (terms.length > 1) {
+        return ime.includes(terms[0]) && prezime.includes(terms[1]);
+      }
+
+      // If the user has typed only one name (either first or last)
+      return ime.includes(searchTerm) || prezime.includes(searchTerm);
+    });
   } else if (query.value.startsWith("se:")) {
+    console.log("se: query");
     return adminStore.students.filter((student) =>
       student.email.toLowerCase().replace(/\s+/g, "").includes(searchTerm)
     );
@@ -176,6 +219,15 @@ let filteredResults = computed(() => {
     return adminStore.students.filter((student) =>
       student.JMBAG.toLowerCase().replace(/\s+/g, "").includes(searchTerm)
     );
+  } else if (query.value.startsWith("p:")) {
+    return allCompanies.value.filter((company) =>
+      company.naziv.toLowerCase().includes(searchTerm)
+    );
+  } else if (query.value.startsWith("z:")) {
+    return allAssignments.value.filter((assignment) => {
+      const parts = assignment.id_zadatak.split(" - ");
+      return parts.some((part) => part.toLowerCase().includes(searchTerm));
+    });
   } else {
     return [];
   }
@@ -197,8 +249,7 @@ const helpItems = [
   { prefix: "s:", description: "pretraži studenta po imenu i prezimenu" },
   { prefix: "sj:", description: "pretraži studenta po JMBAGu" },
   { prefix: "se:", description: "pretraži studenta po emailu" },
-  { prefix: "t:", description: "za pretraživanje po trenutnom tasku" },
-  { prefix: "p:", description: "za pretraživanje po poduzeću" },
-  { prefix: "e:", description: "za pretraživanje eventa" },
+  { prefix: "p:", description: "pretraži poduzeće po nazivu" },
+  { prefix: "z:", description: "pretraži zadatak po nazivu" },
 ];
 </script>

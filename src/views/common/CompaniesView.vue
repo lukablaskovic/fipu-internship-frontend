@@ -26,22 +26,23 @@ const userAdmin = computed(() => mainStore.userAdmin);
   <div>
     <LayoutAuthenticated v-if="userAuthenticated">
       <SectionMain>
-        <SectionTitleLineWithButton
-          :icon="mdiDomainPlus"
-          title="Novi Poslodavci"
-          main
-        >
-        </SectionTitleLineWithButton>
-        <p class="mb-4">
-          U tablici se nalaze poduzeća koja su prijavili zadatke za izvođenje
-          prakse međutim još nisu registrirani za provođenje - potrebno je ručno
-          unijeti podatke o poduzeću.
-        </p>
+        <div v-if="userAdmin">
+          <SectionTitleLineWithButton
+            :icon="mdiDomainPlus"
+            title="Novi Poslodavci"
+            main
+          >
+          </SectionTitleLineWithButton>
+          <p class="mb-4">
+            U tablici se nalaze poduzeća koja su prijavili zadatke za izvođenje
+            prakse međutim još nisu registrirani za provođenje - potrebno je
+            ručno unijeti podatke o poduzeću.
+          </p>
 
-        <CardBox has-table>
-          <TableNewCompanies />
-        </CardBox>
-
+          <CardBox has-table>
+            <TableNewCompanies />
+          </CardBox>
+        </div>
         <SectionTitleLineWithButton
           class="mt-4"
           :icon="mdiDomain"

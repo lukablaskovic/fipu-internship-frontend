@@ -44,7 +44,7 @@ const routes = [
     meta: {
       title: "Alokacije",
       requiresAuth: true,
-      requiresAdmin: false,
+      requiresAdmin: true,
     },
     path: "/alokacije",
     name: "alokacije",
