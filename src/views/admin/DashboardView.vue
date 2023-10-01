@@ -1,5 +1,5 @@
 <script setup>
-import { ref, computed, onMounted } from "vue";
+import { ref, computed, onMounted, reactive } from "vue";
 import { adminStore, mainStore, snackBarStore } from "@/main.js";
 import {
   mdiAccountMultiple,
@@ -31,6 +31,7 @@ import PillTagFilter from "@/components/PillTag/PillTagFilter.vue";
 
 import { ActivityEventMappings } from "@/helpers/maps.js";
 import { latestEvents } from "@/filterOptions.js";
+import Utils from "@/helpers/utils";
 
 const router = useRouter();
 
@@ -44,31 +45,37 @@ const waiting_for_allocation = ref(0);
 const waiting_for_evaluation = ref(0);
 const waiting_for_mark = ref(0);
 const finished_internships = ref(0);
-const events = ref([]);
+
+let events = ref([]);
 
 onMounted(async () => {
-  await adminStore.getStudents();
-  await adminStore.searchModels();
+  try {
+    await adminStore.getStudents();
+    await adminStore.searchModels();
 
-  ongoing_internships.value = adminStore.dashboard_data.ongoing_internships;
-  waiting_for_allocation.value =
-    adminStore.dashboard_data.waiting_for_allocation;
-  waiting_for_evaluation.value =
-    adminStore.dashboard_data.waiting_for_evaluation;
-  waiting_for_mark.value = adminStore.dashboard_data.waiting_for_mark;
-  finished_internships.value = adminStore.dashboard_data.finished_internships;
-  await adminStore.getEvents();
+    ongoing_internships.value = adminStore.dashboard_data.ongoing_internships;
+    waiting_for_allocation.value =
+      adminStore.dashboard_data.waiting_for_allocation;
+    waiting_for_evaluation.value =
+      adminStore.dashboard_data.waiting_for_evaluation;
+    waiting_for_mark.value = adminStore.dashboard_data.waiting_for_mark;
+    finished_internships.value = adminStore.dashboard_data.finished_internships;
 
-  events.value = adminStore.events
-    .filter(
-      (event) => !ActivityEventMappings.shouldSkipEvent(event.activity_id)
-    )
-    .reverse();
+    await adminStore.getEvents();
+
+    events.value = adminStore.events
+      .filter(
+        (event) => !ActivityEventMappings.shouldSkipEvent(event.activity_id)
+      )
+      .reverse();
+  } catch (error) {
+    console.error("Dashboard rendering error:", error);
+  }
 });
 
 const eventsOptionsActive = ref(false);
 const formattedDate = (timestamp) => {
-  if (adminStore.dashboard_data.relativeToNowTimestmap == true) {
+  if (adminStore.relativeToNowTimestmap == true) {
     return moment(timestamp).fromNow();
   } else {
     return moment(timestamp).format("DD/MM/YYYY u HH:mm");
@@ -102,8 +109,7 @@ const pagesList = computed(() => {
 });
 
 const toggleDateType = () => {
-  adminStore.dashboard_data.relativeToNowTimestmap =
-    !adminStore.dashboard_data.relativeToNowTimestmap;
+  adminStore.relativeToNowTimestmap = !adminStore.relativeToNowTimestmap;
 };
 </script>
 
@@ -217,17 +223,13 @@ const toggleDateType = () => {
                 class="cursor-pointer"
                 :left="false"
                 :icon="
-                  adminStore.dashboard_data.relativeToNowTimestmap
+                  adminStore.relativeToNowTimestmap
                     ? mdiClockTimeEight
                     : mdiCalendarClock
                 "
-                :color="
-                  adminStore.dashboard_data.relativeToNowTimestmap
-                    ? 'info'
-                    : 'success'
-                "
+                :color="adminStore.relativeToNowTimestmap ? 'info' : 'success'"
                 :label="
-                  adminStore.dashboard_data.relativeToNowTimestmap
+                  adminStore.relativeToNowTimestmap
                     ? 'Relativno vrijeme'
                     : 'Datum'
                 "
@@ -237,7 +239,7 @@ const toggleDateType = () => {
           </div>
         </div>
         <div
-          v-if="events.length > 0"
+          v-if="!Utils.isArrayEmpty(events)"
           class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6"
         >
           <div class="flex flex-col">

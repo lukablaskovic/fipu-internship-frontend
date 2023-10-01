@@ -154,8 +154,10 @@ import {
   mdiApi,
   mdiEmailArrowRight,
   mdiCertificate,
+  mdiCancel,
 } from "@mdi/js";
 import Student_InternshipFinished from "@/components/Internship/Student_InternshipFinished.vue";
+import Utils from "./utils";
 
 class ActivityEventMappings {
   static events = [
@@ -182,6 +184,24 @@ class ActivityEventMappings {
       icon: mdiNoteCheck,
       type: "danger",
       message: "Zadatak alociran",
+    },
+    {
+      activity_id: "odabir_prihvacen",
+      icon: mdiThumbsUpDownOutline,
+      type: "success",
+      message: "Preferencije prihvaćene",
+    },
+    {
+      activity_id: "spremanje_zahtjeva_profesor_ponistio",
+      icon: mdiCancel,
+      type: "danger",
+      message: "Profesor poništio prijavljene preferencije",
+    },
+    {
+      activity_id: "obavjestavanje_studenta_nakon_ponistavanja_email",
+      icon: mdiEmailArrowRight,
+      type: "info",
+      message: "Student obavješten o vraćanju",
     },
     {
       activity_id: "spremanje_alokacija",
@@ -218,6 +238,12 @@ class ActivityEventMappings {
       icon: mdiAccountTie,
       type: "warning",
       message: "Poslodavac obavio evaluaciju",
+    },
+    {
+      activity_id: "spremanje_zahtjeva_prihvacanje",
+      icon: mdiContentSaveOutline,
+      type: "success",
+      message: "Student prihvaćen nakon evaluacije",
     },
     {
       activity_id: "obavjestavanje_studenta_nakon_prihvacanja_email",
@@ -280,11 +306,14 @@ class ActivityEventMappings {
       message: "Student ocjenjen",
     },
   ];
+
   static skipEvents = [
     "spremanje_alokacija",
     "uzimanje_podataka_o_poslodavcu_student",
+    "spremanje_zahtjeva_profesor_ponistio",
     "obavjestavanje_poslodavca_nakon_alokacije",
     "obavjestavanje_studenta_nakon_alokacije",
+    "obavjestavanje_studenta_nakon_ponistavanja_email",
     "student_prihvacen",
     "obavjestavanje_studenta_nakon_prihvacanja_email",
     "azuriranje_podataka_profesor",
@@ -304,17 +333,14 @@ class ActivityEventMappings {
   }
 
   static shouldSkipEvent(activityId) {
-    const selectedEvents = adminStore.dashboard_data.selectedEvents;
-
-    // If no events are selected, use the default skip logic
-    if (!selectedEvents.length) {
+    if (Utils.isArrayEmpty(adminStore.selectedEvents)) {
       return (
         this.skipEvents.includes(activityId) || this.isGatewayEvent(activityId)
       );
     }
 
     // If events are selected, skip those not in the list
-    return !selectedEvents.includes(activityId);
+    return !adminStore.selectedEvents.includes(activityId);
   }
 
   // Existing method to get event based on activityId

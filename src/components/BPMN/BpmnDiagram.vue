@@ -220,7 +220,7 @@ function applyCustomStyling(highlightColor, highlightElementId, viewer) {
       } else {
         applyHighlight(element, "highlight");
       }
-    }, 0.05 * 1000 * index);
+    }, 0.025 * 1000 * index);
   });
 
   // Add styles

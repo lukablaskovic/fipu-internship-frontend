@@ -19,10 +19,11 @@ export const useAdminStore = defineStore("admin", {
       ongoing_internships: 0,
       waiting_for_allocation: 0,
       waiting_for_evaluation: 0,
-      selectedEvents: [],
-      events: [],
-      relativeToNowTimestmap: true,
     },
+
+    selectedEvents: [],
+    events: [],
+    relativeToNowTimestmap: true,
 
     bpmn_diagram: {
       clicked_task_id: null,
@@ -32,6 +33,7 @@ export const useAdminStore = defineStore("admin", {
     modalTitle: "",
     pdfSource: "",
   }),
+
   actions: {
     async getAllocations() {
       try {
@@ -52,7 +54,7 @@ export const useAdminStore = defineStore("admin", {
         return null;
       }
     },
-    openPDFModal(allocation, type, sourceUrl) {
+    openPDFModal(allocation, type) {
       const student = this.students.find((stud) => {
         return (
           stud.process_instance_data.variables.id_alokacija ===
@@ -78,9 +80,6 @@ export const useAdminStore = defineStore("admin", {
       this.pdfModalActive = true;
     },
 
-    setSelectedEvents(events) {
-      this.dashboard_data.selectedEvents = events;
-    },
     setSelectedStudent(student) {
       this.selectedStudent = student;
     },
@@ -112,10 +111,11 @@ export const useAdminStore = defineStore("admin", {
         }
 
         this.dashboard_data = {
-          waiting_for_allocation: 0,
-          waiting_for_evaluation: 0,
           waiting_for_mark: 0,
           finished_internships: 0,
+          ongoing_internships: 0,
+          waiting_for_allocation: 0,
+          waiting_for_evaluation: 0,
         };
 
         const taskToDashboardMapping = {
@@ -156,6 +156,7 @@ export const useAdminStore = defineStore("admin", {
         console.log("Error:", error);
       }
     },
+
     async searchModels() {
       try {
         const response = await Model.search();
@@ -188,11 +189,13 @@ export const useAdminStore = defineStore("admin", {
           }
         });
         this.events = response;
+
         return this.events;
       } catch (error) {
         console.log("Error:", error);
       }
     },
+
     async handleTask(id_zadatak, action) {
       try {
         const response = await Admin.handleTask(id_zadatak, action);

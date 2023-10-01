@@ -1,5 +1,5 @@
 <script setup>
-import { computed, ref, onBeforeMount } from "vue";
+import { computed, ref, onMounted } from "vue";
 
 import { mdiEye } from "@mdi/js";
 import BaseLevel from "@/components/Base/BaseLevel.vue";
@@ -9,7 +9,6 @@ import LoadingOverlay from "../LoadingOverlay.vue";
 import { adminStore } from "@/main.js";
 import { StudentMappings, UserTaskMappings } from "@/helpers/maps";
 import { useRoute } from "vue-router";
-import UserAvatar from "@/components/User/UserAvatar.vue";
 const route = useRoute();
 
 defineProps({
@@ -30,7 +29,7 @@ function showDiagram(student) {
   emit("show-student-diagram", student);
 }
 
-onBeforeMount(async () => {
+onMounted(async () => {
   if (route.params.process_instance_id) {
     selectedStudentInstanceID.value = route.params.process_instance_id;
     adminStore.setSelectedStudent(

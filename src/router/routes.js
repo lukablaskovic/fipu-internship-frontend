@@ -58,7 +58,7 @@ const routes = [
     },
     path: "/dostupni-zadaci",
     name: "dostupni-zadaci",
-    component: () => import("@/views/admin/AvailableAssignmentsview.vue"),
+    component: () => import("@/views/admin/AvailableAssignmentsView.vue"),
   },
   {
     meta: {
