@@ -71,13 +71,26 @@ function setupEventListeners(viewer) {
   });
 }
 
+function isHighlightableElement(elementType) {
+  const highlightableTypes = [
+    "bpmn:UserTask",
+    "bpmn:ServiceTask",
+    "bpmn:SendTask",
+    "bpmn:ManualTask",
+    "bpmn:ExclusiveGateway",
+    "bpmn:ParallelGateway",
+    "bpmn:InclusiveGateway",
+    "bpmn:EventBasedGateway",
+  ];
+  return highlightableTypes.includes(elementType);
+}
+
 function handleElementHover(event, canvasElement) {
   const element = event.element;
 
-  if (element && element.type === "bpmn:UserTask") {
+  if (isHighlightableElement(element.type)) {
     const taskOrder = getTaskOrder(element.id);
 
-    // If the task is 'evaluacija_poslodavac' and it's the current task
     if (
       element.id === "evaluacija_poslodavac" &&
       taskOrder === props.currentOrder
@@ -140,30 +153,72 @@ function getTaskOrder(taskId) {
   return task ? task.order : -1;
 }
 
+function traverseFromStartToCurrent(
+  startElement,
+  currentTaskId,
+  elementRegistry,
+  visited = new Set(),
+  path = []
+) {
+  if (visited.has(startElement.id)) {
+    return [];
+  }
+  visited.add(startElement.id);
+
+  if (startElement.id === currentTaskId) {
+    return [...path, startElement];
+  }
+
+  const outgoing = startElement.outgoing || [];
+  for (let connection of outgoing) {
+    const targetElement = elementRegistry.get(connection.target.id);
+    const newPath = traverseFromStartToCurrent(
+      targetElement,
+      currentTaskId,
+      elementRegistry,
+      visited,
+      [...path, startElement, connection]
+    );
+    if (newPath.length > 0) {
+      return newPath;
+    }
+  }
+  return [];
+}
+
 function applyCustomStyling(highlightColor, highlightElementId, viewer) {
   const canvasInstance = viewer.get("canvas");
   canvasInstance.zoom("fit-viewport");
   canvasInstance.viewbox();
 
-  // Highlight specific element if provided
-  if (highlightElementId) {
-    canvasInstance.addMarker(highlightElementId, "highlight");
-  }
+  const elementRegistry = viewer.get("elementRegistry");
+  const startEvents = elementRegistry.filter(
+    (element) => element.type === "bpmn:StartEvent"
+  );
 
-  // Highlight all previous user tasks in green except the current one
-  const elements = viewer
-    .get("elementRegistry")
-    .filter((element) => element.type === "bpmn:UserTask");
-  elements.forEach((element) => {
-    const taskOrder = getTaskOrder(element.id);
+  let directPath = [];
+  startEvents.forEach((startElement) => {
+    directPath = traverseFromStartToCurrent(
+      startElement,
+      highlightElementId,
+      elementRegistry
+    );
+  });
+
+  // Highlight all elements on the direct path EXCEPT the current task
+  directPath.forEach((element) => {
     if (
-      taskOrder < props.currentOrder ||
-      (taskOrder === props.currentOrder && element.id !== highlightElementId)
+      element.id !== highlightElementId &&
+      isHighlightableElement(element.type)
     ) {
       canvasInstance.addMarker(element.id, "highlight-previous");
     }
   });
 
+  // Highlight the current task (do this after highlighting the preceding tasks)
+  canvasInstance.addMarker(highlightElementId, "highlight");
+
+  // Add styles
   const style = document.createElement("style");
   style.innerHTML = `
     .highlight:not(.djs-connection) .djs-visual > :nth-child(1) {
