@@ -36,12 +36,23 @@ const datasetObject = (color, points) => {
   };
 };
 
-export const sampleChartData = (points = 9) => {
-  const labels = [];
+export const sampleChartData = (points = 12) => {
+  const croatianMonths = [
+    "Siječanj",
+    "Veljača",
+    "Ožujak",
+    "Travanj",
+    "Svibanj",
+    "Lipanj",
+    "Srpanj",
+    "Kolovoz",
+    "Rujan",
+    "Listopad",
+    "Studeni",
+    "Prosinac",
+  ];
 
-  for (let i = 1; i <= points; i++) {
-    labels.push(`0${i}`);
-  }
+  const labels = croatianMonths.slice(0, points);
 
   return {
     labels,

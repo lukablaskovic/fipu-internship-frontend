@@ -50,7 +50,7 @@ onMounted(async () => {
   <CardBoxModal
     v-if="isModalActive"
     v-model="isModalActive"
-    :title="isModalActive['id_zadatak']"
+    :title="'📃' + isModalActive['id_zadatak']"
     button-label="Zatvori"
     button="fipu_blue"
     has-cancel:false

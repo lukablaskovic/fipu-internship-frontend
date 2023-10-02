@@ -42,7 +42,7 @@ const Layout = computed(() => {
 <template>
   <component :is="Layout">
     <SectionMain v-if="allocated_assignment != null">
-      <SectionTitleLineWithButton :icon="mdiLaptop" title="Moja praksa" main>
+      <SectionTitleLineWithButton :icon="mdiLaptop" title="Moja Praksa" main>
       </SectionTitleLineWithButton>
       <p><b>Akademska godina:</b> 2023/2024</p>
       <p><b>Voditelj:</b> doc. dr. sc. Nikola Tanković</p>

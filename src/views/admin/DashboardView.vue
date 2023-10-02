@@ -1,5 +1,5 @@
 <script setup>
-import { ref, computed, onMounted } from "vue";
+import { ref, computed, onMounted, watch } from "vue";
 import { adminStore, mainStore, snackBarStore } from "@/main.js";
 import {
   mdiAccountMultiple,
@@ -16,6 +16,7 @@ import {
 } from "@mdi/js";
 import { useRouter } from "vue-router";
 import moment from "@/moment-setup";
+import { useLayoutStore } from "@/stores/layout.js";
 
 import SectionMain from "@/components/Section/SectionMain.vue";
 import CardBoxWidget from "@/components/Cardbox/CardBoxWidget.vue";
@@ -24,11 +25,14 @@ import LayoutAuthenticated from "@/layouts/LayoutAuthenticated.vue";
 import SectionTitleLineWithButton from "@/components/Section/SectionTitleLineWithButton.vue";
 import SkeletonLoader from "@/components/SkeletonLoader.vue";
 import SkeletonLoaderEvent from "@/components/SkeletonLoaderEvent.vue";
+import LineChart from "@/components/Charts/LineChart.vue";
+
 import BaseLevel from "@/components/Base/BaseLevel.vue";
 import BaseButtons from "@/components/Base/BaseButtons.vue";
 import BaseButton from "@/components/Base/BaseButton.vue";
 import PillTag from "@/components/PillTag/PillTag.vue";
 import PillTagFilter from "@/components/PillTag/PillTagFilter.vue";
+import * as chartConfig from "@/components/Charts/chart.config.js";
 
 import { ActivityEventMappings } from "@/helpers/maps.js";
 import { latestEvents } from "@/filterOptions.js";
@@ -121,6 +125,34 @@ const pagesList = computed(() => {
 const toggleDateType = () => {
   adminStore.relativeToNowTimestmap = !adminStore.relativeToNowTimestmap;
 };
+
+// CHART
+
+const layoutStore = useLayoutStore();
+const isLg = computed(() => layoutStore.isLg);
+const isMd = computed(() => layoutStore.isMd);
+
+watch([isLg, isMd], () => {
+  fillChartData();
+});
+
+const chartData = ref(null);
+
+const fillChartData = () => {
+  let points = 4;
+
+  if (isLg.value) {
+    points = 9;
+  } else if (isMd.value) {
+    points = 6;
+  }
+
+  chartData.value = chartConfig.sampleChartData(12);
+};
+
+onMounted(() => {
+  fillChartData();
+});
 </script>
 
 <template>
@@ -322,12 +354,17 @@ const toggleDateType = () => {
         </div>
 
         <SectionTitleLineWithButton
+          class="mt-4"
           :icon="mdiChartBar"
           title="Pregled Trendova"
           main
           @click="eventsOptionsActive = true"
         >
         </SectionTitleLineWithButton>
+        <p>Trenutno je hardkodirano 🙂</p>
+        <div v-if="chartData" class="md:col-span-3">
+          <LineChart :data="chartData" />
+        </div>
       </SectionMain>
     </LayoutAuthenticated>
   </div>

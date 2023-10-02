@@ -72,7 +72,7 @@ async function getAssignmentDetailsInModal(assignment_id) {
         voditelju prakse putem
         <span
           class="text-fipu_blue cursor-pointer inline-flex whitespace-normal items-center"
-          @click="router.push('/moja-praksa')"
+          @click="router.push('/poruke')"
         >
           <BaseIcon
             :path="mdiEmail"
@@ -126,7 +126,7 @@ async function getAssignmentDetailsInModal(assignment_id) {
       <CardBoxModal
         v-if="isModalActive"
         v-model="isModalActive"
-        :title="isModalActive['id_zadatak']"
+        :title="'📃' + isModalActive['id_zadatak']"
         button-label="Zatvori"
         button="fipu_blue"
         has-cancel:false
