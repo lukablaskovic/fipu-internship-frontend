@@ -28,7 +28,7 @@ chatStore.getAllUsers();
                         <MessageInput/>
                     </ConversationPanel>
                     <ConversationPanel v-else>
-                        <div class="w-full h-full flex justify-center items-center">Select Conversation</div>
+                        <div class="w-full h-full flex justify-center items-center">Odaberi razgovor</div>
                     </ConversationPanel>
                 </div>
             </div>

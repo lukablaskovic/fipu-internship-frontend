@@ -49,180 +49,98 @@ const passwordForm = reactive({
 </script>
 
 <template>
-  <LayoutAuthenticated>
-    <SectionMain>
-      <SectionTitleLineWithButton
-        :icon="mdiAccount"
-        title="Korisnički profil"
-        main
-      >
-      </SectionTitleLineWithButton>
+    <LayoutAuthenticated>
+        <SectionMain>
+            <SectionTitleLineWithButton :icon="mdiAccount" title="Korisnički profil" main/>
 
-      <div class="grid grid-cols-1 xl:grid-cols-2 gap-6 mb-6">
-        <CardBox flex="flex-row" class="items-center">
-          <div class="flex justify-start items-start">
-            <UserAvatarCurrentUserWithUpload
-              class="w-24 h-24 md:w-36 md:h-36 mr-6"
-            />
-            <div class="flex-1">
-              <div class="flex justify-between items-center">
-                <div class="flex justify-start items-center mb-3">
-                  <h1 class="text-2xl mr-1.5">
-                    {{ mainStore.currentUser.ime }}
-                    {{ mainStore.currentUser.prezime }}
-                  </h1>
-                  <BaseIcon
-                    :path="mdiCheckDecagram"
-                    :size="22"
-                    class="text-blue-400"
-                  />
-                </div>
-                <BaseButton
-                  :icon="mdiPencil"
-                  color="lightDark"
-                  small
-                  rounded-full
-                />
-              </div>
+            <div class="grid grid-cols-1 xl:grid-cols-2 gap-6 mb-6">
+                <CardBox flex="flex-row" class="items-center rounded">
+                    <div class="flex justify-start items-start">
 
-              <BaseButtons class="text-gray-500">
-                <PillTagPlain
-                  v-if="mainStore.userAdmin"
-                  label="Admin"
-                  :icon="mdiAccountCircle"
-                />
-                <PillTagPlain v-else label="Student" :icon="mdiAccountCircle" />
-                <PillTagPlain label="FIPU" :icon="mdiDomain" />
-              </BaseButtons>
-              <BaseButtons class="mt-6" class-addon="mr-9 last:mr-0 mb-3">
-                <!-- <UserCardProfileNumber :number="499" label="Likes" /> -->
-              </BaseButtons>
+                        <UserAvatarCurrentUserWithUpload class="w-24 h-24 md:w-36 md:h-36 mr-6"/>
+
+                        <div class="flex-1">
+                            <div class="flex justify-between items-center">
+                                <div class="flex justify-start items-center mb-3">
+                                    <h1 class="text-2xl mr-1.5">
+                                        {{ mainStore.currentUser.ime }}
+                                        {{ mainStore.currentUser.prezime }}
+                                    </h1>
+                                    <BaseIcon :path="mdiCheckDecagram" :size="22" class="text-blue-400"/>
+                                </div>
+                                <BaseButton :icon="mdiPencil" color="lightDark" small rounded-full/>
+                            </div>
+
+                            <BaseButtons class="text-fipu_gray dark:text-gray-300">
+                                <PillTagPlain :reverse-dark="true" v-if="mainStore.userAdmin" label="Admin" :icon="mdiAccountCircle" />
+                                <PillTagPlain :reverse-dark="true" v-else label="Student" :icon="mdiAccountCircle" />
+                                <PillTagPlain :reverse-dark="true" label="FIPU" :icon="mdiDomain" />
+                            </BaseButtons>
+
+                            <BaseButtons class="mt-6" class-addon="mr-9 last:mr-0 mb-3">
+                                <!-- <UserCardProfileNumber :number="499" label="Likes" /> -->
+                            </BaseButtons>
+                        </div>
+
+                    </div>
+                </CardBox>
+                <SectionBannerProfile />
             </div>
-          </div>
-        </CardBox>
 
-        <SectionBannerProfile />
-      </div>
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                <CardBox is-form class="rounded">
+                    <FormField label="Avatar" help="Max 500kb">
+                        <FormFilePicker label="Prenesi" color="fipu_blue" />
+                    </FormField>
 
-      <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <CardBox is-form>
-          <FormField label="Avatar" help="Max 500kb">
-            <FormFilePicker label="Prenesi" color="fipu_blue" />
-          </FormField>
-          <FormField
-            v-if="profileForm.type != 'student'"
-            label="Korisničko ime"
-          >
-            <FormControl
-              v-model="profileForm.username"
-              :icon="mdiAccount"
-              readonly
-              name="userName"
-              autocomplete="userName"
-            />
-          </FormField>
-          <FormField label="Ime">
-            <FormControl
-              v-model="profileForm.ime"
-              :icon="mdiAccount"
-              name="ime"
-              readonly
-              autocomplete="ime"
-            />
-          </FormField>
-          <FormField label="Prezime">
-            <FormControl
-              v-model="profileForm.prezime"
-              :icon="mdiAccount"
-              name="prezime"
-              readonly
-              autocomplete="prezime"
-            />
-          </FormField>
-          <FormField label="E-mail">
-            <FormControl
-              v-model="profileForm.email"
-              :icon="mdiEmail"
-              type="email"
-              name="email"
-              readonly
-              autocomplete="email"
-            />
-          </FormField>
-          <div v-if="!mainStore.userAdmin">
-            <FormField label="JMBAG">
-              <FormControl
-                v-model="profileForm.JMBAG"
-                :icon="mdiCardAccountDetails"
-                type="JMBAG"
-                name="JMBAG"
-                readonly
-                autocomplete="JMBAG"
-              />
-            </FormField>
+                    <FormField v-if="profileForm.type != 'student'" label="Korisničko ime">
+                        <FormControl v-model="profileForm.username" :icon="mdiAccount" readonly name="userName" autocomplete="userName"/>
+                    </FormField>
 
-            <FormField label="Godina studija">
-              <FormControl
-                :v-model="
-                  StudentMappings.getGodinaStudija(profileForm.godina_studija)
-                "
-                :icon="mdiSchool"
-                type="godina_studija"
-                name="godina_studija"
-                readonly
-                autocomplete="godina_studija"
-              />
-            </FormField>
-          </div>
-        </CardBox>
+                    <FormField label="Ime">
+                        <FormControl v-model="profileForm.ime" :icon="mdiAccount" name="ime" readonly autocomplete="ime" />
+                    </FormField>
 
-        <CardBox is-form>
-          <FormField
-            label="Trenutna lozinka"
-            help="Obavezno. Vaša trenutna lozinka"
-          >
-            <FormControl
-              v-model="passwordForm.password_current"
-              :icon="mdiAsterisk"
-              name="password_current"
-              type="password"
-              required
-              autocomplete="current-password"
-            />
-          </FormField>
+                    <FormField label="Prezime">
+                        <FormControl v-model="profileForm.prezime" :icon="mdiAccount" name="prezime" readonly autocomplete="prezime"/>
+                    </FormField>
 
-          <BaseDivider />
+                    <FormField label="E-mail">
+                        <FormControl v-model="profileForm.email" :icon="mdiEmail" type="email" name="email" readonly autocomplete="email"/>
+                    </FormField>
 
-          <FormField label="Nova lozinka" help="Obavezno. Vaša nova lozinka">
-            <FormControl
-              v-model="passwordForm.password"
-              :icon="mdiFormTextboxPassword"
-              name="password"
-              type="password"
-              required
-              autocomplete="new-password"
-            />
-          </FormField>
+                    <div v-if="!mainStore.userAdmin">
+                        <FormField label="JMBAG">
+                            <FormControl v-model="profileForm.JMBAG" :icon="mdiCardAccountDetails" type="JMBAG" name="JMBAG" readonly autocomplete="JMBAG"/>
+                        </FormField>
 
-          <FormField
-            label="Potvrdi lozinku"
-            help="Obavezno. Nova lozinka još jednom"
-          >
-            <FormControl
-              v-model="passwordForm.password_confirmation"
-              :icon="mdiFormTextboxPassword"
-              name="password_confirmation"
-              type="password"
-              required
-              autocomplete="new-password"
-            />
-          </FormField>
+                        <FormField label="Godina studija">
+                            <FormControl :v-model="StudentMappings.getGodinaStudija(profileForm.godina_studija)"
+                                :icon="mdiSchool" type="godina_studija" name="godina_studija" readonly autocomplete="godina_studija"/>
+                        </FormField>
+                    </div>
+                </CardBox>
 
-          <BaseButtons>
-            <BaseButton type="submit" color="fipu_blue" label="Ažuriraj!" />
-          </BaseButtons>
-        </CardBox>
-      </div>
-    </SectionMain>
-  </LayoutAuthenticated>
+                <CardBox is-form class="rounded">
+                    <FormField label="Trenutna lozinka" help="Obavezno. Vaša trenutna lozinka">
+                        <FormControl v-model="passwordForm.password_current" :icon="mdiAsterisk" name="password_current" type="password" required autocomplete="current-password"/>
+                    </FormField>
+
+                    <BaseDivider />
+
+                    <FormField label="Nova lozinka" help="Obavezno. Vaša nova lozinka">
+                        <FormControl v-model="passwordForm.password" :icon="mdiFormTextboxPassword" name="password" type="password" required autocomplete="new-password"/>
+                    </FormField>
+
+                    <FormField label="Potvrdi lozinku" help="Obavezno. Nova lozinka još jednom">
+                        <FormControl v-model="passwordForm.password_confirmation" :icon="mdiFormTextboxPassword" name="password_confirmation" type="password" required autocomplete="new-password"/>
+                    </FormField>
+
+                    <BaseButtons>
+                        <BaseButton type="submit" color="fipu_blue" label="Ažuriraj!" />
+                    </BaseButtons>
+                </CardBox>
+            </div>
+        </SectionMain>
+    </LayoutAuthenticated>
 </template>

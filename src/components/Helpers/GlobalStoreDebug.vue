@@ -36,7 +36,7 @@ const newValueFormatted = computed(() => {
 </script>
 
 <template>
-    <div v-if="!mainStore.debug" class="w-screen h-screen flex justify-center items-center absolute backdrop-blur-sm z-[1000] py-16 px-[8%]">
+    <div v-if="!mainStore.debug" class="w-screen h-screen flex justify-center items-center fixed backdrop-blur-sm z-[1000] py-16 px-[8%]">
         <div class="p-4 flex flex-col bg-black bg-opacity-90 shadow-xl rounded-xl h-full w-full text-slate-400">
             <div class="text-center text-2xl font-bold"> DEBUG INFO </div>
             <Slider class="my-4 slider min-h-[8px] h-[8px] w-64 self-center" v-model="mainStore.depth" :min="1" :max="8" showTooltip="focus" :merge="1" :lazy="false" />
@@ -49,7 +49,7 @@ const newValueFormatted = computed(() => {
             </div>
         </div>
     </div>
-    <div class="absolute bottom-2 right-2 z-[2000]" @click="mainStore.debug = !mainStore.debug">
+    <div class="fixed bottom-2 right-2 z-[2000]" @click="mainStore.debug = !mainStore.debug">
         <BaseIcon :path="mdiHelpCircle" h="40" w="40" :size="40" class="text-main_lighttext hover:text-main_cyan text-4xl hover:cursor-pointer mr-2 opacity-50"/>
     </div>
 </template>
