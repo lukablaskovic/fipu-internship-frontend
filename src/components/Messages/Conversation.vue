@@ -41,8 +41,7 @@ export default {
             await chatStore.getMessages(chatStore.selectedConversation);
         }, 1000); 
     },
-    beforeDestroy() {
-        console.log("destroy");
+    unmounted() {
         clearInterval(this.intervalId);
     },
 }

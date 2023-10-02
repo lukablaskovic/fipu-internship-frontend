@@ -224,7 +224,7 @@ function showNotificationBar(type) {
                     </FormField>
 
                     <FormField label="Potvrdi lozinku" help="Obavezno. Nova lozinka još jednom">
-                        <FormControl v-model="passwordForm.password_confirmation" :icon="mdiFormTextboxPassword" required :error="getFirstErrorForField('password_confirmation')" type="password" name="password_confirmation"/>
+                        <FormControl v-model="passwordForm.password_confirmation" :icon="mdiFormTextboxPassword" required :error="getFirstErrorForField('password_confirmation')" type="password" name="password_confirmation"  autocomplete="password_confirmation"/>
                     </FormField>
 
                     <BaseButtons>
