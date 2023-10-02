@@ -2,7 +2,7 @@
 import { computed } from "vue";
 import { styleStore } from "@/main.js";
 import { gradientBgBlue, gradientBgDark } from "@/colors";
-
+ 
 const props = defineProps({
   bg: {
     type: String,
@@ -26,7 +26,7 @@ const colorClass = computed(() => {
 </script>
 
 <template>
-  <div class="md:pl-24 md:pr-24" :class="colorClass">
+  <div class="md:px-16 lg:px-20 xl:px-28 2xl:px-36 transition-all duration-300 flex justify-center" :class="colorClass">
     <slot card-class="shadow-2xl" />
   </div>
 </template>

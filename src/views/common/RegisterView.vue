@@ -210,182 +210,81 @@ function navigateToLogin() {
 </script>
 
 <template>
-  <SectionSplitRegister bg="blue">
-    <Transition
-      appear
-      enter-active-class="animate__animated animate__slideInLeft fast-animation"
-      leave-active-class="animate__animated animate__slideOutLeft fast-animation"
-      @after-leave="navigateToLogin"
-    >
-      <div
-        v-if="!transitioning"
-        class="flex flex-col flex-shrink md:flex-row overflow-hidden md:rounded-lg md:p-4 2xl:p-16 md:h-screen lg:px-12"
-      >
-        <CardBox
-          class="hidden md:block flex-1 md:rounded-l-lg justify-center items-center"
-          centered-content
-        >
-          <img
-            :src="registerArt"
-            alt="Register graphics"
-            class="w-3/4 object-contain mx-auto"
-          />
-        </CardBox>
+    <SectionSplitRegister bg="blue" class="flex items-start min-h-screen">
+        <Transition appear enter-active-class="animate__animated animate__slideInLeft fast-animation"
+            leave-active-class="animate__animated animate__slideOutLeft fast-animation"
+            @after-leave="navigateToLogin">
+            <div v-if="!transitioning" class="flex flex-col justify-center items-center md:overflow-hidden h-screen || md:py-16 md:px-4 || transition-all duration-300">
+                <div class="flex flex-col md:flex-row flex-shrink h-full || bg-white rounded-lg overflow-y-auto md:overflow-hidden scrollbar-none || transition-all duration-300 px-0 lg:px-6 xl:px-16 2xl:pr-28 2xl:pl-20 || xl:gap-4 2xl:gap-8">
+                    <CardBox class="hidden xl:block flex-1 bg-opacity-0 grow p-16 xl:px-0 xl:py-16 2xl:py-24 || transition-all duration-300" centered-content>
+                        <img :src="registerArt" alt="Register graphics" class="2xl:pr-8 w-full"/>
+                    </CardBox>
 
-        <CardBox
-          class="flex flex-col flex-shrink flex-1 space-y-4 lg:pr-32 md:rounded-r-lg"
-          is-form
-          vertical-centered
-          @submit.prevent="onSubmit"
-        >
-          <div>
-            <a href="https://fipu.unipu.hr/" target="_blank">
-              <img
-                :src="fipu_unipu"
-                alt="fipu logo"
-                class="lg:w-1/2 2xl:1/6 mb-6 object-contain"
-              />
-            </a>
-          </div>
+                    <CardBox class="flex flex-col flex-shrink flex-1 bg-opacity-0 p-8 sm:p-16 xl:pl-2 xl:px-0 xl:py-24 || transition-all duration-300"
+                        vertical-centered is-form @submit.prevent="onSubmit">
+                        <a href="https://fipu.unipu.hr/" target="_blank">
+                            <img :src="fipu_unipu" alt="fipu logo" class="h-16 mb-6 object-contain"/>
+                        </a>
+                        <h2 class="text-2xl lg:text-3xl 2xl:text-4xl text-fipu_gray font-bold xl:mb-1 mb-2 md:mb-0 2xl:mb-4">
+                            Molimo unesite vaše podatke
+                        </h2>
+                        <h2 class="md:text-sm lg:text-sm 2xl:text-base mb-2 2xl:mb-4 text-justify">
+                            Već imate račun ili želite samo pregledati zadatke? Povratak na prijavu
+                            <a class="hover-underline-animation cursor-pointer text-fipu_text_blue hover:text-fipu_blue" @click.prevent="onPrijavaClick()">ovdje</a>.
+                        </h2>
 
-          <h2
-            class="text-2xl lg:text-3xl 2xl:text-4xl text-fipu_gray font-bold xl:mb-1 mb-2 md:mb-0 2xl:mb-4"
-          >
-            Molimo unesite vaše podatke
-          </h2>
-          <h2 class="mb-4 text-fipu_gray">
-            Već imate račun ili želite samo pregledati zadatke? Povratak na
-            prijavu
-            <a
-              class="hover-underline-animation cursor-pointer text-fipu_text_blue hover:text-fipu_blue"
-              @click.prevent="onPrijavaClick()"
-              >ovdje</a
-            >.
-          </h2>
+                        <div class="flex flex-col md:flex-row grow gap-6 md:gap-2">
+                            <div class="flex flex-col flex-1">
+                                <FormField label="Ime">
+                                    <FormControl v-model="registerForm.ime" :icon="mdiAccount" :error="getFirstErrorForField('ime')" name="ime" autocomplete="ime"/>
+                                </FormField>
 
-          <div class="w-full lg:flex lg:flex-wrap lg:items-stretch">
-            <!-- Column 1 -->
-            <div
-              class="lg:w-1/2 md:pr-4 lg:flex lg:flex-col lg:justify-between"
-            >
-              <div>
-                <FormField label="Ime">
-                  <FormControl
-                    v-model="registerForm.ime"
-                    :icon="mdiAccount"
-                    :error="getFirstErrorForField('ime')"
-                    name="ime"
-                    autocomplete="ime"
-                  />
-                </FormField>
+                                <FormField label="Prezime">
+                                    <FormControl v-model="registerForm.prezime" :icon="mdiAccount" :error="getFirstErrorForField('prezime')" name="prezime" autocomplete="prezime"/>
+                                </FormField>
 
-                <FormField label="Prezime">
-                  <FormControl
-                    v-model="registerForm.prezime"
-                    :icon="mdiAccount"
-                    :error="getFirstErrorForField('prezime')"
-                    name="prezime"
-                    autocomplete="prezime"
-                  />
-                </FormField>
+                                <FormField label="JMBAG">
+                                    <FormControl v-model="registerForm.JMBAG" :icon="mdiAccount" :error="getFirstErrorForField('JMBAG')" name="JMBAG" autocomplete="JMBAG"/>
+                                </FormField>
 
-                <FormField label="JMBAG">
-                  <FormControl
-                    v-model="registerForm.JMBAG"
-                    :icon="mdiAccount"
-                    :error="getFirstErrorForField('JMBAG')"
-                    name="JMBAG"
-                    autocomplete="JMBAG"
-                  />
-                </FormField>
+                                <FormField label="UNIPU E-mail">
+                                    <FormControl v-model="registerForm.email" :icon="mdiAccount" :error="getFirstErrorForField('email')" name="email" autocomplete="username"/>
+                                </FormField>
+                            </div>
+                            <div class="flex flex-col flex-1">
+                                <FormField label="Godina studija">
+                                    <FormControl v-model="registerForm.godina_studija" :error="getFirstErrorForField('godina_studija')" :options="StudentMappings.GodinaStudijaMappings"/>
+                                </FormField>
 
-                <FormField label="UNIPU E-mail">
-                  <FormControl
-                    v-model="registerForm.email"
-                    :icon="mdiAccount"
-                    :error="getFirstErrorForField('email')"
-                    name="email"
-                    autocomplete="username"
-                  />
-                </FormField>
-              </div>
+                                <FormField label="Lozinka">
+                                    <FormControl v-model="registerForm.password" :icon="mdiAsterisk" :error="getFirstErrorForField('password')" type="password" name="password" autocomplete="current-password"/>
+                                </FormField>
+
+                                <FormField label="Potvrda lozinke">
+                                    <FormControl v-model="registerForm.passwordConfirm" :icon="mdiAsterisk" :error="getFirstErrorForField('passwordConfirm')" type="password" name="passwordConfirm"/>
+                                </FormField>
+                                
+                                <div class="mt-8 flex justify-center">
+                                    <FormCheckRadio v-model="data_confirmed" name="data_confirmed" type="checkbox" label="Potvrđujem ispravnost podataka." :input-value="true"/>
+                                </div>
+                            </div>
+                        </div>
+        
+                        <BaseButtons class="space-y-2 mt-4 lg:mt-8">
+                            <BaseButton :disabled="!data_confirmed" type="submit" color="fipu_light_blue" label="Registriraj se" :loading="isLoading" class="w-full"/>
+                        </BaseButtons>
+
+                        <NotificationBar ref="notificationBar" class="animate__animated animate__fadeInUp mt-2" :outline="notificationsOutline">
+                            <b>{{ notificationStatus }}</b> {{ notificationMessage }}
+                            <template #right>
+                                <BaseButton :icon="mdiClose" :color="notificationsOutline ? 'success' : 'white'" :outline="notificationsOutline" rounded-full small />
+                            </template>
+                        </NotificationBar>
+                    </CardBox>
+                </div>
             </div>
-
-            <!-- Column 2 -->
-            <div
-              class="lg:w-1/2 mt-2 md:mt-0 lg:flex lg:flex-col lg:justify-between"
-            >
-              <div>
-                <FormField label="Godina studija">
-                  <FormControl
-                    v-model="registerForm.godina_studija"
-                    :error="getFirstErrorForField('godina_studija')"
-                    :options="StudentMappings.GodinaStudijaMappings"
-                  />
-                </FormField>
-
-                <FormField label="Lozinka">
-                  <FormControl
-                    v-model="registerForm.password"
-                    :icon="mdiAsterisk"
-                    :error="getFirstErrorForField('password')"
-                    type="password"
-                    name="password"
-                    autocomplete="current-password"
-                  />
-                </FormField>
-
-                <FormField label="Potvrda lozinke">
-                  <FormControl
-                    v-model="registerForm.passwordConfirm"
-                    :icon="mdiAsterisk"
-                    :error="getFirstErrorForField('passwordConfirm')"
-                    type="password"
-                    name="passwordConfirm"
-                  />
-                </FormField>
-
-                <FormCheckRadio
-                  v-model="data_confirmed"
-                  name="data_confirmed"
-                  type="checkbox"
-                  label="Potvrđujem ispravnost podataka."
-                  :input-value="true"
-                />
-              </div>
-
-              <BaseButtons class="space-y-2 mt-4 lg:mt-0">
-                <BaseButton
-                  :disabled="!data_confirmed"
-                  type="submit"
-                  color="fipu_light_blue"
-                  label="Registriraj se"
-                  :loading="isLoading"
-                  class="w-full"
-                />
-              </BaseButtons>
-            </div>
-          </div>
-          <NotificationBar
-            ref="notificationBar"
-            class="animate__animated animate__fadeInUp mt-4 w-full"
-            :outline="notificationsOutline"
-          >
-            <b>{{ notificationStatus }}</b> {{ notificationMessage }}
-            <template #right>
-              <BaseButton
-                :icon="mdiClose"
-                :color="notificationsOutline ? 'success' : 'white'"
-                :outline="notificationsOutline"
-                rounded-full
-                small
-              />
-            </template>
-          </NotificationBar>
-        </CardBox>
-      </div>
-    </Transition>
-  </SectionSplitRegister>
+        </Transition>
+    </SectionSplitRegister>
 </template>
 
 <style>
