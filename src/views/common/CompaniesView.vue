@@ -1,6 +1,6 @@
 <script setup>
 import { computed } from "vue";
-import { mainStore } from "@/main.js";
+import { mainStore, adminStore } from "@/main.js";
 import { mdiDomain, mdiDomainPlus, mdiLaptop } from "@mdi/js";
 import SectionMain from "@/components/Section/SectionMain.vue";
 import CardBox from "@/components/Cardbox/CardBox.vue";
@@ -12,6 +12,8 @@ import TableCompanies from "@/components/Tables/TableCompanies.vue";
 import TableNewCompanies from "@/components/Tables/TableNewCompanies.vue";
 import { router } from "@/router";
 import BaseIcon from "@/components/Base/BaseIcon.vue";
+import CardBoxComponentEmpty from "@/components/Cardbox/CardBoxComponentEmpty.vue";
+
 const userAuthenticated = computed(() => mainStore.userAuthenticated);
 const userAdmin = computed(() => mainStore.userAdmin);
 </script>
@@ -35,6 +37,10 @@ const userAdmin = computed(() => mainStore.userAdmin);
 
           <CardBox has-table>
             <TableNewCompanies />
+          </CardBox>
+
+          <CardBox v-if="!adminStore.newCompaniesFound">
+            <CardBoxComponentEmpty />
           </CardBox>
         </div>
         <SectionTitleLineWithButton

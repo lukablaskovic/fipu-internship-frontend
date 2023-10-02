@@ -84,28 +84,40 @@
               <MdiAccount
                 v-if="result.ime && result.prezime"
                 class="absolute left-3 h-5 w-5"
-                :class="{ 'text-white': active, 'text-gray-900 dark:text-gray-300': !active }"
+                :class="{
+                  'text-white': active,
+                  'text-gray-900 dark:text-gray-300': !active,
+                }"
                 aria-hidden="true"
               />
 
               <MdiPagePreviousOutline
                 v-else-if="routes.includes(result)"
                 class="absolute left-3 h-5 w-5"
-                :class="{ 'text-white': active, 'text-gray-900 dark:text-gray-300': !active }"
+                :class="{
+                  'text-white': active,
+                  'text-gray-900 dark:text-gray-300': !active,
+                }"
                 aria-hidden="true"
               />
 
               <MdiClipboardText
                 v-if="result.id_zadatak"
                 class="absolute left-3 h-5 w-5"
-                :class="{ 'text-white': active, 'text-gray-900 dark:text-gray-300': !active }"
+                :class="{
+                  'text-white': active,
+                  'text-gray-900 dark:text-gray-300': !active,
+                }"
                 aria-hidden="true"
               />
 
               <MdiDomain
                 v-if="result.naziv && !result.ime && !result.prezime"
                 class="absolute left-3 h-5 w-5"
-                :class="{ 'text-white': active, 'text-gray-900 dark:text-gray-300': !active }"
+                :class="{
+                  'text-white': active,
+                  'text-gray-900 dark:text-gray-300': !active,
+                }"
                 aria-hidden="true"
               />
 
@@ -308,7 +320,7 @@ const routes = [
   "poslodavci",
   "bpmn/microservices",
   "profile",
-  "messages",
+  "poruke",
   "poslodavci/novi-zadatak",
 ];
 

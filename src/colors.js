@@ -7,11 +7,15 @@ export const colorsBgLight = {
   white: "bg-white text-black",
   light: "bg-white text-black dark:bg-slate-900/70 dark:text-white",
   contrast: "bg-gray-800 text-white dark:bg-white dark:text-black",
-  success: "bg-emerald-500 border-emerald-500 text-white dark:text-emerald-950 font-medium dark:font-bold",
-  danger: "bg-rose-600 border-rose-600 text-white dark:text-rose-950 font-medium dark:font-bold",
-  warning: "bg-amber-500 border-amber-500 text-white dark:text-amber-950 font-medium dark:font-bold",
+  success:
+    "bg-emerald-500 border-emerald-500 text-white dark:text-emerald-950 font-medium dark:font-bold",
+  danger:
+    "bg-rose-600 border-rose-600 text-white dark:text-rose-950 font-medium dark:font-bold",
+  warning:
+    "bg-amber-500 border-amber-500 text-white dark:text-amber-950 font-medium dark:font-bold",
   info: "bg-fipu_blue border-fipu_blue text-white dark:text-slate-900 font-medium",
-  fipu_blue: "bg-fipu_blue border-fipu_blue text-white dark:text-slate-900 font-medium",
+  fipu_blue:
+    "bg-fipu_blue border-fipu_blue text-white dark:text-slate-900 font-medium",
 };
 
 export const colorsText = {

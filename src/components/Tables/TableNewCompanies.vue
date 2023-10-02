@@ -38,7 +38,6 @@ const companyForms = ref({});
 
 onMounted(async () => {
   let result = await mainStore.fetchCompanies();
-  console.log(result);
   const filteredCompanies = result.data.results.filter((company) => {
     return (
       (company.web === "" || company.web === null) &&
@@ -48,7 +47,17 @@ onMounted(async () => {
       (company.direktor === "" || company.direktor === null)
     );
   });
-
+  if (Utils.isArrayEmpty(filteredCompanies)) {
+    snackBarStore.pushMessage("Nema novih poduzeća", "info");
+    console.log("Nema novih poduzeća");
+    adminStore.newCompaniesFound = false;
+  } else {
+    snackBarStore.pushMessage(
+      "Pronađena su nova poduzeća, molimo ažurirajte podatke",
+      "info"
+    );
+    adminStore.newCompaniesFound = true;
+  }
   for (const company of filteredCompanies) {
     companyForms.value[company.id] = {
       naziv: company.naziv,
@@ -115,7 +124,7 @@ const pagesList = computed(() => {
 </script>
 
 <template>
-  <table>
+  <table v-if="adminStore.newCompaniesFound">
     <thead>
       <tr>
         <th />

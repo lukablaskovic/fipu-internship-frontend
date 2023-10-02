@@ -122,8 +122,8 @@ const routes = [
       title: "Poruke",
       requiresAuth: true,
     },
-    path: "/messages",
-    name: "messages",
+    path: "/poruke",
+    name: "poruke",
     component: () => import("@/views/common/MessagesView.vue"),
   },
   {

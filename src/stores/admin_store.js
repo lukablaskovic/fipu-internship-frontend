@@ -34,6 +34,8 @@ export const useAdminStore = defineStore("admin", {
     pdfModalActive: false,
     modalTitle: "",
     pdfSource: "",
+
+    newCompaniesFound: false,
   }),
 
   actions: {

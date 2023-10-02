@@ -4,91 +4,91 @@ import {
   mdiLogout,
   mdiThemeLightDark,
   mdiHelpBoxOutline,
-  mdiBug 
+  mdiBug,
 } from "@mdi/js";
 
 export default [
-    [ 
+  [
+    {
+      isCurrentUser: true,
+      menu: [
         {
-            isCurrentUser: true,
-            menu: [
-            {
-                icon: mdiAccount,
-                label: "Moj profil",
-                to: "/profile",
-            },
-            {
-                icon: mdiEmail,
-                label: "Poruke",
-                to: "/messages",
-            },
-            ],
+          icon: mdiAccount,
+          label: "Moj profil",
+          to: "/profile",
         },
         {
-            icon: mdiHelpBoxOutline,
-            label: "Pomoć",
-            isDesktopNoLabel: true,
-            isHelp: true,
-            size: 22
+          icon: mdiEmail,
+          label: "Poruke",
+          to: "/poruke",
         },
-        {
-            icon: mdiBug,
-            label: "Prijava Greške",
-            isDesktopNoLabel: true,
-            externalURL: "https://github.com/lukablaskovic/fipu-internship-dashboard/issues",
-            size: 22
-        },
-        {
-            icon: mdiThemeLightDark,
-            label: "Promjena Teme",
-            isDesktopNoLabel: true,
-            isToggleLightDark: true,
-        },
-        {
-            icon: mdiLogout,
-            label: "Odjava",
-            isDesktopNoLabel: true,
-            isLogout: true,
-        },
-    ],
-    [ 
-        {
-            icon: mdiAccount,
-            label: "Moj profil",
-            to: "/profile",
-        },
-        {
-            icon: mdiEmail,
-            label: "Poruke",
-            to: "/messages",
-        },
-        {
-            icon: mdiHelpBoxOutline,
-            label: "Pomoć",
-            isDesktopNoLabel: true,
-            isHelp: true,
-            size: 22
-        },
-        {
-            icon: mdiBug,
-            label: "Prijava Greške",
-            isDesktopNoLabel: true,
-            externalURL: "https://github.com/lukablaskovic/fipu-internship-dashboard/issues",
-            size: 22
-        },
-        {
-            icon: mdiThemeLightDark,
-            label: "Promjena Teme",
-            isDesktopNoLabel: true,
-            isToggleLightDark: true,
-        },
-        {
-            icon: mdiLogout,
-            label: "Odjava",
-            isDesktopNoLabel: true,
-            isLogout: true,
-        },
-    ]
+      ],
+    },
+    {
+      icon: mdiHelpBoxOutline,
+      label: "Pomoć",
+      isDesktopNoLabel: true,
+      isHelp: true,
+      size: 22,
+    },
+    {
+      icon: mdiBug,
+      label: "Prijava Greške",
+      isDesktopNoLabel: true,
+      externalURL:
+        "https://github.com/lukablaskovic/fipu-internship-dashboard/issues",
+      size: 22,
+    },
+    {
+      icon: mdiThemeLightDark,
+      label: "Promjena Teme",
+      isDesktopNoLabel: true,
+      isToggleLightDark: true,
+    },
+    {
+      icon: mdiLogout,
+      label: "Odjava",
+      isDesktopNoLabel: true,
+      isLogout: true,
+    },
+  ],
+  [
+    {
+      icon: mdiAccount,
+      label: "Moj profil",
+      to: "/profile",
+    },
+    {
+      icon: mdiEmail,
+      label: "Poruke",
+      to: "/poruke",
+    },
+    {
+      icon: mdiHelpBoxOutline,
+      label: "Pomoć",
+      isDesktopNoLabel: true,
+      isHelp: true,
+      size: 22,
+    },
+    {
+      icon: mdiBug,
+      label: "Prijava Greške",
+      isDesktopNoLabel: true,
+      externalURL:
+        "https://github.com/lukablaskovic/fipu-internship-dashboard/issues",
+      size: 22,
+    },
+    {
+      icon: mdiThemeLightDark,
+      label: "Promjena Teme",
+      isDesktopNoLabel: true,
+      isToggleLightDark: true,
+    },
+    {
+      icon: mdiLogout,
+      label: "Odjava",
+      isDesktopNoLabel: true,
+      isLogout: true,
+    },
+  ],
 ];
-
-

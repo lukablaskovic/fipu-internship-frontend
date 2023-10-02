@@ -36,10 +36,7 @@ watch(() => route.params.id_zadatak, loadData, {
 });
 
 onMounted(async () => {
-  console.log(adminStore.assignment_highlight);
-
   const result = await guestStore.fetchAvailableAssignments();
-  console.log(result);
   allAvailableAssignments.value = result.filter(
     (task) => task.voditelj_odobrio.value == "odbijeno"
   );
