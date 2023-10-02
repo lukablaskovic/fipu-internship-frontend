@@ -1,12 +1,19 @@
-import { mdiLogin, mdiThemeLightDark } from "@mdi/js";
+import { mdiLogin, mdiThemeLightDark, mdiBug } from "@mdi/js";
 
 export default [
     [ 
         {
             icon: mdiThemeLightDark,
-            label: "Light/Dark",
+            label: "Promjena Teme",
             isDesktopNoLabel: true,
             isToggleLightDark: true,
+        },
+        {
+            icon: mdiBug,
+            label: "Prijava Greške",
+            isDesktopNoLabel: true,
+            externalURL: "https://github.com/lukablaskovic/fipu-internship-dashboard/issues",
+            size: 22
         },
         {
             icon: mdiLogin,
@@ -17,9 +24,16 @@ export default [
     [ 
         {
             icon: mdiThemeLightDark,
-            label: "Light/Dark",
+            label: "SPromjena Teme",
             isDesktopNoLabel: true,
             isToggleLightDark: true,
+        },
+        {
+            icon: mdiBug,
+            label: "Prijava Greške",
+            isDesktopNoLabel: true,
+            externalURL: "https://github.com/lukablaskovic/fipu-internship-dashboard/issues",
+            size: 22
         },
         {
             icon: mdiLogin,

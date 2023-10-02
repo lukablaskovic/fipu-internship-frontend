@@ -214,7 +214,7 @@ const toggleDateType = () => {
               trend-type="filter"
               :trend="'Događaji'"
               :options="latestEvents"
-              :left="false"
+              :left="true"
             />
           </div>
           <div class="flex flex-row">

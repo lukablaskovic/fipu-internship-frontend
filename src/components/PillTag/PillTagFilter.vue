@@ -145,6 +145,17 @@ const saveSelectedEvents = async () => {
   location.reload();
 };
 
+const capitalizeAndReplace = (inputString) => {
+  let replacedString = inputString.replace(/_/g, ' ');
+  let words = replacedString.split(' ');
+
+  for (let i = 0; i < words.length; i++) {
+    words[i] = words[i].charAt(0).toUpperCase() + words[i].slice(1);
+  }
+
+  return words.join(' ');
+}
+
 const setDefaultFilters = () => {
   const defaultEvents = ActivityEventMappings.events
     .filter(
@@ -195,7 +206,9 @@ const toggleSelection = (option) => {
     >
       <MenuItems
         :class="left ? 'left-0' : 'right-0'"
-        class="absolute z-50 w-96 mt-2 origin-top-right bg-white divide-y divide-gray-100 rounded-md shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none dark:bg-slate-800 dark:divide-gray-700"
+        class="absolute z-50 w-64 md:w-96 mt-2 origin-top-right bg-white divide-y divide-gray-100 rounded-md shadow-lg ring-1 ring-black ring-opacity-5
+        focus:outline-none dark:bg-slate-950 drop-shadow dark:divide-gray-700 h-96 overflow-x-hidden overflow-y-auto scrollbar-thumb-rounded scrollbar-track-rounded
+                scrollbar-thin scrollbar-track-slate-100 dark:scrollbar-track-slate-800 scrollbar-thumb-slate-300 dark:scrollbar-thumb-slate-600 hover:scrollbar-thumb-slate-400 dark:hover:scrollbar-thumb-slate-400"
       >
         <div class="p-2">Odaberite događaje za koje želite da se prikazuju</div>
         <div
@@ -209,20 +222,13 @@ const toggleSelection = (option) => {
             v-slot="{ active }"
           >
             <button
-              :class="[
-                option.label === 'Spremi'
-                  ? 'hover:bg-green-500'
-                  : active
-                  ? 'bg-gray-100 dark:bg-slate-700'
-                  : '',
-                selectedOptions.includes(option.label)
-                  ? 'bg-fipu_blue hover:bg-fipu_light_blue'
-                  : '',
-                option.label === 'Resetiraj' ? 'hover:bg-red-500' : '',
-                'group flex rounded-md items-center w-full px-2 py-2 text-sm my-1',
+              :class="[ option.label === 'Spremi' ? 'hover:bg-emerald-600 dark:hover:bg-emerald-500 hover:font-bold hover:text-slate-100 dark:hover:text-gray-950' : 
+                active && option.label != 'Resetiraj' ? 'bg-gray-300 dark:bg-gray-900' : '',
+                selectedOptions.includes(option.label) ? 'bg-fipu_blue hover:bg-fipu_light_blue dark:hover:bg-fipu_dark_blue font-medium text-gray-950 hover:text-slate-800 dark:hover:text-gray-950' : '',
+                option.label === 'Resetiraj' ? 'dark:hover:bg-rose-600 hover:bg-rose-500 hover:font-bold hover:text-slate-100 dark:hover:text-slate-950' : '', 
+                'group flex rounded-md items-center w-full px-1 md:px-2 py-1 md:py-2 text-sm my-1 transition-all gap-2 md:gap-3',
               ]"
               :disabled="option.label === 'Spremi'"
-              style="padding-left: 16px; padding-right: 16px"
               @click.prevent="
                 option.label === 'Spremi'
                   ? saveSelectedEvents()
@@ -231,8 +237,8 @@ const toggleSelection = (option) => {
                   : toggleSelection(option)
               "
             >
-              <BaseIcon :path="option.icon" class="mr-3" />
-              <span>{{ option.label }}</span>
+              <BaseIcon :path="option.icon" class="" />
+              <div class="grow flex justify-start items-center text-left">{{ capitalizeAndReplace(option.label) }}</div>
             </button>
           </MenuItem>
         </div>

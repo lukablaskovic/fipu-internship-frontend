@@ -33,14 +33,14 @@ export default [
         },
         {
             icon: mdiBug,
-            label: "Bug report",
+            label: "Prijava Greške",
             isDesktopNoLabel: true,
             externalURL: "https://github.com/lukablaskovic/fipu-internship-dashboard/issues",
             size: 22
         },
         {
             icon: mdiThemeLightDark,
-            label: "Light/Dark",
+            label: "Promjena Teme",
             isDesktopNoLabel: true,
             isToggleLightDark: true,
         },
@@ -71,14 +71,14 @@ export default [
         },
         {
             icon: mdiBug,
-            label: "Bug report",
+            label: "Prijava Greške",
             isDesktopNoLabel: true,
             externalURL: "https://github.com/lukablaskovic/fipu-internship-dashboard/issues",
             size: 22
         },
         {
             icon: mdiThemeLightDark,
-            label: "Light/Dark",
+            label: "Promjena Teme",
             isDesktopNoLabel: true,
             isToggleLightDark: true,
         },
