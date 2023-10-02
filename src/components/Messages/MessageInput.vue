@@ -15,7 +15,7 @@ import { chatStore } from "@/main.js";
             </button>
         </div>
         <div v-else class="h-10 w-full flex items-center justify-center font-medium">
-            This conversation is archived.
+            Ovaj razgovor je arhiviran.
         </div>  
     </div>
 </template>

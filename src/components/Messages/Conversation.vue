@@ -10,7 +10,7 @@ import { chatStore, mainStore } from "@/main.js";
         <slot></slot>
         <div :class="(chatStore.c.user_1_id == mainStore.currentUser.id ? chatStore.c.user_2_active : chatStore.c.user_1_active) ? 'h-16 opacity-100' : 'h-0 opacity-0'"
             class="flex gap-1 items-end transition-all duration-300">
-            <span>Typing</span> 
+            <span>Tipkanje</span> 
             <div class="w-0 h-0 overflow-hidden" v-if="chatStore.c.user_1_id == mainStore.currentUser.id ? chatStore.c.user_2_active : chatStore.c.user_1_active">{{ chatStore.scrollToBottom() }}</div>
             <span class="loading-dots flex gap-2">
                 <span> . </span>
@@ -39,7 +39,7 @@ export default {
         this.intervalId = setInterval(async () => {
             await chatStore.updateConversations(mainStore.currentUser.id);
             await chatStore.getMessages(chatStore.selectedConversation);
-        }, 1000);
+        }, 1000); 
     },
     beforeDestroy() {
         console.log("destroy");

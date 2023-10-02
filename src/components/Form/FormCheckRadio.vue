@@ -52,7 +52,7 @@ const inputType = computed(() =>
       :value="inputValue"
       :required="required"
     />
-    <span class="check" />
+    <span class="check min-w-[20px]" />
     <span class="pl-2">{{ label }}</span>
   </label>
 </template>
