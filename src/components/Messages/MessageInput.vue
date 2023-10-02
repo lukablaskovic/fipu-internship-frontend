@@ -9,7 +9,7 @@ import { chatStore } from "@/main.js";
          bg-white hover:bg-gray-50 focus:bg-white dark:bg-slate-800 dark:hover:bg-slate-700/40 dark:focus:bg-slate-800 rounded-3xl h-12 px-6" 
         placeholder="Type your message....">
         <div v-if="chatStore.c.status != 'archived'" class="ml-3">
-            <button @click="chatStore.sendMessage()" class="flex items-center justify-center h-10 w-10 rounded-full bg-gray-300 hover:bg-white text-fipu_gray
+            <button id="sendButton" @click="chatStore.sendMessage()" class="flex items-center justify-center h-10 w-10 rounded-full bg-gray-300 hover:bg-white text-fipu_gray
                 dark:bg-gray-800 dark:hover:bg-gray-700/50 dark:text-gray-300">
                 <BaseIcon :path="mdiSend" :size="20"></BaseIcon>
             </button>
@@ -24,12 +24,25 @@ import { chatStore } from "@/main.js";
 import { chatStore } from "@/main.js";
 
 export default {
+    mounted() {
+        document.addEventListener('keydown', this.handleKeyPress);
+    },
+    destroyed() {
+        document.removeEventListener('keydown', this.handleKeyPress);
+    },
     methods: {
         async checkNewMessage() {
             if (chatStore.content.length == 1)
                 await chatStore.updateUserActivity(true);
             if (chatStore.content.length == 0)
                 await chatStore.updateUserActivity(false);
+        },
+        handleKeyPress(event) {
+            if (event.key === 'Enter') {
+                event.preventDefault();
+                if (chatStore.c.status !== 'archived') 
+                    document.getElementById('sendButton').click();
+            }
         }
     }
 }

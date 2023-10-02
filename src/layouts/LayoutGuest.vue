@@ -38,75 +38,30 @@ const menuClick = (event, item) => {
   }
 };
 </script>
-
 <template name="fade">
-  <div
-    :class="{
-      dark: styleStore.darkMode,
-      'overflow-hidden lg:overflow-visible': layoutStore.isAsideMobileExpanded,
-    }"
-  >
-    <div
-      :class="[
-        layoutAsidePadding,
-        { 'ml-60 lg:ml-0': layoutStore.isAsideMobileExpanded },
-      ]"
-      class="pt-14 min-h-screen w-screen transition-position lg:w-auto bg-gray-50 dark:bg-slate-800 dark:text-slate-100"
-    >
-      <NavBar
-        :menu="menuNavBarGuest"
-        :class="[
-          layoutAsidePadding,
-          { 'ml-60 lg:ml-0': layoutStore.isAsideMobileExpanded },
-        ]"
-        @menu-click="menuClick"
-      >
-        <NavBarItemPlain
-          display="flex lg:hidden"
-          @click.prevent="layoutStore.asideMobileToggle()"
-        >
-          <BaseIcon
-            :path="
-              layoutStore.isAsideMobileExpanded
-                ? mdiBackburger
-                : mdiForwardburger
-            "
-            size="24"
-          />
-        </NavBarItemPlain>
-        <NavBarItemPlain
-          display="hidden lg:flex xl:hidden"
-          @click.prevent="layoutStore.asideLgToggle()"
-        >
-          <BaseIcon
-            :path="layoutStore.isAsideLgActive ? mdiBackburger : mdiMenu"
-            size="24"
-          />
-        </NavBarItemPlain>
-        <NavBarItemPlain use-margin>
-          <FormControl
-            placeholder="Pretraži... (ctrl+k)"
-            ctrl-k-focus
-            :icon="mdiMagnify"
-            search-bar
-            borderless
-          />
-        </NavBarItemPlain>
-      </NavBar>
-      <AsideMenu
-        :is-aside-mobile-expanded="isAsideMobileExpanded"
-        :is-aside-lg-active="isAsideLgActive"
-        :menu="menuAsideGuest"
-        @menu-click="menuClick"
-        @aside-lg-close-click="isAsideLgActive = false"
-      />
-      <slot />
+    <div :class="{dark: styleStore.darkMode, 'overflow-hidden lg:overflow-visible': layoutStore.isAsideMobileExpanded,}">
+        <div :class="[layoutAsidePadding, { 'ml-60 lg:ml-0': layoutStore.isAsideMobileExpanded }]"
+            class="pt-14 min-h-screen w-screen transition-position lg:w-auto bg-gray-50 dark:bg-slate-800 dark:text-slate-100 flex flex-col">
+        
+            <NavBar :menu="menuNavBarGuest" :class="[layoutAsidePadding, { 'ml-60 lg:ml-0': layoutStore.isAsideMobileExpanded }]" @menu-click="menuClick">
+                <NavBarItemPlain display="flex lg:hidden" @click.prevent="layoutStore.asideMobileToggle()">
+                    <BaseIcon :path="layoutStore.isAsideMobileExpanded ? mdiBackburger : mdiForwardburger" size="24"/>
+                </NavBarItemPlain>
+                <NavBarItemPlain display="hidden lg:flex xl:hidden" @click.prevent="layoutStore.asideLgToggle()">
+                    <BaseIcon :path="layoutStore.isAsideLgActive ? mdiBackburger : mdiMenu" size="24"/>
+                </NavBarItemPlain>
+            </NavBar>
 
-      <FooterBar
-        ><br />Made with <span style="color: #e25555">&#9829;</span> at
-        FIPU.lab</FooterBar
-      >
-      <SnackBar />
+            <AsideMenu @menu-click="menuClick" :menu="menuAsideGuest"
+                :is-aside-mobile-expanded="isAsideMobileExpanded"
+                :is-aside-lg-active="isAsideLgActive" 
+                @aside-lg-close-click="isAsideLgActive = false"/>
+                <slot></slot>
+
+            <FooterBar><br />Made with <span style="color: #e25555">&#9829;</span> at
+                FIPU.lab
+            </FooterBar>
+            <SnackBar />
+        </div>
     </div>
-  </div>
 </template>

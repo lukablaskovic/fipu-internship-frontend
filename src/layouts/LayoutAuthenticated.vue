@@ -71,9 +71,9 @@ const menuClick = (event, item) => {
 };
 </script>
 
-<template name="fade">
+<template name="fade"> 
     <div :class="{dark: styleStore.darkMode, 'overflow-hidden lg:overflow-visible': layoutStore.isAsideMobileExpanded}">
-        <div :class="[ layoutAsidePadding, { 'ml-60 lg:ml-0': layoutStore.isAsideMobileExpanded }]" 
+        <div :class="[layoutAsidePadding, { 'ml-60 lg:ml-0': layoutStore.isAsideMobileExpanded }]" 
             class="pt-14 min-h-screen w-screen transition-position lg:w-auto bg-gray-50 dark:bg-slate-800 dark:text-slate-100 flex flex-col">
             
             <NavBar :menu="menuNavBar" :class="[layoutAsidePadding, { 'ml-60 lg:ml-0': layoutStore.isAsideMobileExpanded }]" @menu-click="menuClick">
@@ -88,7 +88,7 @@ const menuClick = (event, item) => {
                 </NavBarItemPlain>
             </NavBar>
 
-            <CardBoxModal has-cancel v-model="logoutModalActive" title="Jeste li sigurni da se želite odjaviti?" button-label="Odjava"
+            <CardBoxModal has-cancel v-model="logoutModalActive" title="Jeste li sigurni da se želite odjaviti?" button-label="Odjava" class="z-100"
                 @cancel="mainStore.activateLogoutModal(false)"
                 @confirm="mainStore.logout()">
             </CardBoxModal>

@@ -132,6 +132,7 @@ export const useChatStore = defineStore("chat", {
             this.content = '';
             this.update = false;
             await nextTick();
+            await this.updateUserActivity(false)
             this.conversations = await this.getConversations(mainStore.currentUser.id);
             await nextTick();
             this.update = true;
@@ -171,6 +172,7 @@ export const useChatStore = defineStore("chat", {
             }
         },
         async updateConversationStatus(status, c) {
+            this.update = false;
             let updates = {
                 "status": c.status == status ? 'normal' : status,
                 "user_1_last_message_read_id": null,
@@ -180,7 +182,9 @@ export const useChatStore = defineStore("chat", {
             }
             await User.updateConversation(c.id, updates);
             this.grouping = updates.status;   
-            this.c.status = updates.status;            
+            this.c.status = updates.status;   
+            await nextTick();
+            this.update = true;
         },
         async updateUserActivity(value) {
             let updates = {

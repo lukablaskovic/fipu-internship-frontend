@@ -62,7 +62,7 @@ window.addEventListener("keydown", (e) => {
 </script>
 
 <template>
-    <OverlayLayer :type="value ? '' : 'pointer-events-none'" @overlay-click="cancel">
+    <OverlayLayer :type="value ? '' : 'pointer-events-none'" @overlay-click="cancel" class="z-[5000]">
         <CardBox v-show="value" :class="{ 'rounded shadow-lg max-h-modal w-11/12 md:w-3/5 lg:w-2/5 xl:w-4/12 z-50 modal-scrollable': !large,
                                           'rounded shadow-lg max-h-modal w-full md:w-4/5 lg:w-3/5 xl:w-3/5 z-50 modal-scrollable': large}" is-modal>
 
