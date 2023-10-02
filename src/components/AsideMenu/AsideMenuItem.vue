@@ -95,7 +95,7 @@ const subIcon = computed(() => {
 
 const menuClick = (event) => {
   emit("menu-click", event, props.item);
-
+  layoutStore.tooltip.content = '';
   if (props.item.externalURL) {
     window.open(props.item.externalURL, "_blank");
     return;
