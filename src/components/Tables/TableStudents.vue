@@ -39,7 +39,6 @@ onMounted(async () => {
       )
     );
   }
-  console.log("adminStore.selectedStudent", adminStore.selectedStudent);
   await adminStore.getStudents();
 });
 
@@ -97,7 +96,7 @@ function getProgressValue(student) {
     <tbody>
       <tr
         v-for="student in studentsPaginated"
-        :key="student['JMBAG']"
+        :key="student['process_instance_id']"
         :class="{
           'selected-row':
             selectedStudentInstanceID === student['process_instance_id'],

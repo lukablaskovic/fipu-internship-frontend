@@ -8,7 +8,8 @@ import BaseLevel from "@/components/Base/BaseLevel.vue";
 import BaseButtons from "@/components/Base/BaseButtons.vue";
 import BaseButton from "@/components/Base/BaseButton.vue";
 import LoadingOverlay from "@/components/LoadingOverlay.vue";
-import { mainStore, guestStore } from "@/main.js";
+import { mainStore, guestStore, adminStore } from "@/main.js";
+import { useRouter, useRoute } from "vue-router";
 
 defineProps({
   checkable: Boolean,
@@ -20,6 +21,20 @@ const isModalActive = ref(null);
 const allAvailableAssignments = ref([]);
 
 let checkedAssignments = computed(() => guestStore.checkedAssignments);
+let assignment_highlight = ref("");
+const router = useRouter();
+const route = useRoute();
+
+async function loadData() {
+  const id_zadatak = route.params.id_zadatak;
+  if (id_zadatak) {
+    assignment_highlight.value = id_zadatak;
+  }
+}
+
+watch(() => route.params.id_zadatak, loadData, {
+  immediate: true,
+});
 
 onMounted(async () => {
   const result = await guestStore.fetchAvailableAssignments();
@@ -153,14 +168,7 @@ const checked = (value, assignment) => {
       <b>Angažman FIPU: </b>
       {{ isModalActive["angazman_fipu"] }}
     </div>
-    <div v-if="mainStore.userAdmin">
-      <b>Broj studenata (max):: </b>
-      {{ isModalActive["broj_studenata"] }}
-    </div>
-    <div v-if="mainStore.userAdmin">
-      <b>Dostupno mjesta</b>
-      {{ isModalActive["dostupno_mjesta"] }}
-    </div>
+
     <br />
   </CardBoxModal>
 
@@ -184,6 +192,9 @@ const checked = (value, assignment) => {
       <tr
         v-for="assignment in assignmentsPaginated"
         :key="assignment['id_zadatak']"
+        :class="{
+          'selected-row': assignment_highlight === assignment['id_zadatak'],
+        }"
       >
         <TableCheckboxCell
           v-if="checkable"

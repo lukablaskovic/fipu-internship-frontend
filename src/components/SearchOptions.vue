@@ -37,6 +37,11 @@
           >
             <b>Kratke upute kako koristiti tražilicu</b>
             <hr />
+            <p>ℹ️ Za brzo kretanje upišite naziv rute direktno.</p>
+            <p>
+              ℹ️ Za pregled stavaka, prvo upišite odgovarajući prefix (boldano)
+              te nakon toga pojam.
+            </p>
             <br />
             <div
               v-for="helpItem in helpItems"
@@ -168,7 +173,6 @@ import MdiPagePreviousOutline from "vue-material-design-icons/PagePreviousOutlin
 import MdiClipboardText from "vue-material-design-icons/ClipboardText.vue";
 import MdiDomain from "vue-material-design-icons/Domain.vue";
 
-const events = [{ id: 1, name: "Some event" }];
 const searchInput = ref(null);
 
 let selectedValue = ref("");
@@ -219,13 +223,6 @@ onMounted(async () => {
 });
 
 let query = ref("");
-
-//Currently not in use
-let studentData = computed(() => {
-  return adminStore.students.map(
-    (student) => student.process_instance_data.variables
-  );
-});
 
 let filteredResults = computed(() => {
   const searchTerm = query.value
@@ -282,16 +279,17 @@ let filteredResults = computed(() => {
 
 watch(selectedValue, (newValue, oldValue) => {
   if (newValue && newValue !== oldValue) {
-    navigateToStudent(newValue);
-  }
-});
-
-watch(selectedValue, (newValue, oldValue) => {
-  if (newValue && newValue !== oldValue) {
     if (typeof newValue === "string" && routes.includes(newValue)) {
       router.push(`/${newValue}`);
-    } else {
+    } else if (newValue.ime && newValue.prezime) {
+      // Navigate to student
       navigateToStudent(newValue);
+    } else if (newValue.naziv && !newValue.ime && !newValue.prezime) {
+      // Navigate to company
+      router.push(`/poslodavci/${newValue.naziv}`);
+    } else if (newValue.id_zadatak) {
+      // Navigate to assignment
+      router.push(`/dostupni-zadaci/${newValue.id_zadatak}`);
     }
   }
 });

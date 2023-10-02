@@ -1,5 +1,5 @@
 <script setup>
-import { computed, ref, onMounted } from "vue";
+import { computed, ref, onMounted, watch } from "vue";
 
 import { mdiContentSaveCheckOutline } from "@mdi/js";
 import TableCheckboxCell from "@/components/Tables/TableCheckboxCell.vue";
@@ -11,12 +11,28 @@ import { mainStore, adminStore, snackBarStore } from "@/main.js";
 import UserAvatar from "@/components/User/UserAvatar.vue";
 import FormControl from "../Form/FormControl.vue";
 import Utils from "@/helpers/utils";
+import { useRoute } from "vue-router";
 
 defineProps({
   checkable: Boolean,
 });
 
 const newCompanies = ref([]);
+
+let company_highlight = ref("");
+const route = useRoute();
+
+async function loadData() {
+  const naziv = route.params.naziv;
+  console.log(naziv);
+  if (naziv) {
+    company_highlight.value = naziv;
+  }
+}
+
+watch(() => route.params.naziv, loadData, {
+  immediate: true,
+});
 
 const companyForms = ref({});
 
@@ -65,11 +81,11 @@ async function saveUpdatedCompany() {
   const postData = companyForms.value[selectedCompany.value];
   let result = adminStore.saveUpdatedCompany(postData);
   if (result) {
-    snackBarStore.showSnackBar("Podaci su uspješno ažurirani", "success");
+    snackBarStore.pushMessage("Podaci su uspješno ažurirani", "success");
     await Utils.wait(1);
     location.reload();
   } else {
-    snackBarStore.showSnackBar("Podaci nisu ažurirani", "error");
+    snackBarStore.pushMessage("Podaci nisu ažurirani", "error");
   }
 }
 
@@ -115,7 +131,13 @@ const pagesList = computed(() => {
     </thead>
 
     <tbody>
-      <tr v-for="company in companiesPaginated" :key="company['naziv']">
+      <tr
+        v-for="company in companiesPaginated"
+        :key="company['naziv']"
+        :class="{
+          'selected-row': company_highlight === company['naziv'],
+        }"
+      >
         <TableCheckboxCell v-if="checkable" :assignment-data="company" />
 
         <td v-if="company['logo'][0]" class="border-b-0 lg:w-6 before:hidden">

@@ -8,6 +8,7 @@ import BaseLevel from "@/components/Base/BaseLevel.vue";
 import BaseButtons from "@/components/Base/BaseButtons.vue";
 import BaseButton from "@/components/Base/BaseButton.vue";
 import { mainStore, guestStore, adminStore, snackBarStore } from "@/main.js";
+import { useRouter, useRoute } from "vue-router";
 
 import Utils from "@/helpers/utils.js";
 
@@ -21,6 +22,20 @@ const isModalActive = ref(null);
 const allAvailableAssignments = ref([]);
 
 let checkedAssignments = computed(() => guestStore.checkedAssignments);
+let assignment_highlight = ref("");
+const router = useRouter();
+const route = useRoute();
+
+async function loadData() {
+  const id_zadatak = route.params.id_zadatak;
+  if (id_zadatak) {
+    assignment_highlight.value = id_zadatak;
+  }
+}
+
+watch(() => route.params.id_zadatak, loadData, {
+  immediate: true,
+});
 
 onMounted(async () => {
   const result = await guestStore.fetchAvailableAssignments();
@@ -215,6 +230,9 @@ const cancelTaskAction = () => {
       <tr
         v-for="assignment in assignmentsPaginated"
         :key="assignment['id_zadatak']"
+        :class="{
+          'selected-row': assignment_highlight === assignment['id_zadatak'],
+        }"
       >
         <TableCheckboxCell
           v-if="checkable"

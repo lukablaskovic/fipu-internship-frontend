@@ -1,5 +1,5 @@
 <script setup>
-import { computed, ref, onMounted } from "vue";
+import { computed, ref, onMounted, watch } from "vue";
 
 import { mdiWeb } from "@mdi/js";
 import TableCheckboxCell from "@/components/Tables/TableCheckboxCell.vue";
@@ -9,12 +9,28 @@ import BaseButton from "@/components/Base/BaseButton.vue";
 import LoadingOverlay from "../LoadingOverlay.vue";
 import { mainStore } from "@/main.js";
 import UserAvatar from "@/components/User/UserAvatar.vue";
+import { useRoute } from "vue-router";
 
 defineProps({
   checkable: Boolean,
 });
 
 const allCompanies = ref([]);
+
+let company_highlight = ref("");
+const route = useRoute();
+
+async function loadData() {
+  const naziv = route.params.naziv;
+  console.log(naziv);
+  if (naziv) {
+    company_highlight.value = naziv;
+  }
+}
+
+watch(() => route.params.naziv, loadData, {
+  immediate: true,
+});
 
 onMounted(async () => {
   let result = await mainStore.fetchCompanies();
@@ -78,7 +94,7 @@ const pagesList = computed(() => {
       </tr>
     </thead>
     <tbody v-if="!mainStore.userAdmin">
-      <tr v-for="company in companiesPaginated" :key="company['JMBAG']">
+      <tr v-for="company in companiesPaginated" :key="company['naziv']">
         <TableCheckboxCell v-if="checkable" :assignment-data="company" />
 
         <td v-if="company['logo'][0]" class="border-b-0 lg:w-6 before:hidden">
@@ -116,7 +132,13 @@ const pagesList = computed(() => {
       </tr>
     </tbody>
     <tbody v-else>
-      <tr v-for="company in companiesPaginated" :key="company['JMBAG']">
+      <tr
+        v-for="company in companiesPaginated"
+        :key="company['naziv']"
+        :class="{
+          'selected-row': company_highlight === company['naziv'],
+        }"
+      >
         <TableCheckboxCell v-if="checkable" :assignment-data="company" />
 
         <td v-if="company['logo'][0]" class="border-b-0 lg:w-6 before:hidden">
