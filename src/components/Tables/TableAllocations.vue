@@ -79,7 +79,10 @@ const pagesList = computed(() => {
       </tr>
     </thead>
     <tbody>
-      <tr v-for="allocation in allocationsPaginated" :key="allocation['JMBAG']">
+      <tr
+        v-for="allocation in allocationsPaginated"
+        :key="allocation['id_alokacija']"
+      >
         <TableCheckboxCell v-if="checkable" :assignment-data="company" />
 
         <td data-label="JMBAG">

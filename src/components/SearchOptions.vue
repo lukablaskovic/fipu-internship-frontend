@@ -13,6 +13,7 @@
         />
         <ComboboxButton
           class="absolute inset-y-0 right-0 flex items-center pr-2"
+          @click="showHelp"
         >
           <MdiMagnify
             class="h-5 w-5 text-gray-700 hover:text-fipu_blue"
@@ -83,7 +84,21 @@
               />
 
               <MdiPagePreviousOutline
-                v-if="routes.includes(result)"
+                v-else-if="routes.includes(result)"
+                class="absolute left-3 h-5 w-5"
+                :class="{ 'text-white': active, 'text-gray-900': !active }"
+                aria-hidden="true"
+              />
+
+              <MdiClipboardText
+                v-if="result.id_zadatak"
+                class="absolute left-3 h-5 w-5"
+                :class="{ 'text-white': active, 'text-gray-900': !active }"
+                aria-hidden="true"
+              />
+
+              <MdiDomain
+                v-if="result.naziv && !result.ime && !result.prezime"
                 class="absolute left-3 h-5 w-5"
                 :class="{ 'text-white': active, 'text-gray-900': !active }"
                 aria-hidden="true"
@@ -150,14 +165,16 @@ import { mainStore, guestStore } from "@/main";
 import MdiMagnify from "vue-material-design-icons/Magnify.vue";
 import MdiAccount from "vue-material-design-icons/Account.vue";
 import MdiPagePreviousOutline from "vue-material-design-icons/PagePreviousOutline.vue";
+import MdiClipboardText from "vue-material-design-icons/ClipboardText.vue";
+import MdiDomain from "vue-material-design-icons/Domain.vue";
+
 const events = [{ id: 1, name: "Some event" }];
 const searchInput = ref(null);
 
 let selectedValue = ref("");
 
 function insertPrefix(prefix) {
-  query.value = prefix; // Set the input's value to the clicked prefix
-  // Optionally, if you want the focus to go back to the input after clicking
+  query.value = prefix + query.value;
   const searchInputElement = document.querySelector(".inputClass");
   searchInputElement && searchInputElement.focus();
 }
@@ -168,6 +185,10 @@ let displayValue = computed(() => {
 });
 const allCompanies = ref([]);
 const allAssignments = ref([]);
+
+function showHelp() {
+  query.value = "";
+}
 
 onMounted(async () => {
   function onKeydown(event) {
@@ -212,9 +233,12 @@ let filteredResults = computed(() => {
     .toLowerCase()
     .replace(/\s+/g, " ")
     .trim();
-  console.log(searchTerm);
 
-  if (searchTerm && !searchTerm.includes(":")) {
+  if (query.value === "") {
+    return [];
+  }
+
+  if (!query.value.includes(":")) {
     return routes.filter((route) => route.includes(searchTerm));
   }
 
