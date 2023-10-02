@@ -111,7 +111,10 @@ const props = defineProps({
   searchBar: Boolean,
   transparent: Boolean,
   readonly: Boolean,
-  copyable: Boolean,
+  copyable: {
+    type: Boolean,
+    default: false,
+  },
   disabled: Boolean,
 });
 
@@ -443,7 +446,7 @@ if (props.ctrlKFocus) {
         :clickable="rightIconClickable || props.copyable"
         is-right
         :class="props.copyable ? 'hover:text-fipu_blue' : ''"
-        @icon-click="props.copyable ? copyToClipboard() : openPasswordToggle"
+        @icon-click="props.copyable ? copyToClipboard() : openPasswordToggle()"
       />
 
       <TipTag v-if="tipLeft" :tip="tipLeft" left />

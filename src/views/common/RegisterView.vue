@@ -342,7 +342,6 @@ function navigateToLogin() {
                     :error="getFirstErrorForField('passwordConfirm')"
                     type="password"
                     name="passwordConfirm"
-                    autocomplete="new-password"
                   />
                 </FormField>
 

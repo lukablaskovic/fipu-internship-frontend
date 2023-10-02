@@ -54,7 +54,6 @@ const rules = {
   },
 };
 const v$ = useVuelidate(rules, loginForm);
-const passShowHideClicked = ref(false);
 
 const isLoading = ref(false);
 async function onSubmit() {
@@ -200,7 +199,6 @@ function navigateToRegister() {
                 autocomplete="password"
                 placeholder="Password"
                 :error="getFirstErrorForField('password')"
-                @right-icon-click="passShowHideClicked = true"
               >
               </FormControl>
             </FormField>
