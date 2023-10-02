@@ -68,7 +68,7 @@ window.addEventListener("keydown", (e) => {
 
             <CardBoxComponentTitle :title="title"> </CardBoxComponentTitle>
 
-            <slot :assignment="modelValue"></slot>
+            <slot v-if="modelValue!=null" :assignment="modelValue"></slot>
 
             <BaseButtons class="justify-center">
                 <BaseButton v-if="hasConfirm" :label="buttonLabel" :color="button" :disabled="disabledCondition" @click="confirm"/>

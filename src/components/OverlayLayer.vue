@@ -33,10 +33,7 @@ const overlayClick = (event) => {
       leave-from-class="opacity-100"
       leave-to-class="opacity-0"
     >
-      <div
-        class="absolute inset-0 bg-gradient-to-tr opacity-90 from-gray-700 via-gray-800 to-gray-900 dark:from-gray-700 dark:via-gray-800 dark:to-gray-900"
-        @click="overlayClick"
-      />
+      <div class="absolute inset-0 bg-gradient-to-tr opacity-90 from-gray-700 via-gray-800 to-gray-900 dark:from-gray-700 dark:via-gray-800 dark:to-gray-900" @click="overlayClick"/>
     </transition>
     <transition
       class="relative"
@@ -45,7 +42,7 @@ const overlayClick = (event) => {
       enter-to-class="transform scale-100 opacity-100"
       leave-active-class="animate-fade-out"
     >
-      <slot :assignment="modelValue"></slot>
+      <slot></slot>
     </transition>
   </div>
 </template>
