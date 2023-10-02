@@ -29,7 +29,6 @@ export default [
     icon: mdiClipboardText,
     label: "Zadaci",
   },
-
   {
     to: "/poslodavci",
     icon: mdiDomain,
