@@ -81,11 +81,11 @@ async function saveUpdatedCompany() {
   const postData = companyForms.value[selectedCompany.value];
   let result = adminStore.saveUpdatedCompany(postData);
   if (result) {
-    snackBarStore.showSnackBar("Podaci su uspješno ažurirani", "success");
+    snackBarStore.pushMessage("Podaci su uspješno ažurirani", "success");
     await Utils.wait(1);
     location.reload();
   } else {
-    snackBarStore.showSnackBar("Podaci nisu ažurirani", "error");
+    snackBarStore.pushMessage("Podaci nisu ažurirani", "error");
   }
 }
 
