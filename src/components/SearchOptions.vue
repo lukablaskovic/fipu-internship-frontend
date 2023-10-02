@@ -76,15 +76,24 @@
               }"
             >
               <MdiAccount
+                v-if="result.ime && result.prezime"
                 class="absolute left-3 h-5 w-5"
                 :class="{ 'text-white': active, 'text-gray-900': !active }"
                 aria-hidden="true"
               />
+
+              <MdiPagePreviousOutline
+                v-if="routes.includes(result)"
+                class="absolute left-3 h-5 w-5"
+                :class="{ 'text-white': active, 'text-gray-900': !active }"
+                aria-hidden="true"
+              />
+
               <template
                 v-if="typeof result === 'string' && routes.includes(result)"
               >
                 <span
-                  class="block truncate"
+                  class="block truncate capitalize"
                   :class="{ 'font-medium': selected, 'font-normal': !selected }"
                 >
                   {{ result }}
@@ -140,7 +149,7 @@ import { router } from "@/router";
 import { mainStore, guestStore } from "@/main";
 import MdiMagnify from "vue-material-design-icons/Magnify.vue";
 import MdiAccount from "vue-material-design-icons/Account.vue";
-
+import MdiPagePreviousOutline from "vue-material-design-icons/PagePreviousOutline.vue";
 const events = [{ id: 1, name: "Some event" }];
 const searchInput = ref(null);
 

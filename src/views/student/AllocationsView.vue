@@ -14,7 +14,7 @@ import CardBoxModal from "@/components/Cardbox/CardBoxModal.vue";
 
 <template>
   <div>
-    <LayoutAuthenticated v-if="mainStore.userAuthenticated">
+    <LayoutAuthenticated>
       <SectionMain>
         <SectionTitleLineWithButton
           :icon="mdiClipboardCheck"

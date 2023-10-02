@@ -14,7 +14,7 @@ const router = createRouter({
 router.beforeEach((to, from, next) => {
   const userAuthenticated = mainStore.userAuthenticated;
   const userAdmin = mainStore.userAdmin;
-  layoutStore.tooltip.content = '';
+  layoutStore.tooltip.content = "";
 
   const requiresAuth = to.matched.some((record) => record.meta.requiresAuth);
   const requiresAdmin = to.matched.some((record) => record.meta.requiresAdmin);
