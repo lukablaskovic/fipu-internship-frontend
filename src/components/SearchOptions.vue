@@ -37,6 +37,11 @@
           >
             <b>Kratke upute kako koristiti tražilicu</b>
             <hr />
+            <p>ℹ️ Za brzo kretanje upišite naziv rute direktno.</p>
+            <p>
+              ℹ️ Za pregled stavaka, prvo upišite odgovarajući prefix (boldano)
+              te nakon toga pojam.
+            </p>
             <br />
             <div
               v-for="helpItem in helpItems"
