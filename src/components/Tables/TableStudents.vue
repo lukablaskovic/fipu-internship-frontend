@@ -38,6 +38,9 @@ onMounted(async () => {
           student["process_instance_id"] === route.params.process_instance_id
       )
     );
+  } else {
+    selectedStudentInstanceID.value = null;
+    adminStore.setSelectedStudent(null);
   }
   await adminStore.getStudents();
 });
