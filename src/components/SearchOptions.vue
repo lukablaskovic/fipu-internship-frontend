@@ -282,16 +282,17 @@ let filteredResults = computed(() => {
 
 watch(selectedValue, (newValue, oldValue) => {
   if (newValue && newValue !== oldValue) {
-    navigateToStudent(newValue);
-  }
-});
-
-watch(selectedValue, (newValue, oldValue) => {
-  if (newValue && newValue !== oldValue) {
     if (typeof newValue === "string" && routes.includes(newValue)) {
       router.push(`/${newValue}`);
-    } else {
+    } else if (newValue.ime && newValue.prezime) {
+      // Navigate to student
       navigateToStudent(newValue);
+    } else if (newValue.naziv && !newValue.ime && !newValue.prezime) {
+      // Navigate to company
+      router.push(`/poslodavci/${newValue.naziv}`);
+    } else if (newValue.id_zadatak) {
+      // Navigate to assignment
+      router.push(`/dostupni-zadaci/${newValue.id_zadatak}`);
     }
   }
 });

@@ -99,8 +99,8 @@ const addNewAssignmentLink = ref(
 
 .copy-icon {
   position: absolute;
-  right: 0.5rem; /* You can adjust this */
-  top: 0.5rem; /* You can adjust this */
+  right: 0.5rem;
+  top: 0.5rem;
   opacity: 0;
   transition: opacity 0.2s;
 }

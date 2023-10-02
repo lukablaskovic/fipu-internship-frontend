@@ -42,6 +42,16 @@ const routes = [
   },
   {
     meta: {
+      title: "Poslodavac",
+      requiresAuth: true,
+      requiresAdmin: true,
+    },
+    path: "/poslodavci/:naziv",
+    name: "poslodavac",
+    component: () => import("@/views/common/CompaniesView.vue"),
+  },
+  {
+    meta: {
       title: "Alokacije",
       requiresAuth: true,
       requiresAdmin: true,
@@ -58,6 +68,16 @@ const routes = [
     },
     path: "/dostupni-zadaci",
     name: "dostupni-zadaci",
+    component: () => import("@/views/admin/AvailableAssignments.vue"),
+  },
+  {
+    meta: {
+      title: "Zadatak",
+      requiresAuth: true,
+      requiresAdmin: true,
+    },
+    path: "/dostupni-zadaci/:id_zadatak",
+    name: "zadatak",
     component: () => import("@/views/admin/AvailableAssignments.vue"),
   },
   {
@@ -136,15 +156,6 @@ const routes = [
     path: "/bpmn/microservices",
     name: "bpmn-microservices",
     component: () => import("@/views/admin/bpmn/MicroservicesView.vue"),
-  },
-
-  {
-    meta: {
-      title: "Tables",
-    },
-    path: "/tables",
-    name: "tables",
-    component: () => import("@/views/common/TablesView.vue"),
   },
   {
     meta: {

@@ -58,7 +58,6 @@ async function handleProcessDiagram() {
   process_instance_data.value = await adminStore.getProcessInstanceData(
     adminStore.selectedStudent
   );
-  console.log(process_instance_data.value);
   bpmnKey.value++;
 
   // Navigate to the new URL with the process_instance_id
@@ -117,10 +116,6 @@ async function sendAnAdditionalEmail() {
   const { postData, template, to } = getPostDataForSendEmail();
 
   if (postData && template && to) {
-    console.log(
-      "sendAnAdditionalEmail",
-      adminStore.bpmn_diagram.clicked_task_id
-    );
     await adminStore.sendAnAdditionalEmail(postData, to, template);
     snackBarStore.pushMessage("Email je uspješno poslan!", "success");
     modal_send_task.value = false;
