@@ -17,6 +17,8 @@ import FormDynamic from "@/components/Form/FormDynamic.vue";
 import SnackBar from "@/components/Premium/SnackBar.vue";
 import BaseButton from "@/components/Base/BaseButton.vue";
 
+import FIPU_praksa_logo_transparent from "/FIPU_praksa_logo_transparent.svg";
+
 const process_instance_id = ref(null);
 
 const assignemntDetails = ref(null);
@@ -27,12 +29,18 @@ const route = useRoute();
 let assignment = ref(null);
 let studentInfo = ref(null);
 
+const error = ref(false);
 onMounted(async () => {
   process_instance_id.value = route.params.process_instance_id;
 
   instanceInfo.value = await studentStore.getInstanceInfo(
     process_instance_id.value
   );
+  if (instanceInfo.value == null) {
+    console.log("Process instance not found...");
+    error.value = true;
+    return;
+  }
 
   assignemntDetails.value = await studentStore.getAssignmentDetails(
     instanceInfo.value.variables["Alocirani_zadatak"]
@@ -96,7 +104,7 @@ const updateDisabledCondition = (allFilled) => {
 
 <template>
   <div>
-    <SectionMain>
+    <SectionMain v-if="!error">
       <SectionTitleLineWithButton
         :icon="mdiAccountTie"
         title="Evaluacija kandidata"
@@ -170,6 +178,15 @@ const updateDisabledCondition = (allFilled) => {
         :data="assignment"
       ></CardBoxAllocation>
     </SectionMain>
+    <div v-else>
+      <SectionMain>
+        <b>Greška!</b> Ne postoji proces s ID-em {{ process_instance_id }}.
+        <p class="mt-4">
+          Molimo pokušajte ponovno ili kontaktirajte voditelja prakse.
+        </p>
+      </SectionMain>
+      !
+    </div>
     <FooterBar
       ><br />Made with <span style="color: #e25555">&#9829;</span> at
       FIPU.lab</FooterBar
