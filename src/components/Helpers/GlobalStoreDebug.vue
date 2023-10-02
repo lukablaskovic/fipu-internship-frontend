@@ -36,20 +36,21 @@ const newValueFormatted = computed(() => {
 </script>
 
 <template>
-    <div v-if="!mainStore.debug" class="w-screen h-screen flex justify-center items-center absolute backdrop-blur-sm z-[1000] py-16 px-[8%]">
+    <div v-if="!mainStore.debug" class="w-screen h-screen flex justify-center items-center fixed backdrop-blur-sm z-[1000] py-16 px-[8%]">
         <div class="p-4 flex flex-col bg-black bg-opacity-90 shadow-xl rounded-xl h-full w-full text-slate-400">
             <div class="text-center text-2xl font-bold"> DEBUG INFO </div>
             <Slider class="my-4 slider min-h-[8px] h-[8px] w-64 self-center" v-model="mainStore.depth" :min="1" :max="8" showTooltip="focus" :merge="1" :lazy="false" />
-            <div class="w-full flex justify-start items-center py-1">
+            <div class="w-full flex justify-start items-center py-1 overflow-y-hidden overflow-x-auto scrollbar-thumb-rounded scrollbar-track-rounded
+                scrollbar-thin scrollbar-track-slate-800 scrollbar-thumb-slate-600 hover:scrollbar-thumb-slate-400 pb-4">
                 <DebugSelectButton v-for="name in storeNames" :name="name"/>
             </div>  
             <hr/>
-            <div class="overflow-auto scrollbar-thin scrollbar-track-slate-800 scrollbar-thumb-slate-600 hover:scrollbar-thumb-slate-400">
+            <div class="overflow-auto scrollbar-thin scrollbar-track-slate-800 scrollbar-thumb-slate-600 hover:scrollbar-thumb-slate-400 scrollbar-thumb-rounded scrollbar-track-rounded">
                 <vue-json-pretty showIcon :deep="mainStore.depth" :data="newValueFormatted" />
             </div>
         </div>
     </div>
-    <div class="absolute bottom-2 right-2 z-[2000]" @click="mainStore.debug = !mainStore.debug">
+    <div class="fixed bottom-2 right-2 z-[2000]" @click="mainStore.debug = !mainStore.debug">
         <BaseIcon :path="mdiHelpCircle" h="40" w="40" :size="40" class="text-main_lighttext hover:text-main_cyan text-4xl hover:cursor-pointer mr-2 opacity-50"/>
     </div>
 </template>

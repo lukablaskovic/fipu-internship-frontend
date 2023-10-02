@@ -10,16 +10,20 @@ defineProps({
     type: String,
     default: null,
   },
+  reverseDark: {
+    type: Boolean,
+    default: false,
+  },
   small: Boolean,
 });
 </script>
 
 <template>
   <div
-    class="inline-flex items-center capitalize dark:text-black"
-    :class="[small ? 'text-xs' : 'text-sm  py-0.5 px-3 sm:px-3']"
+    class="inline-flex items-center capitalize"
+    :class="[small ? 'text-xs' : 'text-sm  py-0.5 px-3 sm:px-3', reverseDark ? 'dark:text-gray-300' : 'dark:text-black']"
   >
-    <BaseIcon
+    <BaseIcon 
         v-if="icon"
         :path="icon"
         h="h-4"
