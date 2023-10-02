@@ -57,6 +57,11 @@ const isDropdownActive = ref(false);
 
 const menuClick = (event) => {
   emit("menu-click", event, props.item);
+  
+  if (props.item.externalURL) {
+    window.open(props.item.externalURL, "_blank");
+    return;
+  }
 
   if (props.item.menu) {
     isDropdownActive.value = !isDropdownActive.value;

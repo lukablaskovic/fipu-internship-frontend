@@ -4,6 +4,7 @@ import {
   mdiLogout,
   mdiThemeLightDark,
   mdiHelpBoxOutline,
+  mdiBug 
 } from "@mdi/js";
 
 export default [
@@ -28,6 +29,13 @@ export default [
             label: "Pomoć",
             isDesktopNoLabel: true,
             isHelp: true,
+            size: 22
+        },
+        {
+            icon: mdiBug,
+            label: "Bug report",
+            isDesktopNoLabel: true,
+            externalURL: "https://github.com/lukablaskovic/fipu-internship-dashboard/issues",
             size: 22
         },
         {
@@ -59,6 +67,13 @@ export default [
             label: "Pomoć",
             isDesktopNoLabel: true,
             isHelp: true,
+            size: 22
+        },
+        {
+            icon: mdiBug,
+            label: "Bug report",
+            isDesktopNoLabel: true,
+            externalURL: "https://github.com/lukablaskovic/fipu-internship-dashboard/issues",
             size: 22
         },
         {
