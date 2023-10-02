@@ -1,22 +1,14 @@
 <script setup>
 import { adminStore, mainStore } from "@/main.js";
-import {
-  mdiMonitorCellphone,
-  mdiClipboardCheck,
-  mdiLaptop,
-  mdiFilePdfBox,
-} from "@mdi/js";
-import { router } from "@/router";
+import { mdiClipboardCheck, mdiFilePdfBox } from "@mdi/js";
 import VuePdfEmbed from "vue-pdf-embed";
 
 import LayoutAuthenticated from "@/layouts/LayoutAuthenticated.vue";
 
 import SectionMain from "@/components/Section/SectionMain.vue";
 import CardBox from "@/components/Cardbox/CardBox.vue";
-import NotificationBar from "@/components/Notification/NotificationBar.vue";
 import SectionTitleLineWithButton from "@/components/Section/SectionTitleLineWithButton.vue";
 import TableAllocations from "@/components/Tables/TableAllocations.vue";
-import BaseIcon from "@/components/Base/BaseIcon.vue";
 import CardBoxModal from "@/components/Cardbox/CardBoxModal.vue";
 </script>
 
@@ -26,39 +18,10 @@ import CardBoxModal from "@/components/Cardbox/CardBoxModal.vue";
       <SectionMain>
         <SectionTitleLineWithButton
           :icon="mdiClipboardCheck"
-          :title="
-            mainStore.userAdmin ? 'Alokacije' : 'Alokacije - Javni prikaz'
-          "
+          title="Alokacije"
           main
         >
         </SectionTitleLineWithButton>
-
-        <div v-if="!mainStore.userAdmin" class="mb-4">
-          <p class="text-sm md:text-base">
-            Ovdje možete pronaći javni popis alociranih zadataka. Ukoliko se ne
-            možete pronaći znači da vas profesor još nije alocirao te morate
-            pričekati.
-          </p>
-          <p class="flex flex-wrap items-center text-sm md:text-base">
-            Ako još niste prijavili zadatak, to možete učiniti u
-            <span
-              class="text-fipu_blue cursor-pointer inline-flex items-center md:ml-1 whitespace-normal"
-              @click="router.push('/moja-praksa')"
-            >
-              <BaseIcon
-                :path="mdiLaptop"
-                class="flex-none align-middle"
-                :size="18"
-              ></BaseIcon>
-
-              Moja praksa
-            </span>
-          </p>
-        </div>
-
-        <NotificationBar color="info" :icon="mdiMonitorCellphone">
-          <b>Responsive table.</b> Collapses on mobile
-        </NotificationBar>
 
         <CardBox has-table>
           <TableAllocations />
@@ -79,7 +42,11 @@ import CardBoxModal from "@/components/Cardbox/CardBoxModal.vue";
             >
             </SectionTitleLineWithButton>
             <div class="flex justify-center">
-              <vue-pdf-embed height="1080" :source="adminStore.pdfSource" />
+              <vue-pdf-embed
+                height="1080"
+                class="mb-6"
+                :source="adminStore.pdfSource"
+              />
             </div>
           </div>
         </CardBoxModal>

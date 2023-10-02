@@ -11,7 +11,21 @@ function isUnipuEmail(value) {
 
 function exactLength(length) {
   return function (value) {
-    return value && value.length === length;
+    console.log(value, length);
+
+    if (value === null || value === undefined) {
+      return false;
+    }
+
+    if (typeof value === "string" || Array.isArray(value)) {
+      return value.length === length;
+    }
+
+    if (typeof value === "object") {
+      return Object.keys(value).length === length;
+    }
+
+    return String(value).length === length;
   };
 }
 

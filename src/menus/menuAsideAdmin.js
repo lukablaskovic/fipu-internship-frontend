@@ -41,10 +41,6 @@ export default [
     icon: mdiSecurity,
     menu: [
       {
-        to: "/bpmn/models",
-        label: "Procesi",
-      },
-      {
         to: "/bpmn/microservices",
         label: "Mikroservisi",
       },

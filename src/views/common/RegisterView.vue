@@ -9,6 +9,7 @@ import {
   helpers,
   numeric,
 } from "@vuelidate/validators";
+
 import {
   croatianAlpha,
   getFirstErrorForField,
@@ -38,6 +39,10 @@ import BaseButtons from "@/components/Base/BaseButtons.vue";
 import { StudentMappings } from "@/helpers/maps";
 import Utils from "@/helpers/utils";
 import { guestStore } from "@/main";
+
+//Public images
+import registerArt from "/register_art.jpg";
+import fipu_unipu from "/fipu_unipu.png";
 
 let data_confirmed = ref(false);
 
@@ -221,7 +226,7 @@ function navigateToLogin() {
           centered-content
         >
           <img
-            src="register_art.jpg"
+            :src="registerArt"
             alt="Register graphics"
             class="w-3/4 object-contain mx-auto"
           />
@@ -236,7 +241,7 @@ function navigateToLogin() {
           <div>
             <a href="https://fipu.unipu.hr/" target="_blank">
               <img
-                src="fipu_unipu.png"
+                :src="fipu_unipu"
                 alt="fipu logo"
                 class="lg:w-1/2 2xl:1/6 mb-6 object-contain"
               />
@@ -337,6 +342,7 @@ function navigateToLogin() {
                     :error="getFirstErrorForField('passwordConfirm')"
                     type="password"
                     name="passwordConfirm"
+                    autocomplete="new-password"
                   />
                 </FormField>
 

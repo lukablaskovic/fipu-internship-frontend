@@ -5,7 +5,7 @@ import axios from "axios";
 import { mdiAccountMultiple } from "@mdi/js";
 
 import { adminStore, mainStore, snackBarStore } from "@/main.js";
-import { UserTaskMappings } from "@/helpers/maps";
+import { UserTaskMappings, SendTaskMappings } from "@/helpers/maps";
 import Utils from "@/helpers/utils.js";
 
 import SectionMain from "@/components/Section/SectionMain.vue";
@@ -25,6 +25,7 @@ let bpmn_diagram_active = ref(false);
 
 const modal_select_bpmn_task = ref(false);
 const modal_past_bpmn_task = ref(false);
+const modal_send_task = ref(false);
 
 const disabledCondition = ref(true);
 const updateDisabledCondition = (allFilled) => {
@@ -74,6 +75,55 @@ async function loadDataForStudent() {
     process_instance_data.value = await adminStore.getProcessInstanceData(
       student
     );
+  }
+}
+
+function getPostDataForSendEmail() {
+  // Find the task based on clicked_task_id
+  const taskMapping = SendTaskMappings.tasks.find(
+    (task) => task._id === adminStore.bpmn_diagram.clicked_task_id
+  );
+
+  if (!taskMapping) return { postData: null, template: null, to: null };
+
+  // Extract required fields from process_instance_data.variables
+  const postData = {};
+  for (let key in taskMapping.body) {
+    if (typeof taskMapping.body[key] === "function") {
+      postData[key] = taskMapping.body[key](
+        adminStore.selectedStudent.process_instance_data.variables
+          .process_instance_id
+      );
+    } else {
+      postData[key] =
+        adminStore.selectedStudent.process_instance_data.variables[key] || "";
+    }
+  }
+
+  // Extract the 'to' value
+  const to =
+    adminStore.selectedStudent.process_instance_data.variables[
+      taskMapping.to
+    ] || "";
+
+  return {
+    postData,
+    template: taskMapping.template,
+    to,
+  };
+}
+
+async function sendAnAdditionalEmail() {
+  const { postData, template, to } = getPostDataForSendEmail();
+
+  if (postData && template && to) {
+    console.log(
+      "sendAnAdditionalEmail",
+      adminStore.bpmn_diagram.clicked_task_id
+    );
+    await adminStore.sendAnAdditionalEmail(postData, to, template);
+    snackBarStore.pushMessage("Email je uspješno poslan!", "success");
+    modal_send_task.value = false;
   }
 }
 
@@ -210,6 +260,20 @@ onMounted(loadDataForStudent);
           <p class="mb-2">Ovaj zadatak je već obavljen.</p>
           <TableInstanceData></TableInstanceData>
         </CardBoxModal>
+
+        <CardBoxModal
+          v-if="modal_send_task"
+          v-model="modal_send_task"
+          :title="'Ponovno slanje emaila'"
+          has-cancel
+          button-label="Pošalji"
+          @confirm="sendAnAdditionalEmail()"
+        >
+          <p class="mb-2">
+            E-mail je već poslan koristeći BPMN engine, no možete ga i poslati
+            ponovo pritiskom na 'Pošalji'
+          </p>
+        </CardBoxModal>
       </SectionMain>
 
       <BpmnDiagram
@@ -233,6 +297,7 @@ onMounted(loadDataForStudent);
         :highlight-element-id="process_instance_data.pending[0]"
         @current-task-modal="modal_select_bpmn_task = true"
         @past-task-modal="modal_past_bpmn_task = true"
+        @send-task-modal="modal_send_task = true"
       />
       <div
         v-else-if="process_instance_data"

@@ -11,10 +11,8 @@ import PillTag from "@/components/PillTag/PillTag.vue";
 
 import { Menu, MenuButton, MenuItems, MenuItem } from "@headlessui/vue";
 import BaseIcon from "@/components/Base/BaseIcon.vue";
-import BaseButton from "@/components/Base/BaseButton.vue";
 import { adminStore, snackBarStore } from "@/main";
 
-import { router } from "@/router";
 import Utils from "@/helpers/utils.js";
 
 import { ActivityEventMappings } from "@/helpers/maps";
@@ -47,7 +45,7 @@ const props = defineProps({
     required: true,
   },
   modelValue: {
-    type: Object,
+    type: String,
     default: null,
   },
   left: Boolean,
@@ -72,11 +70,12 @@ const props = defineProps({
 });
 
 onMounted(() => {
-  const preSelectedEvents = adminStore.dashboard_data.selectedEvents;
-  selectedOptions.value = [...preSelectedEvents];
-
-  if (preSelectedEvents.length === 0) {
-    setDefaultFilters();
+  if (props.trendType === "filter") {
+    const preSelectedEvents = adminStore.selectedEvents;
+    selectedOptions.value = [...preSelectedEvents];
+    if (Utils.isArrayEmpty(preSelectedEvents)) {
+      setDefaultFilters();
+    }
   }
 });
 
@@ -89,10 +88,7 @@ const defualtEventsSet = computed(() => {
     )
     .map((event) => event.activity_id);
 
-  return Utils.arraysEqual(
-    adminStore.dashboard_data.selectedEvents,
-    defaultEvents
-  );
+  return Utils.arraysEqual(adminStore.selectedEvents, defaultEvents);
 });
 
 const trendStyle = computed(() => {
@@ -124,6 +120,7 @@ const trendStyle = computed(() => {
     };
   }
 
+  // eslint-disable-next-line no-undef
   const emit = defineEmits(["update:modelValue"]);
 
   computed({
@@ -141,7 +138,8 @@ const trendStyle = computed(() => {
 const selectedOptions = ref([]);
 
 const saveSelectedEvents = async () => {
-  adminStore.setSelectedEvents(selectedOptions.value);
+  adminStore.selectedEvents = selectedOptions.value;
+
   snackBarStore.pushMessage("Event-Filteri ažurirani!", "success");
   await Utils.wait(0.5);
   location.reload();
@@ -155,8 +153,10 @@ const setDefaultFilters = () => {
         !ActivityEventMappings.isGatewayEvent(event.activity_id)
     )
     .map((event) => event.activity_id);
+
   selectedOptions.value = defaultEvents;
-  adminStore.setSelectedEvents(defaultEvents);
+
+  adminStore.selectedEvents = defaultEvents;
   snackBarStore.pushMessage("Event-Filteri resetirani!", "success");
 };
 

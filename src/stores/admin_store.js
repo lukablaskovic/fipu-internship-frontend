@@ -4,6 +4,7 @@ import { mainStore } from "@/main";
 import { User } from "@/services/gateway_api";
 import { Model, ProcessInstance } from "@/services/bpmn_engine_api";
 import { Admin } from "@/services/baserow_client_api";
+import { SendGrid } from "@/services/sendgrid_client_api";
 
 export const useAdminStore = defineStore("admin", {
   state: () => ({
@@ -19,19 +20,22 @@ export const useAdminStore = defineStore("admin", {
       ongoing_internships: 0,
       waiting_for_allocation: 0,
       waiting_for_evaluation: 0,
-      selectedEvents: [],
-      events: [],
-      relativeToNowTimestmap: true,
     },
+
+    selectedEvents: [],
+    events: [],
+    relativeToNowTimestmap: true,
 
     bpmn_diagram: {
       clicked_task_id: null,
+      selected_send_task_id: null,
     },
 
     pdfModalActive: false,
     modalTitle: "",
     pdfSource: "",
   }),
+
   actions: {
     async getAllocations() {
       try {
@@ -52,7 +56,7 @@ export const useAdminStore = defineStore("admin", {
         return null;
       }
     },
-    openPDFModal(allocation, type, sourceUrl) {
+    openPDFModal(allocation, type) {
       const student = this.students.find((stud) => {
         return (
           stud.process_instance_data.variables.id_alokacija ===
@@ -78,9 +82,6 @@ export const useAdminStore = defineStore("admin", {
       this.pdfModalActive = true;
     },
 
-    setSelectedEvents(events) {
-      this.dashboard_data.selectedEvents = events;
-    },
     setSelectedStudent(student) {
       this.selectedStudent = student;
     },
@@ -112,10 +113,11 @@ export const useAdminStore = defineStore("admin", {
         }
 
         this.dashboard_data = {
-          waiting_for_allocation: 0,
-          waiting_for_evaluation: 0,
           waiting_for_mark: 0,
           finished_internships: 0,
+          ongoing_internships: 0,
+          waiting_for_allocation: 0,
+          waiting_for_evaluation: 0,
         };
 
         const taskToDashboardMapping = {
@@ -131,6 +133,8 @@ export const useAdminStore = defineStore("admin", {
           const pendingTask = student.process_instance_data.pending[0];
           student.process_instance_data.pending_task_info =
             await this.getTaskInfo(student.process_instance_id, pendingTask);
+
+          console.log(pendingTask);
 
           if (taskToDashboardMapping[pendingTask]) {
             this.dashboard_data[taskToDashboardMapping[pendingTask]]++;
@@ -156,6 +160,7 @@ export const useAdminStore = defineStore("admin", {
         console.log("Error:", error);
       }
     },
+
     async searchModels() {
       try {
         const response = await Model.search();
@@ -188,11 +193,13 @@ export const useAdminStore = defineStore("admin", {
           }
         });
         this.events = response;
+
         return this.events;
       } catch (error) {
         console.log("Error:", error);
       }
     },
+
     async handleTask(id_zadatak, action) {
       try {
         const response = await Admin.handleTask(id_zadatak, action);
@@ -209,6 +216,15 @@ export const useAdminStore = defineStore("admin", {
           post_data
         );
 
+        return response;
+      } catch (error) {
+        console.log("Error:", error);
+      }
+    },
+    async sendAnAdditionalEmail(postData, to, template) {
+      try {
+        const response = await SendGrid.sendEmail(postData, to, template);
+        console.log("sendAnAdditionalEmail", response);
         return response;
       } catch (error) {
         console.log("Error:", error);

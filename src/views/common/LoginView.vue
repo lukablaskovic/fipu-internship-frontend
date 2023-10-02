@@ -26,6 +26,10 @@ import Utils from "@/helpers/utils";
 import { getFirstErrorForField, isUnipuEmail } from "@/helpers/validators";
 import { mainStore } from "@/main";
 
+//Public images
+import loginArt from "/login_art.jpg";
+import fipu_unipu from "/fipu_unipu.png";
+
 const loginForm = reactive({
   email: "admin@fipu.hr",
   password: "123456",
@@ -141,11 +145,7 @@ function navigateToRegister() {
             class="hidden xl:block flex-1 bg-opacity-0 grow p-16 xl:px-0 xl:py-16 2xl:py-24 || transition-all duration-300"
             centered-content
           >
-            <img
-              src="login_art.jpg"
-              alt="Login graphics"
-              class="2xl:pr-8 w-full"
-            />
+            <img :src="loginArt" alt="Login graphics" class="2xl:pr-8 w-full" />
           </CardBox>
 
           <CardBox
@@ -156,7 +156,7 @@ function navigateToRegister() {
           >
             <a href="https://fipu.unipu.hr/" target="_blank">
               <img
-                src="fipu_unipu.png"
+                :src="fipu_unipu"
                 alt="fipu logo"
                 class="h-16 mb-6 object-contain"
               />

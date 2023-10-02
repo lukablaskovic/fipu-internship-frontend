@@ -44,7 +44,7 @@ const routes = [
     meta: {
       title: "Alokacije",
       requiresAuth: true,
-      requiresAdmin: false,
+      requiresAdmin: true,
     },
     path: "/alokacije",
     name: "alokacije",
@@ -58,7 +58,7 @@ const routes = [
     },
     path: "/dostupni-zadaci",
     name: "dostupni-zadaci",
-    component: () => import("@/views/admin/AvailableAssignmentsview.vue"),
+    component: () => import("@/views/admin/AvailableAssignments.vue"),
   },
   {
     meta: {
@@ -126,16 +126,7 @@ const routes = [
     name: "register",
     component: () => import("@/views/common/RegisterView.vue"),
   },
-  {
-    meta: {
-      title: "BPMN - Procesi",
-      requiresAuth: true,
-      requiresAdmin: true,
-    },
-    path: "/bpmn/models",
-    name: "bpmn-models",
-    component: () => import("@/views/admin/bpmn/ModelsView.vue"),
-  },
+
   {
     meta: {
       title: "BPMN - Mikroservisi",

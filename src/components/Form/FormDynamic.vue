@@ -20,7 +20,8 @@
         :data="getTableType(field.type)"
         @row-selected="handleRowSelected"
       />
-      <p v-if="field.type.startsWith('selectFromTable')" class="mt-2">
+
+      <p v-if="field.type.startsWith('selectFromTable')" class="mt-2 mb-4">
         Odabrali ste: <b> {{ formValues["Alocirani_zadatak"] }} </b>
       </p>
     </div>

@@ -1,5 +1,4 @@
 import { ActivityEventMappings } from "./helpers/maps";
-import { mdiDelete, mdiDialpad, mdiFileDocumentMultipleOutline } from "@mdi/js";
 
 const transformedEvents = ActivityEventMappings.events.map((event) => ({
   id: event.activity_id,

@@ -1,15 +1,10 @@
-import { mdiLaptop, mdiClipboardCheck, mdiDomain } from "@mdi/js";
+import { mdiLaptop, mdiDomain } from "@mdi/js";
 
 export default [
   {
     to: "/moja-praksa",
     icon: mdiLaptop,
     label: "Moja praksa",
-  },
-  {
-    to: "/alokacije",
-    icon: mdiClipboardCheck,
-    label: "Alokacije",
   },
   {
     to: "/poslodavci",

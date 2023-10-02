@@ -1,5 +1,5 @@
 <script setup>
-import { ref, computed, onBeforeMount } from "vue";
+import { ref, computed, onMounted } from "vue";
 import { mainStore, studentStore } from "@/main.js";
 import { UserTaskMappings } from "@/helpers/maps";
 
@@ -9,7 +9,7 @@ const processInstance = ref(null);
 const pendingProcessTask = ref(null);
 const error = ref(null);
 
-onBeforeMount(async () => {
+onMounted(async () => {
   if (mainStore.userAuthenticated) {
     try {
       processInstance.value = mainStore.currentUser.internship_process.id;

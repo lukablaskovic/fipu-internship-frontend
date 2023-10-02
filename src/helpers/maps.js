@@ -59,6 +59,85 @@ import Student_ChooseAvailableAssignments from "@/components/Internship/Student_
 
 import { adminStore } from "@/main";
 
+// Custom - Hardcoded frontend functionality
+class SendTaskMappings {
+  static tasks = [
+    {
+      _id: "obavjestavanje_studenta_nakon_ponistavanja_email",
+      to: "student_email",
+      template: "student_after_return",
+      body: {},
+    },
+    {
+      _id: "obavjestavanje_poslodavca_nakon_alokacije",
+      to: "poslodavac_email",
+      template: "poslodavac_after_allocation",
+      body: {
+        student_ime: "",
+        student_prezime: "",
+        student_godina_studija: "",
+        student_email: "",
+        Alocirani_zadatak: "",
+        process_instance_id: "",
+        evaluacija_url: (processInstanceId) =>
+          `${
+            import.meta.env.VITE_DASHBOARD_URL
+          }/#/evaluacija/${processInstanceId}`,
+      },
+    },
+
+    {
+      _id: "obavjestavanje_studenta_nakon_alokacije",
+      to: "student_email",
+      template: "student_after_allocation",
+      body: {
+        poslodavac_email: "",
+        Alocirani_zadatak: "",
+        opis_zadatka: "",
+      },
+    },
+    {
+      _id: "obavjestavanje_studenta_nakon_odbijanja_email",
+      to: "student_email",
+      template: "student_after_refusal",
+      body: {},
+    },
+    {
+      _id: "obavjestavanje_studenta_nakon_prihvacanja_email",
+      to: "student_email",
+      template: "student_after_approval",
+      body: {
+        process_instance_id: "",
+        poslodavac_naziv: "",
+      },
+    },
+    {
+      _id: "slanje_potvrde_student_email",
+      to: "student_email",
+      template: "student_potvrda_pdf",
+      body: {
+        attachment_name: "", //${student_prezime}_potvrda.pdf
+        process_instance_id: "",
+        pdf_attachment_url: "",
+        mentor_email: "",
+      },
+    },
+    {
+      _id: "slanje_potvrde_mentor_email",
+      to: "mentor_email",
+      template: "mentor_potvrda_pdf",
+      body: {
+        attachment_name: "", //${student_prezime}_potvrda.pdf
+        process_instance_id: "",
+        pdf_attachment_url: "",
+        student_email: "",
+        student_ime: "",
+        student_prezime: "",
+      },
+    },
+  ];
+}
+
 class UserTaskMappings {
   static tasks = [
     {
@@ -154,8 +233,10 @@ import {
   mdiApi,
   mdiEmailArrowRight,
   mdiCertificate,
+  mdiCancel,
 } from "@mdi/js";
 import Student_InternshipFinished from "@/components/Internship/Student_InternshipFinished.vue";
+import Utils from "./utils";
 
 class ActivityEventMappings {
   static events = [
@@ -180,8 +261,26 @@ class ActivityEventMappings {
     {
       activity_id: "alociranje_profesor",
       icon: mdiNoteCheck,
-      type: "danger",
+      type: "success",
       message: "Zadatak alociran",
+    },
+    {
+      activity_id: "odabir_prihvacen",
+      icon: mdiThumbsUpDownOutline,
+      type: "success",
+      message: "Preferencije prihvaćene",
+    },
+    {
+      activity_id: "spremanje_zahtjeva_profesor_ponistio",
+      icon: mdiCancel,
+      type: "danger",
+      message: "Profesor poništio prijavljene preferencije",
+    },
+    {
+      activity_id: "obavjestavanje_studenta_nakon_ponistavanja_email",
+      icon: mdiEmailArrowRight,
+      type: "info",
+      message: "Student obavješten o vraćanju",
     },
     {
       activity_id: "spremanje_alokacija",
@@ -218,6 +317,12 @@ class ActivityEventMappings {
       icon: mdiAccountTie,
       type: "warning",
       message: "Poslodavac obavio evaluaciju",
+    },
+    {
+      activity_id: "spremanje_zahtjeva_prihvacanje",
+      icon: mdiContentSaveOutline,
+      type: "success",
+      message: "Student prihvaćen nakon evaluacije",
     },
     {
       activity_id: "obavjestavanje_studenta_nakon_prihvacanja_email",
@@ -280,11 +385,14 @@ class ActivityEventMappings {
       message: "Student ocjenjen",
     },
   ];
+
   static skipEvents = [
     "spremanje_alokacija",
     "uzimanje_podataka_o_poslodavcu_student",
+    "spremanje_zahtjeva_profesor_ponistio",
     "obavjestavanje_poslodavca_nakon_alokacije",
     "obavjestavanje_studenta_nakon_alokacije",
+    "obavjestavanje_studenta_nakon_ponistavanja_email",
     "student_prihvacen",
     "obavjestavanje_studenta_nakon_prihvacanja_email",
     "azuriranje_podataka_profesor",
@@ -304,17 +412,14 @@ class ActivityEventMappings {
   }
 
   static shouldSkipEvent(activityId) {
-    const selectedEvents = adminStore.dashboard_data.selectedEvents;
-
-    // If no events are selected, use the default skip logic
-    if (!selectedEvents.length) {
+    if (Utils.isArrayEmpty(adminStore.selectedEvents)) {
       return (
         this.skipEvents.includes(activityId) || this.isGatewayEvent(activityId)
       );
     }
 
     // If events are selected, skip those not in the list
-    return !selectedEvents.includes(activityId);
+    return !adminStore.selectedEvents.includes(activityId);
   }
 
   // Existing method to get event based on activityId
@@ -323,4 +428,9 @@ class ActivityEventMappings {
   }
 }
 
-export { StudentMappings, UserTaskMappings, ActivityEventMappings };
+export {
+  StudentMappings,
+  UserTaskMappings,
+  ActivityEventMappings,
+  SendTaskMappings,
+};

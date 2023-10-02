@@ -11,6 +11,9 @@ import BaseIcon from "@/components/Base/BaseIcon.vue";
 import OverlayLayer from "@/components/OverlayLayer.vue";
 import AsideMenuLayer from "@/components/AsideMenu/AsideMenuLayer.vue";
 import AsideMenuItem from "@/components/AsideMenu/AsideMenuItem.vue";
+
+import FIPU_praksa_logo_transparent from "/FIPU_praksa_logo_transparent.svg";
+
 defineProps({
   menu: {
     type: Array,
@@ -90,38 +93,70 @@ const expandCollapseItem = computed(() => ({
     ? mdiChevronRightCircleOutline
     : mdiChevronLeftCircleOutline,
   color: "info",
-  size: 24
+  size: 24,
 }));
 </script>
 
 <template>
-    <AsideMenuLayer :menu="menu" @menu-click="menuClickPrimaryMenu"
-        :z-index="secondaryMenuItem ? 'z-40 md:z-50' : 'z-50'" :is-compact="isPrimaryMenuCompact" :active-secondary-menu-key="secondaryMenuItem?.key" 
-        :class="[ layoutStore.isAsideMobileExpanded ? 'left-0' : '-left-60 lg:left-0',
-                  isPrimaryMenuCompact ? '' : '',
-                  { 'lg:hidden xl:flex': !layoutStore.isAsideLgActive },]">
+  <AsideMenuLayer
+    :menu="menu"
+    :class="[
+      layoutStore.isAsideMobileExpanded ? 'left-0' : '-left-60 lg:left-0',
+      isPrimaryMenuCompact ? '' : '',
+      { 'lg:hidden xl:flex': !layoutStore.isAsideLgActive },
+    ]"
+    :is-compact="isPrimaryMenuCompact"
+    :z-index="secondaryMenuItem ? 'z-40 md:z-50' : 'z-50'"
+    :active-secondary-menu-key="secondaryMenuItem?.key"
+    @menu-click="menuClickPrimaryMenu"
+  >
+    <router-link to="/">
+      <div
+        class="flex flex-row items-center justify-center p-2 dark:bg-slate-900"
+      >
+        <img
+          :src="FIPU_praksa_logo_transparent"
+          class="max-h-14 object-contain"
+        />
+      </div>
+    </router-link>
+    <template #footer>
+      <ul class="hidden lg:block">
+        <AsideMenuItem
+          :item="expandCollapseItem"
+          :is-compact="isPrimaryMenuCompact"
+          @menu-click="isPrimaryMenuCompact = !isPrimaryMenuCompact"
+        />
+      </ul>
+    </template>
+  </AsideMenuLayer>
 
-        <router-link to="/">
-            <div class="flex flex-row items-center justify-center p-2 dark:bg-slate-900">
-                <img src="FIPU_praksa_logo_transparent.svg" class="max-h-14 object-contain" />
-            </div>
-        </router-link>
-        <template #footer>
-            <ul class="hidden lg:block">
-                <AsideMenuItem :item="expandCollapseItem" :is-compact="isPrimaryMenuCompact" @menu-click="isPrimaryMenuCompact = !isPrimaryMenuCompact"/>
-            </ul>
-        </template>
+  <AsideMenuLayer
+    v-if="secondaryMenuItem"
+    :menu="secondaryMenuItem.menuSecondary"
+    @menu-click="menuClickSecondaryMenu"
+    :class="[isPrimaryMenuCompact ? 'lg:left-22' : 'md:left-60']"
+    class="right-0 md:right-auto animate-fade-in-right-fast lg:animate-fade-in-left-fast"
+  >
+    <BaseIcon
+      v-if="secondaryMenuItem.icon"
+      :path="secondaryMenuItem.icon"
+      w="w-16"
+    />
+    <div class="flex-1">
+      {{ secondaryMenuItem.label }}
+    </div>
+    <BaseIcon
+      :path="mdiClose"
+      class="cursor-pointer"
+      w="w-12"
+      @click="closeSecondaryMenu"
+    />
+  </AsideMenuLayer>
 
-    </AsideMenuLayer>
-
-    <AsideMenuLayer v-if="secondaryMenuItem" :menu="secondaryMenuItem.menuSecondary" @menu-click="menuClickSecondaryMenu"
-        :class="[isPrimaryMenuCompact ? 'lg:left-22' : 'md:left-60']" class="right-0 md:right-auto animate-fade-in-right-fast lg:animate-fade-in-left-fast">
-        <BaseIcon v-if="secondaryMenuItem.icon" :path="secondaryMenuItem.icon" w="w-16" />
-            <div class="flex-1">
-                {{ secondaryMenuItem.label }}
-            </div>
-        <BaseIcon :path="mdiClose" class="cursor-pointer" w="w-12" @click="closeSecondaryMenu" />
-    </AsideMenuLayer>
-
-    <OverlayLayer :type="overlayLayerDisplayType" z-index="z-40" @overlay-click="overlayClick" />
+  <OverlayLayer
+    :type="overlayLayerDisplayType"
+    z-index="z-40"
+    @overlay-click="overlayClick"
+  />
 </template>
