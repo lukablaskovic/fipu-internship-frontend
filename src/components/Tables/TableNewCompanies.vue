@@ -201,7 +201,6 @@ const pagesList = computed(() => {
     title="Potvrda akcije"
     button-label="Ažuriraj"
     has-cancel
-    @cancel="cancelTaskAction"
     @confirm="confirmTaskAction"
   >
     <div class="mb-4">

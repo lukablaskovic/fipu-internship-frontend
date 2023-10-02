@@ -31,7 +31,7 @@ import CardBoxModal from "@/components/Cardbox/CardBoxModal.vue";
           v-model="adminStore.pdfModalActive"
           title=""
           button-label="Zatvori"
-          has-confirm="false"
+          :has-confirm="false"
           large=""
         >
           <div class="mt-6">
