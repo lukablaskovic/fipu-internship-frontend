@@ -155,9 +155,9 @@ export const useAdminStore = defineStore("admin", {
         this.studentsFetched = true;
       }
     },
-    async getPreferencesDetailed(student_JMBAG) {
+    async getPreferencesDetailed(id_alokacija) {
       try {
-        const response = await Admin.getPreferencesDetailed(student_JMBAG);
+        const response = await Admin.getPreferencesDetailed(id_alokacija);
         return response;
       } catch (error) {
         console.log("Error:", error);

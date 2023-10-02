@@ -156,7 +156,7 @@ class UserTaskMappings {
       _id: "alociranje_profesor",
       name: "Čeka alokaciju profesora",
       form_title: "Alokacija studenta",
-      snackbar_msg: "Zadatak alociran!",
+      snackbar_msg: "Radnja registrirana. Hvala!",
       snackbar_color: "success",
       bpmn_task_color: "#EF4444", //bg-red-500
       component: Student_WaitingForAllocation,

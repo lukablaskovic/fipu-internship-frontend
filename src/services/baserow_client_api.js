@@ -111,10 +111,10 @@ const Admin = {
     }
   },
 
-  async getPreferencesDetailed(student_JMBAG) {
+  async getPreferencesDetailed(id_alokacija) {
     try {
       let result = await AxiosWrapper.get(
-        `/student_preferencije/detailed/${student_JMBAG}`
+        `/student_preferencije/detailed/${id_alokacija}`
       );
       return result.data;
     } catch (error) {

@@ -106,6 +106,7 @@ Napomena: Da biste prijavili preferencije, morate biti prijavljeni u aplikaciji!
           <camunda:inputParameter name="JMBAG">${JMBAG}</camunda:inputParameter>
           <camunda:outputParameter name="student_id" />
           <camunda:outputParameter name="id_alokacija" />
+          <camunda:outputParameter name="id_preferencije" />
         </camunda:inputOutput>
       </bpmn:extensionElements>
       <bpmn:incoming>Flow_1duw845</bpmn:incoming>
@@ -663,9 +664,6 @@ https://www.isvu.hr/nastavnickiportal/hr/prijava</bpmn:documentation>
       <bpmndi:BPMNShape id="BPMNShape_091jyrv" bpmnElement="obavjestavanje_studenta_nakon_ponistavanja_email">
         <dc:Bounds x="430" y="290" width="100" height="80" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="BPMNShape_0pvrnrj" bpmnElement="uzimanje_podataka_o_poslodavcu_student">
-        <dc:Bounds x="680" y="450" width="100" height="80" />
-      </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Activity_1qgovhp_di" bpmnElement="evaluacija_poslodavac">
         <dc:Bounds x="930" y="140" width="100" height="80" />
       </bpmndi:BPMNShape>
@@ -688,6 +686,9 @@ https://www.isvu.hr/nastavnickiportal/hr/prijava</bpmn:documentation>
       <bpmndi:BPMNShape id="Activity_098cswa_di" bpmnElement="spremanje_alokacija">
         <dc:Bounds x="560" y="550" width="100" height="80" />
         <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_0pvrnrj" bpmnElement="uzimanje_podataka_o_poslodavcu_student">
+        <dc:Bounds x="680" y="450" width="100" height="80" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Gateway_10wwbee_di" bpmnElement="Gateway_022ukch">
         <dc:Bounds x="1155" y="515" width="50" height="50" />
@@ -777,10 +778,6 @@ https://www.isvu.hr/nastavnickiportal/hr/prijava</bpmn:documentation>
         <di:waypoint x="1030" y="180" />
         <di:waypoint x="1055" y="180" />
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_064rrii_di" bpmnElement="Flow_064rrii">
-        <di:waypoint x="730" y="530" />
-        <di:waypoint x="730" y="550" />
-      </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_0looqv9_di" bpmnElement="Flow_0looqv9">
         <di:waypoint x="780" y="590" />
         <di:waypoint x="800" y="590" />
@@ -788,11 +785,6 @@ https://www.isvu.hr/nastavnickiportal/hr/prijava</bpmn:documentation>
       <bpmndi:BPMNEdge id="Flow_1cbfvw0_di" bpmnElement="Flow_1cbfvw0">
         <di:waypoint x="350" y="530" />
         <di:waypoint x="350" y="550" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_1igkxom_di" bpmnElement="Flow_1igkxom">
-        <di:waypoint x="610" y="550" />
-        <di:waypoint x="610" y="490" />
-        <di:waypoint x="680" y="490" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_1xv4qjm_di" bpmnElement="Flow_1xv4qjm">
         <di:waypoint x="1080" y="155" />
@@ -828,6 +820,15 @@ https://www.isvu.hr/nastavnickiportal/hr/prijava</bpmn:documentation>
       <bpmndi:BPMNEdge id="Flow_1nl8tts_di" bpmnElement="Flow_1nl8tts">
         <di:waypoint x="1130" y="540" />
         <di:waypoint x="1155" y="540" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1igkxom_di" bpmnElement="Flow_1igkxom">
+        <di:waypoint x="610" y="550" />
+        <di:waypoint x="610" y="490" />
+        <di:waypoint x="680" y="490" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_064rrii_di" bpmnElement="Flow_064rrii">
+        <di:waypoint x="730" y="530" />
+        <di:waypoint x="730" y="550" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_10qrmyc_di" bpmnElement="Flow_10qrmyc">
         <di:waypoint x="1205" y="540" />
