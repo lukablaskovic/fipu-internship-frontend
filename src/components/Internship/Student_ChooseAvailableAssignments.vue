@@ -85,6 +85,7 @@ const registerPreferences = async () => {
 
   if (!mainStore.userAuthenticated) {
     showNotificationBar("warning");
+    isLoading.value = false;
     return;
   } else {
     let result = await studentStore.registerPreferences(
