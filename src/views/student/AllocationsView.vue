@@ -18,7 +18,7 @@ import CardBoxModal from "@/components/Cardbox/CardBoxModal.vue";
       <SectionMain>
         <SectionTitleLineWithButton
           :icon="mdiClipboardCheck"
-          title="Alokacije Studenata"
+          title="Alokacije Prakse"
           main
         >
         </SectionTitleLineWithButton>

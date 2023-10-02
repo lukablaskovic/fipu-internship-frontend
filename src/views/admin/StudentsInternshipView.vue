@@ -168,7 +168,7 @@ onMounted(loadDataForStudent);
       <SectionMain>
         <SectionTitleLineWithButton
           :icon="mdiAccountMultiple"
-          title="Studenti u procesu prakse"
+          title="Studenti u Procesu Prakse"
           button-enabled
           main
         >

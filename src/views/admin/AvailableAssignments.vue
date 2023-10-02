@@ -34,7 +34,7 @@ const addNewAssignmentLink = ref(
       <SectionMain>
         <SectionTitleLineWithButton
           :icon="mdiClipboardPlusOutline"
-          title="Novi zadaci (u razradi)"
+          title="Novi Zadaci (u razradi)"
           main
         >
         </SectionTitleLineWithButton>
@@ -79,7 +79,7 @@ const addNewAssignmentLink = ref(
         <SectionTitleLineWithButton
           class="mt-8"
           :icon="mdiClipboardTextOff"
-          title="Odbijeni zadaci"
+          title="Odbijeni Zadaci"
           main
         >
         </SectionTitleLineWithButton>

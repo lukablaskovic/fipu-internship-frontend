@@ -12,6 +12,7 @@ import {
   mdiAlertBox,
   mdiClockTimeEight,
   mdiCalendarClock,
+  mdiChartBar,
 } from "@mdi/js";
 import { useRouter } from "vue-router";
 import moment from "@/moment-setup";
@@ -47,6 +48,7 @@ const waiting_for_mark = ref(0);
 const finished_internships = ref(0);
 
 let events = ref([]);
+let eventsFetchError = ref(false);
 
 onMounted(async () => {
   try {
@@ -61,13 +63,21 @@ onMounted(async () => {
     waiting_for_mark.value = adminStore.dashboard_data.waiting_for_mark;
     finished_internships.value = adminStore.dashboard_data.finished_internships;
 
-    await adminStore.getEvents();
+    let fetchedEvents = await adminStore.getEvents();
 
-    events.value = adminStore.events
-      .filter(
-        (event) => !ActivityEventMappings.shouldSkipEvent(event.activity_id)
-      )
-      .reverse();
+    if (fetchedEvents === null) {
+      eventsFetchError.value = true;
+      snackBarStore.pushMessage(
+        "Nakon više ponovljenih pokušaja, nije moguće dohvatiti evente.",
+        "danger"
+      );
+    } else {
+      events.value = fetchedEvents
+        .filter(
+          (event) => !ActivityEventMappings.shouldSkipEvent(event.activity_id)
+        )
+        .reverse();
+    }
   } catch (error) {
     console.error("Dashboard rendering error:", error);
   }
@@ -119,15 +129,13 @@ const toggleDateType = () => {
       <SectionMain>
         <SectionTitleLineWithButton
           :icon="mdiViewDashboard"
-          title="Nadzorna ploča"
+          title="Nadzorna Ploča"
           main
         >
         </SectionTitleLineWithButton>
         <div class="grid grid-cols-1 gap-6 lg:grid-cols-3 mb-6">
           <CardBoxWidget
             v-if="adminStore.studentsFetched"
-            trend="10%"
-            trend-type="up"
             color="text-fipu_blue"
             class="rounded-lg"
             :icon="mdiAccountSchoolOutline"
@@ -138,8 +146,6 @@ const toggleDateType = () => {
 
           <CardBoxWidget
             v-if="adminStore.studentsFetched"
-            trend="10%"
-            trend-type="up"
             color="text-fipu_blue"
             class="rounded-lg"
             :icon="mdiAccountMultiple"
@@ -149,8 +155,6 @@ const toggleDateType = () => {
           <SkeletonLoader v-else></SkeletonLoader>
           <CardBoxWidget
             v-if="adminStore.studentsFetched"
-            trend="10%"
-            trend-type="up"
             color="text-fipu_blue"
             class="rounded-lg"
             :icon="mdiProgressClock"
@@ -164,8 +168,6 @@ const toggleDateType = () => {
         <div class="grid grid-cols-1 gap-6 lg:grid-cols-3 mb-6">
           <CardBoxWidget
             v-if="adminStore.studentsFetched"
-            trend="10%"
-            trend-type="up"
             color="text-fipu_blue"
             class="rounded-lg"
             :icon="mdiMonitorAccount"
@@ -176,8 +178,6 @@ const toggleDateType = () => {
 
           <CardBoxWidget
             v-if="adminStore.studentsFetched"
-            trend="10%"
-            trend-type="up"
             color="text-fipu_blue"
             class="rounded-lg"
             :icon="mdiAccountCancel"
@@ -188,8 +188,6 @@ const toggleDateType = () => {
 
           <CardBoxWidget
             v-if="adminStore.studentsFetched"
-            trend="10%"
-            trend-type="up"
             color="text-fipu_blue"
             class="rounded-lg"
             :icon="mdiAlertBox"
@@ -201,13 +199,13 @@ const toggleDateType = () => {
 
         <SectionTitleLineWithButton
           :icon="mdiCommentProcessing"
-          title="Najnoviji događaji"
+          title="Najnoviji Događaji"
           main
           @click="eventsOptionsActive = true"
         >
         </SectionTitleLineWithButton>
 
-        <div class="flex flex-row">
+        <div v-if="!eventsFetchError" class="flex flex-row">
           <div class="mb-4">
             <PillTagFilter
               class="cursor-pointer"
@@ -239,7 +237,7 @@ const toggleDateType = () => {
           </div>
         </div>
         <div
-          v-if="!Utils.isArrayEmpty(events)"
+          v-if="!eventsFetchError && !Utils.isArrayEmpty(events)"
           class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6"
         >
           <div class="flex flex-col">
@@ -285,7 +283,10 @@ const toggleDateType = () => {
             />
           </div>
         </div>
-        <div v-else class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+        <div
+          v-else-if="!eventsFetchError && Utils.isArrayEmpty(events)"
+          class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6"
+        >
           <div class="flex flex-col">
             <SkeletonLoaderEvent />
             <SkeletonLoaderEvent />
@@ -297,7 +298,13 @@ const toggleDateType = () => {
             <SkeletonLoaderEvent />
           </div>
         </div>
-        <div class="p-3 lg:px-6 border-t border-gray-100 dark:border-slate-800">
+        <div v-else class="text-red-500 mb-6">
+          Nakon više ponovljenih pokušaja, nije moguće dohvatiti evente.
+        </div>
+        <div
+          v-if="!eventsFetchError"
+          class="p-3 lg:px-6 border-t border-gray-100 dark:border-slate-800"
+        >
           <BaseLevel>
             <BaseButtons>
               <BaseButton
@@ -313,6 +320,14 @@ const toggleDateType = () => {
             <small>Stranica {{ currentPageHuman }} od {{ numPages }}</small>
           </BaseLevel>
         </div>
+
+        <SectionTitleLineWithButton
+          :icon="mdiChartBar"
+          title="Pregled Trendova"
+          main
+          @click="eventsOptionsActive = true"
+        >
+        </SectionTitleLineWithButton>
       </SectionMain>
     </LayoutAuthenticated>
   </div>

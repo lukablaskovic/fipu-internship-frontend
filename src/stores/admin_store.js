@@ -5,6 +5,7 @@ import { User } from "@/services/gateway_api";
 import { Model, ProcessInstance } from "@/services/bpmn_engine_api";
 import { Admin } from "@/services/baserow_client_api";
 import { SendGrid } from "@/services/sendgrid_client_api";
+import Utils from "@/helpers/utils";
 
 export const useAdminStore = defineStore("admin", {
   state: () => ({
@@ -183,6 +184,7 @@ export const useAdminStore = defineStore("admin", {
     async getEvents() {
       try {
         const response = await Model.getEvents();
+        if (Utils.isArrayEmpty(response.results)) return null;
         response.forEach((event) => {
           const student = this.students.find(
             (stud) => stud.process_instance_id === event.instance_id

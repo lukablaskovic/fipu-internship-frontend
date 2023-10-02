@@ -22,12 +22,24 @@ const Model = {
       return [];
     }
   },
-  async getEvents() {
-    try {
-      let result = await AxiosWrapper.get("/events");
-      return result.results;
-    } catch (e) {
-      return [];
+  async getEvents(retries = 3) {
+    while (retries > 0) {
+      try {
+        let result = await AxiosWrapper.get("/events");
+        if (!result || result.length === 0) {
+          throw new Error("No events found.");
+        }
+        return result;
+      } catch (error) {
+        if (retries === 1) {
+          console.error(
+            "Failed to fetch events after multiple attempts:",
+            error
+          );
+          return null;
+        }
+        retries--;
+      }
     }
   },
 };

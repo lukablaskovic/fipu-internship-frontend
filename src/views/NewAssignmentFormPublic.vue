@@ -132,14 +132,10 @@ const v$ = useVuelidate(rules, form);
 
 async function onSubmit() {
   console.log("form", form);
-
+  isLoading.value = true;
   v$.value.$touch();
   if (v$.value.$invalid) {
-    console.log("angazman_selekcija:", form.angazman_selekcija);
-    console.log("selekcija:", form.selekcija);
-
-    console.log("Vuelidate state:", v$.value);
-
+    isLoading.value = false;
     return;
   }
 
@@ -435,7 +431,7 @@ const onCompanyChange = () => {
 
           <FormField
             label="Selekcijski postupak"
-            help="Želimo provesti dodatnu selekciju kandidata koji se jave na praksu
+            help="Želimo provesti dodatnu selekciju kandidata koji se jave na praksu.
 "
             horizontal
           >
