@@ -139,6 +139,14 @@ export const useMainStore = defineStore("main", {
         console.log("Error:", error);
       }
     },
+    async updatePassword(old_password, new_password) {
+        let updates = {
+            "old_password" : old_password,
+	        "new_password" : new_password
+        }
+        let response = await User.updatePassword(updates);
+        return response;
+    }
   },
   persist: true,
 });
