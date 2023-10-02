@@ -168,7 +168,6 @@ import MdiPagePreviousOutline from "vue-material-design-icons/PagePreviousOutlin
 import MdiClipboardText from "vue-material-design-icons/ClipboardText.vue";
 import MdiDomain from "vue-material-design-icons/Domain.vue";
 
-const events = [{ id: 1, name: "Some event" }];
 const searchInput = ref(null);
 
 let selectedValue = ref("");
@@ -219,13 +218,6 @@ onMounted(async () => {
 });
 
 let query = ref("");
-
-//Currently not in use
-let studentData = computed(() => {
-  return adminStore.students.map(
-    (student) => student.process_instance_data.variables
-  );
-});
 
 let filteredResults = computed(() => {
   const searchTerm = query.value

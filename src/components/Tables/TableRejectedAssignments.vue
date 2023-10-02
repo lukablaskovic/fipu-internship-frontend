@@ -9,7 +9,7 @@ import BaseButtons from "@/components/Base/BaseButtons.vue";
 import BaseButton from "@/components/Base/BaseButton.vue";
 import LoadingOverlay from "@/components/LoadingOverlay.vue";
 import { mainStore, guestStore, adminStore } from "@/main.js";
-import { useRouter, useRoute } from "vue-router";
+import { useRoute } from "vue-router";
 
 defineProps({
   checkable: Boolean,
@@ -22,7 +22,6 @@ const allAvailableAssignments = ref([]);
 
 let checkedAssignments = computed(() => guestStore.checkedAssignments);
 let assignment_highlight = ref("");
-const router = useRouter();
 const route = useRoute();
 
 async function loadData() {

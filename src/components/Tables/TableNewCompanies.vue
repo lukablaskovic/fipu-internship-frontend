@@ -11,7 +11,7 @@ import { mainStore, adminStore, snackBarStore } from "@/main.js";
 import UserAvatar from "@/components/User/UserAvatar.vue";
 import FormControl from "../Form/FormControl.vue";
 import Utils from "@/helpers/utils";
-import { useRouter, useRoute } from "vue-router";
+import { useRoute } from "vue-router";
 
 defineProps({
   checkable: Boolean,
@@ -20,7 +20,6 @@ defineProps({
 const newCompanies = ref([]);
 
 let company_highlight = ref("");
-const router = useRouter();
 const route = useRoute();
 
 async function loadData() {

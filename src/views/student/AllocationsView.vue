@@ -1,5 +1,5 @@
 <script setup>
-import { adminStore, mainStore } from "@/main.js";
+import { adminStore } from "@/main.js";
 import { mdiClipboardCheck, mdiFilePdfBox } from "@mdi/js";
 import VuePdfEmbed from "vue-pdf-embed";
 
