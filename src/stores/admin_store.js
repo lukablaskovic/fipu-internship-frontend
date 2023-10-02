@@ -185,20 +185,22 @@ export const useAdminStore = defineStore("admin", {
       try {
         const response = await Model.getEvents();
         if (Utils.isArrayEmpty(response.results)) return null;
-        response.forEach((event) => {
-          const student = this.students.find(
-            (stud) => stud.process_instance_id === event.instance_id
-          );
-          if (student) {
-            event.student_ime = student["ime"];
-            event.student_prezime = student["prezime"];
-            event.student_JMBAG = student["JMBAG"];
-            event.student_email = student["email"];
-          }
-        });
-        this.events = response;
+        else {
+          response.results.forEach((event) => {
+            const student = this.students.find(
+              (stud) => stud.process_instance_id === event.instance_id
+            );
+            if (student) {
+              event.student_ime = student["ime"];
+              event.student_prezime = student["prezime"];
+              event.student_JMBAG = student["JMBAG"];
+              event.student_email = student["email"];
+            }
+          });
+          this.events = response.results;
 
-        return this.events;
+          return this.events;
+        }
       } catch (error) {
         console.log("Error:", error);
       }
