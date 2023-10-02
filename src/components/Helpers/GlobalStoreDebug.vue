@@ -50,7 +50,7 @@ const newValueFormatted = computed(() => {
         </div>
     </div>
     <div class="absolute bottom-2 right-2 z-[2000]" @click="mainStore.debug = !mainStore.debug">
-        <BaseIcon :path="mdiHelpCircle" :h="40" :w="40" :size="40" class="text-main_lighttext hover:text-main_cyan text-4xl hover:cursor-pointer mr-2 opacity-50"/>
+        <BaseIcon :path="mdiHelpCircle" h="40" w="40" :size="40" class="text-main_lighttext hover:text-main_cyan text-4xl hover:cursor-pointer mr-2 opacity-50"/>
     </div>
 </template>
 

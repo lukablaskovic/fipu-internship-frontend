@@ -1,5 +1,6 @@
 import { defineStore } from "pinia";
 import { User } from "@/services/gateway_api";
+import { nextTick } from "vue";
 
 import { mainStore } from "@/main.js";
  
@@ -14,8 +15,14 @@ export const useChatStore = defineStore("chat", {
         users: [],
         conversations: [],
         selectedConversation: "",
+        c: {},
+        selectedConversationID: null,
         messages: [],
-        content: ''
+        content: "",
+        update: true,
+        loading: false,
+        grouping: "normal",
+        collapsed: true,
     }),
     actions: {
         async wait(time) { await wait(time); },
@@ -35,7 +42,7 @@ export const useChatStore = defineStore("chat", {
         },
         async getAllUsers() {
             const users = mainStore.currentUser.account_type == 'student' ? await User.getAllAdmins() : await User.getAllUsers();
-            this.conversations = await User.getConversations(mainStore.currentUser.id);
+            this.conversations = await this.getConversations(mainStore.currentUser.id);
             if (users) this.users = users;
             if (this.selectedConversation != '') {
                 await this.getMessages(this.selectedConversation)
@@ -46,32 +53,91 @@ export const useChatStore = defineStore("chat", {
             function compareTimestamps(a, b) {
                 return new Date(a.timestamp) - new Date(b.timestamp);
             }
-            this.messages = response.sort(compareTimestamps);
+            response = response.sort(compareTimestamps);
+            if (JSON.stringify(this.messages) != JSON.stringify(response)) {
+                this.messages = response;
+
+                let lastMessage = this.messages[this.messages.length-1];
+                if (this.conversations != null) {
+                    let conversationWithId = this.conversations.find(conversation => conversation.id == this.selectedConversationID);
+                    if (conversationWithId != null && lastMessage != null) {
+                        let updates = {
+                            "status": null,
+                            "user_1_last_message_read_id": conversationWithId.user_1_id == mainStore.currentUser.id ? lastMessage.id : null,
+                            "user_2_last_message_read_id": conversationWithId.user_2_id == mainStore.currentUser.id ? lastMessage.id : null,
+                            "user_1_active": null,
+                            "user_2_active": null,
+                        }
+                        await User.updateConversation(this.selectedConversationID, updates);
+                    }
+                }
+                await this.scrollToBottom();
+            }
+            
         },
-        async selectConversation(id) {
-            this.selectedConversation == id ? this.selectedConversation = '' : this.selectedConversation = id
+        async selectConversation(id, c) {
+            this.updateUserActivity(false);
+            this.selectedConversation = id;
+            this.c = c;
+            this.selectedConversationID = c.id;
             if (this.selectedConversation != '') {
                 await this.getMessages(this.selectedConversation)
             }
+            this.update = false;
+            await nextTick();
+            this.update = true;
+            const doc = document.getElementById("messageContainer")
+            doc.scrollTop = doc.scrollHeight;
         },
         async getLastMessage(id) {
             let lastMessage = await User.getLastMessage(id)
-            if (lastMessage.detail) lastMessage = lastMessage.detail
+            if (lastMessage.detail) lastMessage = { "content": "Nema poruka" }
             else {
-                return lastMessage.content
+                return lastMessage
             }
             return lastMessage;
         },
+        async getConversations(id) {
+            function compareTimestamps(b, a) {
+                return new Date(a.timestamp) - new Date(b.timestamp);
+            }
+            let response = await User.getConversations(id);
+            this.update = false;
+            await nextTick()
+            this.update = true;
+            return response.sort(compareTimestamps);
+        },
+        async updateConversations(id) {
+            function compareTimestamps(b, a) {
+                return new Date(a.timestamp) - new Date(b.timestamp);
+            }
+            let response = await User.getConversations(id);
+            response = response.sort(compareTimestamps);
+            if (JSON.stringify(response) != JSON.stringify(this.conversations)) {
+                this.conversations = response.sort(compareTimestamps);
+                this.update = false;
+                await nextTick()
+                this.update = true;
+                this.c = this.conversations.find(conversation => conversation.id == this.selectedConversationID); 
+            }            
+        },
         async sendMessage() {
             let message = {
+                "conversation_id": this.selectedConversationID,
                 "receiver_id" : this.selectedConversation,
 	            "content" : this.content
             }
             let response = await User.sendMessage(message)
             if (response) await this.getMessages(this.selectedConversation)
             this.content = '';
+            this.update = false;
+            await nextTick();
+            this.conversations = await this.getConversations(mainStore.currentUser.id);
+            await nextTick();
+            this.update = true;
         },
         getUsersWithoutConversations(users, conversations) {
+            if (conversations == null ) return []
             const usersWithoutConversations = users.filter(user => {
                 const userId = user.id;
                 return !conversations.some(conversation => {
@@ -86,13 +152,46 @@ export const useChatStore = defineStore("chat", {
                 "user_1_id": mainStore.currentUser.id,
                 "user_2_id": id,
                 "status": "normal",
-                "lastMessageRead": null,
+                "user_1_last_message_read_id": null,
+                "user_2_last_message_read_id": null,
                 "user_1_active": true,
                 "user_2_active": false
             };
-            let response = await User.addConversation(conversation)
-            this.conversations = await User.getConversations(mainStore.currentUser.id);
-        }   
+            this.update = false;
+            await User.addConversation(conversation);
+            this.conversations = await this.getConversations(mainStore.currentUser.id);
+            this.update = true;
+        },
+        async scrollToBottom() {
+            await this.wait(0.1)
+            let element = document.getElementById("messageContainer")
+            if (element != null) {
+                element = element.firstElementChild.lastElementChild
+                element.scrollIntoView({ behavior: "smooth", block: "end", inline: "nearest" });
+            }
+        },
+        async updateConversationStatus(status, c) {
+            let updates = {
+                "status": c.status == status ? 'normal' : status,
+                "user_1_last_message_read_id": null,
+                "user_2_last_message_read_id": null,
+                "user_1_active": null,
+                "user_2_active": null,
+            }
+            await User.updateConversation(c.id, updates);
+            this.grouping = updates.status;   
+            this.c.status = updates.status;            
+        },
+        async updateUserActivity(value) {
+            let updates = {
+                "status": this.c.status,
+                "user_1_last_message_read_id": this.c.user_1_last_message_read_id,
+                "user_2_last_message_read_id": this.c.user_2_last_message_read_id,
+                "user_1_active": this.c.user_1_id == mainStore.currentUser.id ? value : null,
+                "user_2_active": this.c.user_2_id == mainStore.currentUser.id ? value : null,
+            }
+            await User.updateConversation(this.c.id, updates);         
+        }
     },
     persist: true,
 });

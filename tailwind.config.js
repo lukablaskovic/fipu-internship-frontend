@@ -1,6 +1,6 @@
 /* eslint-env node */
 
-const plugin = require("tailwindcss/plugin");
+const plugin = require('tailwind-scrollbar')
 
 module.exports = {
   mode: "jit",
@@ -24,6 +24,7 @@ module.exports = {
         fipu_light_blue: "#74d4f4", //#9de0f7",
         fipu_dark_blue: "#2b91b3", //"#6EB9ED",
         fipu_text_blue: "#31c4f5", //"#6dd0f6",
+        fipu_gray2: "#172234", //"#6dd0f6",
         search_bar: "#c7c8c9",
       },
       spacing: {
@@ -112,7 +113,7 @@ module.exports = {
     },
   },
   plugins: [
-    require('tailwind-scrollbar'),
+    require('tailwind-scrollbar')({ nocompatible: true }),
     require("@tailwindcss/forms"),
     plugin(function ({ matchUtilities, theme }) {
       matchUtilities(

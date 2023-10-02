@@ -4,11 +4,10 @@ import BaseIcon from "@/components/Base/BaseIcon.vue";
 import { mdiPlus  } from '@mdi/js';
 import { chatStore } from "@/main.js";
 const selectedOption = ref(null)
-const options =  ref(chatStore.getUsersWithoutConversations(chatStore.users, chatStore.conversations))
 </script>
 <template>
     <div class="h-full relative pt-2" :class="options.length == 0 ? 'opacity-40 pointer-events-none ' : ''">
-        <div class="absolute bottom-0 right-0 lg:ml-0 lg:mr-2 flex flex-col items-center justify-center lg:flex-row gap-2 w-full">
+        <div class="absolute bottom-0 right-0 lg:ml-0 lg:mr-2 flex items-center justify-center gap-2 w-full">
             <select v-model="selectedOption" class="border-none bg-transparent focus:outline-none text-sm items-center w-full border text-fipu_gray dark:text-gray-300
             bg-white hover:bg-gray-50 focus:bg-white dark:bg-slate-800 dark:hover:bg-slate-700/40 dark:focus:bg-slate-800 rounded-3xl">
                 <option v-for="u in options" :value="u.id">
@@ -23,3 +22,19 @@ const options =  ref(chatStore.getUsersWithoutConversations(chatStore.users, cha
         </div>
     </div>
 </template>
+
+<script>
+import { chatStore } from "@/main.js";
+
+export default {
+    data() {
+        return {
+            selectedOption: null,
+            options: []
+        }
+    },
+    async mounted() {
+        this.options = chatStore.getUsersWithoutConversations(chatStore.users, chatStore.conversations)
+    },
+}
+</script>

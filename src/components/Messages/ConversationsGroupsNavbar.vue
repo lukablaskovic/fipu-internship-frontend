@@ -1,14 +1,29 @@
+<script setup>
+import { chatStore, mainStore } from "@/main.js";
+const groups = [
+    {
+        name: "Svi razgovori",
+        type: "normal"
+    },
+    {
+        name: "Označeni",
+        type: "starred"
+    },
+    {
+        name: "Arhivirani",
+        type: "archived"
+    },
+]
+</script>
 <template>
-    <div class="flex flex-col lg:flex-row items-center justify-between mt-5">
-        <a href="#" class="flex items-center justify-center pb-3 text-xs font-semibold relative text-fipu_blue">
-            <span>Svi razgovori</span>
-            <span class="absolute lg:left-0 bottom-1 lg:bottom-0 h-1 w-full lg:w-6 bg-fipu_blue rounded-full"></span>
+    <div v-if="mainStore.currentUser.account_type == 'admin'" class="flex items-center justify-between mt-5 relative">
+        <a v-for="g in groups" class="flex items-center justify-center pb-3 text-xs relative cursor-default" @click="chatStore.grouping = g.type"
+            :class="chatStore.grouping == g.type ? 'text-fipu_blue font-semibold' : 'text-gray-500 dark:text-gray-400 font-normal hover:underline'">
+            <span>{{ g.name }}</span>
         </a>
-        <a href="#" class="flex items-center pb-3 text-xs text-gray-700 dark:text-gray-500 font-semibold hover:underline">
-            <span>Označeni</span>
-        </a>
-        <a href="#" class="flex items-center pb-3 text-xs text-gray-700 dark:text-gray-500 font-semibold hover:underline">
-            <span>Arhivirani</span>
-        </a>
+        <span :class="{'left-0 right-0 w-6 bottom-0' : chatStore.grouping == 'normal'},
+                        {'left-1/2 right-0 -translate-x-1/2 w-12 bottom-0 ml-2' : chatStore.grouping == 'starred'},
+                        {'left-full w-6 bottom-0 -ml-6' : chatStore.grouping == 'archived'}" 
+        class="absolute h-1 bg-fipu_blue rounded-full transition-all duration-300"></span>
     </div>
 </template>

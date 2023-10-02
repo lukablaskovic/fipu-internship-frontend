@@ -172,7 +172,7 @@ const User = {
     async updateConversation(conversationId, updates, retries = 3) {
         while (retries > 0) {
             try {
-            let result = await AxiosWrapper.put(`/users/conversations/update_conversation/${conversationId}`, updates);
+            let result = await AxiosWrapper.put(`/users/update_conversation/${conversationId}`, updates);
             return result.data;
             } catch (error) {
             if (retries === 1) {
