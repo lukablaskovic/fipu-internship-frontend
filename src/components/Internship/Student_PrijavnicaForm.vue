@@ -6,11 +6,32 @@ import {
   mdiBallot,
   mdiAccount,
   mdiMail,
-  mdiCheck,
   mdiClipboardCheck,
-  mdiCardAccountDetails,
-  mdiXml,
+  mdiPhone,
+  mdiCardAccountDetailsOutline,
+  mdiDomain,
+  mdiClockTimeFiveOutline,
+  mdiTextLong,
+  mdiCalendarWeekBegin,
+  mdiCalendarEnd,
 } from "@mdi/js";
+import { useVuelidate } from "@vuelidate/core";
+import {
+  required,
+  email,
+  minLength,
+  sameAs,
+  helpers,
+  numeric,
+} from "@vuelidate/validators";
+import {
+  croatianAlpha,
+  getFirstErrorForField,
+  isUnipuEmail,
+  exactLength,
+  containsAlpha,
+  containsNumeric,
+} from "@/helpers/validators";
 
 import LayoutAuthenticated from "@/layouts/LayoutAuthenticated.vue";
 import LayoutGuest from "@/layouts/LayoutGuest.vue";
@@ -79,16 +100,107 @@ const form = reactive({
   dogovoreni_broj_sati: null,
   pocetak_prakse: "",
   kraj_prakse: "",
-  alokacija_potvrda: false,
+  alokacija_potvrda: true,
   kontakt_potvrda: false,
   Poslodavac:
     studentStore.student_process_instance_data.variables["poslodavac_naziv"],
   mjesto_izvrsavanja: nacinIzvrsavanjeRadioOptions[0],
 });
 
+const rules = {
+  student_ime: {
+    required: helpers.withMessage("Polje je obavezno", required),
+    croatianAlpha: helpers.withMessage(
+      "Ime može sadržavati samo slova hrvatske abecede",
+      croatianAlpha
+    ),
+  },
+  student_prezime: {
+    required: helpers.withMessage("Polje je obavezno", required),
+    croatianAlpha: helpers.withMessage(
+      "Prezime može sadržavati samo slova hrvatske abecede",
+      croatianAlpha
+    ),
+  },
+  student_broj_mobitela: {
+    required: helpers.withMessage("Polje je obavezno", required),
+    containsNumeric: helpers.withMessage(
+      "Broj mobitela može sadržavati samo brojeve",
+      containsNumeric
+    ),
+  },
+  student_OIB: {
+    required: helpers.withMessage("Polje je obavezno", required),
+    numeric: helpers.withMessage("OIB može sadržavati samo brojeve", numeric),
+    exactLength: helpers.withMessage(
+      "OIB mora sadržavati točno 11 brojeva",
+      exactLength(11)
+    ),
+  },
+  student_email: {
+    required: helpers.withMessage("Polje je obavezno", required),
+    email: helpers.withMessage("Molimo unesite ispravnu e-mail adresu", email),
+    isUnipuEmail: helpers.withMessage(
+      "Molimo unesite vašu UNIPU e-mail adresu",
+      isUnipuEmail
+    ),
+  },
+  mentor_ime: {
+    required: helpers.withMessage("Polje je obavezno", required),
+    croatianAlpha: helpers.withMessage(
+      "Ime može sadržavati samo slova hrvatske abecede",
+      croatianAlpha
+    ),
+  },
+  mentor_prezime: {
+    required: helpers.withMessage("Polje je obavezno", required),
+    croatianAlpha: helpers.withMessage(
+      "Prezime može sadržavati samo slova hrvatske abecede",
+      croatianAlpha
+    ),
+  },
+  mentor_email: {
+    required: helpers.withMessage("Polje je obavezno", required),
+    email: helpers.withMessage("Molimo unesite ispravnu e-mail adresu", email),
+  },
+  detaljan_opis_zadatka: {
+    required: helpers.withMessage("Polje je obavezno", required),
+  },
+  dogovoreni_broj_sati: {
+    required: helpers.withMessage("Polje je obavezno", required),
+    numeric: helpers.withMessage(
+      "Broj sati može sadržavati samo brojeve",
+      numeric
+    ),
+  },
+  pocetak_prakse: {
+    required: helpers.withMessage("Polje je obavezno", required),
+  },
+  kraj_prakse: {
+    required: helpers.withMessage("Polje je obavezno", required),
+  },
+  kontakt_potvrda: {
+    required: helpers.withMessage("Polje je obavezno", required),
+  },
+  mjesto_izvrsavanja: {
+    required: helpers.withMessage("Polje je obavezno", required),
+  },
+};
+let isLoading = ref(false);
+const v$ = useVuelidate(rules, form);
+
 async function submit_application_form() {
-  console.log(form);
+  console.log("Submitting form...");
+  isLoading.value = true;
+
+  v$.value.$touch();
+  if (v$.value.$invalid) {
+    isLoading.value = false;
+    return;
+  }
   await studentStore.submitApplicationForm(form);
+  isLoading.value = false;
+
   if (
     UserTaskMappings.getTaskProperty(
       studentStore.student_process_instance_data.pending[0],
@@ -147,11 +259,13 @@ async function submit_application_form() {
         Ispod možete pronaći prijavnicu za praksu. Neki podaci su već u sustavu
         te su samim time ispisani. Ostale podatke treba popuniti.
       </p>
+      <br />
+      <hr />
       <p>Popunjenu prijavnicu šaljemo poduzeću na odobrenje i potpis.</p>
       <br />
       <hr />
 
-      <div class="grid grid-cols-1 gap-6 mb-6">
+      <div class="grid grid-cols-1 gap-6 mb-8">
         <CardBox
           :icon="mdiBallot"
           class="mb-6 lg:mb-0 lg:col-span-2 xl:col-span-3"
@@ -164,16 +278,15 @@ async function submit_application_form() {
               v-model="form.student_ime"
               :icon-left="mdiAccount"
               help="Vaše ime"
+              :error="getFirstErrorForField('student_ime')"
               placeholder="Vaše ime"
-              required
             />
             <FormControl
               v-model="form.student_prezime"
-              :icon-left="mdiMail"
-              :icon-right="mdiCheck"
+              :icon-left="mdiAccount"
               help="Vaše prezime"
+              :error="getFirstErrorForField('student_prezime')"
               placeholder="Vaše prezime"
-              required
             />
           </FormField>
 
@@ -181,11 +294,10 @@ async function submit_application_form() {
             <FormControl
               v-model="form.student_email"
               :icon-left="mdiMail"
-              :icon-right="mdiCheck"
               type="email"
               help="Vaša UNIPU email adresa"
+              :error="getFirstErrorForField('student_email')"
               placeholder="Email"
-              required
             />
           </FormField>
 
@@ -198,22 +310,22 @@ async function submit_application_form() {
               <FormControl
                 v-model="form.student_broj_mobitela"
                 type="tel"
-                placeholder="Vaš broj mobitela"
+                :icon-left="mdiPhone"
+                placeholder="Unesite vaš broj mobitela"
+                :error="getFirstErrorForField('student_broj_mobitela')"
                 expanded
-                required
               />
             </FormField>
           </FormField>
 
-          <FormField label="OIB" horizontal>
+          <FormField label="Vaš OIB" horizontal>
             <FormControl
               v-model="form.student_OIB"
-              :icon-left="mdiCardAccountDetails"
-              :icon-right="mdiCheck"
+              :icon-left="mdiCardAccountDetailsOutline"
               type="number"
+              :error="getFirstErrorForField('student_OIB')"
               help="Za potrebe prijave osiguranja"
-              placeholder="OIB"
-              required
+              placeholder="Unesite vaš OIB"
             />
           </FormField>
 
@@ -222,12 +334,10 @@ async function submit_application_form() {
           <FormField label="Poduzeće" horizontal>
             <FormControl
               v-model="form.Poslodavac"
-              :icon-left="mdiCardAccountDetails"
-              :icon-right="mdiCheck"
+              :icon-left="mdiDomain"
               readonly
               help="Odabrano poduzeće"
               placeholder="Odabrano poduzeće"
-              required
             />
           </FormField>
 
@@ -236,16 +346,15 @@ async function submit_application_form() {
               v-model="form.mentor_ime"
               :icon-left="mdiAccount"
               help="Ime mentora"
+              :error="getFirstErrorForField('mentor_ime')"
               placeholder="Ime mentora"
-              required
             />
             <FormControl
               v-model="form.mentor_prezime"
-              :icon-left="mdiMail"
-              :icon-right="mdiCheck"
+              :icon-left="mdiAccount"
               help="Prezime mentora"
+              :error="getFirstErrorForField('mentor_prezime')"
               placeholder="Prezime mentora"
-              required
             />
           </FormField>
 
@@ -253,11 +362,10 @@ async function submit_application_form() {
             <FormControl
               v-model="form.mentor_email"
               :icon-left="mdiMail"
-              :icon-right="mdiCheck"
+              :error="getFirstErrorForField('mentor_email')"
               type="email"
               help="Email vašeg mentora"
               placeholder="Email mentora"
-              required
             />
           </FormField>
           <BaseDivider />
@@ -265,8 +373,9 @@ async function submit_application_form() {
             <FormControl
               v-model="form.detaljan_opis_zadatka"
               type="textarea"
+              :error="getFirstErrorForField('detaljan_opis_zadatka')"
+              :icon-left="mdiTextLong"
               placeholder="Detaljno opišite zadatak koji će se izvršavati na praksi."
-              required
             />
           </FormField>
 
@@ -279,19 +388,30 @@ async function submit_application_form() {
               <FormControl
                 v-model="form.dogovoreni_broj_sati"
                 type="number"
+                :icon-left="mdiClockTimeFiveOutline"
                 placeholder="Dogovoreni broj sati"
+                :error="getFirstErrorForField('dogovoreni_broj_sati')"
                 expanded
-                required
               />
             </FormField>
           </FormField>
 
           <FormField label="Datum početka" horizontal>
-            <FormControl v-model="form.pocetak_prakse" type="date" required />
+            <FormControl
+              v-model="form.pocetak_prakse"
+              :icon-left="mdiCalendarWeekBegin"
+              :error="getFirstErrorForField('pocetak_prakse')"
+              type="date"
+            />
           </FormField>
 
           <FormField label="Datum završetka" horizontal>
-            <FormControl v-model="form.kraj_prakse" type="date" required />
+            <FormControl
+              v-model="form.kraj_prakse"
+              :icon-left="mdiCalendarEnd"
+              :error="getFirstErrorForField('kraj_prakse')"
+              type="date"
+            />
           </FormField>
 
           <BaseDivider />
@@ -301,6 +421,7 @@ async function submit_application_form() {
               v-model="form.mjesto_izvrsavanja"
               name="sample-radio-two"
               type="radio"
+              :error="getFirstErrorForField('mjesto_izvrsavanja')"
               :options="nacinIzvrsavanjeRadioOptions"
               is-column
             />
@@ -308,30 +429,25 @@ async function submit_application_form() {
 
           <BaseDivider />
 
-          <FormField label="Potvrde" horizontal>
-            <FormCheckRadio
-              v-model="form.alokacija_potvrda"
-              name="sample-checkbox-two"
-              :options="checkboxOptions"
-              label="Nastavnik mi je odobrio i alocirao me na ovu tvrtku. Što se i vidi na Alokacije."
-              is-column
-              required
-            />
-          </FormField>
-          <FormField horizontal>
+          <FormField label="Potvrda" horizontal>
             <FormCheckRadio
               v-model="form.kontakt_potvrda"
               name="sample-checkbox-two"
               :options="checkboxOptions"
+              :error="getFirstErrorForField('kontakt_potvrda')"
               label="Potvrđujem da sam kontaktirao poslodavca i dogovorio detalje koji su ovdje uneseni."
               is-column
-              required
             />
           </FormField>
           <BaseDivider />
 
           <FormField horizontal grouped>
-            <BaseButton label="Pošalji" type="submit" color="fipu_blue" />
+            <BaseButton
+              label="Pošalji"
+              type="submit"
+              :loading="isLoading"
+              color="fipu_blue"
+            />
           </FormField>
         </CardBox>
       </div>

@@ -133,11 +133,11 @@ function getProgressValue(student) {
           <progress
             class="flex w-2/5 self-center lg:w-full"
             :class="{
-              'progress-red': getProgressValue(student) <= 2,
-              'progress-yellow': getProgressValue(student) == 3,
-              'progress-green': getProgressValue(student) >= 4,
+              'progress-red': getProgressValue(student) <= 3,
+              'progress-yellow': getProgressValue(student) == 4,
+              'progress-green': getProgressValue(student) >= 5,
             }"
-            max="5"
+            max="7"
             :value="getProgressValue(student)"
           >
             {{ getProgressValue(student) }}

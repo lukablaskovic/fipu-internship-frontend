@@ -1,22 +1,14 @@
 <script setup>
 import { adminStore, mainStore } from "@/main.js";
-import {
-  mdiMonitorCellphone,
-  mdiClipboardCheck,
-  mdiLaptop,
-  mdiFilePdfBox,
-} from "@mdi/js";
-import { router } from "@/router";
+import { mdiClipboardCheck, mdiFilePdfBox } from "@mdi/js";
 import VuePdfEmbed from "vue-pdf-embed";
 
 import LayoutAuthenticated from "@/layouts/LayoutAuthenticated.vue";
 
 import SectionMain from "@/components/Section/SectionMain.vue";
 import CardBox from "@/components/Cardbox/CardBox.vue";
-import NotificationBar from "@/components/Notification/NotificationBar.vue";
 import SectionTitleLineWithButton from "@/components/Section/SectionTitleLineWithButton.vue";
 import TableAllocations from "@/components/Tables/TableAllocations.vue";
-import BaseIcon from "@/components/Base/BaseIcon.vue";
 import CardBoxModal from "@/components/Cardbox/CardBoxModal.vue";
 </script>
 
@@ -50,7 +42,11 @@ import CardBoxModal from "@/components/Cardbox/CardBoxModal.vue";
             >
             </SectionTitleLineWithButton>
             <div class="flex justify-center">
-              <vue-pdf-embed height="1080" :source="adminStore.pdfSource" />
+              <vue-pdf-embed
+                height="1080"
+                class="mb-6"
+                :source="adminStore.pdfSource"
+              />
             </div>
           </div>
         </CardBoxModal>

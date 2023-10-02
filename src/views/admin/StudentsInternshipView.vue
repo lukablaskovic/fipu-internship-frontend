@@ -269,7 +269,10 @@ onMounted(loadDataForStudent);
           button-label="Pošalji"
           @confirm="sendAnAdditionalEmail()"
         >
-          <p class="mb-2">Ovaj zadatak je već obavljen.</p>
+          <p class="mb-2">
+            E-mail je već poslan koristeći BPMN engine, no možete ga i poslati
+            ponovo pritiskom na 'Pošalji'
+          </p>
         </CardBoxModal>
       </SectionMain>
 

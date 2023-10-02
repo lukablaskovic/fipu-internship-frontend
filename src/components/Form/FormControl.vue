@@ -353,7 +353,11 @@ if (props.ctrlKFocus) {
       >
         {{ modelValue }}
       </div>
-      <div v-if="showSearchBar" class="relative" :class="wrapperClass">
+      <div
+        v-if="showSearchBar && mainStore.userAdmin"
+        class="relative"
+        :class="wrapperClass"
+      >
         <SearchOptions />
       </div>
       <FormControlListbox

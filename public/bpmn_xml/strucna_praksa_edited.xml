@@ -571,7 +571,7 @@ Dnevnik je potrebno predati prije prijave ispitnoga roka.</bpmn:documentation>
 https://www.isvu.hr/nastavnickiportal/hr/prijava</bpmn:documentation>
       <bpmn:extensionElements>
         <camunda:formData>
-          <camunda:formField id="ocjena_unesena_studomat" label="Jeste li unijeli ocjenu u ISVU sustav?" type="boolean" />
+          <camunda:formField id="ocjena_unesena_studomat" label="Jeste li unijeli ocjenu u ISVU sustav?" type="yes-no-boolean" />
         </camunda:formData>
       </bpmn:extensionElements>
       <bpmn:incoming>Flow_0nepg4p</bpmn:incoming>

@@ -109,11 +109,13 @@ const checked = (value, assignment) => {
     <div><b>Poslodavac: </b>{{ isModalActive["Poslodavac"][0].value }}</div>
 
     <div><b>Zadatak studenta:</b> {{ isModalActive["opis_zadatka"] }}</div>
-    <div>
+    <div v-if="mainStore.userAdmin">
       <b>Broj studenata (max):</b> {{ isModalActive["broj_studenata"] }}
     </div>
 
-    <div><b>Dostupno mjesta:</b> {{ isModalActive["dostupno_mjesta"] }}</div>
+    <div v-if="mainStore.userAdmin">
+      <b>Dostupno mjesta:</b> {{ isModalActive["dostupno_mjesta"] }}
+    </div>
 
     <div>
       <b>Preferirane tehnologije:</b>
@@ -148,8 +150,16 @@ const checked = (value, assignment) => {
     </div>
     <div><b>Lokacija: </b>{{ isModalActive["lokacija"] }}</div>
     <div>
-      <b>Napomena</b>
-      {{ isModalActive["napomena"] }}
+      <b>Angažman FIPU: </b>
+      {{ isModalActive["angazman_fipu"] }}
+    </div>
+    <div v-if="mainStore.userAdmin">
+      <b>Broj studenata (max):: </b>
+      {{ isModalActive["broj_studenata"] }}
+    </div>
+    <div v-if="mainStore.userAdmin">
+      <b>Dostupno mjesta</b>
+      {{ isModalActive["dostupno_mjesta"] }}
     </div>
     <br />
   </CardBoxModal>
@@ -164,6 +174,9 @@ const checked = (value, assignment) => {
         <th>Preferirane tehnologije</th>
         <th>Trajanje (sati)</th>
         <th>Lokacija</th>
+        <th v-if="mainStore.userAdmin">Max. mjesta</th>
+        <th v-if="mainStore.userAdmin">Dostupno mjesta</th>
+
         <th />
       </tr>
     </thead>
@@ -193,6 +206,14 @@ const checked = (value, assignment) => {
         </td>
         <td data-label="Lokacija">
           {{ assignment["lokacija"] }}
+        </td>
+
+        <td v-if="mainStore.userAdmin" data-label="Max. studenata">
+          {{ assignment["broj_studenata"] }}
+        </td>
+
+        <td v-if="mainStore.userAdmin" data-label="Dostupno mjesta">
+          {{ assignment["dostupno_mjesta"] }}
         </td>
 
         <td class="before:hidden lg:w-1 whitespace-nowrap">

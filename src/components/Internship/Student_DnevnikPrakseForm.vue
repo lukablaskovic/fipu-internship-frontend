@@ -2,6 +2,24 @@
 import { ref, computed, onMounted, reactive } from "vue";
 import { mdiLaptop, mdiBallot, mdiNotebook, mdiClipboardCheck } from "@mdi/js";
 
+import { useVuelidate } from "@vuelidate/core";
+import {
+  required,
+  email,
+  minLength,
+  sameAs,
+  helpers,
+  numeric,
+} from "@vuelidate/validators";
+import {
+  croatianAlpha,
+  getFirstErrorForField,
+  isUnipuEmail,
+  exactLength,
+  containsAlpha,
+  containsNumeric,
+} from "@/helpers/validators";
+
 import LayoutAuthenticated from "@/layouts/LayoutAuthenticated.vue";
 import LayoutGuest from "@/layouts/LayoutGuest.vue";
 
@@ -58,8 +76,33 @@ const form = reactive({
   prijavljen_rok: null,
 });
 
+const rules = {
+  potvrda_attachment: {
+    required: helpers.withMessage("Stavka je obavezna", required),
+  },
+  dnevnik_attachment: {
+    required: helpers.withMessage("Stavka je obavezna", required),
+  },
+  prijavljen_rok: {
+    required: helpers.withMessage("Stavka je obavezna", required),
+  },
+};
+
+const v$ = useVuelidate(rules, form);
+
+let isLoading = ref(false);
+
 async function submit_diary_form() {
   console.log(form);
+
+  console.log("Submitting form...");
+  isLoading.value = true;
+
+  v$.value.$touch();
+  if (v$.value.$invalid) {
+    isLoading.value = false;
+    return;
+  }
   await studentStore.submitDiaryForm(form);
   if (
     UserTaskMappings.getTaskProperty(
@@ -78,6 +121,7 @@ async function submit_diary_form() {
       )
     );
   }
+  isLoading.value = false;
   await Utils.wait(2);
   location.reload();
 }
@@ -112,8 +156,9 @@ async function submit_diary_form() {
         title="Dnevnik prakse"
       ></SectionTitleLineWithButton>
       <p>
-        Nakon što se završili praksu i ispunili sve vaše obaveze, predajete
-        dnevnik prakse skupa s ispunjenom potvrdom o obavljenoj praksi.
+        <b>Nakon što se završili praksu</b> i ispunili sve vaše obaveze,
+        predajete dnevnik prakse skupa s ispunjenom potvrdom o obavljenoj
+        praksi.
       </p>
       <p>
         Potvrdu ispunjava vaš mentor, vi predajete PDF sken ispunjene potvrde.
@@ -146,7 +191,12 @@ async function submit_diary_form() {
             help="obavezno PDF format"
             horizontal
           >
-            <FormFilePicker v-model="form.dnevnik_attachment" label="Prenesi" />
+            <FormFilePicker
+              v-model="form.dnevnik_attachment"
+              :error="getFirstErrorForField('dnevnik_attachment')"
+              label="Prenesi"
+              required
+            />
           </FormField>
 
           <FormField
@@ -154,13 +204,22 @@ async function submit_diary_form() {
             help="Dostaviti voditelju prakse ili tajnici u fizičkom obliku"
             horizontal
           >
-            <FormFilePicker v-model="form.potvrda_attachment" label="Prenesi" />
+            <FormFilePicker
+              v-model="form.potvrda_attachment"
+              :error="getFirstErrorForField('potvrda_attachment')"
+              label="Prenesi"
+              required
+            />
           </FormField>
 
           <BaseDivider />
 
           <FormField label="Datum ispitnog roka" horizontal>
-            <FormControl v-model="form.prijavljen_rok" type="date" required />
+            <FormControl
+              v-model="form.prijavljen_rok"
+              :error="getFirstErrorForField('prijavljen_rok')"
+              type="date"
+            />
           </FormField>
 
           <FormField horizontal>
@@ -170,14 +229,18 @@ async function submit_diary_form() {
               :options="checkboxOptions"
               label="Označi ako nastavljaš i dalje raditi u tvrtci ili ćeš ubrzo početi raditi honorarno."
               is-column
-              required
             />
           </FormField>
 
           <BaseDivider />
 
           <FormField horizontal grouped>
-            <BaseButton label="Predaj" type="submit" color="fipu_blue" />
+            <BaseButton
+              label="Predaj"
+              type="submit"
+              :loading="isLoading"
+              color="fipu_blue"
+            />
           </FormField>
         </CardBox>
       </div>

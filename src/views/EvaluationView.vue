@@ -54,13 +54,17 @@ onMounted(async () => {
   };
 });
 const formDynamicValues = ref({});
+const isLoading = ref(false);
 
 async function handleNewInstance() {
+  isLoading.value = true;
+
   adminStore.handleNewInstance(
     process_instance_id.value,
     instanceInfo.value.pending[0],
     formDynamicValues.value
   );
+
   if (
     UserTaskMappings.getTaskProperty(
       instanceInfo.value.pending[0],
@@ -79,6 +83,8 @@ async function handleNewInstance() {
     );
   }
   await Utils.wait(2);
+  isLoading.value = false;
+
   router.push("/");
 }
 const disabledCondition = ref(true);
@@ -122,6 +128,7 @@ const updateDisabledCondition = (allFilled) => {
       <BaseButton
         class="mb-4"
         label="Potvrdi"
+        :loading="isLoading"
         color="fipu_blue"
         @disabled="disabledCondition"
         @click="handleNewInstance()"

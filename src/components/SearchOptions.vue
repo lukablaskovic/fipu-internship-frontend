@@ -62,7 +62,7 @@
 
           <ComboboxOption
             v-for="result in filteredResults"
-            :key="result.id"
+            :key="result.id || result"
             v-slot="{ selected, active }"
             as="template"
             :value="result"
@@ -80,6 +80,16 @@
                 :class="{ 'text-white': active, 'text-gray-900': !active }"
                 aria-hidden="true"
               />
+              <template
+                v-if="typeof result === 'string' && routes.includes(result)"
+              >
+                <span
+                  class="block truncate"
+                  :class="{ 'font-medium': selected, 'font-normal': !selected }"
+                >
+                  {{ result }}
+                </span>
+              </template>
               <!-- Check if the result is a student or company -->
               <template v-if="result.ime && result.prezime">
                 <span
@@ -195,6 +205,10 @@ let filteredResults = computed(() => {
     .trim();
   console.log(searchTerm);
 
+  if (searchTerm && !searchTerm.includes(":")) {
+    return routes.filter((route) => route.includes(searchTerm));
+  }
+
   const terms = searchTerm.split(" ");
   console.log(adminStore.students);
   if (query.value.toLowerCase().startsWith("s:")) {
@@ -239,13 +253,36 @@ watch(selectedValue, (newValue, oldValue) => {
   }
 });
 
+watch(selectedValue, (newValue, oldValue) => {
+  if (newValue && newValue !== oldValue) {
+    if (typeof newValue === "string" && routes.includes(newValue)) {
+      router.push(`/${newValue}`);
+    } else {
+      navigateToStudent(newValue);
+    }
+  }
+});
+
 function navigateToStudent(student) {
   const instanceId = student.process_instance_data.id;
   console.log("Navigating to student with instanceId:", instanceId);
   router.push(`/studenti/${instanceId}`);
 }
 
+const routes = [
+  "dashboard",
+  "studenti",
+  "alokacije",
+  "dostupni-zadaci",
+  "poslodavci",
+  "bpmn/microservices",
+  "profile",
+  "messages",
+  "poslodavci/novi-zadatak",
+];
+
 const helpItems = [
+  { prefix: "", description: "usmjeravanje po aplikaciji" },
   { prefix: "s:", description: "pretraži studenta po imenu i prezimenu" },
   { prefix: "sj:", description: "pretraži studenta po JMBAGu" },
   { prefix: "se:", description: "pretraži studenta po emailu" },
