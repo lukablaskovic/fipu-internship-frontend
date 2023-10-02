@@ -78,34 +78,34 @@
               class="relative cursor-pointer select-none py-2 pl-10 pr-4"
               :class="{
                 'bg-fipu_blue text-white': active,
-                'text-gray-900': !active,
+                'text-gray-900 dark:text-gray-300': !active,
               }"
             >
               <MdiAccount
                 v-if="result.ime && result.prezime"
                 class="absolute left-3 h-5 w-5"
-                :class="{ 'text-white': active, 'text-gray-900': !active }"
+                :class="{ 'text-white': active, 'text-gray-900 dark:text-gray-300': !active }"
                 aria-hidden="true"
               />
 
               <MdiPagePreviousOutline
                 v-else-if="routes.includes(result)"
                 class="absolute left-3 h-5 w-5"
-                :class="{ 'text-white': active, 'text-gray-900': !active }"
+                :class="{ 'text-white': active, 'text-gray-900 dark:text-gray-300': !active }"
                 aria-hidden="true"
               />
 
               <MdiClipboardText
                 v-if="result.id_zadatak"
                 class="absolute left-3 h-5 w-5"
-                :class="{ 'text-white': active, 'text-gray-900': !active }"
+                :class="{ 'text-white': active, 'text-gray-900 dark:text-gray-300': !active }"
                 aria-hidden="true"
               />
 
               <MdiDomain
                 v-if="result.naziv && !result.ime && !result.prezime"
                 class="absolute left-3 h-5 w-5"
-                :class="{ 'text-white': active, 'text-gray-900': !active }"
+                :class="{ 'text-white': active, 'text-gray-900 dark:text-gray-300': !active }"
                 aria-hidden="true"
               />
 
