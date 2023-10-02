@@ -40,11 +40,12 @@ const newValueFormatted = computed(() => {
         <div class="p-4 flex flex-col bg-black bg-opacity-90 shadow-xl rounded-xl h-full w-full text-slate-400">
             <div class="text-center text-2xl font-bold"> DEBUG INFO </div>
             <Slider class="my-4 slider min-h-[8px] h-[8px] w-64 self-center" v-model="mainStore.depth" :min="1" :max="8" showTooltip="focus" :merge="1" :lazy="false" />
-            <div class="w-full flex justify-start items-center py-1">
+            <div class="w-full flex justify-start items-center py-1 overflow-y-hidden overflow-x-auto scrollbar-thumb-rounded scrollbar-track-rounded
+                scrollbar-thin scrollbar-track-slate-800 scrollbar-thumb-slate-600 hover:scrollbar-thumb-slate-400 pb-4">
                 <DebugSelectButton v-for="name in storeNames" :name="name"/>
             </div>  
             <hr/>
-            <div class="overflow-auto scrollbar-thin scrollbar-track-slate-800 scrollbar-thumb-slate-600 hover:scrollbar-thumb-slate-400">
+            <div class="overflow-auto scrollbar-thin scrollbar-track-slate-800 scrollbar-thumb-slate-600 hover:scrollbar-thumb-slate-400 scrollbar-thumb-rounded scrollbar-track-rounded">
                 <vue-json-pretty showIcon :deep="mainStore.depth" :data="newValueFormatted" />
             </div>
         </div>
