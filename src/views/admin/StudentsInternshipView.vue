@@ -208,7 +208,11 @@ onMounted(loadDataForStudent);
         >
           <p
             v-if="
-              process_instance_data.pending[0] == 'odabiranje_zadatka_student'
+              process_instance_data.pending[0] ==
+                'odabiranje_zadatka_student' ||
+              process_instance_data.pending[0] ==
+                'ispunjavanje_prijavnice_student' ||
+              process_instance_data.pending[0] == 'predavanje_dnevnika_student'
             "
             class="mb-4"
           >
@@ -289,7 +293,14 @@ onMounted(loadDataForStudent);
             process_instance_data['state']
           )
         "
-        :highlight-element-id="process_instance_data.pending[0]"
+        :highlight-element-id="
+          process_instance_data.pending[0] ||
+          UserTaskMappings.getTaskProperty(
+            process_instance_data.pending[0],
+            '_id',
+            process_instance_data['state']
+          )
+        "
         @current-task-modal="modal_select_bpmn_task = true"
         @past-task-modal="modal_past_bpmn_task = true"
         @send-task-modal="modal_send_task = true"

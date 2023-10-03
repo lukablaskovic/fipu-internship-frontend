@@ -1,6 +1,12 @@
 <script setup>
 import { ref, computed, onMounted } from "vue";
-import { mdiLaptop, mdiCheckDecagram, mdiClipboardCheck } from "@mdi/js";
+import {
+  mdiLaptop,
+  mdiCheckDecagram,
+  mdiClipboardCheck,
+  mdiAlphaSBox,
+  mdiEmail,
+} from "@mdi/js";
 
 import LayoutAuthenticated from "@/layouts/LayoutAuthenticated.vue";
 import LayoutGuest from "@/layouts/LayoutGuest.vue";
@@ -8,7 +14,8 @@ import LayoutGuest from "@/layouts/LayoutGuest.vue";
 import SectionMain from "@/components/Section/SectionMain.vue";
 import SectionTitleLineWithButton from "@/components/Section/SectionTitleLineWithButton.vue";
 import CardboxAllocation from "@/components/Cardbox/CardBoxAllocation.vue";
-
+import BaseIcon from "@/components/Base/BaseIcon.vue";
+import { router } from "@/router";
 import { mainStore, studentStore, snackBarStore } from "@/main.js";
 
 const allocated_assignment = ref(null);
@@ -49,20 +56,30 @@ const Layout = computed(() => {
       <hr />
       <br />
       <SectionTitleLineWithButton
-        :icon="mdiCheckDecagram"
+        :icon="mdiAlphaSBox"
         main
-        title="Praksa gotova!"
+        title="Ocjenjivanje prakse"
       ></SectionTitleLineWithButton>
       <p>
-        Vaš proces prakse je završio. Profesor je potvrdio unos ocjene u
-        Studomat.
+        Vaš proces prakse je završio. Nakon što vam profesor pregleda potvrdu i
+        odobori dnevnik prakse, ocjena će vam biti unesena u Studomat.
       </p>
-
       <p>
-        Nadamo se da vam je kolegij bio od koristi i da ste puno toga naučili!
-        😀
-      </p>
+        Ako čekate više od 7 dana, molimo vas da se obratite voditelju prakse
+        kroz
+        <span
+          class="text-fipu_blue cursor-pointer inline-flex whitespace-normal items-center"
+          @click="router.push('/poruke')"
+        >
+          <BaseIcon
+            :path="mdiEmail"
+            class="flex-none align-middle"
+            :size="18"
+          ></BaseIcon>
 
+          Poruke </span
+        >.
+      </p>
       <hr />
       <br />
       <SectionTitleLineWithButton

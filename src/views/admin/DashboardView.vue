@@ -9,7 +9,7 @@ import {
   mdiCommentProcessing,
   mdiMonitorAccount,
   mdiAccountCancel,
-  mdiAlertBox,
+  mdiAlphaSBox,
   mdiClockTimeEight,
   mdiCalendarClock,
   mdiChartBar,
@@ -222,7 +222,7 @@ onMounted(() => {
             v-if="adminStore.studentsFetched"
             color="text-fipu_blue"
             class="rounded-lg"
-            :icon="mdiAlertBox"
+            :icon="mdiAlphaSBox"
             :number="waiting_for_mark"
             label="Čeka na upis ocjene"
           />
@@ -281,12 +281,12 @@ onMounted(() => {
               :type="event.activity_id"
               :jmbag="
                 event.student_JMBAG == undefined
-                  ? 'Failed to load JMBAG'
+                  ? 'Greška u dohvatu podataka - JMBAG'
                   : event.student_JMBAG
               "
               :email="
                 event.student_email == undefined
-                  ? 'Failed to load email'
+                  ? 'Greška u dohvatu podataka - email'
                   : event.student_email
               "
               class="rounded-lg cursor-pointer"
@@ -302,12 +302,12 @@ onMounted(() => {
               :type="event.activity_id"
               :jmbag="
                 event.student_JMBAG == undefined
-                  ? 'Failed to load JMBAG'
+                  ? 'Greška u dohvatu podataka - JMBAG'
                   : event.student_JMBAG
               "
               :email="
                 event.student_email == undefined
-                  ? 'Failed to load email'
+                  ? 'Greška u dohvatu podataka - email'
                   : event.student_email
               "
               class="rounded-lg cursor-pointer"

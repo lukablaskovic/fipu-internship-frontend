@@ -137,8 +137,6 @@ export const useAdminStore = defineStore("admin", {
           student.process_instance_data.pending_task_info =
             await this.getTaskInfo(student.process_instance_id, pendingTask);
 
-          console.log(pendingTask);
-
           if (taskToDashboardMapping[pendingTask]) {
             this.dashboard_data[taskToDashboardMapping[pendingTask]]++;
           } else if (student.process_instance_data.state === "finished") {

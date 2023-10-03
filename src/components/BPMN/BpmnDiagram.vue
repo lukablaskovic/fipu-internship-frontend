@@ -88,6 +88,7 @@ function isHighlightableElement(elementType) {
     "bpmn:ParallelGateway",
     "bpmn:InclusiveGateway",
     "bpmn:EventBasedGateway",
+    "bpmn:EndEvent",
   ];
   return highlightableTypes.includes(elementType);
 }
@@ -141,6 +142,8 @@ function handleElementClick(event, emitFunction, viewer) {
       return;
     }
   }
+  console.log("event.element", event.element);
+
   if (element) {
     // Fetch the path from the start to the current task
     const elementRegistry = viewer.get("elementRegistry");
@@ -239,6 +242,7 @@ function traverseFromStartToCurrent(
 }
 
 function applyCustomStyling(highlightColor, highlightElementId, viewer) {
+  console.log("Applying custom styling to:", highlightElementId);
   const canvasInstance = viewer.get("canvas");
   canvasInstance.zoom("fit-viewport");
   canvasInstance.viewbox();
@@ -274,6 +278,8 @@ function applyCustomStyling(highlightColor, highlightElementId, viewer) {
 
   // Animate the highlighting in order
   directPath.forEach((element, index) => {
+    console.log("Direct path element:", element.id); // Debug log
+
     setTimeout(() => {
       if (element.id !== highlightElementId) {
         applyHighlight(element, "highlight-previous");

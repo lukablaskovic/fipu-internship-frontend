@@ -12,6 +12,11 @@ import UserAvatar from "@/components/User/UserAvatar.vue";
 import FormControl from "../Form/FormControl.vue";
 import Utils from "@/helpers/utils";
 import { useRoute } from "vue-router";
+import { useVuelidate } from "@vuelidate/core";
+
+import { required, email, minLength, helpers } from "@vuelidate/validators";
+
+import { getFirstErrorForField, isUnipuEmail } from "@/helpers/validators";
 
 defineProps({
   checkable: Boolean,
@@ -70,6 +75,11 @@ onMounted(async () => {
   }
   newCompanies.value = filteredCompanies;
 });
+
+const rules = {};
+const v$ = useVuelidate(rules, companyForms);
+
+const isLoading = ref(false);
 
 const selectedCompany = ref(null);
 const confirmationModal = ref({

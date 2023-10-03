@@ -1,3 +1,5 @@
+import Utils from "./utils";
+
 function getMappedProperty(arr, key, keyValue, prop) {
   const item = arr.find((item) => item[key] === keyValue);
   return item ? item[prop] : keyValue;
@@ -56,6 +58,8 @@ import Student_PrijavnicaForm from "@/components/Internship/Student_PrijavnicaFo
 import Student_WaitingForEvaluation from "@/components/Internship/Student_WaitingForEvaluation.vue";
 import Student_WaitingForAllocation from "@/components/Internship/Student_WaitingForAllocation.vue";
 import Student_ChooseAvailableAssignments from "@/components/Internship/Student_ChooseAvailableAssignments.vue";
+import Student_InternshipFinished from "@/components/Internship/Student_InternshipFinished.vue";
+import Student_WaitingForMark from "@/components/Internship/Student_WaitingForMark.vue";
 
 import { adminStore } from "@/main";
 
@@ -176,6 +180,7 @@ class UserTaskMappings {
       _id: "ispunjavanje_prijavnice_student",
       name: "Mora ispuniti prijavnicu",
       snackbar_msg: "Prijavnica pohranjena. Hvala!",
+      bpmn_pending_info_msg: "Student nije još ispunio prijavnicu.",
       snackbar_color: "success",
       form_title: "Ispunjena prijavnica",
       component: Student_PrijavnicaForm,
@@ -184,7 +189,11 @@ class UserTaskMappings {
       order: 5,
       _id: "predavanje_dnevnika_student",
       name: "Mora predati dnevnik prakse",
+      bpmn_pending_info_msg:
+        "Student nije još predao dnevnik prakse i ispunjenu potvrdu.",
+
       snackbar_msg: "Dnevnik predan. Hvala!",
+
       snackbar_color: "success",
       form_title: "Dnevnik prakse",
       component: Student_DnevnikPrakseForm, //DnevnikPrakseForm
@@ -196,6 +205,7 @@ class UserTaskMappings {
       snackbar_msg: "Upis ocjene potvrđen. Hvala!",
       snackbar_color: "success",
       form_title: "Upis ocjene (ISVU)",
+      component: Student_WaitingForMark,
     },
     {
       order: 7,
@@ -210,7 +220,8 @@ class UserTaskMappings {
 
   static getTaskProperty(taskId, property, state = "running") {
     if (state === "finished") {
-      console.log("getTaskProperty: ", taskId, property, state);
+      taskId = "end_event_student";
+
       return getMappedProperty(
         this.tasks,
         "_id",
@@ -235,8 +246,6 @@ import {
   mdiCertificate,
   mdiCancel,
 } from "@mdi/js";
-import Student_InternshipFinished from "@/components/Internship/Student_InternshipFinished.vue";
-import Utils from "./utils";
 
 class ActivityEventMappings {
   static events = [
