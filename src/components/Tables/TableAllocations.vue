@@ -19,9 +19,9 @@ const allocations = ref([]);
 let dataLoaded = ref(false);
 
 const filteredAllocations = computed(() => {
+  console.log(allocations.value);
   return allocations.value.filter(
-    (allocation) =>
-      allocation["Alocirani_zadatak"] && allocation["opis_zadatka"]
+    (allocation) => allocation["Alocirani_zadatak"] !== null
   );
 });
 

@@ -323,6 +323,7 @@ Napomena: Da biste prijavili preferencije, morate biti prijavljeni u aplikaciji!
           <camunda:inputParameter name="id_instance" />
           <camunda:inputParameter name="Student">${Student}</camunda:inputParameter>
           <camunda:inputParameter name="Alocirani_zadatak">${Alocirani_zadatak}</camunda:inputParameter>
+          <camunda:inputParameter name="id_alokacija">${id_alokacija}</camunda:inputParameter>
         </camunda:inputOutput>
       </bpmn:extensionElements>
       <bpmn:incoming>Flow_0vu59te</bpmn:incoming>
@@ -336,7 +337,7 @@ Napomena: Da biste prijavili preferencije, morate biti prijavljeni u aplikaciji!
           <camunda:inputOutput>
             <camunda:inputParameter name="url_parameter">
               <camunda:map>
-                <camunda:entry key="JMBAG">${JMBAG}</camunda:entry>
+                <camunda:entry key="id_alokacija">${id_alokacija}</camunda:entry>
               </camunda:map>
             </camunda:inputParameter>
             <camunda:inputParameter name="url">/api/alokacija/public</camunda:inputParameter>
@@ -438,6 +439,7 @@ Napomena: Da biste prijavili preferencije, morate biti prijavljeni u aplikaciji!
           <camunda:inputParameter name="Poslodavac">${poslodavac_naziv}</camunda:inputParameter>
           <camunda:inputParameter name="mjesto_izvrsavanja">${mjesto_izvrsavanja}</camunda:inputParameter>
           <camunda:inputParameter name="id_instance" />
+          <camunda:inputParameter name="id_alokacija">${id_alokacija}</camunda:inputParameter>
           <camunda:outputParameter name="id_prijavnica" />
           <camunda:outputParameter name="id_dnevnik_prakse" />
         </camunda:inputOutput>
@@ -562,6 +564,7 @@ Dnevnik je potrebno predati prije prijave ispitnoga roka.</bpmn:documentation>
           <camunda:inputParameter name="prijavljen_rok">${prijavljen_rok}</camunda:inputParameter>
           <camunda:inputParameter name="id_dnevnik_prakse">${id_dnevnik_prakse}</camunda:inputParameter>
           <camunda:inputParameter name="id_instance" />
+          <camunda:inputParameter name="id_alokacija">${id_alokacija}</camunda:inputParameter>
         </camunda:inputOutput>
       </bpmn:extensionElements>
       <bpmn:incoming>Flow_1btfl5a</bpmn:incoming>
