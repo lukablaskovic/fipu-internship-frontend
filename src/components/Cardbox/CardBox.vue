@@ -35,36 +35,42 @@ const submit = (event) => {
 </script>
 
 <template>
-    <component :is="isForm ? 'form' : 'div'" :class="componentClass" class="bg-white flex" @submit="submit">
-        <slot v-if="hasComponentLayout" />
-        <template v-else>
-            <CardBoxComponentBody
-                :no-padding="hasTable || centeredContent || verticalCentered"
-                :centered-content="centeredContent"
-                :vertical-centered="verticalCentered">
-                <slot />
-            </CardBoxComponentBody>
-            <CardBoxComponentFooter v-if="hasFooterSlot">
-                <slot name="footer" />
-            </CardBoxComponentFooter>
-        </template>
-    </component>
+  <component
+    :is="isForm ? 'form' : 'div'"
+    :class="componentClass"
+    class="bg-white flex"
+    @submit="submit"
+  >
+    <slot v-if="hasComponentLayout" />
+    <template v-else>
+      <CardBoxComponentBody
+        :no-padding="hasTable || centeredContent || verticalCentered"
+        :centered-content="centeredContent"
+        :vertical-centered="verticalCentered"
+      >
+        <slot />
+      </CardBoxComponentBody>
+      <CardBoxComponentFooter v-if="hasFooterSlot">
+        <slot name="footer" />
+      </CardBoxComponentFooter>
+    </template>
+  </component>
 </template>
 <style scoped>
 ::-webkit-scrollbar {
-    width: 8px;
-    border-radius: 100px;
+  width: 8px;
+  border-radius: 100px;
 }
 ::-webkit-scrollbar-track-piece {
-    background: #f9fafb;
-    border-radius: 100px;
+  background: #f9fafb;
+  border-radius: 100px;
 }
 ::-webkit-scrollbar-thumb {
-    background: #9ca3af;
-    border-radius: 100px;
+  background: #9ca3af;
+  border-radius: 100px;
 }
 ::-webkit-scrollbar-thumb:hover {
-    background: #6b7280;
-    border-radius: 32px;
+  background: #6b7280;
+  border-radius: 32px;
 }
 </style>

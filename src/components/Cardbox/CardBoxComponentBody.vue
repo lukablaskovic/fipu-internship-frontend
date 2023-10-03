@@ -10,10 +10,15 @@ defineProps({
 <template>
   <div
     class="flex-1"
-    :class="[styleStore.asideScrollbarsStyle, { 'p-6 ': !noPadding,
-      'flex flex-col justify-end items-center w-full h-full': centeredContent,
-      'flex flex-col justify-center w-full h-full': verticalCentered,
-    }]"
+    :class="[
+      styleStore.asideScrollbarsStyle,
+      {
+        'p-6 ': !noPadding,
+        'flex flex-col justify-center items-center w-full h-full':
+          centeredContent,
+        'flex flex-col justify-center w-full h-full': verticalCentered,
+      },
+    ]"
   >
     <slot />
   </div>

@@ -141,10 +141,14 @@ function navigateToRegister() {
           class="flex flex-col md:flex-row flex-shrink h-full || bg-white rounded-lg overflow-hidden || transition-all duration-300 px-0 lg:px-6 xl:px-16 2xl:pr-28 2xl:pl-20 || xl:gap-4 2xl:gap-8"
         >
           <CardBox
-            class="hidden xl:block flex-1 bg-opacity-0 grow p-16 xl:px-0 xl:py-16 2xl:py-24 || transition-all duration-300"
+            class="hidden xl:flex justify-center items-center flex-1 bg-opacity-0 grow p-16 xl:px-0 xl:py-16 2xl:py-24 || transition-all duration-300"
             centered-content
           >
-            <img :src="loginArt" alt="Login graphics" class="2xl:pr-8 w-full" />
+            <img
+              :src="loginArt"
+              alt="Login graphics"
+              class="2xl:pr-8 aspect-square max-h-full"
+            />
           </CardBox>
 
           <CardBox
@@ -157,7 +161,7 @@ function navigateToRegister() {
               <img
                 :src="fipu_unipu"
                 alt="fipu logo"
-                class="h-16 mb-6 object-contain"
+                class="h-20 xl:h-28 2xl:h-32 mb-6 object-contain transition-all duration-300"
               />
             </a>
             <h2

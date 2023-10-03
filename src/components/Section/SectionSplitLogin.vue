@@ -26,7 +26,10 @@ const colorClass = computed(() => {
 </script>
 
 <template>
-  <div class="md:px-16 lg:px-20 xl:px-28 2xl:px-36 transition-all duration-300" :class="colorClass">
+  <div
+    class="md:px-16 lg:px-20 xl:px-28 2xl:px-36 transition-all duration-300 flex justify-center items-center w-full h-full"
+    :class="colorClass"
+  >
     <slot card-class="shadow-2xl" />
   </div>
 </template>

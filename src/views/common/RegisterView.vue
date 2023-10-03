@@ -245,7 +245,7 @@ function navigateToLogin() {
               <img
                 :src="fipu_unipu"
                 alt="fipu logo"
-                class="h-16 mb-6 object-contain"
+                class="h-20 xl:h-28 2xl:h-32 mb-6 object-contain transition-all duration-300"
               />
             </a>
             <h2
@@ -265,7 +265,7 @@ function navigateToLogin() {
               >.
             </h2>
 
-            <div class="flex flex-col md:flex-row grow gap-6 md:gap-2">
+            <div class="flex flex-col md:flex-row gap-6 md:gap-2">
               <div class="flex flex-col flex-1">
                 <FormField label="Ime">
                   <FormControl
