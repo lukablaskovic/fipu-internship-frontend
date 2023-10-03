@@ -135,10 +135,10 @@ function navigateToRegister() {
     >
       <div
         v-if="!transitioning"
-        class="flex flex-col justify-center items-center overflow-hidden h-screen || md:py-16 md:px-4 || transition-all duration-300"
+        class="flex flex-col justify-center items-center overflow-hidden h-screen || md:py-4 md:px-4 || transition-all duration-300"
       >
         <div
-          class="flex flex-col md:flex-row flex-shrink h-full || bg-white rounded-lg overflow-hidden || transition-all duration-300 px-0 lg:px-6 xl:px-16 2xl:pr-28 2xl:pl-20 || xl:gap-4 2xl:gap-8"
+          class="flex flex-col md:flex-row flex-shrink h-full || bg-white rounded-lg overflow-y-auto scrollbar-thin scrollbar-track-slate-100 dark:scrollbar-track-slate-800 scrollbar-thumb-slate-300 dark:scrollbar-thumb-slate-600 hover:scrollbar-thumb-slate-400 dark:hover:scrollbar-thumb-slate-400 || transition-all duration-300 px-0 lg:px-6 xl:px-16 2xl:pr-28 2xl:pl-20 || xl:gap-4 2xl:gap-8"
         >
           <CardBox
             class="hidden xl:flex justify-center items-center flex-1 bg-opacity-0 grow p-16 xl:px-0 xl:py-16 2xl:py-24 || transition-all duration-300"
@@ -161,7 +161,7 @@ function navigateToRegister() {
               <img
                 :src="fipu_unipu"
                 alt="fipu logo"
-                class="h-20 xl:h-28 2xl:h-32 mb-6 object-contain transition-all duration-300"
+                class="h-20 xl:h-28 2xl:h-32 object-contain transition-all duration-300"
               />
             </a>
             <h2
