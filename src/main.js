@@ -35,7 +35,7 @@ const pinia = createPinia();
 /* Init Pinia Persisted state plugin */
 pinia.use(piniaPluginPersistedstate);
 pinia.use(({ store }) => {
-  store.router = markRaw(router);
+	store.router = markRaw(router);
 });
 
 const app = createApp(App);
@@ -54,7 +54,16 @@ const snackBarStore = useSnackBarStore(pinia);
 const chatStore = useChatStore(pinia);
 
 app.use(router);
-app.mount("#app");
+
+let VueAppInstance = null;
+let containerSelector = "#app";
+// check if app has been mounted already
+const mountPoint = document.querySelector(containerSelector);
+if (mountPoint && mountPoint.__vue_app__ !== undefined) {
+	VueAppInstance = mountPoint.__vue_app__._instance.proxy;
+} else {
+	app.mount("#app");
+}
 
 /* Responsive layout control */
 layoutStore.responsiveLayoutControl();
@@ -64,12 +73,8 @@ window.onresize = () => layoutStore.responsiveLayoutControl();
 styleStore.setStyle(localStorage[styleKey] ?? "basic");
 
 /* Dark mode */
-if (
-  (!localStorage[darkModeKey] &&
-    window.matchMedia("(prefers-color-scheme: dark)").matches) ||
-  localStorage[darkModeKey] === "1"
-) {
-  styleStore.setDarkMode(true);
+if ((!localStorage[darkModeKey] && window.matchMedia("(prefers-color-scheme: dark)").matches) || localStorage[darkModeKey] === "1") {
+	styleStore.setDarkMode(true);
 }
 
 /* Default title tag */
@@ -77,18 +82,7 @@ const defaultDocumentTitle = "Fipu Praksa";
 
 /* Set document title from route meta */
 router.afterEach((to) => {
-  document.title = to.meta?.title
-    ? `${to.meta.title} — ${defaultDocumentTitle}`
-    : defaultDocumentTitle;
+	document.title = to.meta?.title ? `${to.meta.title} — ${defaultDocumentTitle}` : defaultDocumentTitle;
 });
 
-export {
-  mainStore,
-  studentStore,
-  adminStore,
-  guestStore,
-  styleStore,
-  layoutStore,
-  snackBarStore,
-  chatStore,
-};
+export { mainStore, studentStore, adminStore, guestStore, styleStore, layoutStore, snackBarStore, chatStore };

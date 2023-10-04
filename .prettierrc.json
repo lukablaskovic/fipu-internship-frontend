@@ -1,0 +1,7 @@
+{
+	"bracketSameLine": true,
+	"printWidth": 500,
+	"useTabs": true,
+	"vueIndentScriptAndStyle:": true,
+	"singleAttributePerLine:": false
+}
