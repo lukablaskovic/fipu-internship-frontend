@@ -45,13 +45,11 @@ export const useAdminStore = defineStore("admin", {
 				let result = await Admin.getAllocations();
 				return result;
 			} catch (error) {
-				console.log("Error:", error);
 				return null;
 			}
 		},
 		async saveUpdatedCompany(postData) {
 			try {
-				console.log("post data", postData);
 				let result = await Admin.saveUpdatedCompany(postData);
 				return result;
 			} catch (error) {
@@ -214,7 +212,6 @@ export const useAdminStore = defineStore("admin", {
 		async sendAnAdditionalEmail(postData, to, template) {
 			try {
 				const response = await SendGrid.sendEmail(postData, to, template);
-				console.log("sendAnAdditionalEmail", response);
 				return response;
 			} catch (error) {
 				console.log("Error:", error);

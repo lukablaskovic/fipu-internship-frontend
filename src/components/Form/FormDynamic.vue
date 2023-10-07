@@ -77,7 +77,6 @@ watch(
 	formValues,
 	(newValues, oldValues) => {
 		emit("update:modelValue", newValues);
-		console.log(formValues);
 	},
 	{ deep: true }
 );

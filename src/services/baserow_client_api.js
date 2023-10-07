@@ -52,8 +52,6 @@ const Student = {
 		}
 	},
 	async storeDnevnik(id_dnevnik_prakse, fileData) {
-		console.log("Received fileData in storeDnevnik:", fileData);
-
 		try {
 			const formData = new FormData();
 			formData.append("file", fileData);
@@ -71,8 +69,6 @@ const Student = {
 	},
 
 	async storeIspunjenaPotvrda(id_dnevnik_prakse, fileData) {
-		console.log("Received fileData in storeIspunjenaPotvrda:", fileData);
-
 		try {
 			const formData = new FormData();
 			formData.append("file", fileData);

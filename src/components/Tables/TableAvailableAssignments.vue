@@ -38,7 +38,6 @@ watch(() => route.params.id_zadatak, loadData, {
 
 onMounted(async () => {
 	const result = await guestStore.fetchAvailableAssignments();
-	console.log(result);
 	allAvailableAssignments.value = result.filter((task) => task.dostupno_mjesta > 0 && task.voditelj_odobrio.value == "odobreno");
 
 	guestStore.resetAssignments();

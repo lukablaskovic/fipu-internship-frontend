@@ -35,17 +35,14 @@ onMounted(async () => {
 
 	instanceInfo.value = await studentStore.getInstanceInfo(process_instance_id.value);
 	if (instanceInfo.value == null) {
-		console.log("Process instance not found...");
 		error.value = true;
 		return;
 	}
 
 	assignemntDetails.value = await studentStore.getAssignmentDetails(instanceInfo.value.variables["Alocirani_zadatak"]);
 	assignment.value = assignemntDetails.value.data.results[0];
-	console.log(instanceInfo.value);
 
 	pendingTaskInfo.value = await adminStore.getTaskInfo(process_instance_id.value, instanceInfo.value.pending[0]);
-	console.log("pendingTaskInfo", pendingTaskInfo.value);
 	studentInfo.value = {
 		student_ime: instanceInfo.value.variables["student_ime"],
 		student_prezime: instanceInfo.value.variables["student_prezime"],

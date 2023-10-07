@@ -46,7 +46,7 @@ onMounted(async () => {
 		handleWindowResize(viewer);
 		window.addEventListener("resize", () => handleWindowResize(viewer));
 	} catch (err) {
-		handleError(err);
+		return null;
 	}
 
 	onBeforeUnmount(() => {
@@ -108,11 +108,9 @@ function handleElementHover(event, canvasElement) {
 
 function handleElementClick(event, emitFunction, viewer) {
 	const element = event.element;
-	console.log("%cBPMNDiagram.vue: Element clicked:", "color: red;", element);
 	if (element.type === "bpmn:SendTask") {
 		const sendTask = getSendTask(element.id);
-		console.log("transversedSendTasks", transversedSendTasks.value);
-		console.log("sendTask", sendTask);
+
 		if (transversedSendTasks.value.includes(sendTask._id)) {
 			emitFunction("sendTaskModal", element);
 			adminStore.bpmn_diagram.clicked_task_id = element.id;
@@ -120,7 +118,6 @@ function handleElementClick(event, emitFunction, viewer) {
 			return;
 		}
 	}
-	console.log("event.element", event.element);
 
 	if (element) {
 		// Fetch the path from the start to the current task
@@ -139,20 +136,15 @@ function handleElementClick(event, emitFunction, viewer) {
 
 			// Check if the task is 'evaluacija_poslodavac' and if it's the current task
 			if (element.id === "evaluacija_poslodavac" && taskOrder === props.currentOrder) {
-				console.log("%cBPMNDiagram.vue: 'evaluacija_poslodavac' is the current task. Not clickable.", "color: red;");
 				return;
 			}
 
 			adminStore.bpmn_diagram.clicked_task_id = element.id;
 
 			if (taskOrder === props.currentOrder) {
-				console.log("%cBPMNDiagram.vue: Emitting currentTaskModal", "color: red;");
 				emitFunction("currentTaskModal", element);
 			} else if (taskOrder < props.currentOrder) {
-				console.log("%cBPMNDiagram.vue: Emitting pastTaskModal", "color: red;");
 				emitFunction("pastTaskModal", element);
-			} else {
-				console.log("%cBPMNDiagram.vue: Task in the future. Not clickable.", "color: red;");
 			}
 		}
 	}
@@ -190,7 +182,6 @@ function traverseFromStartToCurrent(startElement, currentTaskId, elementRegistry
 }
 
 function applyCustomStyling(highlightColor, highlightElementId, viewer) {
-	console.log("Applying custom styling to:", highlightElementId);
 	const canvasInstance = viewer.get("canvas");
 	canvasInstance.zoom("fit-viewport");
 	canvasInstance.viewbox();
@@ -220,8 +211,6 @@ function applyCustomStyling(highlightColor, highlightElementId, viewer) {
 
 	// Animate the highlighting in order
 	directPath.forEach((element, index) => {
-		console.log("Direct path element:", element.id); // Debug log
-
 		setTimeout(() => {
 			if (element.id !== highlightElementId) {
 				applyHighlight(element, "highlight-previous");
@@ -242,10 +231,6 @@ function applyCustomStyling(highlightColor, highlightElementId, viewer) {
     }
   `;
 	document.head.appendChild(style);
-}
-
-function handleError(err) {
-	console.log("%cBPMNDiagram.vue: something went wrong!", "color: red;", err.warnings, err.message);
 }
 </script>
 

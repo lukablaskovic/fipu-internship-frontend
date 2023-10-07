@@ -29,7 +29,6 @@ const route = useRoute();
 
 async function loadData() {
 	const naziv = route.params.naziv;
-	console.log(naziv);
 	if (naziv) {
 		company_highlight.value = naziv;
 	}
@@ -48,7 +47,6 @@ onMounted(async () => {
 	});
 	if (Utils.isArrayEmpty(filteredCompanies)) {
 		snackBarStore.pushMessage("Nema novih poduzeća", "info");
-		console.log("Nema novih poduzeća");
 		adminStore.newCompaniesFound = false;
 	} else {
 		snackBarStore.pushMessage("Pronađena su nova poduzeća, molimo ažurirajte podatke", "info");

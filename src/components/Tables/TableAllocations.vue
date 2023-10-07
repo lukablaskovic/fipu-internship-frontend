@@ -19,7 +19,6 @@ const allocations = ref([]);
 let dataLoaded = ref(false);
 
 const filteredAllocations = computed(() => {
-	console.log(allocations.value);
 	return allocations.value.filter((allocation) => allocation["Alocirani_zadatak"] !== null);
 });
 
@@ -28,7 +27,6 @@ onMounted(async () => {
 
 	allocations.value = await studentStore.getAllocationsPublic();
 
-	console.log(allocations.value);
 	dataLoaded.value = true;
 });
 

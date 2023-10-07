@@ -51,10 +51,6 @@ const props = defineProps({
 	},
 });
 
-onMounted(() => {
-	console.log(props.options);
-});
-
 let query = ref("");
 
 let companies = computed(() => (query.value === "" ? props.options : props.options.filter((company) => company.label.toLowerCase().replace(/\s+/g, "").includes(query.value.toLowerCase().replace(/\s+/g, "")))));

@@ -31,9 +31,7 @@ const selectAssignment = (assignment) => {
 };
 
 onMounted(async () => {
-	console.log("adminStore.selectedStudent", adminStore.selectedStudent);
 	registeredPreferences.value = await adminStore.getPreferencesDetailed(adminStore.selectedStudent.process_instance_data.variables.id_preferencije);
-	console.log("registeredPreferences.value", registeredPreferences.value);
 	prviOdabir.value = registeredPreferences.value["Prvi_odabir"][0]["details"];
 	drugiOdabir.value = registeredPreferences.value["Drugi_odabir"][0]["details"];
 	treciOdabir.value = registeredPreferences.value["Treci_odabir"][0]["details"];

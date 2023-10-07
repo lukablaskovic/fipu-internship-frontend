@@ -116,7 +116,6 @@ const isLoading = ref(false);
 const v$ = useVuelidate(rules, form);
 
 async function onSubmit() {
-	console.log("form", form);
 	isLoading.value = true;
 	v$.value.$touch();
 	if (v$.value.$invalid) {
@@ -131,9 +130,6 @@ async function onSubmit() {
 	if (!form.selekcija) {
 		form.proces_selekcije = "Nema";
 	}
-
-	console.log("form", form);
-	console.log("Submitted!");
 
 	let result = await guestStore.submitNewInternshipProject(form);
 	isLoading.value = false;

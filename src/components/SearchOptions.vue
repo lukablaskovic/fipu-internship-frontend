@@ -179,7 +179,6 @@ let filteredResults = computed(() => {
 	}
 
 	const terms = searchTerm.split(" ");
-	console.log(adminStore.students);
 	if (query.value.toLowerCase().startsWith("s:")) {
 		return adminStore.students.filter((student) => {
 			const ime = student.ime.toLowerCase();
@@ -194,7 +193,6 @@ let filteredResults = computed(() => {
 			return ime.includes(searchTerm) || prezime.includes(searchTerm);
 		});
 	} else if (query.value.startsWith("se:")) {
-		console.log("se: query");
 		return adminStore.students.filter((student) => student.email.toLowerCase().replace(/\s+/g, "").includes(searchTerm));
 	} else if (query.value.startsWith("sj:")) {
 		return adminStore.students.filter((student) => student.JMBAG.toLowerCase().replace(/\s+/g, "").includes(searchTerm));
@@ -229,7 +227,6 @@ watch(selectedValue, (newValue, oldValue) => {
 
 function navigateToStudent(student) {
 	const instanceId = student.process_instance_data.id;
-	console.log("Navigating to student with instanceId:", instanceId);
 	router.push(`/studenti/${instanceId}`);
 }
 
@@ -242,5 +239,6 @@ const helpItems = [
 	{ prefix: "se:", description: "pretraži studenta po emailu" },
 	{ prefix: "p:", description: "pretraži poduzeće po nazivu" },
 	{ prefix: "z:", description: "pretraži zadatak po nazivu" },
+	{ prefix: "e:", description: "prikaži samo uneseni event po nazivu" },
 ];
 </script>

@@ -20,10 +20,8 @@ onMounted(async () => {
 		studentStore.allocated_assignment = result.data.results[0];
 
 		allocated_assignment.value = result.data.results[0];
-		console.log(allocated_assignment);
 	} else {
 		allocated_assignment.value = studentStore.allocated_assignment;
-		console.log("allocated_assignment.value", allocated_assignment.value);
 	}
 });
 

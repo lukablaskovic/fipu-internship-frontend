@@ -126,8 +126,8 @@ function showNotificationBar(type) {
 							</div>
 
 							<BaseButtons class="text-fipu_gray dark:text-gray-300">
-								<PillTagPlain :reverse-dark="true" v-if="mainStore.userAdmin" label="Admin" :icon="mdiAccountCircle" />
-								<PillTagPlain :reverse-dark="true" v-else label="Student" :icon="mdiAccountCircle" />
+								<PillTagPlain v-if="mainStore.userAdmin" :reverse-dark="true" label="Admin" :icon="mdiAccountCircle" />
+								<PillTagPlain v-else :reverse-dark="true" label="Student" :icon="mdiAccountCircle" />
 								<PillTagPlain :reverse-dark="true" label="FIPU" :icon="mdiDomain" />
 							</BaseButtons>
 
@@ -142,10 +142,6 @@ function showNotificationBar(type) {
 
 			<div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
 				<CardBox is-form class="rounded">
-					<FormField label="Avatar" help="Max 500kb">
-						<FormFilePicker label="Prenesi" color="fipu_blue" />
-					</FormField>
-
 					<FormField v-if="profileForm.account_type != 'student'" label="Korisničko ime">
 						<FormControl v-model="profileForm.username" :icon="mdiAccount" readonly name="userName" autocomplete="userName" />
 					</FormField>

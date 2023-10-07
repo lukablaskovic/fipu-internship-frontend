@@ -22,7 +22,6 @@ const route = useRoute();
 
 async function loadData() {
 	const naziv = route.params.naziv;
-	console.log(naziv);
 	if (naziv) {
 		company_highlight.value = naziv;
 	}

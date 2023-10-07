@@ -170,6 +170,10 @@ function navigateToRegister() {
 .fast-animation {
 	animation-duration: 0.5s;
 }
+.hover-underline-animation {
+	position: relative;
+}
+
 .hover-underline-animation:after {
 	content: "";
 	position: absolute;
@@ -182,6 +186,7 @@ function navigateToRegister() {
 	transform-origin: bottom right;
 	transition: transform 0.25s ease-out;
 }
+
 .hover-underline-animation:hover:after {
 	transform: scaleX(1);
 	transform-origin: bottom left;

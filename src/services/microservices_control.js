@@ -73,7 +73,6 @@ const Control = {
 	autoRefreshServiceStatus(intervalMinutes = 5) {
 		const refresher = async () => {
 			const statuses = await this.checkAllServiceStatuses();
-			console.log(statuses);
 			setTimeout(refresher, intervalMinutes * 60 * 1000);
 		};
 

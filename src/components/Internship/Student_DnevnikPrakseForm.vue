@@ -35,10 +35,8 @@ onMounted(async () => {
 		studentStore.allocated_assignment = result.data.results[0];
 
 		allocated_assignment.value = result.data.results[0];
-		console.log(allocated_assignment);
 	} else {
 		allocated_assignment.value = studentStore.allocated_assignment;
-		console.log("allocated_assignment.value", allocated_assignment.value);
 	}
 });
 
@@ -75,9 +73,6 @@ const v$ = useVuelidate(rules, form);
 let isLoading = ref(false);
 
 async function submit_diary_form() {
-	console.log(form);
-
-	console.log("Submitting form...");
 	isLoading.value = true;
 
 	v$.value.$touch();

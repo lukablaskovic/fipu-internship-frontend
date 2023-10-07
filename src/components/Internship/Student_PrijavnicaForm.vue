@@ -33,10 +33,8 @@ onMounted(async () => {
 		studentStore.allocated_assignment = result.data.results[0];
 
 		allocated_assignment.value = result.data.results[0];
-		console.log(allocated_assignment);
 	} else {
 		allocated_assignment.value = studentStore.allocated_assignment;
-		console.log("allocated_assignment.value", allocated_assignment.value);
 	}
 });
 
@@ -133,7 +131,6 @@ let isLoading = ref(false);
 const v$ = useVuelidate(rules, form);
 
 async function submit_application_form() {
-	console.log("Submitting form...");
 	isLoading.value = true;
 
 	v$.value.$touch();
@@ -145,7 +142,6 @@ async function submit_application_form() {
 	isLoading.value = false;
 
 	if (UserTaskMappings.getTaskProperty(studentStore.student_process_instance_data.pending[0], "snackbar_msg")) {
-		console.log("snackbar_msg");
 		snackBarStore.pushMessage(UserTaskMappings.getTaskProperty(studentStore.student_process_instance_data.pending[0], "snackbar_msg"), UserTaskMappings.getTaskProperty(studentStore.student_process_instance_data.pending[0], "snackbar_color"));
 	}
 	await Utils.wait(2);

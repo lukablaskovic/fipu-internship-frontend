@@ -76,7 +76,6 @@ const isLoading = ref(false);
 const router = useRouter();
 
 async function onSubmit() {
-	console.log("Submitting form...");
 	isLoading.value = true;
 
 	v$.value.$touch();

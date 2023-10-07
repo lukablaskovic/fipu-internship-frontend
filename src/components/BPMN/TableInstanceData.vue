@@ -8,10 +8,7 @@ const variables = ref({});
 const tableAttributes = ref([]);
 
 onMounted(async () => {
-	console.log("Clicked Task ID", adminStore.bpmn_diagram.clicked_task_id);
-
 	variables.value = adminStore.selectedStudent.process_instance_data.variables;
-	console.log(variables);
 
 	if (adminStore.bpmn_diagram.clicked_task_id == "odabiranje_zadatka_student") {
 		tableAttributes.value = ["Prvi_odabir", "Drugi_odabir", "Treci_odabir", "napomena"];

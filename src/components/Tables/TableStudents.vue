@@ -22,7 +22,6 @@ const studentsFetched = computed(() => adminStore.studentsFetched);
 const emit = defineEmits(["show-student-diagram"]);
 
 function showDiagram(student) {
-	console.log("student", student);
 	selectedStudentInstanceID.value = student["process_instance_id"];
 
 	adminStore.setSelectedStudent(student);
@@ -46,6 +45,7 @@ const studentsPaginated = computed(() => students.value.slice(perPage.value * cu
 
 const numPages = computed(() => Math.ceil(students.value.length / perPage.value));
 const currentPageHuman = computed(() => currentPage.value + 1);
+
 const pagesList = computed(() => {
 	const pagesList = [];
 	for (let i = 0; i < numPages.value; i++) {
@@ -82,14 +82,6 @@ function getProgressValue(student) {
 				:class="{
 					'selected-row': selectedStudentInstanceID === student['process_instance_id'],
 				}">
-				<!--
-        <td v-if="student['avatar'][0]" class="border-b-0 lg:w-6 before:hidden">
-          <UserAvatar
-            :avatar="student['avatar'][0]['url']"
-            class="w-8 h-8 mx-auto"
-          />
-        </td>
-        -->
 				<td data-label="JMBAG">
 					{{ student["JMBAG"] }}
 				</td>
@@ -119,6 +111,7 @@ function getProgressValue(student) {
 						{{ getProgressValue(student) }}
 					</progress>
 				</td>
+
 				<td data-label="Stanje">
 					{{ UserTaskMappings.getTaskProperty(student["process_instance_data"]["pending"][0], "name", student["process_instance_data"]["state"]) }}
 				</td>

@@ -61,7 +61,6 @@ function showNotificationBar(type) {
 			notificationMessage.value = "Preferencije nisu prijavljene. Molimo pokušajte ponovno ili kontaktirajte profesora.";
 			break;
 	}
-	console.log("notificationBar", notificationBar.value);
 	notificationBar.value.show();
 }
 

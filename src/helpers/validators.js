@@ -11,8 +11,6 @@ function isUnipuEmail(value) {
 
 function exactLength(length) {
 	return function (value) {
-		console.log(value, length);
-
 		if (value === null || value === undefined) {
 			return false;
 		}

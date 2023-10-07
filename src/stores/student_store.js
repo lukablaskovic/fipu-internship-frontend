@@ -67,8 +67,7 @@ export const useStudentStore = defineStore("student", {
 				nastavak_radnog_odnosa: diary_data["nastavak_radnog_odnosa"],
 				prijavljen_rok: diary_data["prijavljen_rok"],
 			};
-			console.log("Received dnevnik_attachment:", diary_data.dnevnik_attachment);
-			console.log("Received prijavnica_attachment:", diary_data.potvrda_attachment);
+
 			let combinedResponses = {};
 			try {
 				let process_instance_id = mainStore.currentUser.internship_process.id;
@@ -105,8 +104,6 @@ export const useStudentStore = defineStore("student", {
 					mainStore.currentUser.internship_process.pending_user_task = pendingUserTask;
 
 					return pendingUserTask;
-				} else {
-					console.log("No pending tasks found.");
 				}
 			} catch (error) {
 				console.log("Error:", error);

@@ -103,6 +103,8 @@ export const useMainStore = defineStore("main", {
 			this.currentUser.reset();
 			localStorage.removeItem("main");
 			localStorage.removeItem("admin");
+			localStorage.removeItem("student");
+			localStorage.removeItem("guest");
 		},
 
 		logout() {

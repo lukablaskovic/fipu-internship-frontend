@@ -58,7 +58,6 @@ export const useGuestStore = defineStore("guest", {
 			if (!assignmentExists) {
 				this.checkedAssignments.push(assignment);
 			}
-			console.log(this.checkedAssignments);
 		},
 		removeAssignment(assignment) {
 			this.checkedAssignments = this.checkedAssignments.filter((a) => a["id_zadatak"] !== assignment["id_zadatak"]);
@@ -91,7 +90,6 @@ export const useGuestStore = defineStore("guest", {
 			} else {
 				delete postData.angazman_fipu;
 			}
-			console.log("postData", postData);
 			try {
 				const response = await Guest.submitNewInternshipProject(postData);
 				return response;
