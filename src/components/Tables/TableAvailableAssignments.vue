@@ -95,6 +95,7 @@ const checked = (value, assignment) => {
 	<LoadingOverlay :is-active="!allAvailableAssignments.length" title="Učitavanje..." description="Može potrajati nekoliko sekundi, molimo ne zatvarajte stranicu."> </LoadingOverlay>
 	<CardBoxModal v-if="isModalActive" v-model="isModalActive" :title="'📃' + isModalActive['id_zadatak']" button-label="Zatvori" button="fipu_blue" has-cancel:false @cancel="mainStore.activateLogoutModal(false)">
 		<hr />
+		<br />
 		<div><b>Poslodavac: </b>{{ isModalActive["Poslodavac"][0].value }}</div>
 
 		<div><b>Zadatak studenta:</b> {{ isModalActive["opis_zadatka"] }}</div>
@@ -127,7 +128,7 @@ const checked = (value, assignment) => {
 		</div>
 		<div>
 			<b>Angažman FIPU: </b>
-			{{ isModalActive["angazman_fipu"] }}
+			{{ isModalActive["angazman_fipu"] || "Nije definirano." }}
 		</div>
 		<div>
 			<b>Kontakt email: </b>
@@ -135,10 +136,9 @@ const checked = (value, assignment) => {
 		</div>
 		<div><b>Lokacija: </b>{{ isModalActive["lokacija"] }}</div>
 		<div>
-			<b>Angažman FIPU: </b>
-			{{ isModalActive["angazman_fipu"] }}
+			<b>Napomena</b>
+			{{ isModalActive["napomena"] || "Nema napomene." }}
 		</div>
-
 		<br />
 	</CardBoxModal>
 

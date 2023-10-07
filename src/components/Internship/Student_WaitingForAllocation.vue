@@ -71,6 +71,7 @@ async function getAssignmentDetailsInModal(assignment_id) {
 			</div>
 			<CardBoxModal v-if="isModalActive" v-model="isModalActive" :title="'📃' + isModalActive['id_zadatak']" button-label="Zatvori" button="fipu_blue" has-cancel:false>
 				<hr />
+				<br />
 				<div><b>Zadatak studenta:</b> {{ isModalActive["opis_zadatka"] }}</div>
 				<div><b>Poslodavac: </b>{{ isModalActive["Poslodavac"][0].value }}</div>
 				<div>
@@ -98,7 +99,7 @@ async function getAssignmentDetailsInModal(assignment_id) {
 				</div>
 				<div>
 					<b>Angažman FIPU: </b>
-					{{ isModalActive["angazman_fipu"] }}
+					{{ isModalActive["angazman_fipu"] || "Nije definirano." }}
 				</div>
 				<div><b>Kontakt email: </b>{{ isModalActive["poslodavac_email"] }}</div>
 				<div><b>Lokacija: </b>{{ isModalActive["lokacija"] }}</div>

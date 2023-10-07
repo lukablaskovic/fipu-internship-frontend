@@ -123,6 +123,7 @@ const cancelTaskAction = () => {
 <template>
 	<CardBoxModal v-if="isModalActive" v-model="isModalActive" :title="'📃' + isModalActive['id_zadatak']" button-label="Zatvori" button="fipu_blue" has-cancel:false @cancel="mainStore.activateLogoutModal(false)">
 		<hr />
+		<br />
 		<div><b>Poslodavac: </b>{{ isModalActive["Poslodavac"][0].value }}</div>
 
 		<div><b>Zadatak studenta:</b> {{ isModalActive["opis_zadatka"] }}</div>
@@ -153,7 +154,7 @@ const cancelTaskAction = () => {
 		</div>
 		<div>
 			<b>Angažman FIPU: </b>
-			{{ isModalActive["angazman_fipu"] }}
+			{{ isModalActive["angazman_fipu"] || "Nije definirano." }}
 		</div>
 		<div>
 			<b>Kontakt email: </b>
