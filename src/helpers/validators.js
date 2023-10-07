@@ -1,44 +1,37 @@
 function croatianAlpha(value) {
-  return /^[A-Za-zčćšđžČĆŠĐŽ]+$/i.test(value);
+	return /^[A-Za-zčćšđžČĆŠĐŽ]+$/i.test(value);
 }
 
 const containsAlpha = (value) => /[a-zA-Z]/.test(value);
 const containsNumeric = (value) => /\d/.test(value);
 
 function isUnipuEmail(value) {
-  return value && (value.endsWith("@unipu.hr") || value.endsWith("@fipu.hr"));
+	return value && (value.endsWith("@unipu.hr") || value.endsWith("@fipu.hr"));
 }
 
 function exactLength(length) {
-  return function (value) {
-    console.log(value, length);
+	return function (value) {
+		console.log(value, length);
 
-    if (value === null || value === undefined) {
-      return false;
-    }
+		if (value === null || value === undefined) {
+			return false;
+		}
 
-    if (typeof value === "string" || Array.isArray(value)) {
-      return value.length === length;
-    }
+		if (typeof value === "string" || Array.isArray(value)) {
+			return value.length === length;
+		}
 
-    if (typeof value === "object") {
-      return Object.keys(value).length === length;
-    }
+		if (typeof value === "object") {
+			return Object.keys(value).length === length;
+		}
 
-    return String(value).length === length;
-  };
+		return String(value).length === length;
+	};
 }
 
 function getFirstErrorForField(fieldName) {
-  const error = this.v$.$errors.find((error) => error.$property === fieldName);
-  return error ? error.$message : null;
+	const error = this.v$.$errors.find((error) => error.$property === fieldName);
+	return error ? error.$message : null;
 }
 
-export {
-  croatianAlpha,
-  containsAlpha,
-  containsNumeric,
-  isUnipuEmail,
-  getFirstErrorForField,
-  exactLength,
-};
+export { croatianAlpha, containsAlpha, containsNumeric, isUnipuEmail, getFirstErrorForField, exactLength };

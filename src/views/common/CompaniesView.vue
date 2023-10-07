@@ -19,68 +19,42 @@ const userAdmin = computed(() => mainStore.userAdmin);
 </script>
 
 <template>
-  <div>
-    <LayoutAuthenticated v-if="userAuthenticated">
-      <SectionMain>
-        <div v-if="userAdmin">
-          <SectionTitleLineWithButton
-            :icon="mdiDomainPlus"
-            title="Novi Poslodavci"
-            main
-          >
-          </SectionTitleLineWithButton>
-          <p class="mb-4">
-            U tablici se nalaze poduzeća koja su prijavili zadatke za izvođenje
-            prakse međutim još nisu registrirani za provođenje - potrebno je
-            ručno unijeti podatke o poduzeću.
-          </p>
+	<div>
+		<LayoutAuthenticated v-if="userAuthenticated">
+			<SectionMain>
+				<div v-if="userAdmin">
+					<SectionTitleLineWithButton :icon="mdiDomainPlus" title="Novi Poslodavci" main> </SectionTitleLineWithButton>
+					<p class="mb-4">U tablici se nalaze poduzeća koja su prijavili zadatke za izvođenje prakse međutim još nisu registrirani za provođenje - potrebno je ručno unijeti podatke o poduzeću.</p>
 
-          <CardBox has-table>
-            <TableNewCompanies />
-          </CardBox>
+					<CardBox has-table>
+						<TableNewCompanies />
+					</CardBox>
 
-          <CardBox v-if="!adminStore.newCompaniesFound">
-            <CardBoxComponentEmpty />
-          </CardBox>
-        </div>
-        <SectionTitleLineWithButton
-          class="mt-4"
-          :icon="mdiDomain"
-          title="Svi Poslodavci"
-          main
-        >
-        </SectionTitleLineWithButton>
-        <p class="mb-4">
-          U tablici se nalaze poduzeća koja su registrirana za provođenje
-          studentske prakse u suradnji s Fakultetom informatike u Puli.
-        </p>
-        <div v-if="!userAdmin" class="mb-4">
-          <p class="text-sm md:text-base">
-            Ukoliko ne možete naći zadatak koji vam se sviđa, javite se
-            poslodavcu, predstavite se i zamolite ih da ispune zadatak
-            <a href="">putem ove poveznice</a>.
-          </p>
-          <p class="flex flex-wrap items-center text-sm md:text-base">
-            Nakon što poslodavac ispuni zadatak, prijavite ga u
-            <span
-              class="text-fipu_blue cursor-pointer inline-flex items-center md:ml-1 whitespace-normal"
-              @click="router.push('/moja-praksa')"
-            >
-              <BaseIcon
-                :path="mdiLaptop"
-                class="flex-none align-middle"
-                :size="18"
-              ></BaseIcon>
+					<CardBox v-if="!adminStore.newCompaniesFound">
+						<CardBoxComponentEmpty />
+					</CardBox>
+				</div>
+				<SectionTitleLineWithButton class="mt-4" :icon="mdiDomain" title="Svi Poslodavci" main> </SectionTitleLineWithButton>
+				<p class="mb-4">U tablici se nalaze poduzeća koja su registrirana za provođenje studentske prakse u suradnji s Fakultetom informatike u Puli.</p>
+				<div v-if="!userAdmin" class="mb-4">
+					<p class="text-sm md:text-base">
+						Ukoliko ne možete naći zadatak koji vam se sviđa, javite se poslodavcu, predstavite se i zamolite ih da ispune zadatak
+						<a href="">putem ove poveznice</a>.
+					</p>
+					<p class="flex flex-wrap items-center text-sm md:text-base">
+						Nakon što poslodavac ispuni zadatak, prijavite ga u
+						<span class="text-fipu_blue cursor-pointer inline-flex items-center md:ml-1 whitespace-normal" @click="router.push('/moja-praksa')">
+							<BaseIcon :path="mdiLaptop" class="flex-none align-middle" :size="18"></BaseIcon>
 
-              Moja praksa
-            </span>
-          </p>
-        </div>
+							Moja praksa
+						</span>
+					</p>
+				</div>
 
-        <CardBox has-table>
-          <TableCompanies />
-        </CardBox>
-      </SectionMain>
-    </LayoutAuthenticated>
-  </div>
+				<CardBox has-table>
+					<TableCompanies />
+				</CardBox>
+			</SectionMain>
+		</LayoutAuthenticated>
+	</div>
 </template>

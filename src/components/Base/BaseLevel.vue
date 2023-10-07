@@ -2,49 +2,44 @@
 import { h, defineComponent } from "vue";
 
 export default defineComponent({
-  name: "BaseLevel",
-  props: {
-    mobile: Boolean,
-    type: {
-      type: String,
-      default: "justify-between",
-    },
-    fullWidth: {
-      type: Boolean,
-      default: false,
-    },
-  },
-  render() {
-    const parentClass = [this.type, "items-center"];
+	name: "BaseLevel",
+	props: {
+		mobile: Boolean,
+		type: {
+			type: String,
+			default: "justify-between",
+		},
+		fullWidth: {
+			type: Boolean,
+			default: false,
+		},
+	},
+	render() {
+		const parentClass = [this.type, "items-center"];
 
-    const parentMobileClass = ["flex"];
+		const parentMobileClass = ["flex"];
 
-    const parentBaseClass = ["block", "md:flex"];
+		const parentBaseClass = ["block", "md:flex"];
 
-    let childBaseClass = ["flex", "items-center"];
+		let childBaseClass = ["flex", "items-center"];
 
-    if (this.fullWidth) {
-      childBaseClass.push("w-full");
-    } else {
-      childBaseClass.push("justify-center");
-    }
+		if (this.fullWidth) {
+			childBaseClass.push("w-full");
+		} else {
+			childBaseClass.push("justify-center");
+		}
 
-    return h(
-      "div",
-      {
-        class: parentClass.concat(
-          this.mobile ? parentMobileClass : parentBaseClass
-        ),
-      },
-      this.$slots.default().map((element, index) => {
-        const childClass =
-          !this.mobile && this.$slots.default().length > index + 1
-            ? childBaseClass.concat(["mb-6", "md:mb-0"])
-            : childBaseClass;
+		return h(
+			"div",
+			{
+				class: parentClass.concat(this.mobile ? parentMobileClass : parentBaseClass),
+			},
+			this.$slots.default().map((element, index) => {
+				const childClass = !this.mobile && this.$slots.default().length > index + 1 ? childBaseClass.concat(["mb-6", "md:mb-0"]) : childBaseClass;
 
-        return h("div", { class: childClass }, [element]);
-      })
-    );
-  },
+				return h("div", { class: childClass }, [element]);
+			})
+		);
+	},
 });
 </script>

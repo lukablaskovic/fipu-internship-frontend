@@ -1,36 +1,36 @@
 import { defineStore } from "pinia";
 
 export const useLayoutStore = defineStore("layout", {
-  state: () => ({
-    isAsideMobileExpanded: false,
-    isAsideLgActive: true,
-    tooltip: {
-        content: '',
-        offsetx: 0,
-        offsety: 0,
-        justify: ''
-    },
+	state: () => ({
+		isAsideMobileExpanded: false,
+		isAsideLgActive: true,
+		tooltip: {
+			content: "",
+			offsetx: 0,
+			offsety: 0,
+			justify: "",
+		},
 
-    /* Breakpoints */
-    isXl: false,
-    isLg: false,
-    isMd: false,
-  }),
+		/* Breakpoints */
+		isXl: false,
+		isLg: false,
+		isMd: false,
+	}),
 
-  actions: {
-    asideMobileToggle() {
-      this.isAsideMobileExpanded = !this.isAsideMobileExpanded;
-    },
+	actions: {
+		asideMobileToggle() {
+			this.isAsideMobileExpanded = !this.isAsideMobileExpanded;
+		},
 
-    asideLgToggle() {
-      this.isAsideLgActive = !this.isAsideLgActive;
-    },
+		asideLgToggle() {
+			this.isAsideLgActive = !this.isAsideLgActive;
+		},
 
-    responsiveLayoutControl() {
-      this.isXl = window.innerWidth >= 1280;
-      this.isLg = window.innerWidth >= 1024;
-      this.isMd = window.innerWidth >= 768;
-    },
-  },
-  persist: true,
+		responsiveLayoutControl() {
+			this.isXl = window.innerWidth >= 1280;
+			this.isLg = window.innerWidth >= 1024;
+			this.isMd = window.innerWidth >= 768;
+		},
+	},
+	persist: true,
 });

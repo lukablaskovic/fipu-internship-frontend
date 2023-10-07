@@ -11,66 +11,52 @@ const isDismissed = ref(true);
 const notificationElement = ref(null);
 
 const props = defineProps({
-  outline: Boolean,
-  duration: {
-    type: Number,
-    default: 3,
-  },
+	outline: Boolean,
+	duration: {
+		type: Number,
+		default: 3,
+	},
 });
 
 const componentClass = computed(() => {
-  return props.outline
-    ? colorsOutline[color.value]
-    : colorsBgLight[color.value];
+	return props.outline ? colorsOutline[color.value] : colorsBgLight[color.value];
 });
 
 const dismiss = () => {
-  isDismissed.value = true;
+	isDismissed.value = true;
 };
 
 async function show() {
-  isDismissed.value = false;
+	isDismissed.value = false;
 
-  await nextTick();
-  await new Promise((resolve) => setTimeout(resolve, 100));
+	await nextTick();
+	await new Promise((resolve) => setTimeout(resolve, 100));
 
-  const rect = notificationElement.value.getBoundingClientRect();
-  window.scrollTo({
-    top: rect.top + window.scrollY,
-    behavior: "smooth",
-  });
+	const rect = notificationElement.value.getBoundingClientRect();
+	window.scrollTo({
+		top: rect.top + window.scrollY,
+		behavior: "smooth",
+	});
 
-  await Utils.wait(props.duration);
-  dismiss();
+	await Utils.wait(props.duration);
+	dismiss();
 }
 
 defineExpose({
-  color,
-  icon,
-  show,
-  dismiss,
+	color,
+	icon,
+	show,
+	dismiss,
 });
 </script>
 
 <template>
-  <div
-    v-if="!isDismissed"
-    ref="notificationElement"
-    :class="componentClass"
-    class="px-3 md:py-3 mb-6 last:mb-0 border rounded-lg transition-colors duration-150"
-  >
-    <BaseLevel>
-      <div class="flex flex-col md:flex-row items-center">
-        <BaseIcon
-          v-if="icon"
-          :path="icon"
-          w="w-10 md:w-5"
-          h="h-10 md:h-5"
-          size="24"
-          class="md:mr-2"
-        />
-        <span class="text-center md:text-left 2xl:py-2"><slot /></span>
-      </div>
-    </BaseLevel>
-  </div>
+	<div v-if="!isDismissed" ref="notificationElement" :class="componentClass" class="px-3 md:py-3 mb-6 last:mb-0 border rounded-lg transition-colors duration-150">
+		<BaseLevel>
+			<div class="flex flex-col md:flex-row items-center">
+				<BaseIcon v-if="icon" :path="icon" w="w-10 md:w-5" h="h-10 md:h-5" size="24" class="md:mr-2" />
+				<span class="text-center md:text-left 2xl:py-2"><slot /></span>
+			</div>
+		</BaseLevel>
+	</div>
 </template>

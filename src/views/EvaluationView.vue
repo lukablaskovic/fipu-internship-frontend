@@ -31,166 +31,90 @@ let studentInfo = ref(null);
 
 const error = ref(false);
 onMounted(async () => {
-  process_instance_id.value = route.params.process_instance_id;
+	process_instance_id.value = route.params.process_instance_id;
 
-  instanceInfo.value = await studentStore.getInstanceInfo(
-    process_instance_id.value
-  );
-  if (instanceInfo.value == null) {
-    console.log("Process instance not found...");
-    error.value = true;
-    return;
-  }
+	instanceInfo.value = await studentStore.getInstanceInfo(process_instance_id.value);
+	if (instanceInfo.value == null) {
+		console.log("Process instance not found...");
+		error.value = true;
+		return;
+	}
 
-  assignemntDetails.value = await studentStore.getAssignmentDetails(
-    instanceInfo.value.variables["Alocirani_zadatak"]
-  );
-  assignment.value = assignemntDetails.value.data.results[0];
-  console.log(instanceInfo.value);
+	assignemntDetails.value = await studentStore.getAssignmentDetails(instanceInfo.value.variables["Alocirani_zadatak"]);
+	assignment.value = assignemntDetails.value.data.results[0];
+	console.log(instanceInfo.value);
 
-  pendingTaskInfo.value = await adminStore.getTaskInfo(
-    process_instance_id.value,
-    instanceInfo.value.pending[0]
-  );
-  console.log("pendingTaskInfo", pendingTaskInfo.value);
-  studentInfo.value = {
-    student_ime: instanceInfo.value.variables["student_ime"],
-    student_prezime: instanceInfo.value.variables["student_prezime"],
-    student_email: instanceInfo.value.variables["student_email"],
-    student_godina_studija:
-      instanceInfo.value.variables["student_godina_studija"],
-  };
+	pendingTaskInfo.value = await adminStore.getTaskInfo(process_instance_id.value, instanceInfo.value.pending[0]);
+	console.log("pendingTaskInfo", pendingTaskInfo.value);
+	studentInfo.value = {
+		student_ime: instanceInfo.value.variables["student_ime"],
+		student_prezime: instanceInfo.value.variables["student_prezime"],
+		student_email: instanceInfo.value.variables["student_email"],
+		student_godina_studija: instanceInfo.value.variables["student_godina_studija"],
+	};
 });
 const formDynamicValues = ref({});
 const isLoading = ref(false);
 
 async function handleNewInstance() {
-  isLoading.value = true;
+	isLoading.value = true;
 
-  adminStore.handleNewInstance(
-    process_instance_id.value,
-    instanceInfo.value.pending[0],
-    formDynamicValues.value
-  );
+	adminStore.handleNewInstance(process_instance_id.value, instanceInfo.value.pending[0], formDynamicValues.value);
 
-  if (
-    UserTaskMappings.getTaskProperty(
-      instanceInfo.value.pending[0],
-      "snackbar_msg"
-    )
-  ) {
-    snackBarStore.pushMessage(
-      UserTaskMappings.getTaskProperty(
-        instanceInfo.value.pending[0],
-        "snackbar_msg"
-      ),
-      UserTaskMappings.getTaskProperty(
-        instanceInfo.value.pending[0],
-        "snackbar_color"
-      )
-    );
-  }
-  await Utils.wait(2);
-  isLoading.value = false;
+	if (UserTaskMappings.getTaskProperty(instanceInfo.value.pending[0], "snackbar_msg")) {
+		snackBarStore.pushMessage(UserTaskMappings.getTaskProperty(instanceInfo.value.pending[0], "snackbar_msg"), UserTaskMappings.getTaskProperty(instanceInfo.value.pending[0], "snackbar_color"));
+	}
+	await Utils.wait(2);
+	isLoading.value = false;
 
-  router.push("/");
+	router.push("/");
 }
 const disabledCondition = ref(true);
 
 const updateDisabledCondition = (allFilled) => {
-  disabledCondition.value = !allFilled;
+	disabledCondition.value = !allFilled;
 };
 </script>
 
 <template>
-  <div>
-    <SectionMain v-if="!error">
-      <SectionTitleLineWithButton
-        :icon="mdiAccountTie"
-        title="Evaluacija kandidata"
-        main
-      >
-        <a href="" target="_blank">
-          <img
-            :src="FIPU_praksa_logo_transparent"
-            class="max-h-14 object-contain"
-          /> </a
-      ></SectionTitleLineWithButton>
+	<div>
+		<SectionMain v-if="!error">
+			<SectionTitleLineWithButton :icon="mdiAccountTie" title="Evaluacija kandidata" main>
+				<a href="" target="_blank"> <img :src="FIPU_praksa_logo_transparent" class="max-h-14 object-contain" /> </a
+			></SectionTitleLineWithButton>
 
-      <p class="mb-4">
-        Molimo da nakon što evaluirate studenta (bilo to kroz intervju, tehnički
-        ispit ili pak bez procesa selekcije) potvrdite prihvaćate li studenta za
-        obavljanje prakse u Vašem poduzeću.
-      </p>
+			<p class="mb-4">Molimo da nakon što evaluirate studenta (bilo to kroz intervju, tehnički ispit ili pak bez procesa selekcije) potvrdite prihvaćate li studenta za obavljanje prakse u Vašem poduzeću.</p>
 
-      <FormDynamic
-        v-if="pendingTaskInfo != null"
-        v-model="formDynamicValues"
-        class="mb-4"
-        :form-fields="pendingTaskInfo.form_fields"
-        :variables="instanceInfo.variables"
-        :documentation="pendingTaskInfo.documentation"
-        @all-fields-filled="updateDisabledCondition"
-      />
+			<FormDynamic v-if="pendingTaskInfo != null" v-model="formDynamicValues" class="mb-4" :form-fields="pendingTaskInfo.form_fields" :variables="instanceInfo.variables" :documentation="pendingTaskInfo.documentation" @all-fields-filled="updateDisabledCondition" />
 
-      <BaseButton
-        class="mb-4"
-        label="Potvrdi"
-        :loading="isLoading"
-        color="fipu_blue"
-        @disabled="disabledCondition"
-        @click="handleNewInstance()"
-      />
+			<BaseButton class="mb-4" label="Potvrdi" :loading="isLoading" color="fipu_blue" @disabled="disabledCondition" @click="handleNewInstance()" />
 
-      <SectionTitleLineWithButton :icon="mdiAccount" title="Student" main>
-      </SectionTitleLineWithButton>
+			<SectionTitleLineWithButton :icon="mdiAccount" title="Student" main> </SectionTitleLineWithButton>
 
-      <div
-        v-if="instanceInfo != null"
-        class="sm:flex sm:justify-between sm:gap-4"
-      >
-        <div class="mb-4">
-          <h1 class="text-lg font-bold sm:text-2xl">
-            {{ studentInfo.student_ime }} {{ studentInfo.student_prezime }}
-          </h1>
-          <h3 class="text-base font-bold">
-            {{ studentInfo.student_email }}
-          </h3>
+			<div v-if="instanceInfo != null" class="sm:flex sm:justify-between sm:gap-4">
+				<div class="mb-4">
+					<h1 class="text-lg font-bold sm:text-2xl">{{ studentInfo.student_ime }} {{ studentInfo.student_prezime }}</h1>
+					<h3 class="text-base font-bold">
+						{{ studentInfo.student_email }}
+					</h3>
 
-          <p class="mt-1 text-small font-medium text-gray-600">
-            {{
-              StudentMappings.getGodinaStudija(
-                studentInfo.student_godina_studija
-              )
-            }}
-          </p>
-        </div>
-      </div>
+					<p class="mt-1 text-small font-medium text-gray-600">
+						{{ StudentMappings.getGodinaStudija(studentInfo.student_godina_studija) }}
+					</p>
+				</div>
+			</div>
 
-      <SectionTitleLineWithButton
-        :icon="mdiClipboardCheck"
-        title="Alocirani zadatak"
-        main
-      >
-      </SectionTitleLineWithButton>
-      <CardBoxAllocation
-        v-if="assignment != null"
-        :data="assignment"
-      ></CardBoxAllocation>
-    </SectionMain>
-    <div v-else>
-      <SectionMain>
-        <b>Greška!</b> Ne postoji proces s ID-em {{ process_instance_id }}.
-        <p class="mt-4">
-          Molimo pokušajte ponovno ili kontaktirajte voditelja prakse.
-        </p>
-      </SectionMain>
-      !
-    </div>
-    <FooterBar
-      ><br />Made with <span style="color: #e25555">&#9829;</span> at
-      FIPU.lab</FooterBar
-    >
-    <SnackBar />
-  </div>
+			<SectionTitleLineWithButton :icon="mdiClipboardCheck" title="Alocirani zadatak" main> </SectionTitleLineWithButton>
+			<CardBoxAllocation v-if="assignment != null" :data="assignment"></CardBoxAllocation>
+		</SectionMain>
+		<div v-else>
+			<SectionMain>
+				<b>Greška!</b> Ne postoji proces s ID-em {{ process_instance_id }}.
+				<p class="mt-4">Molimo pokušajte ponovno ili kontaktirajte voditelja prakse.</p>
+			</SectionMain>
+			!
+		</div>
+		<FooterBar><br />Made with <span style="color: #e25555">&#9829;</span> at FIPU.lab</FooterBar>
+		<SnackBar />
+	</div>
 </template>

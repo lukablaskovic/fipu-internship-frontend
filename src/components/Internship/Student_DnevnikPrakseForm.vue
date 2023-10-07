@@ -3,22 +3,8 @@ import { ref, computed, onMounted, reactive } from "vue";
 import { mdiLaptop, mdiBallot, mdiNotebook, mdiClipboardCheck } from "@mdi/js";
 
 import { useVuelidate } from "@vuelidate/core";
-import {
-  required,
-  email,
-  minLength,
-  sameAs,
-  helpers,
-  numeric,
-} from "@vuelidate/validators";
-import {
-  croatianAlpha,
-  getFirstErrorForField,
-  isUnipuEmail,
-  exactLength,
-  containsAlpha,
-  containsNumeric,
-} from "@/helpers/validators";
+import { required, email, minLength, sameAs, helpers, numeric } from "@vuelidate/validators";
+import { croatianAlpha, getFirstErrorForField, isUnipuEmail, exactLength, containsAlpha, containsNumeric } from "@/helpers/validators";
 
 import LayoutAuthenticated from "@/layouts/LayoutAuthenticated.vue";
 import LayoutGuest from "@/layouts/LayoutGuest.vue";
@@ -42,50 +28,46 @@ import { UserTaskMappings } from "@/helpers/maps";
 
 const allocated_assignment = ref(null);
 onMounted(async () => {
-  await studentStore.getInstanceInfo(
-    mainStore.currentUser.internship_process.id
-  );
+	await studentStore.getInstanceInfo(mainStore.currentUser.internship_process.id);
 
-  if (studentStore.allocated_assignment == null) {
-    let result = await studentStore.getAssignmentDetails(
-      studentStore.student_process_instance_data.variables["Alocirani_zadatak"]
-    );
-    studentStore.allocated_assignment = result.data.results[0];
+	if (studentStore.allocated_assignment == null) {
+		let result = await studentStore.getAssignmentDetails(studentStore.student_process_instance_data.variables["Alocirani_zadatak"]);
+		studentStore.allocated_assignment = result.data.results[0];
 
-    allocated_assignment.value = result.data.results[0];
-    console.log(allocated_assignment);
-  } else {
-    allocated_assignment.value = studentStore.allocated_assignment;
-    console.log("allocated_assignment.value", allocated_assignment.value);
-  }
+		allocated_assignment.value = result.data.results[0];
+		console.log(allocated_assignment);
+	} else {
+		allocated_assignment.value = studentStore.allocated_assignment;
+		console.log("allocated_assignment.value", allocated_assignment.value);
+	}
 });
 
 const Layout = computed(() => {
-  if (mainStore.userAuthenticated) {
-    return LayoutAuthenticated;
-  } else {
-    return LayoutGuest;
-  }
+	if (mainStore.userAuthenticated) {
+		return LayoutAuthenticated;
+	} else {
+		return LayoutGuest;
+	}
 });
 
 //ispunjavanje_prijavnice_student
 const form = reactive({
-  potvrda_attachment: null,
-  dnevnik_attachment: null,
-  nastavak_radnog_odnosa: null,
-  prijavljen_rok: null,
+	potvrda_attachment: null,
+	dnevnik_attachment: null,
+	nastavak_radnog_odnosa: null,
+	prijavljen_rok: null,
 });
 
 const rules = {
-  potvrda_attachment: {
-    required: helpers.withMessage("Stavka je obavezna", required),
-  },
-  dnevnik_attachment: {
-    required: helpers.withMessage("Stavka je obavezna", required),
-  },
-  prijavljen_rok: {
-    required: helpers.withMessage("Stavka je obavezna", required),
-  },
+	potvrda_attachment: {
+		required: helpers.withMessage("Stavka je obavezna", required),
+	},
+	dnevnik_attachment: {
+		required: helpers.withMessage("Stavka je obavezna", required),
+	},
+	prijavljen_rok: {
+		required: helpers.withMessage("Stavka je obavezna", required),
+	},
 };
 
 const v$ = useVuelidate(rules, form);
@@ -93,163 +75,88 @@ const v$ = useVuelidate(rules, form);
 let isLoading = ref(false);
 
 async function submit_diary_form() {
-  console.log(form);
+	console.log(form);
 
-  console.log("Submitting form...");
-  isLoading.value = true;
+	console.log("Submitting form...");
+	isLoading.value = true;
 
-  v$.value.$touch();
-  if (v$.value.$invalid) {
-    isLoading.value = false;
-    return;
-  }
-  await studentStore.submitDiaryForm(form);
-  if (
-    UserTaskMappings.getTaskProperty(
-      studentStore.student_process_instance_data.pending[0],
-      "snackbar_msg"
-    )
-  ) {
-    snackBarStore.pushMessage(
-      UserTaskMappings.getTaskProperty(
-        studentStore.student_process_instance_data.pending[0],
-        "snackbar_msg"
-      ),
-      UserTaskMappings.getTaskProperty(
-        studentStore.student_process_instance_data.pending[0],
-        "snackbar_color"
-      )
-    );
-  }
-  isLoading.value = false;
-  await Utils.wait(2);
-  location.reload();
+	v$.value.$touch();
+	if (v$.value.$invalid) {
+		isLoading.value = false;
+		return;
+	}
+	await studentStore.submitDiaryForm(form);
+	if (UserTaskMappings.getTaskProperty(studentStore.student_process_instance_data.pending[0], "snackbar_msg")) {
+		snackBarStore.pushMessage(UserTaskMappings.getTaskProperty(studentStore.student_process_instance_data.pending[0], "snackbar_msg"), UserTaskMappings.getTaskProperty(studentStore.student_process_instance_data.pending[0], "snackbar_color"));
+	}
+	isLoading.value = false;
+	await Utils.wait(2);
+	location.reload();
 }
 </script>
 
 <template>
-  <component :is="Layout">
-    <SectionMain v-if="allocated_assignment != null">
-      <SectionTitleLineWithButton :icon="mdiLaptop" title="Moja Praksa" main>
-      </SectionTitleLineWithButton>
-      <p><b>Akademska godina:</b> 2023/2024</p>
-      <p><b>Voditelj:</b> doc. dr. sc. Nikola Tanković</p>
-      <hr />
-      <br />
-      <SectionTitleLineWithButton
-        :icon="mdiClipboardCheck"
-        main
-        title="Izvođenje prakse u tijeku"
-      ></SectionTitleLineWithButton>
-      <CardboxAllocation
-        v-if="allocated_assignment != null"
-        :data="allocated_assignment"
-      ></CardboxAllocation>
+	<component :is="Layout">
+		<SectionMain v-if="allocated_assignment != null">
+			<SectionTitleLineWithButton :icon="mdiLaptop" title="Moja Praksa" main> </SectionTitleLineWithButton>
+			<p><b>Akademska godina:</b> 2023/2024</p>
+			<p><b>Voditelj:</b> doc. dr. sc. Nikola Tanković</p>
+			<hr />
+			<br />
+			<SectionTitleLineWithButton :icon="mdiClipboardCheck" main title="Izvođenje prakse u tijeku"></SectionTitleLineWithButton>
+			<CardboxAllocation v-if="allocated_assignment != null" :data="allocated_assignment"></CardboxAllocation>
 
-      <br />
-      <hr />
+			<br />
+			<hr />
 
-      <br />
-      <SectionTitleLineWithButton
-        :icon="mdiNotebook"
-        main
-        title="Dnevnik prakse"
-      ></SectionTitleLineWithButton>
-      <p>
-        <b>Nakon što se završili praksu</b> i ispunili sve vaše obaveze,
-        predajete dnevnik prakse skupa s ispunjenom potvrdom o obavljenoj
-        praksi.
-      </p>
-      <p>
-        Potvrdu ispunjava vaš mentor, vi predajete PDF sken ispunjene potvrde.
-      </p>
-      <p>Dnevnik prakse je potrebno predati prije prijave ispitnog roka.</p>
-      <br />
-      <p>
-        📓Template za dnevnik prakse možete preuzeti
-        <a
-          href="https://bit.ly/fipu-praksa-template"
-          target="_blank"
-          class="text-fipu_blue cursor-pointer"
-          >ovdje</a
-        >.
-      </p>
-      <br />
-      <hr />
+			<br />
+			<SectionTitleLineWithButton :icon="mdiNotebook" main title="Dnevnik prakse"></SectionTitleLineWithButton>
+			<p><b>Nakon što se završili praksu</b> i ispunili sve vaše obaveze, predajete dnevnik prakse skupa s ispunjenom potvrdom o obavljenoj praksi.</p>
+			<p>Potvrdu ispunjava vaš mentor, vi predajete PDF sken ispunjene potvrde.</p>
+			<p>Dnevnik prakse je potrebno predati prije prijave ispitnog roka.</p>
+			<br />
+			<p>
+				📓Template za dnevnik prakse možete preuzeti
+				<a href="https://bit.ly/fipu-praksa-template" target="_blank" class="text-fipu_blue cursor-pointer">ovdje</a>.
+			</p>
+			<br />
+			<hr />
 
-      <div class="grid grid-cols-1 gap-6 mb-6">
-        <CardBox
-          :icon="mdiBallot"
-          class="mb-6 lg:mb-0 lg:col-span-2 xl:col-span-3"
-          is-form
-          @submit.prevent="submit_diary_form"
-        >
-          <CardBoxComponentTitle title="📓 Dnevnik prakse" />
+			<div class="grid grid-cols-1 gap-6 mb-6">
+				<CardBox :icon="mdiBallot" class="mb-6 lg:mb-0 lg:col-span-2 xl:col-span-3" is-form @submit.prevent="submit_diary_form">
+					<CardBoxComponentTitle title="📓 Dnevnik prakse" />
 
-          <FormField
-            label="PDF dnevnika prakse"
-            help="obavezno PDF format"
-            horizontal
-          >
-            <FormFilePicker
-              v-model="form.dnevnik_attachment"
-              :error="getFirstErrorForField('dnevnik_attachment')"
-              label="Prenesi"
-              required
-            />
-          </FormField>
+					<FormField label="PDF dnevnika prakse" help="obavezno PDF format" horizontal>
+						<FormFilePicker v-model="form.dnevnik_attachment" :error="getFirstErrorForField('dnevnik_attachment')" label="Prenesi" required />
+					</FormField>
 
-          <FormField
-            label="PDF sken ispunjene potvrde o obavljenoj praksi"
-            help="Dostaviti voditelju prakse ili tajnici u fizičkom obliku"
-            horizontal
-          >
-            <FormFilePicker
-              v-model="form.potvrda_attachment"
-              :error="getFirstErrorForField('potvrda_attachment')"
-              label="Prenesi"
-              required
-            />
-          </FormField>
+					<FormField label="PDF sken ispunjene potvrde o obavljenoj praksi" help="Dostaviti voditelju prakse ili tajnici u fizičkom obliku" horizontal>
+						<FormFilePicker v-model="form.potvrda_attachment" :error="getFirstErrorForField('potvrda_attachment')" label="Prenesi" required />
+					</FormField>
 
-          <BaseDivider />
+					<BaseDivider />
 
-          <FormField label="Datum ispitnog roka" horizontal>
-            <FormControl
-              v-model="form.prijavljen_rok"
-              :error="getFirstErrorForField('prijavljen_rok')"
-              type="date"
-            />
-          </FormField>
+					<FormField label="Datum ispitnog roka" horizontal>
+						<FormControl v-model="form.prijavljen_rok" :error="getFirstErrorForField('prijavljen_rok')" type="date" />
+					</FormField>
 
-          <FormField horizontal>
-            <FormCheckRadio
-              v-model="form.nastavak_radnog_odnosa"
-              name="sample-checkbox-two"
-              :options="checkboxOptions"
-              label="Označi ako nastavljaš i dalje raditi u tvrtci ili ćeš ubrzo početi raditi honorarno."
-              is-column
-            />
-          </FormField>
+					<FormField horizontal>
+						<FormCheckRadio v-model="form.nastavak_radnog_odnosa" name="sample-checkbox-two" :options="checkboxOptions" label="Označi ako nastavljaš i dalje raditi u tvrtci ili ćeš ubrzo početi raditi honorarno." is-column />
+					</FormField>
 
-          <BaseDivider />
+					<BaseDivider />
 
-          <FormField horizontal grouped>
-            <BaseButton
-              label="Predaj"
-              type="submit"
-              :loading="isLoading"
-              color="fipu_blue"
-            />
-          </FormField>
-        </CardBox>
-      </div>
-    </SectionMain>
-  </component>
+					<FormField horizontal grouped>
+						<BaseButton label="Predaj" type="submit" :loading="isLoading" color="fipu_blue" />
+					</FormField>
+				</CardBox>
+			</div>
+		</SectionMain>
+	</component>
 </template>
 <style scoped>
 .ghost {
-  opacity: 0.5;
-  background: #c8ebfb;
+	opacity: 0.5;
+	background: #c8ebfb;
 }
 </style>

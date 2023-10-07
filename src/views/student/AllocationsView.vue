@@ -13,44 +13,24 @@ import CardBoxModal from "@/components/Cardbox/CardBoxModal.vue";
 </script>
 
 <template>
-  <div>
-    <LayoutAuthenticated>
-      <SectionMain>
-        <SectionTitleLineWithButton
-          :icon="mdiClipboardCheck"
-          title="Alokacije na Praksu"
-          main
-        >
-        </SectionTitleLineWithButton>
+	<div>
+		<LayoutAuthenticated>
+			<SectionMain>
+				<SectionTitleLineWithButton :icon="mdiClipboardCheck" title="Alokacije na Praksu" main> </SectionTitleLineWithButton>
 
-        <CardBox has-table>
-          <TableAllocations />
-        </CardBox>
+				<CardBox has-table>
+					<TableAllocations />
+				</CardBox>
 
-        <CardBoxModal
-          v-model="adminStore.pdfModalActive"
-          title=""
-          button-label="Zatvori"
-          :has-confirm="false"
-          large=""
-        >
-          <div class="mt-6">
-            <SectionTitleLineWithButton
-              :icon="mdiFilePdfBox"
-              :title="adminStore.modalTitle"
-              main
-            >
-            </SectionTitleLineWithButton>
-            <div class="flex justify-center">
-              <vue-pdf-embed
-                height="1080"
-                class="mb-6"
-                :source="adminStore.pdfSource"
-              />
-            </div>
-          </div>
-        </CardBoxModal>
-      </SectionMain>
-    </LayoutAuthenticated>
-  </div>
+				<CardBoxModal v-model="adminStore.pdfModalActive" title="" button-label="Zatvori" :has-confirm="false" large="">
+					<div class="mt-6">
+						<SectionTitleLineWithButton :icon="mdiFilePdfBox" :title="adminStore.modalTitle" main> </SectionTitleLineWithButton>
+						<div class="flex justify-center">
+							<vue-pdf-embed height="1080" class="mb-6" :source="adminStore.pdfSource" />
+						</div>
+					</div>
+				</CardBoxModal>
+			</SectionMain>
+		</LayoutAuthenticated>
+	</div>
 </template>

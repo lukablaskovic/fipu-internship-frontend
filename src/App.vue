@@ -1,36 +1,36 @@
 <script setup>
 import { RouterView } from "vue-router";
-import Tooltip from '@/components/Base/Tooltip.vue';
-import GlobalStoreDebug from '@/components/Helpers/GlobalStoreDebug.vue';
+import Tooltip from "@/components/Base/Tooltip.vue";
+import GlobalStoreDebug from "@/components/Helpers/GlobalStoreDebug.vue";
 </script>
 
 <template>
-    <GlobalStoreDebug/>
-    <Tooltip/>
-    <router-view></router-view>
+	<GlobalStoreDebug />
+	<Tooltip />
+	<router-view></router-view>
 </template>
 
 <style scoped>
 .slide-right-enter-active,
 .slide-right-leave-active {
-  transition: transform 0.5s;
+	transition: transform 0.5s;
 }
 .slide-right-enter,
 .slide-right-leave-to {
-  transform: translateX(-100%);
+	transform: translateX(-100%);
 }
 
 .slide-left-enter-active,
 .slide-left-leave-active {
-  transition: transform 0.5s;
+	transition: transform 0.5s;
 }
 .slide-left-enter,
 .slide-left-leave-to {
-  transform: translateX(100%);
+	transform: translateX(100%);
 }
 
 .page {
-  position: absolute;
-  top: 30px;
+	position: absolute;
+	top: 30px;
 }
 </style>

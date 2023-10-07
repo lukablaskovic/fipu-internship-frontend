@@ -17,42 +17,30 @@ const servicesStatus = ref({});
 const loading = ref(true);
 
 onMounted(async () => {
-  try {
-    servicesStatus.value = await Control.checkAllServiceStatuses();
-  } catch (error) {
-    console.error("Failed to fetch service statuses:", error);
-  } finally {
-    loading.value = false;
-  }
+	try {
+		servicesStatus.value = await Control.checkAllServiceStatuses();
+	} catch (error) {
+		console.error("Failed to fetch service statuses:", error);
+	} finally {
+		loading.value = false;
+	}
 });
 </script>
 
 <template>
-  <div>
-    <LayoutAuthenticated>
-      <LoadingOverlay
-        :is-active="loading"
-        title="Učitavanje..."
-        description="Može potrajati nekoliko sekundi, molimo ne zatvarajte stranicu."
-      >
-      </LoadingOverlay>
+	<div>
+		<LayoutAuthenticated>
+			<LoadingOverlay :is-active="loading" title="Učitavanje..." description="Može potrajati nekoliko sekundi, molimo ne zatvarajte stranicu."> </LoadingOverlay>
 
-      <SectionMain>
-        <SectionTitleLineWithButton
-          :icon="mdiCloudCog"
-          title="Mikroservisi"
-          main
-        >
-        </SectionTitleLineWithButton>
+			<SectionMain>
+				<SectionTitleLineWithButton :icon="mdiCloudCog" title="Mikroservisi" main> </SectionTitleLineWithButton>
 
-        <NotificationBar color="info" :icon="mdiMonitorCellphone">
-          <b>Responsive table.</b> Collapses on mobile
-        </NotificationBar>
+				<NotificationBar color="info" :icon="mdiMonitorCellphone"> <b>Responsive table.</b> Collapses on mobile </NotificationBar>
 
-        <CardBox v-if="Object.keys(servicesStatus).length" has-table>
-          <TableMicroservices :services="servicesStatus" />
-        </CardBox>
-      </SectionMain>
-    </LayoutAuthenticated>
-  </div>
+				<CardBox v-if="Object.keys(servicesStatus).length" has-table>
+					<TableMicroservices :services="servicesStatus" />
+				</CardBox>
+			</SectionMain>
+		</LayoutAuthenticated>
+	</div>
 </template>

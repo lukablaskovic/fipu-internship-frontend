@@ -12,37 +12,31 @@ import BaseLevel from "@/components/BaseLevel.vue";
 import LayoutGuest from "@/layouts/LayoutGuest.vue";
 
 const form = reactive({
-  login: "johndoe",
+	login: "johndoe",
 });
 
 const mainStore = useMainStore();
 
 const submit = () => {
-  mainStore.pushMessage("Submitted. Demo only", "contrast");
+	mainStore.pushMessage("Submitted. Demo only", "contrast");
 };
 </script>
 
 <template>
-  <LayoutGuest>
-    <SectionFormScreen v-slot="{ cardClass }" bg="redYellow">
-      <CardBox :class="cardClass" is-form @submit.prevent="submit">
-        <FormField label="Username" help="Please enter your username">
-          <FormControl
-            v-model="form.login"
-            :icon-right="mdiAccount"
-            name="login"
-            placeholder="johndoe"
-            autocomplete="username"
-          />
-        </FormField>
+	<LayoutGuest>
+		<SectionFormScreen v-slot="{ cardClass }" bg="redYellow">
+			<CardBox :class="cardClass" is-form @submit.prevent="submit">
+				<FormField label="Username" help="Please enter your username">
+					<FormControl v-model="form.login" :icon-right="mdiAccount" name="login" placeholder="johndoe" autocomplete="username" />
+				</FormField>
 
-        <template #footer>
-          <BaseLevel mobile>
-            <BaseButton label="Remind" type="submit" color="info" />
-            <RouterLink to="/login" class="text-sm"> Back to login </RouterLink>
-          </BaseLevel>
-        </template>
-      </CardBox>
-    </SectionFormScreen>
-  </LayoutGuest>
+				<template #footer>
+					<BaseLevel mobile>
+						<BaseButton label="Remind" type="submit" color="info" />
+						<RouterLink to="/login" class="text-sm"> Back to login </RouterLink>
+					</BaseLevel>
+				</template>
+			</CardBox>
+		</SectionFormScreen>
+	</LayoutGuest>
 </template>
