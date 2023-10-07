@@ -22,7 +22,7 @@ export default {
 	mounted() {
 		document.addEventListener("keydown", this.handleKeyPress);
 	},
-	destroyed() {
+	unmounted() {
 		document.removeEventListener("keydown", this.handleKeyPress);
 	},
 	methods: {
