@@ -220,7 +220,6 @@ function applyCustomStyling(highlightColor, highlightElementId, viewer) {
 		}, 0.025 * 1000 * index);
 	});
 
-	// Add styles
 	const style = document.createElement("style");
 	style.innerHTML = `
     .highlight:not(.djs-connection) .djs-visual > :nth-child(1) {

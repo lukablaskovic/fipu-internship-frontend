@@ -1,6 +1,6 @@
 <script setup>
-import { ref, onMounted } from "vue";
-import { mdiAccountTie, mdiAccount, mdiClipboardCheck } from "@mdi/js";
+import { ref, onMounted, watch } from "vue";
+import { mdiAccountTie, mdiAccount, mdiClipboardCheck, mdiCloseCircle } from "@mdi/js";
 import Utils from "@/helpers/utils.js";
 import { useRoute } from "vue-router";
 import { router } from "@/router";
@@ -38,7 +38,7 @@ onMounted(async () => {
 		error.value = true;
 		return;
 	}
-
+	console.log("instanceInfo", instanceInfo);
 	assignemntDetails.value = await studentStore.getAssignmentDetails(instanceInfo.value.variables["Alocirani_zadatak"]);
 	assignment.value = assignemntDetails.value.data.results[0];
 
@@ -52,6 +52,14 @@ onMounted(async () => {
 });
 const formDynamicValues = ref({});
 const isLoading = ref(false);
+
+watch(
+	formDynamicValues,
+	(newVal, oldVal) => {
+		console.log("formDynamicValues changed:", newVal);
+	},
+	{ deep: true }
+);
 
 async function handleNewInstance() {
 	isLoading.value = true;
@@ -76,19 +84,11 @@ const updateDisabledCondition = (allFilled) => {
 <template>
 	<div>
 		<SectionMain v-if="!error">
-			<SectionTitleLineWithButton :icon="mdiAccountTie" title="Evaluacija kandidata" main>
-				<a href="" target="_blank"> <img :src="FIPU_praksa_logo_transparent" class="max-h-14 object-contain" /> </a
-			></SectionTitleLineWithButton>
+			<SectionTitleLineWithButton :icon="instanceInfo != null && instanceInfo.pending[0] == 'evaluacija_poslodavac' ? mdiAccount : mdiCloseCircle" :title="instanceInfo != null && instanceInfo.pending[0] == 'evaluacija_poslodavac' ? 'Student' : 'Greška'" main
+				><a href="" target="_blank"> <img :src="FIPU_praksa_logo_transparent" class="max-h-14 object-contain" /> </a>
+			</SectionTitleLineWithButton>
 
-			<p class="mb-4">Molimo da nakon što evaluirate studenta (bilo to kroz intervju, tehnički ispit ili pak bez procesa selekcije) potvrdite prihvaćate li studenta za obavljanje prakse u Vašem poduzeću.</p>
-
-			<FormDynamic v-if="pendingTaskInfo != null" v-model="formDynamicValues" class="mb-4" :form-fields="pendingTaskInfo.form_fields" :variables="instanceInfo.variables" :documentation="pendingTaskInfo.documentation" @all-fields-filled="updateDisabledCondition" />
-
-			<BaseButton class="mb-4" label="Potvrdi" :loading="isLoading" color="fipu_blue" @disabled="disabledCondition" @click="handleNewInstance()" />
-
-			<SectionTitleLineWithButton :icon="mdiAccount" title="Student" main> </SectionTitleLineWithButton>
-
-			<div v-if="instanceInfo != null" class="sm:flex sm:justify-between sm:gap-4">
+			<div v-if="instanceInfo != null && instanceInfo.pending[0] == 'evaluacija_poslodavac'" class="sm:flex sm:justify-between sm:gap-4">
 				<div class="mb-4">
 					<h1 class="text-lg font-bold sm:text-2xl">{{ studentInfo.student_ime }} {{ studentInfo.student_prezime }}</h1>
 					<h3 class="text-base font-bold">
@@ -99,18 +99,28 @@ const updateDisabledCondition = (allFilled) => {
 						{{ StudentMappings.getGodinaStudija(studentInfo.student_godina_studija) }}
 					</p>
 				</div>
-			</div>
 
-			<SectionTitleLineWithButton :icon="mdiClipboardCheck" title="Alocirani zadatak" main> </SectionTitleLineWithButton>
-			<CardBoxAllocation v-if="assignment != null" :data="assignment"></CardBoxAllocation>
+				<SectionTitleLineWithButton :icon="mdiClipboardCheck" title="Alocirani zadatak" main> </SectionTitleLineWithButton>
+				<CardBoxAllocation v-if="assignment != null" :data="assignment"></CardBoxAllocation>
+
+				<SectionTitleLineWithButton :icon="mdiAccountTie" title="Evaluacija kandidata" class="mt-4" main> </SectionTitleLineWithButton>
+
+				<p class="mb-4">Molimo da nakon što evaluirate studenta (bilo to kroz intervju, tehnički ispit ili pak bez procesa selekcije) potvrdite prihvaćate li studenta za obavljanje prakse u Vašem poduzeću.</p>
+
+				<FormDynamic v-if="pendingTaskInfo != null" v-model="formDynamicValues" class="mb-4" :form-fields="pendingTaskInfo.form_fields" :variables="instanceInfo.variables" :documentation="pendingTaskInfo.documentation" @all-fields-filled="updateDisabledCondition" />
+
+				<BaseButton v-if="formDynamicValues['kandidat_odobren']" class="mb-4" label="Potvrdi" :loading="isLoading" color="fipu_blue" @disabled="disabledCondition" @click="handleNewInstance()" />
+			</div>
+			<div v-else>
+				<SectionMain>
+					<b>Greška!</b>
+					<div v-if="instanceInfo == null">Ne postoji proces s ID-em {{ process_instance_id }}.</div>
+					<div v-else-if="instanceInfo.pending[0] != 'evaluacija_poslodavac'">Studenta je trenutno nemoguće evaluirati budući da ga voditelj prakse još nije alocirao na zadatak.</div>
+					<p class="mt-4">Molimo pokušajte ponovno kasnije ili kontaktirajte voditelja prakse.</p>
+				</SectionMain>
+			</div>
 		</SectionMain>
-		<div v-else>
-			<SectionMain>
-				<b>Greška!</b> Ne postoji proces s ID-em {{ process_instance_id }}.
-				<p class="mt-4">Molimo pokušajte ponovno ili kontaktirajte voditelja prakse.</p>
-			</SectionMain>
-			!
-		</div>
+
 		<FooterBar><br />Made with <span style="color: #e25555">&#9829;</span> at FIPU.lab</FooterBar>
 		<SnackBar />
 	</div>

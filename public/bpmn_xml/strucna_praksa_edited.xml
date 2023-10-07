@@ -113,7 +113,7 @@ Napomena: Da biste prijavili preferencije, morate biti prijavljeni u aplikaciji!
       <bpmn:outgoing>Flow_1cbfvw0</bpmn:outgoing>
     </bpmn:serviceTask>
     <bpmn:sequenceFlow id="Flow_1cbfvw0" sourceRef="spremanje_preferencije" targetRef="alociranje_profesor" />
-    <bpmn:sequenceFlow id="Flow_1xv4qjm" sourceRef="student_prihvacen" targetRef="spremanje_zahtjeva_odbijanje">
+    <bpmn:sequenceFlow id="Flow_1xv4qjm" name="Ne" sourceRef="student_prihvacen" targetRef="spremanje_zahtjeva_odbijanje">
       <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">kandidat_odobren:false</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
     <bpmn:sequenceFlow id="Flow_02synkt" sourceRef="spremanje_zahtjeva_profesor_ponistio" targetRef="obavjestavanje_studenta_nakon_ponistavanja_email" />
@@ -136,6 +136,7 @@ Napomena: Da biste prijavili preferencije, morate biti prijavljeni u aplikaciji!
         <camunda:inputOutput>
           <camunda:inputParameter name="next_task">odabiranje_zadatka_student</camunda:inputParameter>
           <camunda:inputParameter name="id_instance" />
+          <camunda:inputParameter name="poslodavac_naziv">${poslodavac_naziv}</camunda:inputParameter>
         </camunda:inputOutput>
       </bpmn:extensionElements>
       <bpmn:incoming>Flow_1r5rnvg</bpmn:incoming>
@@ -793,6 +794,9 @@ https://www.isvu.hr/nastavnickiportal/hr/prijava</bpmn:documentation>
         <di:waypoint x="1080" y="155" />
         <di:waypoint x="1080" y="100" />
         <di:waypoint x="660" y="100" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1088" y="125" width="15" height="14" />
+        </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_02synkt_di" bpmnElement="Flow_02synkt">
         <di:waypoint x="480" y="450" />

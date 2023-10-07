@@ -10,16 +10,19 @@
 			<TransitionRoot leave="transition ease-in duration-100" leave-from="opacity-100" leave-to="opacity-0" @after-leave="query = ''">
 				<ComboboxOptions class="absolute mt-1 max-h-60 w-full overflow-auto rounded-md text-gray-900 dark:text-gray-300 bg-gray-50 dark:bg-gray-900 py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm">
 					<!-- Display help when query doesn't match any specific command -->
-					<div v-if="query === ''" class="relative cursor-default select-none py-2 px-4 text-gray-700 dark:text-gray-200">
+					<div v-if="query === ''" class="relative cursor-default select-none py-2 px-4 text-sm md:text-base text-gray-700 dark:text-gray-200">
 						<b>Kratke upute kako koristiti tražilicu</b>
 						<hr />
+						<br />
 						<p>ℹ️ Za brzo kretanje upišite naziv rute direktno.</p>
 						<p>ℹ️ Za pregled stavaka, prvo upišite odgovarajući prefix (boldano) te nakon toga pojam.</p>
 						<br />
+
 						<div v-for="helpItem in helpItems" :key="helpItem.prefix" class="cursor-pointer hover:bg-fipu_blue hover:text-white hover:font-medium dark:hover:text-gray-900 py-1 px-2 rounded flex gap-1 group" @click="insertPrefix(helpItem.prefix)">
 							<div class="bg-fipu_blue text-gray-900 px-0.5 rounded w-6 flex justify-center items-center font-bold group-hover:bg-gray-50 group-hover:text-gray-700 dark:group-hover:bg-gray-900 dark:group-hover:text-gray-300">
 								{{ helpItem.prefix }}
 							</div>
+
 							{{ helpItem.description }}
 						</div>
 					</div>

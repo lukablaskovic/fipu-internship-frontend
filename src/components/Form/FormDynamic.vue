@@ -14,7 +14,6 @@
 			<p v-if="field.type.startsWith('selectFromTable') && isTableComponentVisible" class="mt-2 mb-4">
 				Odabrali ste: <b> {{ formValues["Alocirani_zadatak"] }} </b>
 			</p>
-			<!-- Modified part ends here -->
 		</div>
 	</CardBox>
 </template>
