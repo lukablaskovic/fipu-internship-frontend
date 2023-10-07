@@ -71,7 +71,11 @@ async function onSubmit() {
 	}
 	let response = await mainStore.updatePassword(passwordForm.password_current, passwordForm.password);
 	if (response.message == "Invalid old password. Please try again.") showNotificationBar("warning");
-	else showNotificationBar("success");
+	else {
+		showNotificationBar("success");
+		await Utils.wait(2);
+		mainStore.logout();
+	}
 	await Utils.wait(3);
 	isLoading.value = false;
 }
@@ -89,7 +93,7 @@ function showNotificationBar(type) {
 			notificationBar.value.icon = mdiCheckCircle;
 			notificationBar.value.duration = 1;
 			notificationStatus.value = "To je to!";
-			notificationMessage.value = " Uspješno promijenjena lozinka!";
+			notificationMessage.value = " Lozinka uspješno promijenjena!";
 			break;
 		case "warning":
 			notificationBar.value.color = "warning";
@@ -164,7 +168,7 @@ function showNotificationBar(type) {
 						</FormField>
 
 						<FormField label="Godina studija">
-							<FormControl :modelValue="StudentMappings.getGodinaStudija(profileForm.godina_studija)" :icon="mdiSchool" type="JMBAG" name="JMBAG" readonly autocomplete="JMBAG" />
+							<FormControl :model-value="StudentMappings.getGodinaStudija(profileForm.godina_studija)" :icon="mdiSchool" type="JMBAG" name="JMBAG" readonly autocomplete="JMBAG" />
 						</FormField>
 					</div>
 				</CardBox>
