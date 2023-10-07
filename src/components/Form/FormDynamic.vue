@@ -9,11 +9,12 @@
 
 			<template v-if="field.type === 'var-string'"> </template>
 
-			<component :is="tableComponent" v-if="field.type.startsWith('selectFromTable')" :data="getTableType(field.type)" @row-selected="handleRowSelected" />
+			<component :is="tableComponent" v-if="field.type.startsWith('selectFromTable') && isTableComponentVisible" :data="getTableType(field.type)" @row-selected="handleRowSelected" />
 
-			<p v-if="field.type.startsWith('selectFromTable')" class="mt-2 mb-4">
+			<p v-if="field.type.startsWith('selectFromTable') && isTableComponentVisible" class="mt-2 mb-4">
 				Odabrali ste: <b> {{ formValues["Alocirani_zadatak"] }} </b>
 			</p>
+			<!-- Modified part ends here -->
 		</div>
 	</CardBox>
 </template>
@@ -69,9 +70,24 @@ const getTableType = (type) => {
 const allFieldsFilled = computed(() => {
 	return Object.values(formValues).every((value) => value);
 });
+
 watch(allFieldsFilled, (newValue) => {
 	emit("allFieldsFilled", newValue);
 });
+
+const isTableComponentVisible = computed(() => {
+	return formValues["odabir_prihvacen"] !== "false";
+});
+
+watch(
+	formValues,
+	(newValues, oldValues) => {
+		console.log("Form values changed:", newValues);
+		// If you want to see the previous state also
+		// console.log('Old form values:', oldValues);
+	},
+	{ deep: true }
+);
 
 watch(
 	formValues,

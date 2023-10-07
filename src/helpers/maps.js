@@ -169,7 +169,7 @@ class UserTaskMappings {
 			form_title: "Evaluacija poslodavca",
 			snackbar_msg: "Evaluacija pohranjena. Hvala!",
 			snackbar_color: "success",
-			bpmn_task_color: "#EF4444",
+			bpmn_task_color: "#79d4f2",
 			component: Student_WaitingForEvaluation,
 		},
 		{
@@ -179,6 +179,7 @@ class UserTaskMappings {
 			snackbar_msg: "Prijavnica pohranjena. Hvala!",
 			bpmn_pending_info_msg: "Student nije još ispunio prijavnicu.",
 			snackbar_color: "success",
+			bpmn_task_color: "#79d4f2",
 			form_title: "Ispunjena prijavnica",
 			component: Student_PrijavnicaForm,
 		},
@@ -187,9 +188,8 @@ class UserTaskMappings {
 			_id: "predavanje_dnevnika_student",
 			name: "Mora predati dnevnik prakse",
 			bpmn_pending_info_msg: "Student nije još predao dnevnik prakse i ispunjenu potvrdu.",
-
 			snackbar_msg: "Dnevnik predan. Hvala!",
-
+			bpmn_task_color: "#79d4f2",
 			snackbar_color: "success",
 			form_title: "Dnevnik prakse",
 			component: Student_DnevnikPrakseForm, //DnevnikPrakseForm
@@ -200,6 +200,7 @@ class UserTaskMappings {
 			name: "Potrebno je potvrditi upis ocjene",
 			snackbar_msg: "Upis ocjene potvrđen. Hvala!",
 			snackbar_color: "success",
+			bpmn_task_color: "#EF4444", //bg-red-500
 			form_title: "Upis ocjene (ISVU)",
 			component: Student_WaitingForMark,
 		},

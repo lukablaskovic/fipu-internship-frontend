@@ -70,7 +70,7 @@ function getProgressValue(student) {
 				<th>Email</th>
 				<th>Godina studija</th>
 				<th>Napredak</th>
-				<th>Trenutno stanje</th>
+				<th>Trenutno stanje prakse</th>
 				<th />
 			</tr>
 		</thead>

@@ -76,7 +76,7 @@ onMounted(async () => {
 		<div><b>Lokacija: </b>{{ isModalActive["lokacija"] }}</div>
 		<div>
 			<b>Napomena</b>
-			{{ isModalActive["napomena"] }}
+			{{ isModalActive["napomena"] || "Nema napomene." }}
 		</div>
 		<br />
 	</CardBoxModal>

@@ -171,7 +171,7 @@ const isDraggableEnabled = computed(() => checkedAssignments.value.length === 3)
 					<b>Odabir {{ index + 1 }}: </b>{{ assignment["id_zadatak"] }}
 				</p>
 				<br />
-				<p><b>Napomena:</b> {{ napomena }}</p></CardBoxModal
+				<p class="mb-2"><b>Napomena:</b> {{ napomena || "Nema napomene." }}</p></CardBoxModal
 			>
 		</SectionMain>
 	</component>

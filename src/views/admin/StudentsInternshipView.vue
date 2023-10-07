@@ -23,9 +23,15 @@ import LayoutAuthenticated from "@/layouts/LayoutAuthenticated.vue";
 
 let bpmn_diagram_active = ref(false);
 
+import BPMN_green from "/BPMN/green_bpmn_done.png";
+import BPMN_blue from "/BPMN/blue_bpmn_default.png";
+import BPMN_red from "/BPMN/red_bpmn_professor_pending.png";
+import BPMN_msg_event from "/BPMN/msg_event.png";
+
 const modal_select_bpmn_task = ref(false);
 const modal_past_bpmn_task = ref(false);
 const modal_send_task = ref(false);
+const bpmn_help_modal = ref(false);
 
 const disabledCondition = ref(true);
 const updateDisabledCondition = (allFilled) => {
@@ -132,7 +138,7 @@ onMounted(loadDataForStudent);
 	<div>
 		<LayoutAuthenticated v-if="mainStore.userAuthenticated">
 			<SectionMain>
-				<SectionTitleLineWithButton :icon="mdiAccountMultiple" title="Studenti u Procesu Prakse" button-enabled main> </SectionTitleLineWithButton>
+				<SectionTitleLineWithButton :icon="mdiAccountMultiple" title="Studenti u Procesu Prakse" button-enabled main @click="bpmn_help_modal = true"> </SectionTitleLineWithButton>
 
 				<CardBox has-table>
 					<TableStudents @show-student-diagram="handleProcessDiagram" />
@@ -161,7 +167,32 @@ onMounted(loadDataForStudent);
 				</CardBoxModal>
 
 				<CardBoxModal v-if="modal_send_task" v-model="modal_send_task" :title="'Ponovno slanje emaila'" has-cancel button-label="Pošalji" @confirm="sendAnAdditionalEmail()">
-					<p class="mb-2">E-mail je već poslan koristeći BPMN engine, no možete ga i poslati ponovo pritiskom na 'Pošalji'</p>
+					<p class="mb-2">E-mail je već poslan koristeći kroz BPMN engine, no možete ga poslati ponovo pritiskom na 'Pošalji'</p>
+				</CardBoxModal>
+
+				<CardBoxModal v-if="bpmn_help_modal" v-model="bpmn_help_modal" :title="'BPMN Graf - Upute'" button-label="Povratak">
+					<div class="flex items-center space-x-4 mb-4">
+						<img :src="BPMN_blue" alt="Description 1" class="w-32 h-32 object-contain" />
+						<p class="text-sm"><b>Plava boja</b> - pending task. Zahtjeva akciju studenta ili poslodavca.</p>
+					</div>
+
+					<div class="flex items-center space-x-4 mb-4">
+						<img :src="BPMN_green" alt="Description 2" class="w-32 h-32 object-contain" />
+						<p class="text-sm"><b>Zelena boja</b> - finished task. Uspješno procesirani kroz BPMN engine.</p>
+					</div>
+
+					<div class="flex items-center space-x-4 mb-4">
+						<img :src="BPMN_red" alt="Description 3" class="w-32 h-32 object-contain" />
+						<p class="text-sm"><b>Crvena boja</b> - pending task. Zahtjeva akciju voditelja prakse.</p>
+					</div>
+
+					<div class="flex items-center space-x-4 mb-4">
+						<img :src="BPMN_msg_event" alt="Description 3" class="w-32 h-32 object-contain" />
+						<p class="text-sm"><b>Send task</b> - Gotove/Prošle 'send taskove' je moguće ponovno pozvati.</p>
+					</div>
+
+					<hr />
+					<br />
 				</CardBoxModal>
 			</SectionMain>
 
