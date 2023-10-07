@@ -132,18 +132,13 @@ const User = {
 		}
 	},
 
-	async sendMessage(message, retries = 3) {
-		while (retries > 0) {
-			try {
-				let result = await AxiosWrapper.post("/users/send_message", message);
-				return result;
-			} catch (error) {
-				if (retries === 1) {
-					console.error("Failed to send message after multiple attempts:", error);
-					return null;
-				}
-				retries--;
-			}
+	async sendMessage(message) {
+		try {
+			let result = await AxiosWrapper.post("/users/send_message", message);
+			return result;
+		} catch (error) {
+			console.error("Failed to send message after multiple attempts:", error);
+			return null;
 		}
 	},
 

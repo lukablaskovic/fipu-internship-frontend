@@ -1,4 +1,5 @@
 <script setup>
+import { onMounted } from "vue";
 import LayoutAuthenticated from "@/layouts/LayoutAuthenticated.vue";
 import MessageInput from "@/components/Messages/MessageInput.vue";
 import ConversationsSideBar from "@/components/Messages/ConversationsSideBar.vue";
@@ -8,6 +9,8 @@ import Message from "@/components/Messages/Message.vue";
 
 import { chatStore } from "@/main.js";
 chatStore.getAllUsers();
+
+onMounted(() => {});
 </script>
 
 <template>

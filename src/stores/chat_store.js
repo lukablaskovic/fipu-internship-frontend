@@ -194,5 +194,5 @@ export const useChatStore = defineStore("chat", {
 			await User.updateConversation(this.c.id, updates);
 		},
 	},
-	persist: true,
+	persist: false,
 });
