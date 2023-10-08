@@ -27,8 +27,8 @@ function exactLength(length) {
 	};
 }
 
-function getFirstErrorForField(fieldName) {
-	const error = this.v$.$errors.find((error) => error.$property === fieldName);
+function getFirstErrorForField(v$, fieldName) {
+	const error = v$.$errors.find((error) => error.$property === fieldName);
 	return error ? error.$message : null;
 }
 

@@ -147,7 +147,7 @@ const isDraggableEnabled = computed(() => checkedAssignments.value.length === 3)
 
 			<div v-else>Niste odabrali ni jedan zadatak.</div>
 			<div v-if="checkedAssignments.length == 3">
-				<div class="animation bg-center bg-no-repeat bg-[url('../../../swipe-vertical.png')] md:bg-[url('../../../swipe-horizontal.png')]" :class="{ 'fade-out': isFadedOut }" @click="fadeOutAnimation"></div>
+				<div class="animation bg-center bg-no-repeat bg-[url('/swipe-vertical.png')] md:bg-[url('/swipe-horizontal.png')]" :class="{ 'fade-out': isFadedOut }" @click="fadeOutAnimation"></div>
 
 				<FormField class="lg:mt-4" label="Napomena (nije obavezno)" help="Maksimalno 255 znakova">
 					<FormControl v-model="napomena" type="textarea" placeholder="Slobodno dodaj napomenu za voditelja prakse." />

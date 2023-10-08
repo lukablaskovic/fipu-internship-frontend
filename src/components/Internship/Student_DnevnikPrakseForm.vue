@@ -122,17 +122,17 @@ async function submit_diary_form() {
 					<CardBoxComponentTitle title="📓 Dnevnik prakse" />
 
 					<FormField label="PDF dnevnika prakse" help="obavezno PDF format" horizontal>
-						<FormFilePicker v-model="form.dnevnik_attachment" :error="getFirstErrorForField('dnevnik_attachment')" label="Prenesi" required />
+						<FormFilePicker v-model="form.dnevnik_attachment" :error="getFirstErrorForField(v$, 'dnevnik_attachment')" label="Prenesi" required />
 					</FormField>
 
 					<FormField label="PDF sken ispunjene potvrde o obavljenoj praksi" help="Dostaviti voditelju prakse ili tajnici u fizičkom obliku" horizontal>
-						<FormFilePicker v-model="form.potvrda_attachment" :error="getFirstErrorForField('potvrda_attachment')" label="Prenesi" required />
+						<FormFilePicker v-model="form.potvrda_attachment" :error="getFirstErrorForField(v$, 'potvrda_attachment')" label="Prenesi" required />
 					</FormField>
 
 					<BaseDivider />
 
 					<FormField label="Datum ispitnog roka" horizontal>
-						<FormControl v-model="form.prijavljen_rok" :error="getFirstErrorForField('prijavljen_rok')" type="date" />
+						<FormControl v-model="form.prijavljen_rok" :error="getFirstErrorForField(v$, 'prijavljen_rok')" type="date" />
 					</FormField>
 
 					<FormField horizontal>

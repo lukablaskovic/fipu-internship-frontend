@@ -173,17 +173,17 @@ function showNotificationBar(type) {
 
 				<CardBox is-form class="rounded" @submit.prevent="onSubmit">
 					<FormField label="Trenutna lozinka" help="Obavezno. Vaša trenutna lozinka">
-						<FormControl v-model="passwordForm.password_current" :icon="mdiAsterisk" :error="getFirstErrorForField('password_current')" name="password_current" type="password" required autocomplete="password_current" />
+						<FormControl v-model="passwordForm.password_current" :icon="mdiAsterisk" :error="getFirstErrorForField(v$, 'password_current')" name="password_current" type="password" required autocomplete="password_current" />
 					</FormField>
 
 					<BaseDivider />
 
 					<FormField label="Nova lozinka" help="Obavezno. Vaša nova lozinka">
-						<FormControl v-model="passwordForm.password" :icon="mdiFormTextboxPassword" required :error="getFirstErrorForField('password')" type="password" name="password" autocomplete="password" />
+						<FormControl v-model="passwordForm.password" :icon="mdiFormTextboxPassword" required :error="getFirstErrorForField(v$, 'password')" type="password" name="password" autocomplete="password" />
 					</FormField>
 
 					<FormField label="Potvrdi lozinku" help="Obavezno. Nova lozinka još jednom">
-						<FormControl v-model="passwordForm.password_confirmation" :icon="mdiFormTextboxPassword" required :error="getFirstErrorForField('password_confirmation')" type="password" name="password_confirmation" autocomplete="password_confirmation" />
+						<FormControl v-model="passwordForm.password_confirmation" :icon="mdiFormTextboxPassword" required :error="getFirstErrorForField(v$, 'password_confirmation')" type="password" name="password_confirmation" autocomplete="password_confirmation" />
 					</FormField>
 
 					<BaseButtons>

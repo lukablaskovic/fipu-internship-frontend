@@ -2,9 +2,9 @@
 import { ref, computed, reactive } from "vue";
 
 import { mdiAccount, mdiAsterisk, mdiAlertCircle, mdiCheckCircle, mdiAlert, mdiClose, mdiLock } from "@mdi/js";
-import { useVuelidate } from "@vuelidate/core";
 import { useRouter } from "vue-router";
 
+import { useVuelidate } from "@vuelidate/core";
 import { required, email, minLength, helpers } from "@vuelidate/validators";
 
 import SectionSplitLogin from "@/components/Section/SectionSplitLogin.vue";
@@ -42,14 +42,15 @@ const rules = {
 		minLength: helpers.withMessage("Lozinka mora sadržavati minimalno 6 znakova", minLength(6)),
 	},
 };
+
 const v$ = useVuelidate(rules, loginForm);
+console.log("v$", v$);
 
 const isLoading = ref(false);
 async function onSubmit() {
 	isLoading.value = true;
-	v$.value.$touch();
-
-	if (v$.value.$invalid) {
+	const validationResult = await v$.value.$validate();
+	if (!validationResult) {
 		isLoading.value = false;
 		return;
 	}
@@ -130,11 +131,11 @@ function navigateToRegister() {
 							</h2>
 
 							<FormField label="E-mail">
-								<FormControl v-model="loginForm.email" :icon-left="mdiAccount" name="email" autocomplete="email" :error="getFirstErrorForField('email')" />
+								<FormControl v-model="loginForm.email" :icon-left="mdiAccount" name="email" autocomplete="email" :error="getFirstErrorForField(v$, 'email')" />
 							</FormField>
 
 							<FormField label="Lozinka">
-								<FormControl v-model="loginForm.password" :icon-left="mdiLock" name="password" type="password" autocomplete="password" :error="getFirstErrorForField('password')" />
+								<FormControl v-model="loginForm.password" :icon-left="mdiLock" name="password" type="password" autocomplete="password" :error="getFirstErrorForField(v$, 'password')" />
 							</FormField>
 
 							<div class="text-right">

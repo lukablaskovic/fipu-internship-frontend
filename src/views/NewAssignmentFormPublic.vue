@@ -208,11 +208,11 @@ const onCompanyChange = () => {
 					</FormField>
 
 					<FormField v-if="!form.Poslodavac" label="Naziv poduzeća" horizontal>
-						<FormControl v-model="form.Poslodavac_novi_naziv" :icon-left="mdiDomain" help="Naziv poduzeća ako ste novi partner" :error="getFirstErrorForField('Poslodavac_novi_naziv')" placeholder="Naziv poduzeća ako ste novi partner" />
+						<FormControl v-model="form.Poslodavac_novi_naziv" :icon-left="mdiDomain" help="Naziv poduzeća ako ste novi partner" :error="getFirstErrorForField(v$, 'Poslodavac_novi_naziv')" placeholder="Naziv poduzeća ako ste novi partner" />
 					</FormField>
 
 					<FormField label="Kontakt email" horizontal>
-						<FormControl v-model="form.poslodavac_email" :icon-left="mdiEmail" type="email" :error="getFirstErrorForField('poslodavac_email')" help="E-mail adresa pri kojoj će se student obratiti oko dogovora za izvođenje studentske prakse ili provedbu selekcije. Ne mora nužno biti budući mentor." placeholder="Email" />
+						<FormControl v-model="form.poslodavac_email" :icon-left="mdiEmail" type="email" :error="getFirstErrorForField(v$, 'poslodavac_email')" help="E-mail adresa pri kojoj će se student obratiti oko dogovora za izvođenje studentske prakse ili provedbu selekcije. Ne mora nužno biti budući mentor." placeholder="Email" />
 					</FormField>
 
 					<BaseDivider />
@@ -220,7 +220,7 @@ const onCompanyChange = () => {
 						<FormControl
 							v-model="form.opis_zadatka"
 							type="textarea"
-							:error="getFirstErrorForField('opis_zadatka')"
+							:error="getFirstErrorForField(v$, 'opis_zadatka')"
 							:icon-left="mdiTextLong"
 							help="Opis zadataka koji bi student izvršavao. Može biti: mala (web, mobilna, desktop) aplikacija, program za obradu podataka, analiza podataka, poboljšanje postojećeg koda (engl. code refactoring), pomoć pri održavanju računalne ili aplikacijske infrastrukture - DevOps poslovi, ... Preporuča se što detaljniji opis kako bi mogli alocirati idealnog kandidata." />
 					</FormField>
@@ -232,7 +232,7 @@ const onCompanyChange = () => {
 						<FormControl
 							v-model="form.preferirane_tehnologije"
 							type="textarea"
-							:error="getFirstErrorForField('preferirane_tehnologije')"
+							:error="getFirstErrorForField(v$, 'preferirane_tehnologije')"
 							:icon-left="mdiXml"
 							help="Što sve koristi vaša tvrtka ili na čemu će se temeljiti rad studenta? Npr. PHP, Laravel, Python, Django, JavaScript, Vue.js, Unity, WordPress, TensorFlow...
 " />
@@ -240,7 +240,7 @@ const onCompanyChange = () => {
 
 					<FormField label="Broj studenata" horizontal>
 						<FormField addons>
-							<FormControl v-model="form.broj_studenata" type="number" :icon-left="mdiAccountGroup" :error="getFirstErrorForField('broj_studenata')" :min="1" placeholder="Maksimalni broj studenata" help="Koliko studenata možete primiti u rješavanju ovog zadatka? Studenti mogu raditi odvojeno ili u timu. Ako imate više zadataka, možete ponovno popuniti formu za svaki zadatak posebno." expanded />
+							<FormControl v-model="form.broj_studenata" type="number" :icon-left="mdiAccountGroup" :error="getFirstErrorForField(v$, 'broj_studenata')" :min="1" placeholder="Maksimalni broj studenata" help="Koliko studenata možete primiti u rješavanju ovog zadatka? Studenti mogu raditi odvojeno ili u timu. Ako imate više zadataka, možete ponovno popuniti formu za svaki zadatak posebno." expanded />
 						</FormField>
 					</FormField>
 
@@ -248,11 +248,11 @@ const onCompanyChange = () => {
 						label="Preferencije pri odabiru studenta
 "
 						horizontal>
-						<FormControl v-model="form.preferencije_za_studenta" type="textarea" :error="getFirstErrorForField('preferencije_za_studenta')" :icon-left="mdiThumbsUpDown" help="U koliko smatrate važnim, opišite odlike poželjnog kandidata na praksi." />
+						<FormControl v-model="form.preferencije_za_studenta" type="textarea" :error="getFirstErrorForField(v$, 'preferencije_za_studenta')" :icon-left="mdiThumbsUpDown" help="U koliko smatrate važnim, opišite odlike poželjnog kandidata na praksi." />
 					</FormField>
 
 					<FormField label="Potrebna infrastruktura koju student mora posjedovati" horizontal>
-						<FormControl v-model="form.potrebno_imati" :error="getFirstErrorForField('potrebno_imati')" :icon-left="mdiDomain" help="Potrebna infrastruktura koju student mora posjedovati" placeholder="Potrebna infrastruktura koju student mora posjedovati" />
+						<FormControl v-model="form.potrebno_imati" :error="getFirstErrorForField(v$, 'potrebno_imati')" :icon-left="mdiDomain" help="Potrebna infrastruktura koju student mora posjedovati" placeholder="Potrebna infrastruktura koju student mora posjedovati" />
 					</FormField>
 
 					<FormField label="Željeno trajanje prakse" horizontal>
@@ -260,7 +260,7 @@ const onCompanyChange = () => {
 							<FormControl
 								v-model="form.trajanje_sati"
 								type="number"
-								:error="getFirstErrorForField('trajanje_sati')"
+								:error="getFirstErrorForField(v$, 'trajanje_sati')"
 								:icon-left="mdiClockTimeFiveOutline"
 								placeholder="Preporuča se između 90 i 150 radnih sati"
 								help="Preporučeno trajanje studentske prakse je između 90 i 150 radnih sati. U dogovoru sa studentom može se kasnije taj angažman produljiti. Dogovor kako će se izvršiti tih 90-150 sati je između vas i studenta (npr. koncentrirano u 2-3 tjedna ili par puta tjedno kroz dulje vrijeme).
@@ -270,23 +270,23 @@ const onCompanyChange = () => {
 					</FormField>
 
 					<FormField label="Lokacija" horizontal>
-						<FormControl v-model="form.lokacija" help="Moguća je 'remote' praksa" :error="getFirstErrorForField('lokacija')" :icon-left="mdiMapMarker" placeholder="Lokacija održavanja studentske prakse" />
+						<FormControl v-model="form.lokacija" help="Moguća je 'remote' praksa" :error="getFirstErrorForField(v$, 'lokacija')" :icon-left="mdiMapMarker" placeholder="Lokacija održavanja studentske prakse" />
 					</FormField>
 
 					<FormField label="Željeno okvirno vrijeme početka" horizontal>
-						<FormControl v-model="form.zeljeno_okvirno_vrijeme_pocetka" :icon-left="mdiClipboardTextClockOutline" :error="getFirstErrorForField('zeljeno_okvirno_vrijeme_pocetka')" help="Praksa se mora obaviti najkasnije do 1. rujna sljedeće godine." />
+						<FormControl v-model="form.zeljeno_okvirno_vrijeme_pocetka" :icon-left="mdiClipboardTextClockOutline" :error="getFirstErrorForField(v$, 'zeljeno_okvirno_vrijeme_pocetka')" help="Praksa se mora obaviti najkasnije do 1. rujna sljedeće godine." />
 					</FormField>
 
 					<FormField label="Angažman nastavnika s FIPU" help="Po želji, nastavno osoblje FIPU-a može pomoći pri izvođenju prakse na način da oni dijelom (ili u potpunosti) mentoriraju studenta. Moguće je čak da student u našem laboratoriju obavlja s praksom, te povremeno dolazi prezentirati učinjeno." horizontal>
-						<FormCheckRadioGroup v-model="form.angazman_selekcija" :error="getFirstErrorForField('angazman_selekcija')" name="angazman_selection" type="radio" :options="angazmanSelect" component-class="check-radio-warning" />
+						<FormCheckRadioGroup v-model="form.angazman_selekcija" :error="getFirstErrorForField(v$, 'angazman_selekcija')" name="angazman_selection" type="radio" :options="angazmanSelect" component-class="check-radio-warning" />
 					</FormField>
 
 					<FormField v-if="form.angazman_selekcija === 'true'" label="Opis angažmana nastavnika" help="Molimo da navedete Vaše potrebe angažmana." horizontal>
-						<FormControl v-model="form.angazman_fipu" :error="getFirstErrorForField('angazman_fipu')" type="textarea" :icon-left="mdiSchool" :disabled="form.angazman_selekcija === false" />
+						<FormControl v-model="form.angazman_fipu" :error="getFirstErrorForField(v$, 'angazman_fipu')" type="textarea" :icon-left="mdiSchool" :disabled="form.angazman_selekcija === false" />
 					</FormField>
 
 					<FormField label="Dodatna napomena" horizontal>
-						<FormControl v-model="form.napomena" :icon-left="mdiNoteTextOutline" :error="getFirstErrorForField('napomena')" type="textarea" />
+						<FormControl v-model="form.napomena" :icon-left="mdiNoteTextOutline" :error="getFirstErrorForField(v$, 'napomena')" type="textarea" />
 					</FormField>
 
 					<FormField
@@ -294,11 +294,11 @@ const onCompanyChange = () => {
 						help="Želimo provesti dodatnu selekciju kandidata koji se jave na praksu.
 "
 						horizontal>
-						<FormCheckRadioGroup v-model="form.selekcija" name="selekcija_selection" :error="getFirstErrorForField('selekcija')" type="radio" :options="selectionSelect" component-class="check-radio-warning" />
+						<FormCheckRadioGroup v-model="form.selekcija" name="selekcija_selection" :error="getFirstErrorForField(v$, 'selekcija')" type="radio" :options="selectionSelect" component-class="check-radio-warning" />
 					</FormField>
 
 					<FormField v-if="form.selekcija === true" label="Proces selekcije" horizontal>
-						<FormControl v-model="form.proces_selekcije" :error="getFirstErrorForField('proces_selekcije')" type="textarea" :disabled="form.selekcija === false" help="Ako se provodi selekcija, kratko opišite postupak, da studenti otprilike znaju što očekivati." />
+						<FormControl v-model="form.proces_selekcije" :error="getFirstErrorForField(v$, 'proces_selekcije')" type="textarea" :disabled="form.selekcija === false" help="Ako se provodi selekcija, kratko opišite postupak, da studenti otprilike znaju što očekivati." />
 					</FormField>
 
 					<FormField horizontal grouped>
