@@ -5,7 +5,7 @@ import { required, email, minLength, sameAs, helpers, numeric } from "@vuelidate
 
 import { croatianAlpha, getFirstErrorForField, isUnipuEmail, exactLength, containsAlpha, containsNumeric } from "@/helpers/validators";
 
-import { mdiAccount, mdiAsterisk, mdiCheckCircle, mdiAlert, mdiAlertCircle } from "@mdi/js";
+import { mdiAccount, mdiAsterisk, mdiCheckCircle, mdiAlert, mdiAlertCircle, mdiEmail, mdiCardAccountDetails, mdiSchool, mdiLock } from "@mdi/js";
 import { useRouter } from "vue-router";
 
 import SectionSplitRegister from "@/components/Section/SectionSplitRegister.vue";
@@ -175,35 +175,35 @@ function navigateToLogin() {
 							<div class="flex flex-col md:flex-row gap-6 md:gap-2">
 								<div class="flex flex-col flex-1">
 									<FormField label="Ime">
-										<FormControl v-model="registerForm.ime" :icon="mdiAccount" :error="getFirstErrorForField('ime')" name="ime" autocomplete="ime" />
+										<FormControl v-model="registerForm.ime" :icon-left="mdiAccount" :error="getFirstErrorForField('ime')" name="ime" autocomplete="ime" />
 									</FormField>
 
 									<FormField label="Prezime">
-										<FormControl v-model="registerForm.prezime" :icon="mdiAccount" :error="getFirstErrorForField('prezime')" name="prezime" autocomplete="prezime" />
+										<FormControl v-model="registerForm.prezime" :icon-left="mdiAccount" :error="getFirstErrorForField('prezime')" name="prezime" autocomplete="prezime" />
 									</FormField>
 
 									<FormField label="JMBAG">
-										<FormControl v-model="registerForm.JMBAG" :icon="mdiAccount" :error="getFirstErrorForField('JMBAG')" name="JMBAG" autocomplete="JMBAG" />
+										<FormControl v-model="registerForm.JMBAG" :icon-left="mdiCardAccountDetails" :error="getFirstErrorForField('JMBAG')" name="JMBAG" autocomplete="JMBAG" />
 									</FormField>
 
 									<FormField label="UNIPU E-mail">
-										<FormControl v-model="registerForm.email" :icon="mdiAccount" :error="getFirstErrorForField('email')" name="email" autocomplete="username" />
+										<FormControl v-model="registerForm.email" :icon-left="mdiEmail" :error="getFirstErrorForField('email')" name="email" autocomplete="username" />
 									</FormField>
 								</div>
 								<div class="flex flex-col flex-1">
 									<FormField label="Godina studija">
-										<FormControl v-model="registerForm.godina_studija" :error="getFirstErrorForField('godina_studija')" :options="StudentMappings.GodinaStudijaMappings" />
+										<FormControl v-model="registerForm.godina_studija" :icon-left="mdiSchool" :error="getFirstErrorForField('godina_studija')" :options="StudentMappings.GodinaStudijaMappings" />
 									</FormField>
 
 									<FormField label="Lozinka">
-										<FormControl v-model="registerForm.password" :icon="mdiAsterisk" :error="getFirstErrorForField('password')" type="password" name="password" autocomplete="current-password" />
+										<FormControl v-model="registerForm.password" :icon-left="mdiLock" :error="getFirstErrorForField('password')" type="password" name="password" autocomplete="current-password" />
 									</FormField>
 
 									<FormField label="Potvrda lozinke">
-										<FormControl v-model="registerForm.passwordConfirm" :icon="mdiAsterisk" :error="getFirstErrorForField('passwordConfirm')" type="password" name="passwordConfirm" />
+										<FormControl v-model="registerForm.passwordConfirm" :icon-left="mdiLock" :error="getFirstErrorForField('passwordConfirm')" type="password" name="passwordConfirm" />
 									</FormField>
 
-									<div class="mt-2 lg:mt-8 flex justify-start">
+									<div class="mt-2 lg:mt-8 flex items-center">
 										<FormCheckRadio v-model="data_confirmed" name="data_confirmed" type="checkbox" label="Potvrđujem ispravnost podataka." :input-value="true" />
 									</div>
 								</div>

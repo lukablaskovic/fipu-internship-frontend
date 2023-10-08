@@ -1,7 +1,7 @@
 <script setup>
 import { ref, computed, reactive } from "vue";
 
-import { mdiAccount, mdiAsterisk, mdiAlertCircle, mdiCheckCircle, mdiAlert, mdiClose } from "@mdi/js";
+import { mdiAccount, mdiAsterisk, mdiAlertCircle, mdiCheckCircle, mdiAlert, mdiClose, mdiLock } from "@mdi/js";
 import { useVuelidate } from "@vuelidate/core";
 import { useRouter } from "vue-router";
 
@@ -9,9 +9,11 @@ import { required, email, minLength, helpers } from "@vuelidate/validators";
 
 import SectionSplitLogin from "@/components/Section/SectionSplitLogin.vue";
 import CardBox from "@/components/Cardbox/CardBox.vue";
+
 import FormCheckRadio from "@/components/Form/FormCheckRadio.vue";
 import FormField from "@/components/Form/FormField.vue";
 import FormControl from "@/components/Form/FormControl.vue";
+
 import BaseButton from "@/components/Base/BaseButton.vue";
 import BaseButtons from "@/components/Base/BaseButtons.vue";
 
@@ -128,11 +130,11 @@ function navigateToRegister() {
 							</h2>
 
 							<FormField label="E-mail">
-								<FormControl v-model="loginForm.email" :icon="mdiAccount" name="email" autocomplete="email" :error="getFirstErrorForField('email')"> </FormControl>
+								<FormControl v-model="loginForm.email" :icon-left="mdiAccount" name="email" autocomplete="email" :error="getFirstErrorForField('email')"> </FormControl>
 							</FormField>
 
 							<FormField label="Lozinka">
-								<FormControl v-model="loginForm.password" :icon="mdiAsterisk" name="password" type="password" autocomplete="password" :error="getFirstErrorForField('password')"> </FormControl>
+								<FormControl v-model="loginForm.password" :icon-left="mdiLock" name="password" type="password" autocomplete="password" :error="getFirstErrorForField('password')"> </FormControl>
 							</FormField>
 
 							<div class="text-right">

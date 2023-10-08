@@ -15,6 +15,7 @@ export const useMainStore = defineStore("main", {
 		enter_active_class: "",
 		leave_active_class: "",
 		bpmn_process_name: "strucna_praksa_edited",
+
 		currentUser: {
 			id: "",
 			ime: "",
