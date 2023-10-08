@@ -242,6 +242,5 @@ const helpItems = [
 	{ prefix: "se:", description: "pretraži studenta po emailu" },
 	{ prefix: "p:", description: "pretraži poduzeće po nazivu" },
 	{ prefix: "z:", description: "pretraži zadatak po nazivu" },
-	{ prefix: "e:", description: "prikaži samo uneseni event po nazivu" },
 ];
 </script>

@@ -67,7 +67,11 @@ const getTableType = (type) => {
 };
 
 const allFieldsFilled = computed(() => {
-	return Object.values(formValues).every((value) => value);
+	return Object.keys(formValues).every((key) => {
+		const field = props.formFields[key];
+		const isRendered = field.type === "yes-no-boolean" || (field.type.startsWith("selectFromTable") && isTableComponentVisible.value) || field.type === "var-string";
+		return !isRendered || (isRendered && formValues[key] !== null);
+	});
 });
 
 watch(allFieldsFilled, (newValue) => {

@@ -250,13 +250,13 @@ class ActivityEventMappings {
 			activity_id: "alociranje_profesor",
 			icon: mdiNoteCheck,
 			type: "success",
-			message: "Zadatak alociran",
+			message: "Alokacija ažurirana",
 		},
 		{
 			activity_id: "odabir_prihvacen",
 			icon: mdiThumbsUpDownOutline,
 			type: "success",
-			message: "Preferencije prihvaćene",
+			message: "Odabir ažuriran",
 		},
 		{
 			activity_id: "spremanje_zahtjeva_profesor_ponistio",

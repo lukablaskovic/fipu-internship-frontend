@@ -85,7 +85,7 @@ function getProgressValue(student) {
 					'selected-row': selectedStudentInstanceID === student['process_instance_id'],
 				}">
 				<td class="border-b-0 lg:w-6 before:hidden">
-					<UserAvatar :avatar="student['avatar'][0]['url']" class="w-16 h-16 mx-auto lg:w-12 lg:h-12" />
+					<UserAvatar :avatar="student['avatar'][0]['url']" class="flex w-22 h-22 mx-auto lg:w-12 lg:h-12" />
 				</td>
 				<td data-label="JMBAG">
 					{{ student["JMBAG"] }}
