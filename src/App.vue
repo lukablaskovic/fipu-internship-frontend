@@ -5,7 +5,7 @@ import GlobalStoreDebug from "@/components/Helpers/GlobalStoreDebug.vue";
 </script>
 
 <template>
-	<GlobalStoreDebug />
+	<!--<GlobalStoreDebug />-->
 	<Tooltip />
 	<router-view></router-view>
 </template>

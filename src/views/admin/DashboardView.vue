@@ -212,12 +212,13 @@ onMounted(() => {
 						<small>Stranica {{ currentPageHuman }} od {{ numPages }}</small>
 					</BaseLevel>
 				</div>
-
+				<!--
 				<SectionTitleLineWithButton class="mt-4" :icon="mdiChartBar" title="Pregled Trendova" main @click="eventsOptionsActive = true"> </SectionTitleLineWithButton>
 				<p>Trenutno je hardkodirano 🙂</p>
 				<div v-if="chartData" class="md:col-span-3">
 					<LineChart :data="chartData" />
 				</div>
+        -->
 			</SectionMain>
 		</LayoutAuthenticated>
 	</div>

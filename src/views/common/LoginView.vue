@@ -24,8 +24,8 @@ import loginArt from "/login_art.jpg";
 import fipu_unipu from "/fipu_unipu.png";
 
 const loginForm = reactive({
-	email: "admin@fipu.hr",
-	password: "123456",
+	email: "",
+	password: "",
 	remember_me: false,
 });
 
@@ -124,7 +124,7 @@ function navigateToRegister() {
 							<h2 class="text-2xl lg:text-3xl 2xl:text-4xl text-fipu_gray font-bold xl:mb-1 mb-2 md:mb-0 2xl:mb-4">Dobrodošli u <span class="text-fipu_blue">FIPU Praksa</span></h2>
 							<h2 class="md:text-sm lg:text-sm 2xl:text-base mb-2 2xl:mb-4 text-justify s">
 								Molimo prijavite se kako biste pregledali stanje vaše prakse ili prijavili zadatke. Ukoliko želite samo pregledati dostupne zadatke i poduzeća, molimo nastavite kao gost
-								<a class="hover-underline-animation cursor-pointer text-fipu_text_blue hover:text-fipu_blue" @click="router.push('/moja-praksa')"> ovdje </a>
+								<a class="hover-underline-animation cursor-pointer text-fipu_text_blue hover:text-fipu_blue" @click="router.push('/moja-praksa')"> ovdje</a>.
 							</h2>
 
 							<FormField label="E-mail">
@@ -132,7 +132,7 @@ function navigateToRegister() {
 							</FormField>
 
 							<FormField label="Lozinka">
-								<FormControl v-model="loginForm.password" :icon="mdiAsterisk" name="password" type="password" autocomplete="password" placeholder="Password" :error="getFirstErrorForField('password')"> </FormControl>
+								<FormControl v-model="loginForm.password" :icon="mdiAsterisk" name="password" type="password" autocomplete="password" :error="getFirstErrorForField('password')"> </FormControl>
 							</FormField>
 
 							<div class="text-right">

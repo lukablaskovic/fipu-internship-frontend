@@ -27,11 +27,11 @@ import fipu_unipu from "/fipu_unipu.png";
 let data_confirmed = ref(false);
 
 const registerForm = reactive({
-	ime: "Luka",
-	prezime: "Blašković",
-	email: "lblaskovi@unipu.hr",
-	JMBAG: "0303088177",
-	godina_studija: StudentMappings.GodinaStudijaMappings[1],
+	ime: "",
+	prezime: "",
+	email: "",
+	JMBAG: "",
+	godina_studija: StudentMappings.GodinaStudijaMappings[0],
 	password: "",
 	passwordConfirm: "",
 });
@@ -203,7 +203,7 @@ function navigateToLogin() {
 										<FormControl v-model="registerForm.passwordConfirm" :icon="mdiAsterisk" :error="getFirstErrorForField('passwordConfirm')" type="password" name="passwordConfirm" />
 									</FormField>
 
-									<div class="mt-8 flex justify-center">
+									<div class="mt-2 lg:mt-8 flex justify-start">
 										<FormCheckRadio v-model="data_confirmed" name="data_confirmed" type="checkbox" label="Potvrđujem ispravnost podataka." :input-value="true" />
 									</div>
 								</div>
