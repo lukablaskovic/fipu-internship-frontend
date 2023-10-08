@@ -83,7 +83,7 @@ export const useMainStore = defineStore("main", {
 					this.currentUser.avatar = userAvatar["avatar"][0]["url"];
 				}
 			} catch (error) {
-				console.log("Error fetching current user:", error);
+				console.log("Error fetching current user: ", error);
 			}
 		},
 
