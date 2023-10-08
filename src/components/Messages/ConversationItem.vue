@@ -7,8 +7,11 @@ import { mdiStarOutline, mdiStar, mdiArchiveOutline, mdiArchive } from "@mdi/js"
 	<div v-if="cstatus == chatStore.grouping || mainStore.currentUser.account_type != 'admin'" class="flex flex-col -mx-5 lg:-mx-4 mt-1 lg:mt-2" @click="!hover ? chatStore.selectConversation(c.id, conversation) : ''">
 		<div class="flex items-center pt-2.5 pb-2.5 lg:pt-4 lg:pb-4 relative hover:bg-white dark:hover:bg-gray-800/25" :class="selected ? 'border-l-2 bg-gradient-to-r pl-1.5 pr-2 lg:pr-4 lg:pl-3.5 from-sky-200 dark:from-sky-950/50 to-transparent border-fipu_dark_blue dark:border-fipu_dark_blue' : 'pl-2 pr-2 lg:pr-4 lg:pl-4 hover:rounded'">
 			<div class="absolute text-xs text-gray-500 font-medium right-2 lg:right-0 top-2 lg:top-0 lg:mr-4 lg:mt-3">{{ timestamp }}</div>
-			<div class="flex items-center justify-center h-9 w-9 lg:h-10 lg:w-10 rounded-full bg-fipu_blue text-white dark:text-fipu_gray dark:font-bold font-medium flex-shrink-0 relative">
-				{{ c != null ? c.ime[0] : "" }}
+			<div class="flex items-center justify-center h-9 w-9 lg:h-10 lg:w-10 rounded-full bg-fipu_blue text-white dark:text-fipu_gray dark:font-bold font-medium flex-shrink-0 relative overflow-hidden">
+				<img v-if="getAvatar(c) != ''" class="absolute" :src="getAvatar(c)" alt="" />
+				<div>
+					{{ c != null ? c.ime[0] : "" }}
+				</div>
 				<div v-if="checkNewMessage() && conversation.id != chatStore.selectedConversationID" class="flex items-center justify-center animate-ping h-1.5 w-1.5 bg-rose-500 text-white font-medium text-xs rounded-full absolute -top-1 -right-1"></div>
 			</div>
 
@@ -86,6 +89,9 @@ export default {
 		checkNewMessage() {
 			if (this.conversation.user_1_id == mainStore.currentUser.id) return this.conversation.user_1_last_message_read_id < this.conversation.user_2_last_message_read_id;
 			else return this.conversation.user_1_last_message_read_id > this.conversation.user_2_last_message_read_id;
+		},
+		getAvatar(c) {
+			return c != null ? c.avatar : "";
 		},
 	},
 };

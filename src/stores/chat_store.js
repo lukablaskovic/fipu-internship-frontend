@@ -3,6 +3,7 @@ import { User } from "@/services/gateway_api";
 import { nextTick } from "vue";
 
 import { mainStore } from "@/main.js";
+import { Student } from "@/services/baserow_client_api.js";
 
 let wait = function (seconds) {
 	return new Promise((resolveFn) => {
@@ -32,6 +33,10 @@ export const useChatStore = defineStore("chat", {
 			for (let i = 0; i < this.users.length; i++) if (this.users[i].id == m.sender_id) return this.users[i].ime;
 			return mainStore.currentUser.ime;
 		},
+		getUserAvatar(m) {
+			for (let i = 0; i < this.users.length; i++) if (this.users[i].id == m.sender_id) return this.users[i].avatar;
+			return mainStore.currentUser.avatar;
+		},
 		getUserDataFromConversationItem(c) {
 			let id = c.user_1_id == mainStore.currentUser.id ? c.user_2_id : c.user_1_id;
 			let user = {};
@@ -45,6 +50,13 @@ export const useChatStore = defineStore("chat", {
 			if (this.selectedConversation != "") {
 				await this.getMessages(this.selectedConversation);
 			}
+			this.update = false;
+			for (const u of users) {
+				let response = await Student.fetch(u.baserow_id);
+				if (response) u["avatar"] = response.avatar[0].thumbnails.small.url;
+			}
+			this.update = true;
+			this.users = users;
 		},
 		async getMessages(id) {
 			let response = await User.getMessages(id);
@@ -73,9 +85,9 @@ export const useChatStore = defineStore("chat", {
 			}
 		},
 		async selectConversation(id, c) {
-			this.updateUserActivity(false);
 			this.selectedConversation = id;
 			this.c = c;
+			this.updateUserActivity(false);
 			this.selectedConversationID = c.id;
 			if (this.selectedConversation != "") {
 				await this.getMessages(this.selectedConversation);
@@ -134,7 +146,10 @@ export const useChatStore = defineStore("chat", {
 			await nextTick();
 			this.update = true;
 		},
-		getUsersWithoutConversations(users, conversations) {
+		async getUsersWithoutConversations(users, conversations) {
+			await wait(1);
+			users = this.users;
+			conversations = this.conversations;
 			if (conversations == null) return [];
 			const usersWithoutConversations = users.filter((user) => {
 				const userId = user.id;

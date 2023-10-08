@@ -23,7 +23,7 @@ onMounted(() => {});
 						<ConversationPanel v-if="chatStore.selectedConversation != ''">
 							<div class="absolute w-full h-16 bg-gradient-to-b dark:from-fipu_gray2 dark:via-fipu_gray2 from-white via-white top-0 right-2 pointer-events-none z-10"></div>
 							<Conversation>
-								<Message v-for="m in chatStore.messages" :text="m.content" :user="chatStore.getUserName(m)" :reverse="m.receiver_id == chatStore.selectedConversation" />
+								<Message v-for="m in chatStore.messages" :text="m.content" :user="chatStore.getUserName(m)" :reverse="m.receiver_id == chatStore.selectedConversation" :avatar="chatStore.getUserAvatar(m)" />
 							</Conversation>
 							<MessageInput />
 						</ConversationPanel>

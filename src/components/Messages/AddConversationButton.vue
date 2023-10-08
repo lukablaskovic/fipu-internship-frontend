@@ -31,7 +31,7 @@ export default {
 		};
 	},
 	async mounted() {
-		this.options = chatStore.getUsersWithoutConversations(chatStore.users, chatStore.conversations);
+		this.options = await chatStore.getUsersWithoutConversations();
 	},
 };
 </script>
