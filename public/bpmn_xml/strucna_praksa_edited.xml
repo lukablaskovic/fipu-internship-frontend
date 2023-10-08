@@ -118,7 +118,7 @@ Napomena: Da biste prijavili preferencije, morate biti prijavljeni u aplikaciji!
     </bpmn:sequenceFlow>
     <bpmn:sequenceFlow id="Flow_02synkt" sourceRef="spremanje_zahtjeva_profesor_ponistio" targetRef="obavjestavanje_studenta_nakon_ponistavanja_email" />
     <bpmn:sequenceFlow id="Flow_1hbk011" sourceRef="obavjestavanje_studenta_nakon_ponistavanja_email" targetRef="odabiranje_zadatka_student" />
-    <bpmn:sendTask id="obavjestavanje_studenta_nakon_odbijanja_email" name="Obavještavanje studenta email">
+    <bpmn:sendTask id="obavjestavanje_studenta_nakon_odbijanja_email" name="Obavještavanje studenta nakon odbijanja (email)">
       <bpmn:extensionElements>
         <camunda:connector>
           <camunda:inputOutput>
@@ -360,7 +360,7 @@ Napomena: Da biste prijavili preferencije, morate biti prijavljeni u aplikaciji!
       <bpmn:incoming>Flow_1nl8tts</bpmn:incoming>
       <bpmn:outgoing>Flow_10qrmyc</bpmn:outgoing>
     </bpmn:parallelGateway>
-    <bpmn:sendTask id="obavjestavanje_studenta_nakon_prihvacanja_email" name="Obavještavanje studenta email">
+    <bpmn:sendTask id="obavjestavanje_studenta_nakon_prihvacanja_email" name="Obavještavanje studenta o prihvaćanju (email)">
       <bpmn:extensionElements>
         <camunda:connector>
           <camunda:inputOutput>
@@ -481,7 +481,7 @@ Napomena: Da biste prijavili preferencije, morate biti prijavljeni u aplikaciji!
       <bpmn:incoming>Flow_1g3f3ei</bpmn:incoming>
       <bpmn:outgoing>Flow_0rr5pyh</bpmn:outgoing>
     </bpmn:parallelGateway>
-    <bpmn:sendTask id="slanje_potvrde_student_email" name="Slanje potvrde o obavljenoj praksi student">
+    <bpmn:sendTask id="slanje_potvrde_student_email" name="Slanje potvrde o obavljenoj praksi studentu (email)">
       <bpmn:extensionElements>
         <camunda:connector>
           <camunda:inputOutput>
@@ -507,7 +507,7 @@ Napomena: Da biste prijavili preferencije, morate biti prijavljeni u aplikaciji!
       <bpmn:incoming>Flow_0rr5pyh</bpmn:incoming>
       <bpmn:outgoing>Flow_1jgq625</bpmn:outgoing>
     </bpmn:sendTask>
-    <bpmn:sendTask id="slanje_potvrde_mentor_email" name="Slanje potvrde o obavljenoj praksi mentor">
+    <bpmn:sendTask id="slanje_potvrde_mentor_email" name="Slanje potvrde o obavljenoj praksi mentoru (email)">
       <bpmn:extensionElements>
         <camunda:connector>
           <camunda:inputOutput>
@@ -640,6 +640,7 @@ https://www.isvu.hr/nastavnickiportal/hr/prijava</bpmn:documentation>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="SendTask_1e2ea7n_di" bpmnElement="obavjestavanje_studenta_nakon_odbijanja_email">
         <dc:Bounds x="300" y="60" width="100" height="80" />
+        <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Activity_1d4nyrm_di" bpmnElement="alociranje_profesor">
         <dc:Bounds x="300" y="550" width="100" height="80" />
@@ -699,6 +700,7 @@ https://www.isvu.hr/nastavnickiportal/hr/prijava</bpmn:documentation>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Activity_1tszbn7_di" bpmnElement="obavjestavanje_studenta_nakon_prihvacanja_email">
         <dc:Bounds x="1240" y="500" width="100" height="80" />
+        <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Activity_10qy04a_di" bpmnElement="ispunjavanje_prijavnice_student">
         <dc:Bounds x="1380" y="290" width="100" height="80" />
