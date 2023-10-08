@@ -3,7 +3,7 @@ import axios from "axios";
 
 import { Auth } from "@/services/gateway_api";
 import { User } from "@/services/gateway_api";
-import { Guest } from "@/services/baserow_client_api";
+import { Guest, Student, Admin } from "@/services/baserow_client_api";
 
 export const useMainStore = defineStore("main", {
 	state: () => ({
@@ -44,6 +44,7 @@ export const useMainStore = defineStore("main", {
 				this.avatar = "";
 				this.baserow_id = null;
 				this.account_type = "" || null;
+
 				this.internship_process.id = null;
 				this.internship_process.pending_user_task = null;
 			},
@@ -54,6 +55,7 @@ export const useMainStore = defineStore("main", {
 		helpModalActive: false,
 
 		isFieldFocusRegistered: false,
+		avatarChanging: false,
 	}),
 	getters: {
 		userAuthenticated() {
@@ -67,13 +69,38 @@ export const useMainStore = defineStore("main", {
 		async fetchCurrentUser() {
 			try {
 				const response = await User.getCurrentUser();
+				console.log(response);
 				if (response.process_instance_id !== undefined) {
 					this.currentUser.internship_process.id = response.process_instance_id;
 					delete response.process_instance_id;
 				}
 				this.currentUser = { ...this.currentUser, ...response };
+				console.log("this.currentUser", this.currentUser);
+				//Get avatar
+				if (this.currentUser.account_type == "student") {
+					let userAvatar = await Student.fetch(this.currentUser.JMBAG);
+					this.currentUser.avatar = userAvatar["avatar"][0]["url"];
+				}
 			} catch (error) {
 				console.log("Error fetching current user:", error);
+			}
+		},
+
+		async updateAvatarStudent(student_jmbag, fileData) {
+			try {
+				const result = await Student.updateAvatarStudent(student_jmbag, fileData);
+				return result;
+			} catch (error) {
+				console.log("Error:", error);
+			}
+		},
+
+		async updateAvatarAdmin(fileData) {
+			try {
+				const result = await Admin.updateAvatarAdmin(fileData);
+				return result;
+			} catch (error) {
+				console.log("Error:", error);
 			}
 		},
 

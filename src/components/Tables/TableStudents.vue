@@ -9,6 +9,7 @@ import LoadingOverlay from "../LoadingOverlay.vue";
 import { adminStore } from "@/main.js";
 import { StudentMappings, UserTaskMappings } from "@/helpers/maps";
 import { useRoute } from "vue-router";
+import UserAvatar from "@/components/User/UserAvatar.vue";
 const route = useRoute();
 
 defineProps({
@@ -64,6 +65,7 @@ function getProgressValue(student) {
 	<table>
 		<thead>
 			<tr>
+				<th />
 				<th>JMBAG</th>
 				<th>Ime</th>
 				<th>Prezime</th>
@@ -82,6 +84,9 @@ function getProgressValue(student) {
 				:class="{
 					'selected-row': selectedStudentInstanceID === student['process_instance_id'],
 				}">
+				<td class="border-b-0 lg:w-6 before:hidden">
+					<UserAvatar :avatar="student['avatar'][0]['url']" class="w-16 h-16 mx-auto lg:w-12 lg:h-12" />
+				</td>
 				<td data-label="JMBAG">
 					{{ student["JMBAG"] }}
 				</td>

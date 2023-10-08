@@ -10,54 +10,34 @@ import PillTag from "@/components/PillTag/PillTag.vue";
 
 import moment from "@/moment-setup";
 
-const loggeddTimeAgo = computed(() =>
-  moment(mainStore.currentUser.loggedAt).fromNow()
-);
+const loggeddTimeAgo = computed(() => moment(mainStore.currentUser.loggedAt).fromNow());
 
 const userSwitchVal = ref(false);
 </script>
 
 <template>
-  <CardBox>
-    <BaseLevel type="justify-around lg:justify-center">
-      <UserAvatarCurrentUser class="lg:mx-12 h-64 w-64" />
-      <div class="space-y-3 text-center md:text-left lg:mx-12">
-        <div class="flex justify-center md:block">
-          <FormCheckRadio
-            v-model="userSwitchVal"
-            name="notifications-switch"
-            type="switch"
-            label="Slack obavijesti"
-            :input-value="true"
-          />
-        </div>
-        <h1 class="text-2xl">
-          Hej,
-          <b>{{
-            mainStore.currentUser.username || mainStore.currentUser.ime
-          }}</b
-          >!
-        </h1>
-        <p>
-          Zadnja prijava <b>{{ loggeddTimeAgo }}</b> s IP adrese
-          <b>127.0.0.1</b>
-        </p>
-        <div class="flex justify-center md:block">
-          <PillTag
-            v-if="mainStore.currentUser.account_type == 'admin'"
-            label="Admin"
-            color="danger"
-            :icon="mdiShieldAccount"
-          />
-          <PillTag
-            v-if="mainStore.currentUser.account_type == 'student'"
-            label="Student"
-            color="success"
-            :icon="mdiSchool"
-          />
-          <PillTag label="Verified" color="info" :icon="mdiCheckDecagram" />
-        </div>
-      </div>
-    </BaseLevel>
-  </CardBox>
+	<CardBox>
+		<BaseLevel type="justify-around lg:justify-center">
+			<UserAvatarCurrentUser class="lg:mx-12 h-64 w-64" />
+			<div class="space-y-3 text-center md:text-left lg:mx-12">
+				<div class="flex justify-center md:block">
+					<FormCheckRadio v-model="userSwitchVal" name="notifications-switch" type="switch" label="Slack obavijesti" :input-value="true" />
+				</div>
+				<h1 class="text-2xl">
+					Hej,
+					<b>{{ mainStore.currentUser.username || mainStore.currentUser.ime }}</b
+					>!
+				</h1>
+				<p>
+					Zadnja prijava <b>{{ loggeddTimeAgo }}</b> s IP adrese
+					<b>127.0.0.1</b>
+				</p>
+				<div class="flex justify-center md:block">
+					<PillTag v-if="mainStore.currentUser.account_type == 'admin'" label="Admin" color="danger" :icon="mdiShieldAccount" />
+					<PillTag v-if="mainStore.currentUser.account_type == 'student'" label="Student" color="success" :icon="mdiSchool" />
+					<PillTag label="Verified" color="info" :icon="mdiCheckDecagram" />
+				</div>
+			</div>
+		</BaseLevel>
+	</CardBox>
 </template>

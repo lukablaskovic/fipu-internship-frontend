@@ -32,6 +32,31 @@ const Guest = {
 };
 
 const Student = {
+	async updateAvatarStudent(student_jmbag, fileData) {
+		try {
+			const formData = new FormData();
+			formData.append("file", fileData);
+
+			let result = await AxiosWrapper.post(`/upload/student-avatar/${student_jmbag}`, formData, {
+				headers: {
+					"Content-Type": "multipart/form-data",
+				},
+			});
+			return result;
+		} catch (error) {
+			console.log("Error:", error);
+			return null;
+		}
+	},
+	async fetch(search_by) {
+		try {
+			let result = await AxiosWrapper.get(`/Student?search=${search_by}`);
+			return result.data.results[0];
+		} catch (error) {
+			console.log("Error:", error);
+			return null;
+		}
+	},
 	async getAllocationsPublic() {
 		try {
 			let result = await AxiosWrapper.get("/alokacija/public");
@@ -87,6 +112,24 @@ const Student = {
 };
 
 const Admin = {
+	async updateAvatarAdmin(fileData) {
+		try {
+			console.log(fileData);
+			const formData = new FormData();
+			formData.append("file", fileData);
+
+			let result = await AxiosWrapper.post("/direct-file-upload", formData, {
+				headers: {
+					"Content-Type": "multipart/form-data",
+				},
+			});
+			return result;
+		} catch (error) {
+			console.log("Error:", error);
+			return null;
+		}
+	},
+
 	async getAllocations() {
 		try {
 			let result = await AxiosWrapper.get("/alokacija");

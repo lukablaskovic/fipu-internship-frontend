@@ -8,7 +8,7 @@ import { required, minLength, sameAs, helpers, not } from "@vuelidate/validators
 
 import { containsAlpha, containsNumeric, getFirstErrorForField } from "@/helpers/validators";
 
-import { mdiAccount, mdiAccountCircle, mdiEmail, mdiAsterisk, mdiFormTextboxPassword, mdiCardAccountDetails, mdiSchool, mdiCheckDecagram, mdiPencil, mdiDomain, mdiAlert, mdiCheckCircle } from "@mdi/js";
+import { mdiAccount, mdiAccountCircle, mdiEmail, mdiAsterisk, mdiFormTextboxPassword, mdiCardAccountDetails, mdiSchool, mdiCheckDecagram, mdiPencil, mdiDomain, mdiAlert, mdiCheckCircle, mdiCalendarAccount } from "@mdi/js";
 
 import SectionMain from "@/components/Section/SectionMain.vue";
 import CardBox from "@/components/Cardbox/CardBox.vue";
@@ -25,6 +25,8 @@ import UserAvatarCurrentUserWithUpload from "@/components/Premium/UserAvatarCurr
 import BaseIcon from "@/components/Base/BaseIcon.vue";
 import SectionBannerProfile from "@/components/Premium/SectionBannerProfile.vue";
 import PillTagPlain from "@/components/PillTag/PillTagPlain.vue";
+
+import moment from "@/moment-setup";
 
 const profileForm = reactive({
 	username: mainStore.currentUser.username,
@@ -126,17 +128,13 @@ function showNotificationBar(type) {
 									</h1>
 									<BaseIcon :path="mdiCheckDecagram" :size="22" class="text-blue-400" />
 								</div>
-								<BaseButton :icon="mdiPencil" color="lightDark" small rounded-full />
 							</div>
 
 							<BaseButtons class="text-fipu_gray dark:text-gray-300">
 								<PillTagPlain v-if="mainStore.userAdmin" :reverse-dark="true" label="Admin" :icon="mdiAccountCircle" />
 								<PillTagPlain v-else :reverse-dark="true" label="Student" :icon="mdiAccountCircle" />
 								<PillTagPlain :reverse-dark="true" label="FIPU" :icon="mdiDomain" />
-							</BaseButtons>
-
-							<BaseButtons class="mt-6" class-addon="mr-9 last:mr-0 mb-3">
-								<!-- <UserCardProfileNumber :number="499" label="Likes" /> -->
+								<PillTagPlain :reverse-dark="true" :label="moment.parseZone(mainStore.currentUser.created_at).format('D. MMMM YYYY.')" :icon="mdiCalendarAccount" />
 							</BaseButtons>
 						</div>
 					</div>

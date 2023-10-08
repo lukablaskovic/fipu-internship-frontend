@@ -138,6 +138,15 @@ const routes = [
 	},
 	{
 		meta: {
+			title: "Password reset",
+			requiresAuth: false,
+		},
+		path: "/password-reset",
+		name: "password-reset",
+		component: () => import("@/views/common/PasswordResetView.vue"),
+	},
+	{
+		meta: {
 			title: "Registracija",
 			requiresAuth: false,
 			transition: "register",
