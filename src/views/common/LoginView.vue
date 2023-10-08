@@ -130,11 +130,11 @@ function navigateToRegister() {
 							</h2>
 
 							<FormField label="E-mail">
-								<FormControl v-model="loginForm.email" :icon-left="mdiAccount" name="email" autocomplete="email" :error="getFirstErrorForField('email')"> </FormControl>
+								<FormControl v-model="loginForm.email" :icon-left="mdiAccount" name="email" autocomplete="email" :error="getFirstErrorForField('email')" />
 							</FormField>
 
 							<FormField label="Lozinka">
-								<FormControl v-model="loginForm.password" :icon-left="mdiLock" name="password" type="password" autocomplete="password" :error="getFirstErrorForField('password')"> </FormControl>
+								<FormControl v-model="loginForm.password" :icon-left="mdiLock" name="password" type="password" autocomplete="password" :error="getFirstErrorForField('password')" />
 							</FormField>
 
 							<div class="text-right">
