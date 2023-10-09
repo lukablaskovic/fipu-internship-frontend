@@ -92,7 +92,7 @@ export const useMainStore = defineStore("main", {
 				const result = await Student.updateAvatarStudent(student_jmbag, fileData);
 				return result;
 			} catch (error) {
-				console.log("Error:", error);
+				console.log("Error: ", error);
 			}
 		},
 
@@ -101,7 +101,7 @@ export const useMainStore = defineStore("main", {
 				const result = await Admin.updateAvatarAdmin(fileData);
 				return result;
 			} catch (error) {
-				console.log("Error:", error);
+				console.log("Error: ", error);
 			}
 		},
 
