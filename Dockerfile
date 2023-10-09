@@ -14,10 +14,10 @@ FROM node:16-slim
 
 WORKDIR /app
 
-RUN npm install -g serve
+USER node
 
 COPY --from=build /app/dist /app/dist
 
-EXPOSE 5000
+RUN npm install -g serve
 
 CMD ["serve", "-s", "dist", "-l", "5000"]
