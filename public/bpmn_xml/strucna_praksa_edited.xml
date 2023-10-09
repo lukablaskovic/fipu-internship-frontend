@@ -214,7 +214,7 @@ Napomena: Da biste prijavili preferencije, morate biti prijavljeni u aplikaciji!
           <camunda:inputParameter name="student_email">${student_email}</camunda:inputParameter>
           <camunda:inputParameter name="Alocirani_zadatak">${Alocirani_zadatak}</camunda:inputParameter>
           <camunda:inputParameter name="id_instance" />
-          <camunda:inputParameter name="evaluacija_url">http://localhost:5173/#/evaluacija/${process_instance_id}</camunda:inputParameter>
+          <camunda:inputParameter name="evaluacija_url">https://fp-fipu-internship-frontend.onrender.com/#/evaluacija/${process_instance_id}</camunda:inputParameter>
         </camunda:inputOutput>
       </bpmn:extensionElements>
       <bpmn:incoming>Flow_064rrii</bpmn:incoming>
