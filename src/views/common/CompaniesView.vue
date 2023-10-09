@@ -18,9 +18,9 @@ import FormControl from "@/components/Form/FormControl.vue";
 
 const userAuthenticated = computed(() => mainStore.userAuthenticated);
 const userAdmin = computed(() => mainStore.userAdmin);
-const VITE_DASHBOARD_URL = import.meta.env.VITE_DASHBOARD_URL;
+const VITE_FRONTEND_URL = import.meta.env.VITE_FRONTEND_URL;
 
-const addNewAssignmentLink = ref(`${VITE_DASHBOARD_URL}/#/poslodavci/novi-zadatak`);
+const addNewAssignmentLink = ref(`${VITE_FRONTEND_URL}/#/poslodavci/novi-zadatak`);
 </script>
 
 <template>

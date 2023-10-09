@@ -15,9 +15,9 @@ import TableNewAssignments from "@/components/Tables/TableNewAssignments.vue";
 import FormField from "@/components/Form/FormField.vue";
 import FormControl from "@/components/Form/FormControl.vue";
 
-const VITE_DASHBOARD_URL = import.meta.env.VITE_DASHBOARD_URL;
+const VITE_FRONTEND_URL = import.meta.env.VITE_FRONTEND_URL;
 
-const addNewAssignmentLink = ref(`${VITE_DASHBOARD_URL}/#/poslodavci/novi-zadatak`);
+const addNewAssignmentLink = ref(`${VITE_FRONTEND_URL}/#/poslodavci/novi-zadatak`);
 </script>
 
 <template>

@@ -23,12 +23,10 @@ import { darkModeKey, styleKey } from "@/config.js";
 import piniaPluginPersistedstate from "pinia-plugin-persistedstate";
 import NotificationBar from "@/components/Notification/NotificationBar.vue";
 
-/*
 Bugsnag.start({
-  apiKey: import.meta.env.VITE_BUGSNAG,
-  plugins: [new BugsnagPluginVue()],
+	apiKey: import.meta.env.VITE_BUGSNAG,
+	plugins: [new BugsnagPluginVue()],
 });
-*/
 
 /* Init Pinia */
 const pinia = createPinia();
@@ -39,7 +37,7 @@ pinia.use(({ store }) => {
 });
 
 const app = createApp(App);
-//app.use(Bugsnag.getPlugin("vue"));
+app.use(Bugsnag.getPlugin("vue"));
 app.component("NotificationBar", NotificationBar);
 app.use(pinia);
 

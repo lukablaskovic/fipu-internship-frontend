@@ -83,7 +83,7 @@ class SendTaskMappings {
 				student_email: "",
 				Alocirani_zadatak: "",
 				process_instance_id: "",
-				evaluacija_url: (processInstanceId) => `${import.meta.env.VITE_DASHBOARD_URL}/#/evaluacija/${processInstanceId}`,
+				evaluacija_url: (processInstanceId) => `${import.meta.env.VITE_FRONTEND_URL}/#/evaluacija/${processInstanceId}`,
 			},
 		},
 

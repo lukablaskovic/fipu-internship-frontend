@@ -28,7 +28,7 @@ export default [
 			icon: mdiBug,
 			label: "Prijava Greške",
 			isDesktopNoLabel: true,
-			externalURL: "https://github.com/lukablaskovic/fipu-internship-dashboard/issues",
+			externalURL: "https://github.com/lukablaskovic/fipu-internship-frontend/issues",
 			size: 22,
 		},
 		{
@@ -66,7 +66,7 @@ export default [
 			icon: mdiBug,
 			label: "Prijava Greške",
 			isDesktopNoLabel: true,
-			externalURL: "https://github.com/lukablaskovic/fipu-internship-dashboard/issues",
+			externalURL: "https://github.com/lukablaskovic/fipu-internship-frontend/issues",
 			size: 22,
 		},
 		{
