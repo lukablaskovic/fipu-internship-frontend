@@ -26,14 +26,14 @@ export default [
 		},
 		{
 			icon: mdiBug,
-			label: "Prijava Greške",
+			label: "Prijavi bug",
 			isDesktopNoLabel: true,
 			externalURL: "https://github.com/lukablaskovic/fipu-internship-frontend/issues",
 			size: 22,
 		},
 		{
 			icon: mdiThemeLightDark,
-			label: "Promjena Teme",
+			label: "Promjena teme",
 			isDesktopNoLabel: true,
 			isToggleLightDark: true,
 		},
@@ -64,14 +64,14 @@ export default [
 		},
 		{
 			icon: mdiBug,
-			label: "Prijava Greške",
+			label: "Prijavi bug",
 			isDesktopNoLabel: true,
 			externalURL: "https://github.com/lukablaskovic/fipu-internship-frontend/issues",
 			size: 22,
 		},
 		{
 			icon: mdiThemeLightDark,
-			label: "Promjena Teme",
+			label: "Promjena teme",
 			isDesktopNoLabel: true,
 			isToggleLightDark: true,
 		},

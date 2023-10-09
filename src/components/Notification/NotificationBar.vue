@@ -30,15 +30,17 @@ async function show() {
 	isDismissed.value = false;
 
 	await nextTick();
+
 	await new Promise((resolve) => setTimeout(resolve, 100));
 
-	const rect = notificationElement.value.getBoundingClientRect();
-	window.scrollTo({
-		top: rect.top + window.scrollY,
+	notificationElement.value.scrollIntoView({
 		behavior: "smooth",
+		block: "nearest",
+		inline: "start",
 	});
 
 	await Utils.wait(props.duration);
+
 	dismiss();
 }
 
@@ -51,11 +53,11 @@ defineExpose({
 </script>
 
 <template>
-	<div v-if="!isDismissed" ref="notificationElement" :class="componentClass" class="px-3 md:py-3 mb-6 last:mb-0 border rounded-lg transition-colors duration-150">
+	<div v-if="!isDismissed" :ref="(el) => (notificationElement = el)" :class="componentClass" class="px-3 md:py-3 mb-6 last:mb-0 border rounded-lg transition-colors duration-150">
 		<BaseLevel>
 			<div class="flex flex-col md:flex-row items-center">
 				<BaseIcon v-if="icon" :path="icon" w="w-10 md:w-5" h="h-10 md:h-5" size="24" class="md:mr-2" />
-				<span class="text-center md:text-left 2xl:py-2"><slot /></span>
+				<span class="text-center md:text-left py-1 2xl:py-2"><slot /></span>
 			</div>
 		</BaseLevel>
 	</div>

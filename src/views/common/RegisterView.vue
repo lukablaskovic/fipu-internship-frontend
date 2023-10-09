@@ -5,7 +5,7 @@ import { required, email, minLength, sameAs, helpers, numeric } from "@vuelidate
 
 import { croatianAlpha, getFirstErrorForField, isUnipuEmail, exactLength, containsAlpha, containsNumeric } from "@/helpers/validators";
 
-import { mdiAccount, mdiAsterisk, mdiCheckCircle, mdiAlert, mdiAlertCircle, mdiEmail, mdiCardAccountDetails, mdiSchool } from "@mdi/js";
+import { mdiAccount, mdiAsterisk, mdiLock, mdiCheckCircle, mdiAlert, mdiAlertCircle, mdiEmail, mdiCardAccountDetails, mdiSchool } from "@mdi/js";
 import { useRouter } from "vue-router";
 
 import SectionSplitRegister from "@/components/Section/SectionSplitRegister.vue";
@@ -137,7 +137,7 @@ function showNotificationBar(type) {
 			notificationBar.value.color = "danger";
 			notificationBar.value.icon = mdiAlertCircle;
 			notificationStatus.value = "Greška!";
-			notificationMessage.value = "Sustav ne radi. Nije do vas, molimo pokušajte opet ili kontaktirajte profesora.";
+			notificationMessage.value = "Sustav ne radi. Nije do vas, molimo pokušajte opet ili kontaktirajte voditelja prakse.";
 			break;
 	}
 	notificationBar.value.show();
@@ -227,7 +227,12 @@ function navigateToLogin() {
 	</SectionSplitRegister>
 </template>
 
-<style>
+<style scoped>
+html,
+body {
+	overflow-y: auto;
+}
+
 .fast-animation {
 	animation-duration: 0.4s;
 }

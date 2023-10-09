@@ -137,10 +137,11 @@ function navigateToRegister() {
 							<FormField label="Lozinka">
 								<FormControl v-model="loginForm.password" :icon-left="mdiLock" name="password" type="password" autocomplete="password" :error="getFirstErrorForField(v$, 'password')" />
 							</FormField>
-
+							<!--
 							<div class="text-right">
 								<a href="#" class="text-sm text-fipu_gray hover:text-fipu_blue underline">Zaboravili ste lozinku?</a>
 							</div>
+              -->
 							<FormCheckRadio v-model="loginForm.remember_me" name="remember" label="Zapamti me!" class="mb-4 2xl:mb-4" :input-value="true" />
 
 							<BaseButtons class="space-y-2">
@@ -170,6 +171,11 @@ function navigateToRegister() {
 </template>
 
 <style scoped>
+html,
+body {
+	overflow-y: auto;
+}
+
 .fast-animation {
 	animation-duration: 0.5s;
 }
