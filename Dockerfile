@@ -14,9 +14,11 @@ FROM node:16-slim
 
 WORKDIR /app
 
-RUN npm install -g serve
+USER node
 
 COPY --from=build /app/dist /app/dist
+
+RUN npm install -g serve
 
 EXPOSE 5000
 
