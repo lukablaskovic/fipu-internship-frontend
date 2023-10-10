@@ -20,7 +20,7 @@ const userAuthenticated = computed(() => mainStore.userAuthenticated);
 const userAdmin = computed(() => mainStore.userAdmin);
 const VITE_FRONTEND_URL = import.meta.env.VITE_FRONTEND_URL;
 
-const addNewAssignmentLink = ref(`${VITE_FRONTEND_URL}/#/poslodavci/novi-zadatak`);
+const addNewAssignmentLink = ref(`${VITE_FRONTEND_URL}/poslodavci/novi-zadatak`);
 </script>
 
 <template>
