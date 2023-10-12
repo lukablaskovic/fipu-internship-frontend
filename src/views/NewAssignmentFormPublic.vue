@@ -202,14 +202,29 @@ const onCompanyChange = () => {
 			<p>Studentima je ovo izborni kolegij i oni koji su prijavljeni, motivirani su i spremni za rad!</p>
 			<br />
 			<p><b>Važna napomena:</b> Pojedina organizacija može prijaviti i više zadataka. Molimo da za svaki zadatak zasebno popunite prijavnicu (isti link) te zatražite broj studenata koji može na njemu raditi (npr. može biti 2 zadataka, na prvom 3 studenta, na drugom 4).</p>
-			<p>Za sve dodatne informacije slobodno kontaktirajte voditelja stručne prakse:</p>
-			<hr />
-			<p>doc. dr. sc. Nikola Tanković</p>
-			<p>+385 98 30 56 73</p>
-			<p>nikola.tankovic@unipu.hr</p>
 			<br />
-			<hr />
+			<p>Za sve dodatne informacije slobodno kontaktirajte voditelja stručne prakse:</p>
 
+			<br />
+
+			<div class="w-full shrink-0 grow-0 basis-auto lg:w-7/12">
+				<div class="flex flex-wrap">
+					<div class="mb-6 w-full shrink-0 grow-0 basis-auto md:w-6/12">
+						<div class="flex items-start">
+							<div class="shrink-0">
+								<div class="inline-block rounded-md bg-primary-100 p-4 w-24 h-24 text-primary items-center">
+									<a href="https://ntankovic.unipu.hr/" target="_blank"><img class="rounded-full" src="https://avatars.githubusercontent.com/u/714889?v=4" alt="Nikola Tanković" /></a>
+								</div>
+							</div>
+							<div class="ml-3 grow">
+								<p class="mb-2 font-bold dark:text-white">doc. dr. sc. Nikola Tanković</p>
+								<p class="text-neutral-500 dark:text-neutral-200">nikola.tankovic@unipu.hr</p>
+								<p class="text-neutral-500 dark:text-neutral-200">+385 98 30 56 73</p>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
 			<div class="grid grid-cols-1 gap-6 mb-6">
 				<CardBox :icon="mdiBallot" class="mb-6 lg:mb-0 lg:col-span-2 xl:col-span-3" is-form @submit.prevent="onSubmit">
 					<CardBoxComponentTitle class="text-center" title="💼Prijava projekta za studentsku praksu " />
