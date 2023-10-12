@@ -38,7 +38,7 @@ onMounted(async () => {
 		error.value = true;
 		return;
 	}
-	console.log("instanceInfo", instanceInfo);
+
 	assignemntDetails.value = await studentStore.getAssignmentDetails(instanceInfo.value.variables["Alocirani_zadatak"]);
 	assignment.value = assignemntDetails.value.data.results[0];
 
@@ -53,6 +53,7 @@ onMounted(async () => {
 const formDynamicValues = ref({});
 const isLoading = ref(false);
 
+/*
 watch(
 	formDynamicValues,
 	(newVal, oldVal) => {
@@ -60,6 +61,7 @@ watch(
 	},
 	{ deep: true }
 );
+*/
 
 async function handleNewInstance() {
 	isLoading.value = true;

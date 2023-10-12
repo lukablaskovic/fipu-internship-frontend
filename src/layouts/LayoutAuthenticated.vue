@@ -93,7 +93,7 @@ const menuClick = (event, item) => {
 				<ol class="list-decimal ml-4">
 					<li>
 						Studenti se prijavljuju na praksu putem sustava
-						<em>Fipu Praksa</em> u kojem prvo odabiru 3 zadatka koja bi željeli raditi.
+						<em>FIPU Praksa</em> u kojem prvo odabiru 3 zadatka koja bi željeli raditi.
 					</li>
 					<li>Nakon što vas se alocira na jedan od prijavljenih zadataka, morate kontaktirati mentora. Predstavite se i recite da ste dobili zadatak. Poslodavac može zatražiti intervju ili provesti selekciju.</li>
 					<li>Profesor može i odbiti zadatke koje ste odabrali te vas vratiti na početni korak odabira preferencija, ili vas može alocirati na neko 4. poduzeće ukoliko smatra da je to potrebno.</li>
@@ -124,11 +124,11 @@ const menuClick = (event, item) => {
 					</li>
 				</ol>
 				<BaseDivider></BaseDivider>
-				<div class="text-xl mb-2">Sustav <em>Fipu praksa</em></div>
+				<div class="text-xl mb-2">Sustav <em>FIPU praksa</em></div>
 				<ol class="list-decimal ml-4">
 					<li>
 						Sve radnje (uključujući komunikaciju) vezane uz praksu obavljaju se isključivo putem sustava
-						<em>Fipu praksa</em>.
+						<em>FIPU praksa</em>.
 					</li>
 					<li>
 						<div class="flex flex-wrap text-base">
@@ -152,7 +152,7 @@ const menuClick = (event, item) => {
 					</li>
 				</ol>
 				<BaseDivider></BaseDivider>
-				<p><b>Važno!</b> Aplikacija <em>Fipu Praksa</em> razvijena je 2023. godine u sklopu istraživačkog laboratorija FIPU-lab za potrebe jednostavnijeg izvođenja prakse za studente, kao i upravljanja za voditelja.</p>
+				<p><b>Važno!</b> Aplikacija <em>FIPU Praksa</em> razvijena je 2023. godine u sklopu istraživačkog laboratorija FIPU-lab za potrebe jednostavnijeg izvođenja prakse za studente, kao i upravljanja za voditelja.</p>
 				<p class="mt-2">Aplikacija je razvijena eksperimentalnim BPMN model-based development-om i integracijom mikroservisa te je, kao i svaki drugi programski proizvod, podložna 🐞bugovima!</p>
 				<p class="mt-2">Stoga vas molimo da sve bugove koje pronađete prijavite otvaranjem novog Github issue-a, <a class="hover-underline-animation cursor-pointer text-fipu_text_blue" target="_blank" href="https://github.com/lukablaskovic/fipu-internship-frontend/issues">ovdje!</a></p>
 				<p class="mt-2">Hvala! 🙂</p>
@@ -168,7 +168,7 @@ const menuClick = (event, item) => {
 				<ol class="list-decimal ml-4">
 					<li>
 						Studenti se prijavljuju na praksu putem sustava
-						<em>Fipu Praksa</em> u kojem prvo odabiru 3 zadatka koja bi željeli raditi.
+						<em>FIPU Praksa</em> u kojem prvo odabiru 3 zadatka koja bi željeli raditi.
 					</li>
 					<li>
 						<div class="flex flex-wrap text-base">

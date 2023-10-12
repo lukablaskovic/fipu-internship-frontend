@@ -14,7 +14,6 @@ watch(uploadedAvatar, async (newFile) => {
 	if (newFile) {
 		try {
 			mainStore.avatarChanging = true;
-			console.log("mainStore.userAdmin", mainStore.userAdmin);
 			let result = null;
 			if (mainStore.userAdmin === false) {
 				result = await mainStore.updateAvatarStudent(mainStore.currentUser.JMBAG, newFile);

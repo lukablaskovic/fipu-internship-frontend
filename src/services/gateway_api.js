@@ -184,8 +184,6 @@ const User = {
 	},
 
 	async updateConversation(conversationId, updates, retries = 3) {
-		console.log(conversationId);
-		console.log(updates);
 		while (retries > 0) {
 			try {
 				let result = await AxiosWrapper.patch(`/users/update_conversation/${conversationId}`, updates);

@@ -210,7 +210,7 @@ function navigateToLogin() {
 							</div>
 
 							<BaseButtons class="space-y-2 mt-4 lg:mt-8">
-								<BaseButton :disabled="!data_confirmed" type="submit" color="fipu_light_blue" label="Registriraj se" :loading="isLoading" class="w-full" />
+								<BaseButton :disabled="!data_confirmed || isLoading" type="submit" color="fipu_light_blue" label="Registriraj se" :loading="isLoading" class="w-full" />
 							</BaseButtons>
 
 							<NotificationBar ref="notificationBar" class="animate__animated animate__fadeInUp mt-2" :outline="notificationsOutline">

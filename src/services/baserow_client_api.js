@@ -69,7 +69,6 @@ const Student = {
 	async getAssignmentDetails(queryParams = {}) {
 		try {
 			let result = await AxiosWrapper.get("/Zadaci_za_odabir", queryParams);
-			console.log(result);
 			return result;
 		} catch (error) {
 			console.log("Error:", error);
@@ -114,7 +113,6 @@ const Student = {
 const Admin = {
 	async updateAvatarAdmin(fileData) {
 		try {
-			console.log(fileData);
 			const formData = new FormData();
 			formData.append("file", fileData);
 

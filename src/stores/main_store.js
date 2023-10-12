@@ -70,14 +70,12 @@ export const useMainStore = defineStore("main", {
 		async fetchCurrentUser() {
 			try {
 				const response = await User.getCurrentUser();
-				console.log(response);
 				if (response.process_instance_id !== undefined) {
 					this.currentUser.internship_process.id = response.process_instance_id;
 					delete response.process_instance_id;
 				}
 				this.currentUser = { ...this.currentUser, ...response };
-				console.log("this.currentUser", this.currentUser);
-				//Get avatar
+
 				if (this.currentUser.account_type == "student") {
 					let userAvatar = await Student.fetch(this.currentUser.JMBAG);
 					this.currentUser.avatar = userAvatar["avatar"][0]["url"];
@@ -116,7 +114,7 @@ export const useMainStore = defineStore("main", {
 				}
 				return loginResult;
 			} catch (error) {
-				console.log(error);
+				console.log("Error: ", error);
 			}
 		},
 		handleSuccessfulLogin() {

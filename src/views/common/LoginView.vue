@@ -44,7 +44,6 @@ const rules = {
 };
 
 const v$ = useVuelidate(rules, loginForm);
-console.log("v$", v$);
 
 const isLoading = ref(false);
 async function onSubmit() {
@@ -145,7 +144,7 @@ function navigateToRegister() {
 							<FormCheckRadio v-model="loginForm.remember_me" name="remember" label="Zapamti me!" class="mb-4 2xl:mb-4" :input-value="true" />
 
 							<BaseButtons class="space-y-2">
-								<BaseButton type="submit" color="fipu_blue" label="Prijavi se" :loading="isLoading" class="w-full" />
+								<BaseButton type="submit" color="fipu_blue" label="Prijavi se" :disabled="isLoading" :loading="isLoading" class="w-full" />
 							</BaseButtons>
 
 							<div class="my-2 2xl:my-4 flex items-center before:mt-0.5 before:flex-1 before:border-t before:border-neutral-300 after:mt-0.5 after:flex-1 after:border-t after:border-neutral-300">
@@ -153,7 +152,7 @@ function navigateToRegister() {
 							</div>
 
 							<BaseButtons class="space-y-2">
-								<BaseButton color="fipu_blue" outline label="Registriraj se" class="w-full" @click.prevent="onRegisterClick" />
+								<BaseButton color="fipu_blue" outline label="Registriraj se" :disabled="isLoading" class="w-full" @click.prevent="onRegisterClick" />
 							</BaseButtons>
 
 							<NotificationBar ref="notificationBar" class="animate__animated animate__fadeInUp mt-2" :outline="notificationsOutline">

@@ -2,13 +2,15 @@
 import { ref } from "vue";
 import { Control } from "@/services/microservices_control";
 import { mdiRefresh, mdiRestartAlert, mdiCheckCircleOutline, mdiAlertCircle } from "@mdi/js";
+import moment from "@/moment-setup";
+
 import TableCheckboxCell from "@/components/Tables/TableCheckboxCell.vue";
 import BaseButtons from "@/components/Base/BaseButtons.vue";
 import BaseButton from "@/components/Base/BaseButton.vue";
 import SkeletonLoaderTable from "@/components/SkeletonLoaderTable.vue";
 import IconRounded from "@/components/IconRounded.vue";
-import moment from "@/moment-setup";
 import CardBoxModal from "../Cardbox/CardBoxModal.vue";
+
 const props = defineProps({
 	checkable: Boolean,
 	services: {
@@ -31,7 +33,6 @@ async function checkServiceStatus(serviceName) {
 			...updatedService,
 		};
 	} finally {
-		// Reset loading state after fetching data or if an error occurs
 		localServices.value[serviceName].loading = false;
 	}
 }

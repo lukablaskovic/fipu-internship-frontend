@@ -76,7 +76,7 @@ if ((!localStorage[darkModeKey] && window.matchMedia("(prefers-color-scheme: dar
 }
 
 /* Default title tag */
-const defaultDocumentTitle = "Fipu Praksa";
+const defaultDocumentTitle = "FIPU Praksa";
 
 /* Set document title from route meta */
 router.afterEach((to) => {
