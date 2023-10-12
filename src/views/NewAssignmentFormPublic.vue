@@ -1,6 +1,6 @@
 <script setup>
 import { ref, reactive, onMounted, watch, computed } from "vue";
-import { mdiBallot, mdiEmail, mdiClipboardCheck, mdiLaptop, mdiDomain, mdiMapMarker, mdiClipboardTextClockOutline, mdiAccountGroup, mdiSchool, mdiTextLong, mdiXml, mdiThumbsUpDown, mdiClockTimeFiveOutline, mdiNoteTextOutline } from "@mdi/js";
+import { mdiBallot, mdiEmail, mdiClipboardText, mdiLaptop, mdiDomain, mdiMapMarker, mdiClipboardTextClockOutline, mdiAccountGroup, mdiSchool, mdiTextLong, mdiXml, mdiThumbsUpDown, mdiClockTimeFiveOutline, mdiNoteTextOutline } from "@mdi/js";
 import SectionMain from "@/components/Section/SectionMain.vue";
 
 import SectionTitleLineWithButton from "@/components/Section/SectionTitleLineWithButton.vue";
@@ -195,7 +195,7 @@ const onCompanyChange = () => {
 			<p><b>Voditelj:</b> doc. dr. sc. Nikola Tanković</p>
 			<hr />
 			<br />
-			<SectionTitleLineWithButton :icon="mdiClipboardCheck" main title="Prijava novog zadatka"></SectionTitleLineWithButton>
+			<SectionTitleLineWithButton :icon="mdiClipboardText" main title="Prijava zadatka (Poslodavci)"></SectionTitleLineWithButton>
 			<p>Ova prijavnica je namijenjena <u>poduzećima i organizacijama</u> koje žele provoditi studentsku praksu u suradnji s Fakultetom informatike u Puli. Na temelju ovog upitnika odredit će se idealni studenti za provođenje prakse u Vašem poduzeću.</p>
 			<br />
 
