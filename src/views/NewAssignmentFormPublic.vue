@@ -123,6 +123,7 @@ function resetForm() {
 		form[key] = DEFAULT_FORM_VALUES[key];
 	}
 	v$.value.$reset();
+	snackBarStore.pushMessage("Forma je resetirana!", "success");
 }
 
 async function onSubmit() {
