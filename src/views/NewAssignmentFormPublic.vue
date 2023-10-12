@@ -28,7 +28,7 @@ import { guestStore, mainStore, snackBarStore } from "@/main.js";
 
 import FIPU_praksa_logo_transparent from "/FIPU_praksa_logo_transparent.svg";
 
-const form = reactive({
+const DEFAULT_FORM_VALUES = {
 	Poslodavac: "",
 	Poslodavac_novi_naziv: "",
 	poslodavac_email: "",
@@ -45,7 +45,10 @@ const form = reactive({
 	napomena: "",
 	selekcija: false,
 	proces_selekcije: "",
-});
+};
+
+const form = reactive({ ...DEFAULT_FORM_VALUES });
+
 const greaterThanZero = (value) => value > 0;
 
 const rules = reactive({
@@ -114,6 +117,13 @@ const rules = reactive({
 const isLoading = ref(false);
 
 const v$ = useVuelidate(rules, form);
+
+function resetForm() {
+	for (const key in DEFAULT_FORM_VALUES) {
+		form[key] = DEFAULT_FORM_VALUES[key];
+	}
+	v$.value.$reset();
+}
 
 async function onSubmit() {
 	isLoading.value = true;
@@ -193,6 +203,7 @@ const onCompanyChange = () => {
 			<br />
 			<p><b>Važna napomena:</b> Pojedina organizacija može prijaviti i više zadataka. Molimo da za svaki zadatak zasebno popunite prijavnicu (isti link) te zatražite broj studenata koji može na njemu raditi (npr. može biti 2 zadataka, na prvom 3 studenta, na drugom 4).</p>
 			<p>Za sve dodatne informacije slobodno kontaktirajte voditelja stručne prakse:</p>
+			<hr />
 			<p>doc. dr. sc. Nikola Tanković</p>
 			<p>+385 98 30 56 73</p>
 			<p>nikola.tankovic@unipu.hr</p>
@@ -305,6 +316,7 @@ const onCompanyChange = () => {
 
 					<FormField horizontal grouped>
 						<BaseButton label="Pošalji" type="submit" :disabled="isLoading" :loading="isLoading" color="fipu_blue" />
+						<BaseButton label="Resetiraj formu" color="danger" @click="resetForm()" />
 					</FormField>
 				</CardBox>
 			</div>
