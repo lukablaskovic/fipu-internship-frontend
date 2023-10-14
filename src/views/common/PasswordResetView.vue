@@ -1,7 +1,7 @@
 <script setup>
 import { ref, computed, reactive } from "vue";
 
-import { mdiAccount, mdiAsterisk, mdiAlertCircle, mdiCheckCircle, mdiAlert, mdiClose } from "@mdi/js";
+import { mdiEmail, mdiAsterisk, mdiAlertCircle, mdiCheckCircle, mdiAlert, mdiClose } from "@mdi/js";
 import { useVuelidate } from "@vuelidate/core";
 import { useRouter } from "vue-router";
 
@@ -128,7 +128,7 @@ function navigateToRegister() {
 							</h2>
 
 							<FormField label="E-mail">
-								<FormControl v-model="loginForm.email" :icon="mdiAccount" name="email" autocomplete="email" :error="getFirstErrorForField(v$, 'email')"> </FormControl>
+								<FormControl v-model="loginForm.email" :icon="mdiEmail" name="email" autocomplete="email" :error="getFirstErrorForField(v$, 'email')"> </FormControl>
 							</FormField>
 
 							<FormField label="Lozinka">

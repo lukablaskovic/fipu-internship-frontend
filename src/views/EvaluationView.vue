@@ -1,5 +1,5 @@
 <script setup>
-import { ref, onMounted, watch } from "vue";
+import { ref, onMounted } from "vue";
 import { mdiAccountTie, mdiAccount, mdiClipboardCheck, mdiCloseCircle } from "@mdi/js";
 import Utils from "@/helpers/utils.js";
 import { useRoute } from "vue-router";
@@ -30,6 +30,7 @@ let assignment = ref(null);
 let studentInfo = ref(null);
 
 const error = ref(false);
+
 onMounted(async () => {
 	process_instance_id.value = route.params.process_instance_id;
 
@@ -52,16 +53,6 @@ onMounted(async () => {
 });
 const formDynamicValues = ref({});
 const isLoading = ref(false);
-
-/*
-watch(
-	formDynamicValues,
-	(newVal, oldVal) => {
-		console.log("formDynamicValues changed:", newVal);
-	},
-	{ deep: true }
-);
-*/
 
 async function handleNewInstance() {
 	isLoading.value = true;

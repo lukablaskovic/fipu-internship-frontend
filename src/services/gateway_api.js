@@ -36,7 +36,6 @@ const User = {
 	async getCurrentUser() {
 		try {
 			let result = await AxiosWrapper.get("/users/me");
-			console.log("results", result);
 			return result;
 		} catch (e) {
 			return null;
@@ -45,7 +44,6 @@ const User = {
 	async updateAdminAvatarInPostgres(username, avatar_url) {
 		try {
 			let result = await AxiosWrapper.patch(`/admin/avatar/?username=${username}`, { avatar_url: avatar_url });
-			console.log("results", result);
 			return result;
 		} catch (error) {
 			console.log("Error:", error);

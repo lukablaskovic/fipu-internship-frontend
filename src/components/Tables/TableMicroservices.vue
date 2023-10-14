@@ -1,7 +1,7 @@
 <script setup>
-import { ref } from "vue";
+import { ref, onMounted, onBeforeUnmount, shallowReactive, triggerRef } from "vue";
 import { Control } from "@/services/microservices_control";
-import { mdiRefresh, mdiRestartAlert, mdiCheckCircleOutline, mdiAlertCircle } from "@mdi/js";
+import { mdiRefresh, mdiCheckCircleOutline, mdiAlertCircle } from "@mdi/js";
 import moment from "@/moment-setup";
 
 import TableCheckboxCell from "@/components/Tables/TableCheckboxCell.vue";
@@ -9,7 +9,6 @@ import BaseButtons from "@/components/Base/BaseButtons.vue";
 import BaseButton from "@/components/Base/BaseButton.vue";
 import SkeletonLoaderTable from "@/components/SkeletonLoaderTable.vue";
 import IconRounded from "@/components/IconRounded.vue";
-import CardBoxModal from "../Cardbox/CardBoxModal.vue";
 
 const props = defineProps({
 	checkable: Boolean,
@@ -19,19 +18,44 @@ const props = defineProps({
 	},
 });
 
-// Making a local reactive copy of services
-const localServices = ref({ ...props.services });
+let intervalId, nowIntervalId;
+const EVERY_N_MINUTES = 5;
+const now = ref(new Date());
+const localServices = ref(shallowReactive({ ...props.services }));
 
-const restartConfirmModal = ref(false);
+onMounted(() => {
+	const updateServiceStatuses = async () => {
+		localServices.value = await Control.checkAllServiceStatuses();
+	};
+	intervalId = setInterval(updateServiceStatuses, EVERY_N_MINUTES * 60 * 1000);
+	updateServiceStatuses();
+	nowIntervalId = setInterval(() => {
+		now.value = new Date();
+	}, 60 * 100);
+});
+
+onBeforeUnmount(() => {
+	clearInterval(intervalId);
+	clearInterval(nowIntervalId);
+});
+
+let formatTimestamp = (timestamp) => {
+	return moment(timestamp).from(now.value);
+};
+
 async function checkServiceStatus(serviceName) {
 	localServices.value[serviceName].loading = true;
-
 	try {
 		let { [serviceName]: updatedService } = await Control.checkServiceStatus(serviceName);
-		localServices.value[serviceName] = {
-			...localServices.value[serviceName],
-			...updatedService,
+		localServices.value = {
+			...localServices.value,
+			[serviceName]: {
+				...localServices.value[serviceName],
+				...updatedService,
+				status_check_timestamp: new Date(),
+			},
 		};
+		triggerRef(localServices);
 	} finally {
 		localServices.value[serviceName].loading = false;
 	}
@@ -47,7 +71,7 @@ async function checkServiceStatus(serviceName) {
 				<th>Poruka</th>
 				<th>URL</th>
 				<th>Zadnja provjera</th>
-				<th>Actions</th>
+				<th>Akcije</th>
 			</tr>
 		</thead>
 		<tbody>
@@ -73,19 +97,16 @@ async function checkServiceStatus(serviceName) {
 						<a :href="service['url']" target="_blank"> {{ service["url"] }}</a>
 					</td>
 					<td data-label="Zadnji put aktivan">
-						{{ moment(service["status_check_timestamp"]).fromNow() }}
+						{{ formatTimestamp(service["status_check_timestamp"]) }}
 					</td>
+
 					<td class="before:hidden lg:w-1 whitespace-nowrap">
 						<BaseButtons type="justify-start lg:justify-end" no-wrap>
 							<BaseButton color="fipu_blue" :icon="mdiRefresh" small @click="checkServiceStatus(serviceName)" />
-							<BaseButton color="danger" :icon="mdiRestartAlert" small @click="restartConfirmModal = true" />
 						</BaseButtons>
 					</td>
 				</tr>
 			</template>
-			<CardBoxModal v-model="restartConfirmModal" title="Jeste li sigurni da želite restartirati odabrani servis?" button-label="Restart" has-cancel @cancel="console.log('NO')" @confirm="console.log('restart')">
-				<p class="text-center mb-4">To može dovesti do prekida rada aplikacije.</p>
-			</CardBoxModal>
 		</tbody>
 	</table>
 </template>

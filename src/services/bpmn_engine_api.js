@@ -50,7 +50,7 @@ const ProcessInstance = {
 			return { status: 500, message: "Internal server error", data: error };
 		}
 	},
-	// Instance info
+
 	async get(id) {
 		try {
 			let result = await AxiosWrapper.get(`/instance/${id}`);
@@ -59,6 +59,7 @@ const ProcessInstance = {
 			return null;
 		}
 	},
+
 	async getTaskInfo(id, task) {
 		try {
 			let result = await AxiosWrapper.get(`/instance/${id}/task/${task}`);
@@ -67,6 +68,7 @@ const ProcessInstance = {
 			return null;
 		}
 	},
+
 	async search(query) {
 		try {
 			let result = await AxiosWrapper.get("/instance", { search: query });
@@ -77,6 +79,7 @@ const ProcessInstance = {
 			return [];
 		}
 	},
+
 	async handleNewInstance(instance_id, current_task, post_data) {
 		try {
 			let result = await AxiosWrapper.post(`/instance/${instance_id}/task/${current_task}/form`, post_data);

@@ -2,7 +2,6 @@
 import { mdiForwardburger, mdiBackburger, mdiMenu, mdiMagnify, mdiLaptop, mdiEmail, mdiAccountMultiple, mdiClipboardCheck, mdiDomain, mdiClipboardText } from "@mdi/js";
 import { ref, onMounted, computed } from "vue";
 import { mainStore, styleStore } from "@/main.js";
-import SearchOptions from "@/components/SearchOptions.vue";
 
 import menuAsideAdmin from "@/menus/menuAsideAdmin.js";
 import AsideMenu from "@/components/AsideMenu/AsideMenu.vue";

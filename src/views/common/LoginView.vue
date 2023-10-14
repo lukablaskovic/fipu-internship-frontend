@@ -1,7 +1,7 @@
 <script setup>
 import { ref, computed, reactive } from "vue";
 
-import { mdiAccount, mdiAsterisk, mdiAlertCircle, mdiCheckCircle, mdiAlert, mdiClose, mdiLock } from "@mdi/js";
+import { mdiAccount, mdiAlertCircle, mdiCheckCircle, mdiAlert, mdiClose, mdiLock } from "@mdi/js";
 import { useRouter } from "vue-router";
 
 import { useVuelidate } from "@vuelidate/core";
@@ -112,18 +112,19 @@ function navigateToRegister() {
 <template>
 	<SectionSplitLogin bg="blue" class="flex items-start min-h-screen">
 		<Transition appear enter-active-class="animate__animated animate__fadeIn" leave-active-class="animate__animated animate__slideOutRight fast-animation" @after-leave="navigateToRegister">
-			<div v-if="!transitioning" class="flex flex-col justify-center items-center overflow-hidden h-screen md:py-4 md:px-4 || transition-all duration-300">
+			<div v-if="!transitioning" class="flex flex-col justify-center items-center overflow-hidden h-screen md:py-12 md:px-4 || transition-all duration-300">
 				<div class="flex flex-col md:flex-row flex-shrink h-full rounded-lg overflow-hidden">
 					<div class="flex flex-col md:flex-row flex-shrink h-full || bg-white overflow-y-auto fipu_vertical_scrollbar || transition-all duration-300 px-0 lg:px-6 xl:px-16 2xl:px-28 || xl:gap-4 2xl:gap-8">
 						<CardBox has-table class="hidden xl:flex justify-center items-center flex-1 bg-opacity-0 grow p-16 xl:px-0 xl:py-16 2xl:py-24 || transition-all duration-300">
 							<img :src="loginArt" alt="Login graphics" class="2xl:pr-8 aspect-square max-h-full" />
 						</CardBox>
 
-						<CardBox has-table class="flex flex-col flex-shrink flex-1 bg-opacity-0 p-8 sm:p-16 xl:pl-2 xl:px-0 xl:py-24 || transition-all duration-300" is-form @submit.prevent="onSubmit">
+						<CardBox has-table vertical-centered class="flex flex-col flex-shrink flex-1 bg-opacity-0 p-8 sm:p-16 xl:pl-2 xl:px-0 xl:py-24 || transition-all duration-300" is-form @submit.prevent="onSubmit">
 							<a href="https://fipu.unipu.hr/" target="_blank">
 								<img :src="fipu_unipu" alt="fipu logo" class="h-20 xl:h-20 mb-6 object-contain transition-all duration-300" />
 							</a>
 							<h2 class="text-2xl lg:text-3xl 2xl:text-4xl text-fipu_gray font-bold xl:mb-1 mb-2 md:mb-0 2xl:mb-4">Dobrodošli u <span class="text-fipu_blue">FIPU Praksa</span></h2>
+
 							<h2 class="md:text-sm lg:text-sm 2xl:text-base mb-2 2xl:mb-4 text-justify s">
 								Molimo prijavite se kako biste pregledali stanje vaše prakse ili prijavili zadatke. Ukoliko želite samo pregledati dostupne zadatke i poduzeća, molimo nastavite kao gost
 								<a class="hover-underline-animation cursor-pointer text-fipu_text_blue hover:text-fipu_blue" @click="router.push('/moja-praksa')"> ovdje</a>.

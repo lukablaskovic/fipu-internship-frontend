@@ -41,7 +41,7 @@ const Control = {
 							status: response.status,
 							message: response.message,
 							url: serviceData.url,
-							status_check_timestamp: response.status_check_timestamp,
+							status_check_timestamp: new Date(),
 						},
 					}))
 					.catch(() => serviceStatusError(serviceName, serviceData.url))
@@ -52,10 +52,10 @@ const Control = {
 
 	async checkServiceStatus(serviceName) {
 		const service = MICROSERVICES[serviceName];
+
 		if (!service) {
 			throw new Error(`Servis ${serviceName} nije pronađen.`);
 		}
-
 		try {
 			const response = await service.instance.get("/status");
 			return {
@@ -72,6 +72,7 @@ const Control = {
 
 	autoRefreshServiceStatus(intervalMinutes = 5) {
 		const refresher = async () => {
+			console.log("Refreshing service statuses...");
 			const statuses = await this.checkAllServiceStatuses();
 			setTimeout(refresher, intervalMinutes * 60 * 1000);
 		};

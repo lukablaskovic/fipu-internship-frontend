@@ -1,5 +1,5 @@
 <script setup>
-import { mdiForwardburger, mdiBackburger, mdiMenu, mdiMagnify } from "@mdi/js";
+import { mdiForwardburger, mdiBackburger, mdiMenu } from "@mdi/js";
 import { computed } from "vue";
 import { useRouter } from "vue-router";
 import { styleStore } from "@/main.js";
@@ -7,7 +7,6 @@ import { styleStore } from "@/main.js";
 import menuAsideGuest from "@/menus/menuAsideGuest.js";
 
 import BaseIcon from "@/components/Base/BaseIcon.vue";
-import FormControl from "@/components/Form/FormControl.vue";
 
 import NavBar from "@/components/Navbar/NavBar.vue";
 import NavBarItemPlain from "@/components/Navbar/NavBarItemPlain.vue";

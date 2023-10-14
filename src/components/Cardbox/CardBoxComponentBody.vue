@@ -1,5 +1,4 @@
 <script setup>
-import { styleStore } from "@/main.js";
 defineProps({
 	noPadding: Boolean,
 	centeredContent: Boolean,
@@ -13,8 +12,8 @@ defineProps({
 		:class="[
 			{
 				'p-6 ': !noPadding,
-				'flex flex-col justify-center items-center w-full h-full': centeredContent,
-				'flex flex-col justify-center w-full h-full': verticalCentered,
+				'md:flex md:flex-col md:justify-center md:items-center md:w-full md:h-full': centeredContent,
+				'md:flex md:flex-col md:justify-center md:w-full md:h-full': verticalCentered,
 			},
 		]">
 		<slot></slot>

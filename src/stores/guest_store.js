@@ -66,23 +66,19 @@ export const useGuestStore = defineStore("guest", {
 			this.checkedAssignments = [];
 		},
 		async submitNewInternshipProject(formData) {
-			// Create the basic structure of postData from formData
 			const postData = {
 				...formData,
 				Poslodavac: [],
 			};
 
-			// Handle the Poslodavac field
 			if (formData.Poslodavac) {
 				postData.Poslodavac = [formData.Poslodavac.label];
 			} else if (formData.Poslodavac_novi_naziv) {
 				postData.Poslodavac = [formData.Poslodavac_novi_naziv];
 			}
 
-			// Remove the Poslodavac_novi_naziv since it's not needed anymore
 			delete postData.Poslodavac_novi_naziv;
 
-			// Conditionally add angazman_fipu
 			if (formData.angazman_selekcija === false) {
 				postData.angazman_fipu = "Ne";
 			} else if (formData.angazman_selekcija === true && !formData.angazman_fipu) {
