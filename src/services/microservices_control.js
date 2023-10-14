@@ -32,7 +32,6 @@ function serviceStatusError(serviceName, url) {
 
 const Control = {
 	async checkAllServiceStatuses() {
-		console.log("Checking service statuses...");
 		const statuses = await Promise.all(
 			Object.entries(MICROSERVICES).map(([serviceName, serviceData]) =>
 				serviceData.instance
