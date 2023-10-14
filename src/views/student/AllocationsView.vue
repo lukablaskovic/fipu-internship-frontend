@@ -16,7 +16,7 @@ import CardBoxModal from "@/components/Cardbox/CardBoxModal.vue";
 	<div>
 		<LayoutAuthenticated>
 			<SectionMain>
-				<SectionTitleLineWithButton :icon="mdiClipboardCheck" title="Alokacije na Praksu" main> </SectionTitleLineWithButton>
+				<SectionTitleLineWithButton :icon="mdiClipboardCheck" title="Alokacije na praksu" main> </SectionTitleLineWithButton>
 
 				<CardBox has-table>
 					<TableAllocations />

@@ -42,7 +42,7 @@ const Layout = computed(() => {
 			<p><b>Voditelj:</b> doc. dr. sc. Nikola Tanković</p>
 			<hr />
 			<br />
-			<SectionTitleLineWithButton :icon="mdiAlphaSBox" main title="Ocjenjivanje prakse"></SectionTitleLineWithButton>
+			<SectionTitleLineWithButton :icon="mdiAlphaSBox" main title="Ocjenjivanje"></SectionTitleLineWithButton>
 			<p>Vaš proces prakse je završio. Nakon što vam profesor pregleda potvrdu i odobori dnevnik prakse, ocjena će vam biti unesena u Studomat.</p>
 			<p>
 				Ako čekate više od 7 dana, molimo vas da se obratite voditelju prakse kroz

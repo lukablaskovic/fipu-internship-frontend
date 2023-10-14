@@ -15,7 +15,6 @@ import CardBox from "@/components/Cardbox/CardBox.vue";
 import BaseDivider from "@/components/Base/BaseDivider.vue";
 import FormField from "@/components/Form/FormField.vue";
 import FormControl from "@/components/Form/FormControl.vue";
-import FormFilePicker from "@/components/Form/FormFilePicker.vue";
 import BaseButton from "@/components/Base/BaseButton.vue";
 import BaseButtons from "@/components/Base/BaseButtons.vue";
 import LayoutAuthenticated from "@/layouts/LayoutAuthenticated.vue";
@@ -112,7 +111,7 @@ function showNotificationBar(type) {
 <template>
 	<LayoutAuthenticated>
 		<SectionMain>
-			<SectionTitleLineWithButton :icon="mdiAccount" title="Korisnički Profil" main />
+			<SectionTitleLineWithButton :icon="mdiAccount" title="Korisnički profil" main />
 
 			<div class="grid grid-cols-1 xl:grid-cols-2 gap-6 mb-6">
 				<CardBox flex="flex-row" class="items-center rounded">

@@ -130,7 +130,7 @@ onMounted(() => {
 	<div>
 		<LayoutAuthenticated v-if="mainStore.userAuthenticated">
 			<SectionMain>
-				<SectionTitleLineWithButton :icon="mdiViewDashboard" title="Nadzorna Ploča" main> </SectionTitleLineWithButton>
+				<SectionTitleLineWithButton :icon="mdiViewDashboard" title="Nadzorna ploča" main> </SectionTitleLineWithButton>
 				<div class="grid grid-cols-1 gap-6 lg:grid-cols-3 mb-6">
 					<CardBoxWidget v-if="adminStore.studentsFetched" color="text-fipu_blue" class="rounded-lg" :icon="mdiAccountSchoolOutline" :number="finished_internships" label="Uspješno odrađenih praksi" />
 					<SkeletonLoader v-else></SkeletonLoader>
@@ -153,7 +153,7 @@ onMounted(() => {
 					<SkeletonLoader v-else></SkeletonLoader>
 				</div>
 
-				<SectionTitleLineWithButton :icon="mdiCommentProcessing" title="Najnoviji Događaji" main @click="eventsOptionsActive = true"> </SectionTitleLineWithButton>
+				<SectionTitleLineWithButton :icon="mdiCommentProcessing" title="Najnoviji događaji" main @click="eventsOptionsActive = true"> </SectionTitleLineWithButton>
 
 				<div v-if="!eventsFetchError" class="flex flex-row">
 					<div class="mb-4">

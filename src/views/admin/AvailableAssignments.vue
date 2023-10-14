@@ -24,7 +24,7 @@ const addNewAssignmentLink = ref(`${VITE_FRONTEND_URL}/poslodavci/novi-zadatak`)
 	<div>
 		<LayoutAuthenticated v-if="mainStore.userAuthenticated">
 			<SectionMain>
-				<SectionTitleLineWithButton :icon="mdiClipboardPlusOutline" title="Novi Zadaci (u razradi)" main> </SectionTitleLineWithButton>
+				<SectionTitleLineWithButton :icon="mdiClipboardPlusOutline" title="Novi zadaci (u razradi)" main> </SectionTitleLineWithButton>
 
 				<FormField class="md:w-1/2" label="Forma za prijavu novog zadatka">
 					<FormControl v-model="addNewAssignmentLink" :icon-left="mdiClipboardCheck" :icon-right="mdiContentCopy" name="addNewAssignmentLink" readonly copyable />
@@ -40,13 +40,13 @@ const addNewAssignmentLink = ref(`${VITE_FRONTEND_URL}/poslodavci/novi-zadatak`)
 					<CardBoxComponentEmpty />
 				</CardBox>
 
-				<SectionTitleLineWithButton class="mt-8" :icon="mdiClipboardTextOutline" title="Aktivni (Odobreni) Zadaci" main> </SectionTitleLineWithButton>
+				<SectionTitleLineWithButton class="mt-8" :icon="mdiClipboardTextOutline" title="Aktivni (odobreni) zadaci" main> </SectionTitleLineWithButton>
 
 				<CardBox has-table>
 					<TableAvailableAssignments />
 				</CardBox>
 
-				<SectionTitleLineWithButton class="mt-8" :icon="mdiClipboardTextOff" title="Odbijeni Zadaci" main> </SectionTitleLineWithButton>
+				<SectionTitleLineWithButton class="mt-8" :icon="mdiClipboardTextOff" title="Odbijeni zadaci" main> </SectionTitleLineWithButton>
 
 				<CardBox has-table>
 					<TableRejectedAssignments />

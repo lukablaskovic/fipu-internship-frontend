@@ -19,8 +19,8 @@ import BaseDivider from "@/components/Base/BaseDivider.vue";
 import CardBoxComponentTitle from "@/components/Cardbox/CardBoxComponentTitle.vue";
 
 import { useVuelidate } from "@vuelidate/core";
-import { required, email, minLength, helpers } from "@vuelidate/validators";
-import { getFirstErrorForField, isUnipuEmail } from "@/helpers/validators";
+import { required, email, helpers } from "@vuelidate/validators";
+import { getFirstErrorForField } from "@/helpers/validators";
 
 import Utils from "@/helpers/utils";
 

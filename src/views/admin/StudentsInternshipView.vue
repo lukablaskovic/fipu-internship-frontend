@@ -138,7 +138,7 @@ onMounted(loadDataForStudent);
 	<div>
 		<LayoutAuthenticated v-if="mainStore.userAuthenticated">
 			<SectionMain>
-				<SectionTitleLineWithButton :icon="mdiAccountMultiple" title="Studenti u Procesu Prakse" button-enabled main @click="bpmn_help_modal = true"> </SectionTitleLineWithButton>
+				<SectionTitleLineWithButton :icon="mdiAccountMultiple" title="Studenti u procesu prakse" button-enabled main @click="bpmn_help_modal = true"> </SectionTitleLineWithButton>
 
 				<CardBox has-table>
 					<TableStudents @show-student-diagram="handleProcessDiagram" />
