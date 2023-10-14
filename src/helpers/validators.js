@@ -6,7 +6,7 @@ const containsAlpha = (value) => /[a-zA-Z]/.test(value);
 const containsNumeric = (value) => /\d/.test(value);
 
 function isUnipuEmail(value) {
-	return value && (value.endsWith("@unipu.hr") || value.endsWith("@fipu.hr"));
+	return value && (value.endsWith("@unipu.hr") || value.endsWith("@student.unipu.hr") || value.endsWith("@fipu.hr"));
 }
 
 function exactLength(length) {
