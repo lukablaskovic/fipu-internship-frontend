@@ -79,12 +79,10 @@ export const useGuestStore = defineStore("guest", {
 
 			delete postData.Poslodavac_novi_naziv;
 
-			if (formData.angazman_selekcija === false) {
+			if (formData.angazman_selekcija === "false") {
 				postData.angazman_fipu = "Ne";
-			} else if (formData.angazman_selekcija === true && !formData.angazman_fipu) {
+			} else if (formData.angazman_selekcija === "true" && !formData.angazman_fipu) {
 				postData.angazman_fipu = "";
-			} else {
-				delete postData.angazman_fipu;
 			}
 			try {
 				const response = await Guest.submitNewInternshipProject(postData);
