@@ -9,7 +9,9 @@ import BaseButtons from "@/components/Base/BaseButtons.vue";
 import BaseButton from "@/components/Base/BaseButton.vue";
 import LoadingOverlay from "@/components/LoadingOverlay.vue";
 import { mainStore, guestStore, adminStore } from "@/main.js";
-import { useRouter, useRoute } from "vue-router";
+import UserAvatar from "@/components/User/UserAvatar.vue";
+
+import { useRoute } from "vue-router";
 
 defineProps({
 	checkable: Boolean,
@@ -19,10 +21,11 @@ const MAX_NUM_ASSIGNMENTS = 3;
 
 const isModalActive = ref(null);
 const allAvailableAssignments = ref([]);
+const allCompanies = ref([]);
 
 let checkedAssignments = computed(() => guestStore.checkedAssignments);
 let assignment_highlight = ref("");
-const router = useRouter();
+
 const route = useRoute();
 
 async function loadData() {
@@ -30,6 +33,8 @@ async function loadData() {
 	if (id_zadatak) {
 		assignment_highlight.value = id_zadatak;
 	}
+	let result = await mainStore.fetchCompanies();
+	allCompanies.value = result.data.results;
 }
 
 watch(() => route.params.id_zadatak, loadData, {
@@ -39,9 +44,13 @@ watch(() => route.params.id_zadatak, loadData, {
 onMounted(async () => {
 	const result = await guestStore.fetchAvailableAssignments();
 	allAvailableAssignments.value = result.filter((task) => task.dostupno_mjesta > 0 && task.voditelj_odobrio.value == "odobreno");
-
 	guestStore.resetAssignments();
 });
+
+const getCompanyLogo = (assignment) => {
+	const company = allCompanies.value.find((c) => c.naziv === assignment["Poslodavac"][0].value);
+	return company && company["logo"] && company["logo"][0] && company["logo"][0]["url"] ? company["logo"][0]["url"] : "No-Logo.png";
+};
 
 const perPage = ref(5);
 const currentPage = ref(0);
@@ -146,7 +155,7 @@ const checked = (value, assignment) => {
 		<thead>
 			<tr>
 				<th v-if="checkable"></th>
-
+				<th />
 				<th>ID Zadatka</th>
 				<th>Kontakt email</th>
 				<th>Preferirane tehnologije</th>
@@ -166,6 +175,10 @@ const checked = (value, assignment) => {
 					'selected-row': assignment_highlight === assignment['id_zadatak'],
 				}">
 				<TableCheckboxCell v-if="checkable" :value="isCheckedAssignment(assignment)" :disabled="disableUnchecked && !isCheckedAssignment(assignment)" @checked="checked($event, assignment)" />
+
+				<td class="border-b-0 lg:w-6 before:hidden">
+					<UserAvatar :avatar="getCompanyLogo(assignment)" class="w-24 h-24 mx-auto lg:w-6 lg:h-6" />
+				</td>
 
 				<td data-label="id_zadatak">
 					{{ assignment["id_zadatak"] }}

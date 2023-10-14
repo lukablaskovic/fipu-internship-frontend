@@ -91,7 +91,7 @@ const menuClick = (event, item) => {
 
 				<ol class="list-decimal ml-4">
 					<li>
-						Studenti se prijavljuju na praksu putem sustava
+						Studenti se prijavljuju na praksu putem aplikacije
 						<em>FIPU Praksa</em> u kojem prvo odabiru 3 zadatka koja bi željeli raditi.
 					</li>
 					<li>Nakon što vas se alocira na jedan od prijavljenih zadataka, morate kontaktirati mentora. Predstavite se i recite da ste dobili zadatak. Poslodavac može zatražiti intervju ili provesti selekciju.</li>
@@ -123,10 +123,10 @@ const menuClick = (event, item) => {
 					</li>
 				</ol>
 				<BaseDivider></BaseDivider>
-				<div class="text-xl mb-2">Sustav <em>FIPU praksa</em></div>
+				<div class="text-xl mb-2">Aplikacija <em>FIPU praksa</em></div>
 				<ol class="list-decimal ml-4">
 					<li>
-						Sve radnje (uključujući komunikaciju) vezane uz praksu obavljaju se isključivo putem sustava
+						Sve radnje (uključujući komunikaciju) vezane uz praksu obavljaju se isključivo putem aplikacije
 						<em>FIPU praksa</em>.
 					</li>
 					<li>
@@ -166,7 +166,7 @@ const menuClick = (event, item) => {
 
 				<ol class="list-decimal ml-4">
 					<li>
-						Studenti se prijavljuju na praksu putem sustava
+						Studenti se prijavljuju na praksu putem aplikacije
 						<em>FIPU Praksa</em> u kojem prvo odabiru 3 zadatka koja bi željeli raditi.
 					</li>
 					<li>

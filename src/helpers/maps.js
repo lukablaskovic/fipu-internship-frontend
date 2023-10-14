@@ -262,19 +262,19 @@ class ActivityEventMappings {
 			activity_id: "spremanje_zahtjeva_profesor_ponistio",
 			icon: mdiCancel,
 			type: "danger",
-			message: "Profesor poništio prijavljene preferencije",
+			message: "Profesor poništio preferencije",
 		},
 		{
 			activity_id: "obavjestavanje_studenta_nakon_ponistavanja_email",
 			icon: mdiEmailArrowRight,
 			type: "info",
-			message: "Student obavješten o vraćanju",
+			message: "Student obavješten o poništenju",
 		},
 		{
 			activity_id: "spremanje_alokacija",
 			icon: mdiContentSaveOutline,
 			type: "info",
-			message: "Alokacija spremljena u bazu",
+			message: "Alokacija pohranjena",
 		},
 		{
 			activity_id: "uzimanje_podataka_o_poslodavcu_student",
@@ -322,7 +322,7 @@ class ActivityEventMappings {
 			activity_id: "ispunjavanje_prijavnice_student",
 			icon: mdiFileDocumentPlus,
 			type: "success",
-			message: "Student ispunio prijavnicu",
+			message: "Ispunio prijavnicu",
 		},
 		{
 			activity_id: "azuriranje_podataka_profesor",
@@ -334,7 +334,7 @@ class ActivityEventMappings {
 			activity_id: "kreiranje_potvrde_profesor",
 			icon: mdiApi,
 			type: "info",
-			message: "Potvrda uspješno generirana",
+			message: "Potvrda generirana",
 		},
 		{
 			activity_id: "slanje_potvrde_student_email",
@@ -358,7 +358,7 @@ class ActivityEventMappings {
 			activity_id: "spremanje_dnevnika",
 			icon: mdiContentSaveOutline,
 			type: "info",
-			message: "Dnevnik prakse spremljen u bazu",
+			message: "Dnevnik prakse pohranjen",
 		},
 		{
 			activity_id: "upis_ocjene",
