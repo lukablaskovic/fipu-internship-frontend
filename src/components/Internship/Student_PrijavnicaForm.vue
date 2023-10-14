@@ -113,12 +113,40 @@ const rules = {
 	dogovoreni_broj_sati: {
 		required: helpers.withMessage("Polje je obavezno", required),
 		numeric: helpers.withMessage("Broj sati može sadržavati samo brojeve", numeric),
+		minRange: helpers.withMessage("Broj sati mora biti najmanje 90", (value) => {
+			return value >= 90;
+		}),
+		maxRange: helpers.withMessage("Broj sati ne smije biti veći od 150", (value) => {
+			return value <= 150;
+		}),
 	},
 	pocetak_prakse: {
 		required: helpers.withMessage("Polje je obavezno", required),
+
+		dateMustBeAfterCurrentDate: helpers.withMessage("Datum početka ne može biti u prošlosti", (value) => {
+			const currentDate = new Date();
+			const selectedDate = new Date(value);
+
+			return !(selectedDate <= currentDate);
+		}),
+
+		dateMustBeBeforeKrajPrakse: helpers.withMessage("Datum početka ne može biti nakon datuma završetka", (value) => {
+			const krajPrakseDate = new Date(form.kraj_prakse);
+			const selectedDate = new Date(value);
+
+			return !(selectedDate >= krajPrakseDate);
+		}),
 	},
+
 	kraj_prakse: {
 		required: helpers.withMessage("Polje je obavezno", required),
+		dateMustBeAtLeastOneWeekApart: helpers.withMessage("Praksa mora trajati barem tjedan dana", (value) => {
+			const pocetakPrakseDate = new Date(form.pocetak_prakse);
+			const selectedDate = new Date(value);
+
+			const oneWeekInMillis = 7 * 24 * 60 * 60 * 1000;
+			return !(selectedDate.getTime() <= pocetakPrakseDate.getTime() + oneWeekInMillis);
+		}),
 	},
 	kontakt_potvrda: {
 		required: helpers.withMessage("Polje je obavezno", required),
