@@ -26,7 +26,7 @@ const props = defineProps({
 				{{ user[0] }}
 			</div>
 		</div>
-		<div :class="reverse ? 'bg-indigo-100 dark:bg-gray-950/75 text-slate-900 dark:text-slate-300' : 'bg-stone-100  dark:bg-zinc-950/75 text-fipu_gray dark:text-zinc-300'" class="relative text-sm py-2 px-4 shadow rounded-xl">
+		<div :class="reverse ? 'bg-indigo-100 dark:bg-gray-950/75 text-slate-900 dark:text-slate-300' : 'bg-stone-100  dark:bg-zinc-950/75 text-fipu_gray dark:text-zinc-300'" class="relative text-sm py-2 px-4 shadow rounded-xl break-all">
 			{{ text }}
 		</div>
 	</div>

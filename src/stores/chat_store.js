@@ -19,6 +19,7 @@ export const useChatStore = defineStore("chat", {
 		c: {},
 		selectedConversationID: null,
 		messages: [],
+		inputDelayed: false,
 		content: "",
 		update: true,
 		loading: false,
@@ -131,6 +132,7 @@ export const useChatStore = defineStore("chat", {
 			}
 		},
 		async sendMessage() {
+			this.inputDelayed = true;
 			let message = {
 				conversation_id: this.selectedConversationID,
 				receiver_id: this.selectedConversation,
@@ -145,6 +147,8 @@ export const useChatStore = defineStore("chat", {
 			this.conversations = await this.getConversations(mainStore.currentUser.id);
 			await nextTick();
 			this.update = true;
+			await wait(0.25);
+			this.inputDelayed = false;
 		},
 		async getUsersWithoutConversations(users, conversations) {
 			await wait(1);
