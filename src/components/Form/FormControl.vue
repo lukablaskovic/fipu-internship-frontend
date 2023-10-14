@@ -346,10 +346,9 @@ if (props.ctrlKFocus) {
 				<BaseIcon v-if="buttonIcon" :path="buttonIcon" w="w-8" h="h-8" size="20" />
 				<span v-if="buttonLabel" :class="{ 'ml-1': buttonIcon }">{{ buttonLabel }}</span>
 			</button>
-			<input v-else :id="id" ref="inputEl" v-model="computedValue" :name="name" :autocomplete="autocomplete" :required="required" :readonly="readonly" :placeholder="placeholder" :type="computedType" :min="min" :max="max" :class="inputElClass" :disabled="disabled" />
+			<input v-else :id="id" ref="inputEl" v-model="computedValue" :name="name" :autocomplete="autocomplete" :required="required" :readonly="readonly" :placeholder="placeholder" :type="computedType" :min="min" :max="max" :class="[inputElClass, computedType == 'date' ? 'dark:input' : '']" :disabled="disabled" />
 			<FormControlIcon v-if="computedIconLeft" :icon="computedIconLeft" :h="controlIconH" :text-color="textColor" />
 			<FormControlIcon v-if="computedIconRight || props.copyable" :icon="props.copyable ? mdiContentCopy : computedIconRight" :h="controlIconH" :text-color="textColor" :clickable="rightIconClickable || props.copyable" is-right :class="props.copyable ? 'hover:text-fipu_blue' : ''" @icon-click="props.copyable ? copyToClipboard() : openPasswordToggle()" />
-
 			<TipTag v-if="tipLeft" :tip="tipLeft" left />
 			<TipTag v-if="tipRight" :tip="tipRight" right />
 		</div>
@@ -360,5 +359,8 @@ if (props.ctrlKFocus) {
 <style>
 .copy-icon {
 	transition: opacity 0.2s;
+}
+.input {
+	color-scheme: dark;
 }
 </style>

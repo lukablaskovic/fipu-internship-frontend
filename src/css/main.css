@@ -11,4 +11,7 @@
 	.fipu_vertical_scrollbar {
 		@apply scrollbar-thin scrollbar-track-rounded-full scrollbar-thumb-rounded-full scrollbar-track-slate-100 dark:scrollbar-track-slate-800 scrollbar-thumb-slate-400 dark:scrollbar-thumb-slate-600 hover:scrollbar-thumb-slate-500;
 	}
+	.input {
+		color-scheme: dark;
+	}
 }
