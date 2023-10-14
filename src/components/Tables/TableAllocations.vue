@@ -89,8 +89,10 @@ const pagesList = computed(() => {
 					</div>
 				</td>
 				<td data-label="Dnevnik prakse predan">
-					<TableCheckboxCell readonly :value="allocation[(allocation, 'predan_dnevnik_prakse')]" />
-					<p v-if="allocation['predan_dnevnik_prakse'] && mainStore.userAdmin" class="text-sm underline cursor-pointer hover:text-fipu_light_blue ml-8" @click="adminStore.openPDFModal('Dnevnik', 'source_url_for_dnevnik')">Prikaži dnevnik</p>
+					<div class="flex items-center">
+						<TableCheckboxCell readonly :value="allocation[(allocation, 'predan_dnevnik_prakse')]" />
+						<p v-if="allocation['predan_dnevnik_prakse'] && mainStore.userAdmin" class="text-sm underline cursor-pointer hover:text-fipu_light_blue ml-8" @click="adminStore.openPDFModal('Dnevnik', 'source_url_for_dnevnik')">Preuzmi dnevnik</p>
+					</div>
 				</td>
 			</tr>
 		</tbody>

@@ -11,7 +11,7 @@
 					{{ truncatedDescription }}
 				</h3>
 
-				<p class="mt-1 text-xs font-medium text-gray-600">
+				<p class="mt-1 text-xs font-medium text-gray-600 dark:text-gray-200">
 					{{ props.data["Poslodavac"][0]["value"] }}:
 					{{ props.data.poslodavac_email }}
 				</p>
@@ -23,18 +23,18 @@
 		</div>
 
 		<div>
-			<p class="max-w-[40ch] text-sm text-gray-500">
+			<p class="max-w-[40ch] text-sm text-gray-500 dark:text-gray-300">
 				{{ props.data.opis_zadatka }}
 			</p>
 		</div>
 
 		<div class="mt-4">
-			<p class="max-w-[40ch] text-sm text-gray-500"><b>Potrebno imati:</b> {{ props.data.potrebno_imati }}</p>
-			<p class="max-w-[40ch] text-sm text-gray-500">
+			<p class="max-w-[40ch] text-sm text-gray-500 dark:text-gray-300"><b>Potrebno imati:</b> {{ props.data.potrebno_imati }}</p>
+			<p class="max-w-[40ch] text-sm text-gray-500 dark:text-gray-300">
 				<b>Preferencije za studenta:</b>
 				{{ props.data.preferencije_za_studenta }}
 			</p>
-			<p class="max-w-[40ch] text-sm text-gray-500">
+			<p class="max-w-[40ch] text-sm text-gray-500 dark:text-gray-300">
 				<b>Napomena:</b>
 				{{ props.data.napomena || "Nema napomene." }}
 			</p>
