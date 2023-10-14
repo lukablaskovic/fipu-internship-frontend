@@ -1,6 +1,6 @@
 <script setup>
 import { ref } from "vue";
-import { mdiClipboardTextOutline, mdiClipboardPlusOutline, mdiClipboardCheck, mdiContentCopy, mdiClipboardTextOff } from "@mdi/js";
+import { mdiClipboardTextOutline, mdiClipboardPlusOutline, mdiClipboardCheck, mdiContentCopy, mdiClipboardTextOff, mdiClipboardText, mdiClipboardTextMultiple } from "@mdi/js";
 import { mainStore, adminStore } from "@/main";
 
 import LayoutAuthenticated from "@/layouts/LayoutAuthenticated.vue";
@@ -14,6 +14,7 @@ import TableRejectedAssignments from "@/components/Tables/TableRejectedAssignmen
 import TableNewAssignments from "@/components/Tables/TableNewAssignments.vue";
 import FormField from "@/components/Form/FormField.vue";
 import FormControl from "@/components/Form/FormControl.vue";
+import PillTag from "@/components/PillTag/PillTag.vue";
 
 const VITE_FRONTEND_URL = import.meta.env.VITE_FRONTEND_URL;
 
@@ -41,7 +42,11 @@ const addNewAssignmentLink = ref(`${VITE_FRONTEND_URL}/poslodavci/novi-zadatak`)
 				</CardBox>
 
 				<SectionTitleLineWithButton class="mt-8" :icon="mdiClipboardTextOutline" title="Aktivni (odobreni) zadaci" main> </SectionTitleLineWithButton>
-
+				<div class="flex flex-row">
+					<div class="mb-4">
+						<PillTag class="cursor-pointer" :left="false" :icon="adminStore.availableAssignmentsFilter ? mdiClipboardText : mdiClipboardTextMultiple" :color="adminStore.availableAssignmentsFilter ? 'success' : 'info'" :label="adminStore.availableAssignmentsFilter ? 'Samo slobodni' : 'Svi zadaci'" @click="adminStore.availableAssignmentsFilter = !adminStore.availableAssignmentsFilter" />
+					</div>
+				</div>
 				<CardBox has-table>
 					<TableAvailableAssignments />
 				</CardBox>

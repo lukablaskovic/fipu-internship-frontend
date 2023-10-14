@@ -2,7 +2,6 @@
 import { ref, computed, nextTick } from "vue";
 import draggable from "vuedraggable";
 import { mdiClipboardCheckOutline, mdiClipboardTextOutline, mdiLaptop, mdiAlertCircle, mdiCheckCircle, mdiAlert, mdiClose } from "@mdi/js";
-import { router } from "@/router";
 
 import LayoutAuthenticated from "@/layouts/LayoutAuthenticated.vue";
 import LayoutGuest from "@/layouts/LayoutGuest.vue";

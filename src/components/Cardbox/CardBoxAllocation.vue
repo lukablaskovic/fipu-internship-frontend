@@ -67,7 +67,7 @@
 				</dd>
 			</div>
 
-			<div v-if="props.data.angazman_fipu !== 'Ne'" class="flex flex-col-reverse">
+			<div v-if="props.data.angazman_fipu !== 'Ne' || props.data.angazman_fipu === ''" class="flex flex-col-reverse">
 				<dt class="text-sm font-medium text-gray-600 dark:text-gray-200">FIPU Angažman</dt>
 				<dd class="text-xs text-gray-500 dark:text-gray-100">
 					{{ props.data.angazman_fipu }}

@@ -8,6 +8,7 @@ import BaseLevel from "@/components/Base/BaseLevel.vue";
 import BaseButtons from "@/components/Base/BaseButtons.vue";
 import BaseButton from "@/components/Base/BaseButton.vue";
 import { mainStore, guestStore, adminStore, snackBarStore } from "@/main.js";
+import CardBoxAllocation from "../Cardbox/CardBoxAllocation.vue";
 import { useRouter, useRoute } from "vue-router";
 
 import Utils from "@/helpers/utils.js";
@@ -121,54 +122,9 @@ const cancelTaskAction = () => {
 </script>
 
 <template>
-	<CardBoxModal v-if="isModalActive" v-model="isModalActive" :title="'📃' + isModalActive['id_zadatak']" button-label="Zatvori" button="fipu_blue" has-cancel:false @cancel="mainStore.activateLogoutModal(false)">
-		<hr />
-		<br />
-		<div><b>Poslodavac: </b>{{ isModalActive["Poslodavac"][0].value }}</div>
+	<CardBoxModal v-if="isModalActive" v-model="isModalActive" button-label="Zatvori" button="fipu_blue" has-cancel:false @cancel="mainStore.activateLogoutModal(false)">
+		<CardBoxAllocation :data="isModalActive"></CardBoxAllocation>
 
-		<div><b>Zadatak studenta:</b> {{ isModalActive["opis_zadatka"] }}</div>
-		<div><b>Broj studenata (max):</b> {{ isModalActive["broj_studenata"] }}</div>
-
-		<div>
-			<b>Preferirane tehnologije:</b>
-			{{ isModalActive["preferirane_tehnologije"] }}
-		</div>
-
-		<div>
-			<b>Preferencije za studenta: </b>
-			{{ isModalActive["preferencije_za_studenta"] }}
-		</div>
-
-		<div>
-			<b>Potrebno imati: </b>
-			{{ isModalActive["potrebno_imati"] }}
-		</div>
-		<div>
-			<b>Trajanje (sati): </b>
-			{{ isModalActive["trajanje_sati"] }}
-		</div>
-
-		<div>
-			<b>Željeno okvirno vrijeme početka: </b>
-			{{ isModalActive["zeljeno_okvirno_vrijeme_pocetka"] }}
-		</div>
-		<div>
-			<b>Angažman FIPU: </b>
-			{{ isModalActive["angazman_fipu"] || "Nije definirano." }}
-		</div>
-		<div>
-			<b>Proces selekcije: </b>
-			{{ isModalActive["proces_selekcije"] || "Nema." }}
-		</div>
-		<div>
-			<b>Kontakt email: </b>
-			<span class="underline">{{ isModalActive["poslodavac_email"] }}</span>
-		</div>
-		<div><b>Lokacija: </b>{{ isModalActive["lokacija"] }}</div>
-		<div>
-			<b>Napomena</b>
-			{{ isModalActive["napomena"] || "Nema napomene." }}
-		</div>
 		<br />
 	</CardBoxModal>
 

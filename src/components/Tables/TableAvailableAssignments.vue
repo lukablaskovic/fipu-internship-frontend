@@ -10,6 +10,7 @@ import BaseButton from "@/components/Base/BaseButton.vue";
 import LoadingOverlay from "@/components/LoadingOverlay.vue";
 import { mainStore, guestStore, adminStore } from "@/main.js";
 import UserAvatar from "@/components/User/UserAvatar.vue";
+import CardboxAllocation from "@/components/Cardbox/CardBoxAllocation.vue";
 
 import { useRoute } from "vue-router";
 
@@ -43,7 +44,10 @@ watch(() => route.params.id_zadatak, loadData, {
 
 onMounted(async () => {
 	const result = await guestStore.fetchAvailableAssignments();
-	allAvailableAssignments.value = result.filter((task) => task.dostupno_mjesta > 0 && task.voditelj_odobrio.value == "odobreno");
+	allAvailableAssignments.value = result.filter((task) => {
+		const condition = adminStore.availableAssignmentsFilter ? task.dostupno_mjesta > 0 : task.dostupno_mjesta >= 0;
+		return condition && task.voditelj_odobrio.value == "odobreno";
+	});
 	guestStore.resetAssignments();
 });
 
@@ -81,6 +85,20 @@ watch(checkedAssignments, (newVals) => {
 	});
 });
 
+watch(
+	() => adminStore.availableAssignmentsFilter,
+	async () => {
+		const result = await guestStore.fetchAvailableAssignments();
+		console.log(result);
+
+		allAvailableAssignments.value = result.filter((task) => {
+			const condition = adminStore.availableAssignmentsFilter ? task.dostupno_mjesta > 0 : task.dostupno_mjesta >= 0;
+			return condition && task.voditelj_odobrio.value == "odobreno";
+		});
+	},
+	{ immediate: true }
+);
+
 const isCheckedAssignment = (assignment) => {
 	return checkedAssignments.value.some((a) => a["id_zadatak"] === assignment["id_zadatak"]);
 };
@@ -102,56 +120,9 @@ const checked = (value, assignment) => {
 
 <template>
 	<LoadingOverlay :is-active="!allAvailableAssignments.length" title="Učitavanje..." description="Može potrajati nekoliko sekundi, molimo ne zatvarajte stranicu."> </LoadingOverlay>
-	<CardBoxModal v-if="isModalActive" v-model="isModalActive" :title="'📃' + isModalActive['id_zadatak']" button-label="Zatvori" button="fipu_blue" has-cancel:false @cancel="mainStore.activateLogoutModal(false)">
-		<hr />
-		<br />
-		<div><b>Poslodavac: </b>{{ isModalActive["Poslodavac"][0].value }}</div>
+	<CardBoxModal v-if="isModalActive" v-model="isModalActive" button-label="Zatvori" button="fipu_blue" has-cancel:false @cancel="mainStore.activateLogoutModal(false)">
+		<CardboxAllocation :data="isModalActive"></CardboxAllocation>
 
-		<div><b>Zadatak studenta:</b> {{ isModalActive["opis_zadatka"] }}</div>
-		<div v-if="mainStore.userAdmin"><b>Broj studenata (max):</b> {{ isModalActive["broj_studenata"] }}</div>
-
-		<div v-if="mainStore.userAdmin"><b>Dostupno mjesta:</b> {{ isModalActive["dostupno_mjesta"] }}</div>
-
-		<div>
-			<b>Preferirane tehnologije:</b>
-			{{ isModalActive["preferirane_tehnologije"] }}
-		</div>
-
-		<div>
-			<b>Preferencije za studenta: </b>
-			{{ isModalActive["preferencije_za_studenta"] }}
-		</div>
-
-		<div>
-			<b>Potrebno imati: </b>
-			{{ isModalActive["potrebno_imati"] }}
-		</div>
-		<div>
-			<b>Trajanje (sati): </b>
-			{{ isModalActive["trajanje_sati"] }}
-		</div>
-
-		<div>
-			<b>Željeno okvirno vrijeme početka: </b>
-			{{ isModalActive["zeljeno_okvirno_vrijeme_pocetka"] }}
-		</div>
-		<div>
-			<b>Angažman FIPU: </b>
-			{{ isModalActive["angazman_fipu"] || "Nije definirano." }}
-		</div>
-		<div>
-			<b>Proces selekcije: </b>
-			{{ isModalActive["proces_selekcije"] || "Nema." }}
-		</div>
-		<div>
-			<b>Kontakt email: </b>
-			<span class="underline">{{ isModalActive["poslodavac_email"] }}</span>
-		</div>
-		<div><b>Lokacija: </b>{{ isModalActive["lokacija"] }}</div>
-		<div>
-			<b>Napomena</b>
-			{{ isModalActive["napomena"] || "Nema napomene." }}
-		</div>
 		<br />
 	</CardBoxModal>
 

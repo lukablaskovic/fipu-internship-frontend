@@ -3,8 +3,8 @@ import { ref, computed, onMounted, reactive } from "vue";
 import { mdiLaptop, mdiBallot, mdiNotebook, mdiClipboardCheck } from "@mdi/js";
 
 import { useVuelidate } from "@vuelidate/core";
-import { required, email, minLength, sameAs, helpers, numeric } from "@vuelidate/validators";
-import { croatianAlpha, getFirstErrorForField, isUnipuEmail, exactLength, containsAlpha, containsNumeric } from "@/helpers/validators";
+import { required, helpers } from "@vuelidate/validators";
+import { getFirstErrorForField } from "@/helpers/validators";
 
 import LayoutAuthenticated from "@/layouts/LayoutAuthenticated.vue";
 import LayoutGuest from "@/layouts/LayoutGuest.vue";
