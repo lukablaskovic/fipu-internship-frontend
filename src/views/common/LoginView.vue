@@ -156,7 +156,7 @@ function navigateToRegister() {
 								<BaseButton color="fipu_blue" outline label="Registriraj se" :disabled="isLoading" class="w-full" @click.prevent="onRegisterClick" />
 							</BaseButtons>
 
-							<NotificationBar ref="notificationBar" class="animate__animated animate__fadeInUp mt-2" :outline="notificationsOutline">
+							<NotificationBar ref="notificationBar" class="animate__animated animate__fadeInUp mt-4" :outline="notificationsOutline">
 								<b>{{ notificationStatus }}</b> {{ notificationMessage }}
 								<template #right>
 									<BaseButton :icon="mdiClose" :color="notificationsOutline ? 'success' : 'white'" :outline="notificationsOutline" rounded-full small />

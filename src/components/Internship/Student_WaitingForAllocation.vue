@@ -101,6 +101,11 @@ async function getAssignmentDetailsInModal(assignment_id) {
 					<b>Angažman FIPU: </b>
 					{{ isModalActive["angazman_fipu"] || "Nije definirano." }}
 				</div>
+				<div>
+					<b>Proces selekcije: </b>
+					{{ isModalActive["proces_selekcije"] || "Nema." }}
+				</div>
+
 				<div><b>Kontakt email: </b>{{ isModalActive["poslodavac_email"] }}</div>
 				<div><b>Lokacija: </b>{{ isModalActive["lokacija"] }}</div>
 				<div>

@@ -269,7 +269,7 @@ async function submit_application_form() {
 					<BaseDivider />
 
 					<FormField horizontal grouped>
-						<BaseButton label="Pošalji" type="submit" :loading="isLoading" color="fipu_blue" />
+						<BaseButton label="Pošalji" type="submit" :disabled="!form.kontakt_potvrda" :loading="isLoading" color="fipu_blue" />
 					</FormField>
 				</CardBox>
 			</div>

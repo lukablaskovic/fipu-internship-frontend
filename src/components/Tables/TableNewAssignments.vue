@@ -157,6 +157,10 @@ const cancelTaskAction = () => {
 			{{ isModalActive["angazman_fipu"] || "Nije definirano." }}
 		</div>
 		<div>
+			<b>Proces selekcije: </b>
+			{{ isModalActive["proces_selekcije"] || "Nema." }}
+		</div>
+		<div>
 			<b>Kontakt email: </b>
 			<span class="underline">{{ isModalActive["poslodavac_email"] }}</span>
 		</div>

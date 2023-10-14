@@ -212,7 +212,7 @@ function navigateToLogin() {
 								<BaseButton :disabled="!data_confirmed || isLoading" type="submit" color="fipu_light_blue" label="Registriraj se" :loading="isLoading" class="w-full" />
 							</BaseButtons>
 
-							<NotificationBar ref="notificationBar" class="animate__animated animate__fadeInUp mt-2" :outline="notificationsOutline">
+							<NotificationBar ref="notificationBar" class="animate__animated animate__fadeInUp mt-4" :outline="notificationsOutline">
 								<b>{{ notificationStatus }}</b> {{ notificationMessage }}
 								<template #right>
 									<BaseButton :icon="mdiClose" :color="notificationsOutline ? 'success' : 'white'" :outline="notificationsOutline" rounded-full small />
