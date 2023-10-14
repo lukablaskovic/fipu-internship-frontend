@@ -81,7 +81,7 @@ const updateDisabledCondition = (allFilled) => {
 				><a href="" target="_blank"> <img :src="FIPU_praksa_logo_transparent" class="max-h-14 object-contain" /> </a>
 			</SectionTitleLineWithButton>
 
-			<div v-if="instanceInfo != null && instanceInfo.pending[0] == 'evaluacija_poslodavac'" class="sm:flex sm:justify-between sm:gap-4">
+			<div v-if="instanceInfo != null && instanceInfo.pending[0] == 'evaluacija_poslodavac'">
 				<div class="mb-4">
 					<h1 class="text-lg font-bold sm:text-2xl">{{ studentInfo.student_ime }} {{ studentInfo.student_prezime }}</h1>
 					<h3 class="text-base font-bold">
