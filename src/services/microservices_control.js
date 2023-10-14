@@ -32,6 +32,7 @@ function serviceStatusError(serviceName, url) {
 
 const Control = {
 	async checkAllServiceStatuses() {
+		console.log("Checking service statuses...");
 		const statuses = await Promise.all(
 			Object.entries(MICROSERVICES).map(([serviceName, serviceData]) =>
 				serviceData.instance
@@ -75,9 +76,10 @@ const Control = {
 			console.log("Refreshing service statuses...");
 			const statuses = await this.checkAllServiceStatuses();
 			setTimeout(refresher, intervalMinutes * 60 * 1000);
+			return statuses;
 		};
 
-		refresher();
+		return refresher();
 	},
 };
 

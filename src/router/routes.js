@@ -3,6 +3,7 @@ import { mainStore } from "@/main.js";
 const routes = [
 	{
 		path: "/",
+		name: "root",
 		redirect: () => {
 			if (mainStore.userAuthenticated) {
 				return mainStore.userAdmin ? "/dashboard" : "/moja-praksa";
@@ -185,6 +186,11 @@ const routes = [
 		path: "/poslodavci/novi-zadatak",
 		name: "dodavanje zadatka",
 		component: () => import("@/views/NewAssignmentFormPublic.vue"),
+	},
+	{
+		path: "/error",
+		name: "ErrorView",
+		component: () => import("@/views/common/ErrorView.vue"),
 	},
 ];
 

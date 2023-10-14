@@ -7,6 +7,7 @@ import { Guest, Student, Admin } from "@/services/baserow_client_api";
 
 export const useMainStore = defineStore("main", {
 	state: () => ({
+		servicesUp: true,
 		depth: 5,
 		debug: false,
 		storeSelected: "mainStore",

@@ -1,7 +1,41 @@
 <script setup>
-import { RouterView } from "vue-router";
+import { ref, onMounted, onUnmounted, watchEffect } from "vue";
+import { useRouter, RouterView } from "vue-router";
+
+import { Control } from "@/services/microservices_control";
 import Tooltip from "@/components/Base/Tooltip.vue";
+import { mainStore } from "./main";
+
 //import GlobalStoreDebug from "@/components/Helpers/GlobalStoreDebug.vue";
+
+const serviceStatuses = ref({});
+const REFRESH_INTERVAL = 0.1;
+let intervalId;
+const router = useRouter();
+
+onMounted(async () => {
+	serviceStatuses.value = await Control.checkAllServiceStatuses();
+
+	intervalId = setInterval(async () => {
+		serviceStatuses.value = await Control.checkAllServiceStatuses();
+	}, REFRESH_INTERVAL * 60 * 1000);
+});
+
+onUnmounted(() => {
+	clearInterval(intervalId);
+});
+
+watchEffect(() => {
+	const downServices = Object.entries(serviceStatuses.value).filter(([, status]) => status.status !== "OK");
+
+	if (downServices.length > 0) {
+		console.warn("Some services are down:", downServices);
+		router.push({ name: "ErrorView" }).catch((err) => {});
+		mainStore.servicesUp = false;
+	} else {
+		mainStore.servicesUp = true;
+	}
+});
 </script>
 
 <template>
