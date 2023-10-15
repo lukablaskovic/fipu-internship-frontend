@@ -1,5 +1,5 @@
 <script setup>
-import { computed, ref, onMounted, watch } from "vue";
+import { computed, ref, onMounted, watch, reactive } from "vue";
 
 import { mdiContentSaveCheckOutline } from "@mdi/js";
 import TableCheckboxCell from "@/components/Tables/TableCheckboxCell.vue";
@@ -14,15 +14,35 @@ import Utils from "@/helpers/utils";
 import { useRoute } from "vue-router";
 import { useVuelidate } from "@vuelidate/core";
 
-import { required, email, minLength, helpers } from "@vuelidate/validators";
+import { required, helpers, numeric } from "@vuelidate/validators";
 
-import { getFirstErrorForField, isUnipuEmail } from "@/helpers/validators";
+import { getFirstErrorForField } from "@/helpers/validators";
 
 defineProps({
 	checkable: Boolean,
 });
 
 const newCompanies = ref([]);
+
+const rules = {
+	web: {
+		required: helpers.withMessage("Polje je obavezno", required),
+	},
+	direktor: {
+		required: helpers.withMessage("Polje je obavezno", required),
+	},
+	maticni_broj: {
+		required: helpers.withMessage("Polje je obavezno", required),
+		numeric: helpers.withMessage("Polje smije sadržavati samo brojeve", numeric),
+	},
+	OIB: {
+		required: helpers.withMessage("Polje je obavezno", required),
+		numeric: helpers.withMessage("Polje smije sadržavati samo brojeve", numeric),
+	},
+	adresa: {
+		required: helpers.withMessage("Polje je obavezno", required),
+	},
+};
 
 let company_highlight = ref("");
 const route = useRoute();
@@ -64,9 +84,27 @@ onMounted(async () => {
 	}
 	newCompanies.value = filteredCompanies;
 });
+const companiesValidationState = reactive({});
 
-const rules = {};
-const v$ = useVuelidate(rules, companyForms);
+const computedCompanyForms = computed(() => {
+	const forms = {};
+	for (const company of newCompanies.value) {
+		forms[company.id] = companyForms.value[company.id];
+	}
+	return forms;
+});
+
+const initializeValidationState = () => {
+	for (const company of newCompanies.value) {
+		companiesValidationState[company.id] = rules;
+	}
+};
+
+onMounted(initializeValidationState);
+
+watch(newCompanies, initializeValidationState);
+
+const v$ = useVuelidate(companiesValidationState, computedCompanyForms);
 
 const isLoading = ref(false);
 
@@ -86,8 +124,18 @@ function confirmTaskAction() {
 }
 
 async function saveUpdatedCompany() {
+	isLoading.value = true;
+
+	const validationResult = await v$.value.$validate();
+
+	if (!validationResult) {
+		isLoading.value = false;
+		return;
+	}
+
 	const postData = companyForms.value[selectedCompany.value];
 	let result = adminStore.saveUpdatedCompany(postData);
+
 	if (result) {
 		snackBarStore.pushMessage("Podaci su uspješno ažurirani", "success");
 		await Utils.wait(1);
@@ -143,6 +191,7 @@ const pagesList = computed(() => {
 				<td v-if="company['logo'][0]" class="border-b-0 lg:w-6 before:hidden">
 					<UserAvatar :avatar="company['logo'][0]['url']" class="w-24 h-24 mx-auto lg:w-6 lg:h-6" />
 				</td>
+
 				<td v-else>
 					<UserAvatar avatar="No-Logo.png" class="w-24 h-24 mx-auto lg:w-6 lg:h-6" />
 				</td>
@@ -150,23 +199,25 @@ const pagesList = computed(() => {
 				<td data-label="Naziv">
 					<FormControl v-model="companyForms[company.id].naziv" readonly></FormControl>
 				</td>
+
 				<td data-label="Web mjesto">
-					<FormControl v-model="companyForms[company.id].web"></FormControl>
+					<FormControl v-model="companyForms[company.id].web" :error="getFirstErrorForField(v$, 'web')"></FormControl>
 				</td>
+
 				<td data-label="Direktor">
-					<FormControl v-model="companyForms[company.id].direktor"></FormControl>
+					<FormControl v-model="companyForms[company.id].direktor" :error="getFirstErrorForField(v$, 'direktor')"></FormControl>
 				</td>
 
 				<td data-label="Matični broj">
-					<FormControl v-model="companyForms[company.id].maticni_broj"></FormControl>
+					<FormControl v-model="companyForms[company.id].maticni_broj" :error="getFirstErrorForField(v$, 'maticni_broj')"></FormControl>
 				</td>
 
 				<td data-label="OIB">
-					<FormControl v-model="companyForms[company.id].OIB"></FormControl>
+					<FormControl v-model="companyForms[company.id].OIB" :error="getFirstErrorForField(v$, 'OIB')"></FormControl>
 				</td>
 
 				<td data-label="Adresa">
-					<FormControl v-model="companyForms[company.id].adresa"></FormControl>
+					<FormControl v-model="companyForms[company.id].adresa" :error="getFirstErrorForField(v$, 'adresa')"></FormControl>
 				</td>
 
 				<td class="before:hidden lg:w-1 whitespace-nowrap">

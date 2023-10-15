@@ -9,7 +9,7 @@ import BaseButtons from "@/components/Base/BaseButtons.vue";
 import BaseButton from "@/components/Base/BaseButton.vue";
 import { mainStore, guestStore, adminStore, snackBarStore } from "@/main.js";
 import CardBoxAllocation from "../Cardbox/CardBoxAllocation.vue";
-import { useRouter, useRoute } from "vue-router";
+import { useRoute } from "vue-router";
 
 import Utils from "@/helpers/utils.js";
 
@@ -24,7 +24,7 @@ const allAvailableAssignments = ref([]);
 
 let checkedAssignments = computed(() => guestStore.checkedAssignments);
 let assignment_highlight = ref("");
-const router = useRouter();
+
 const route = useRoute();
 
 async function loadData() {
@@ -41,6 +41,15 @@ watch(() => route.params.id_zadatak, loadData, {
 onMounted(async () => {
 	const result = await guestStore.fetchAvailableAssignments();
 	allAvailableAssignments.value = result.filter((task) => task.dostupno_mjesta > 0 && task.voditelj_odobrio.value == "u razradi");
+
+	if (Utils.isArrayEmpty(allAvailableAssignments.value)) {
+		snackBarStore.pushMessage("Nema novih zadataka", "info");
+		adminStore.newAssignmentsFound = false;
+	} else {
+		snackBarStore.pushMessage("Pronađeni su novi zadaci, molimo da ih pregledate", "info");
+		adminStore.newAssignmentsFound = true;
+	}
+
 	adminStore.newAssignments = allAvailableAssignments.value;
 	guestStore.resetAssignments();
 });

@@ -38,6 +38,7 @@ export const useAdminStore = defineStore("admin", {
 		pdfSource: "",
 
 		newCompaniesFound: false,
+		newAssignmentsFound: false,
 	}),
 
 	actions: {
