@@ -29,7 +29,6 @@ const studentData = ref(null);
 const allocated_assignment = ref(null);
 onMounted(async () => {
 	studentData.value = await studentStore.getInstanceInfo(mainStore.currentUser.internship_process.id);
-	console.log(studentData.value);
 	if (studentStore.allocated_assignment == null) {
 		let result = await studentStore.getAssignmentDetails(studentStore.student_process_instance_data.variables["Alocirani_zadatak"]);
 		studentStore.allocated_assignment = result.data.results[0];

@@ -6,8 +6,7 @@ import BaseLevel from "@/components/Base/BaseLevel.vue";
 import BaseButtons from "@/components/Base/BaseButtons.vue";
 import BaseButton from "@/components/Base/BaseButton.vue";
 import LoadingOverlay from "../LoadingOverlay.vue";
-import { mainStore, studentStore } from "@/main.js";
-import { adminStore } from "@/main.js";
+import { mainStore, studentStore, adminStore } from "@/main.js";
 import { StudentMappings } from "@/helpers/maps";
 import PillTag from "../PillTag/PillTag.vue";
 defineProps({
@@ -15,20 +14,36 @@ defineProps({
 });
 
 const allocations = ref([]);
-
 let dataLoaded = ref(false);
-
-const filteredAllocations = computed(() => {
-	return allocations.value.filter((allocation) => allocation["Alocirani_zadatak"] !== null);
-});
 
 onMounted(async () => {
 	dataLoaded.value = false;
 
 	allocations.value = await studentStore.getAllocationsPublic();
-
 	dataLoaded.value = true;
 });
+
+const filteredAllocations = computed(() => {
+	return allocations.value.filter((allocation) => allocation["Alocirani_zadatak"] !== null);
+});
+
+function getIdDnevnikPrakseByIdAlokacija(id_alokacija) {
+	const student = adminStore.students.find((stud) => stud.process_instance_data.variables.id_alokacija == id_alokacija);
+	return student ? student.process_instance_data.variables.id_dnevnik_prakse : null;
+}
+
+async function fetchPDF(type, search) {
+	let result = await adminStore.fetchPDF(search);
+	let url;
+
+	if (type == "potvrda") {
+		url = result.data.results[0]["ispunjena_potvrda_upload"][0].url;
+	} else {
+		url = result.data.results[0]["dnevnik_prakse_upload"][0].url;
+	}
+
+	window.open(url, "_blank");
+}
 
 const perPage = ref(5);
 const currentPage = ref(0);
@@ -69,8 +84,8 @@ const pagesList = computed(() => {
 				<td data-label="JMBAG">
 					{{ allocation["JMBAG"] }}
 				</td>
-				<td data-label="Alocirani zadatak">
-					{{ allocation["Alocirani_zadatak"] }}
+				<td data-label="Alocirani zadatak" class="underline hover:text-fipu_blue">
+					<router-link :to="`/dostupni-zadaci/${allocation['Alocirani_zadatak']}`">{{ allocation["Alocirani_zadatak"] }}</router-link>
 				</td>
 				<td data-label="Opis zadatka">
 					{{ allocation["opis_zadatka"] }}
@@ -85,13 +100,14 @@ const pagesList = computed(() => {
 				<td data-label="Prijavnica ispunjena">
 					<div class="flex items-center">
 						<TableCheckboxCell readonly :value="allocation['popunjena_prijavnica']" />
-						<a v-if="allocation['popunjena_prijavnica'] && mainStore.userAdmin" class="text-sm underline cursor-pointer hover:text-fipu_light_blue ml-8" @click="adminStore.openPDFModal(allocation, 'Potvrda', 'source_url_for_potvrda')"> Prikaži potvrdu </a>
+						<a v-if="allocation['popunjena_prijavnica'] && mainStore.userAdmin" class="text-sm underline cursor-pointer hover:text-fipu_light_blue ml-8" @click="adminStore.openPDFModal(allocation, 'Potvrda', 'source_url_for_potvrda')"> Otvori praznu potvrdu📜 </a>
 					</div>
 				</td>
 				<td data-label="Dnevnik prakse predan">
 					<div class="flex items-center">
 						<TableCheckboxCell readonly :value="allocation[(allocation, 'predan_dnevnik_prakse')]" />
-						<p v-if="allocation['predan_dnevnik_prakse'] && mainStore.userAdmin" class="text-sm underline cursor-pointer hover:text-fipu_light_blue ml-8" @click="adminStore.openPDFModal('Dnevnik', 'source_url_for_dnevnik')">Preuzmi dnevnik</p>
+						<p v-if="allocation['predan_dnevnik_prakse'] && mainStore.userAdmin" class="text-sm underline cursor-pointer hover:text-fipu_light_blue ml-8" @click="fetchPDF('potvrda', getIdDnevnikPrakseByIdAlokacija(allocation['id_alokacija']))">Otvori potvrdu📃</p>
+						<p v-if="allocation['predan_dnevnik_prakse'] && mainStore.userAdmin" class="text-sm underline cursor-pointer hover:text-fipu_light_blue ml-8" @click="fetchPDF('dnevnik', getIdDnevnikPrakseByIdAlokacija(allocation['id_alokacija']))">Otvori dnevnik📓</p>
 					</div>
 				</td>
 			</tr>

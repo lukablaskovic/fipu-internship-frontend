@@ -9,11 +9,13 @@ import SectionMain from "@/components/Section/SectionMain.vue";
 import SectionTitleLineWithButton from "@/components/Section/SectionTitleLineWithButton.vue";
 import CardboxAllocation from "@/components/Cardbox/CardBoxAllocation.vue";
 
-import { mainStore, studentStore, snackBarStore } from "@/main.js";
+import { mainStore, studentStore, adminStore } from "@/main.js";
 
 const allocated_assignment = ref(null);
+const student = ref(null);
+
 onMounted(async () => {
-	await studentStore.getInstanceInfo(mainStore.currentUser.internship_process.id);
+	student.value = await studentStore.getInstanceInfo(mainStore.currentUser.internship_process.id);
 	if (studentStore.allocated_assignment == null) {
 		let result = await studentStore.getAssignmentDetails(studentStore.student_process_instance_data.variables["Alocirani_zadatak"]);
 		studentStore.allocated_assignment = result.data.results[0];
@@ -23,6 +25,19 @@ onMounted(async () => {
 		allocated_assignment.value = studentStore.allocated_assignment;
 	}
 });
+
+async function fetchPDF(type, search) {
+	let result = await adminStore.fetchPDF(search);
+	let url;
+
+	if (type == "potvrda") {
+		url = result.data.results[0]["ispunjena_potvrda_upload"][0].url;
+	} else {
+		url = result.data.results[0]["dnevnik_prakse_upload"][0].url;
+	}
+
+	window.open(url, "_blank");
+}
 
 const Layout = computed(() => {
 	if (mainStore.userAuthenticated) {
@@ -48,10 +63,20 @@ const Layout = computed(() => {
 
 			<hr />
 			<br />
+			<p>
+				📃Potvrdu o obavljenoj praksi možete preuzeti
+				<a target="_blank" class="text-fipu_blue cursor-pointer" @click="fetchPDF('potvrda', student.variables.id_dnevnik_prakse)">ovdje</a>.
+			</p>
+			<p>
+				📓Dnevnik prakse možete preuzeti
+				<a target="_blank" class="text-fipu_blue cursor-pointer" @click="fetchPDF('dnevnik', student.variables.id_dnevnik_prakse)">ovdje</a>.
+			</p>
+			<br />
 			<SectionTitleLineWithButton :icon="mdiClipboardCheck" main title="Odrađeni zadatak"></SectionTitleLineWithButton>
 			<CardboxAllocation v-if="allocated_assignment != null" :data="allocated_assignment"></CardboxAllocation>
 
 			<br />
+
 			<hr />
 
 			<br />

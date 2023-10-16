@@ -3,7 +3,7 @@ import { mainStore } from "@/main";
 
 import { User } from "@/services/gateway_api";
 import { Model, ProcessInstance } from "@/services/bpmn_engine_api";
-import { Admin } from "@/services/baserow_client_api";
+import { Admin, Student } from "@/services/baserow_client_api";
 import { SendGrid } from "@/services/sendgrid_client_api";
 import Utils from "@/helpers/utils";
 
@@ -65,7 +65,7 @@ export const useAdminStore = defineStore("admin", {
 			});
 
 			if (type === "Potvrda") {
-				this.modalTitle = "Potvrda o praksi";
+				this.modalTitle = "Prazna potvrda o praksi";
 				if (student) {
 					this.pdfSource = student.process_instance_data.variables.pdf_attachment_url;
 				} else {
@@ -79,6 +79,15 @@ export const useAdminStore = defineStore("admin", {
 				return;
 			}
 			this.pdfModalActive = true;
+		},
+
+		async fetchPDF(query = "") {
+			try {
+				let result = await Student.fetchPDF(query);
+				return result;
+			} catch (e) {
+				return null;
+			}
 		},
 
 		setSelectedStudent(student) {

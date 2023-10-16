@@ -89,7 +89,6 @@ watch(
 	() => adminStore.availableAssignmentsFilter,
 	async () => {
 		const result = await guestStore.fetchAvailableAssignments();
-		console.log(result);
 
 		allAvailableAssignments.value = result.filter((task) => {
 			const condition = adminStore.availableAssignmentsFilter ? task.dostupno_mjesta > 0 : task.dostupno_mjesta >= 0;
