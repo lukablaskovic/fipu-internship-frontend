@@ -114,8 +114,8 @@ const routes = [
 			title: "Korisnički profil",
 			requiresAuth: true,
 		},
-		path: "/profile",
-		name: "profile",
+		path: "/profil",
+		name: "profil",
 		component: () => import("@/views/common/ProfileView.vue"),
 	},
 	{

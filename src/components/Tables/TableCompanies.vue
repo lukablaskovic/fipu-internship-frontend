@@ -15,31 +15,6 @@ defineProps({
 	checkable: Boolean,
 });
 
-const allCompanies = ref([]);
-
-let company_highlight = ref("");
-const route = useRoute();
-
-async function loadData() {
-	const naziv = route.params.naziv;
-	if (naziv) {
-		company_highlight.value = naziv;
-	}
-}
-
-watch(() => route.params.naziv, loadData, {
-	immediate: true,
-});
-
-onMounted(async () => {
-	let result = await mainStore.fetchCompanies();
-	allCompanies.value = result.data.results;
-});
-
-const goToCompanyWeb = (url) => {
-	window.open(url, "_blank");
-};
-
 const perPage = ref(5);
 const currentPage = ref(0);
 const companiesPaginated = computed(() => allCompanies.value.slice(perPage.value * currentPage.value, perPage.value * (currentPage.value + 1)));
@@ -56,6 +31,42 @@ const pagesList = computed(() => {
 
 	return pagesList;
 });
+
+const allCompanies = ref([]);
+
+let company_highlight = ref("");
+const route = useRoute();
+
+async function loadData() {
+	const naziv = route.params.naziv;
+
+	let result = await mainStore.fetchCompanies();
+	allCompanies.value = result.data.results;
+
+	if (naziv) {
+		company_highlight.value = naziv;
+		currentPage.value = getAssignmentPage(naziv);
+	}
+}
+
+function getAssignmentPage(naziv) {
+	const index = allCompanies.value.findIndex((assignment) => assignment["naziv"] === naziv);
+	if (index === -1) return 0;
+	return Math.floor(index / perPage.value);
+}
+
+watch(() => route.params.naziv, loadData, {
+	immediate: true,
+});
+
+onMounted(async () => {
+	let result = await mainStore.fetchCompanies();
+	allCompanies.value = result.data.results;
+});
+
+const goToCompanyWeb = (url) => {
+	window.open(url, "_blank");
+};
 </script>
 
 <template>

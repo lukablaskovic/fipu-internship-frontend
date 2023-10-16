@@ -1,4 +1,5 @@
 import { defineStore } from "pinia";
+import { snackBarStore } from "@/main";
 import axios from "axios";
 
 import { Auth } from "@/services/gateway_api";
@@ -124,6 +125,7 @@ export const useMainStore = defineStore("main", {
 			} else if (this.currentUser.account_type == "admin") {
 				this.router.push("/dashboard");
 			}
+			snackBarStore.pushMessage(`Dobrodošli natrag! ${this.currentUser.username} `, "contrast");
 		},
 		clearCurrentUser() {
 			this.access_token = null;

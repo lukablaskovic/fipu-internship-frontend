@@ -114,7 +114,6 @@ const Student = {
 			let result = await AxiosWrapper.get("/Dnevnik_prakse", {
 				search: query,
 			});
-			console.log(result);
 			return result;
 		} catch (e) {
 			return null;

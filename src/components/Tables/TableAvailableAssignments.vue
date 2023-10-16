@@ -18,6 +18,23 @@ defineProps({
 	checkable: Boolean,
 });
 
+const perPage = ref(5);
+const currentPage = ref(0);
+const assignmentsPaginated = computed(() => allAvailableAssignments.value.slice(perPage.value * currentPage.value, perPage.value * (currentPage.value + 1)));
+
+const numPages = computed(() => Math.ceil(allAvailableAssignments.value.length / perPage.value));
+const currentPageHuman = computed(() => currentPage.value + 1);
+
+const pagesList = computed(() => {
+	const pagesList = [];
+
+	for (let i = 0; i < numPages.value; i++) {
+		pagesList.push(i);
+	}
+
+	return pagesList;
+});
+
 const MAX_NUM_ASSIGNMENTS = 3;
 
 const isModalActive = ref(null);
@@ -31,11 +48,20 @@ const route = useRoute();
 
 async function loadData() {
 	const id_zadatak = route.params.id_zadatak;
+
+	const resultAssignments = await guestStore.fetchAvailableAssignments();
+	allAvailableAssignments.value = resultAssignments.filter((task) => {
+		const condition = adminStore.availableAssignmentsFilter ? task.dostupno_mjesta > 0 : task.dostupno_mjesta >= 0;
+		return condition && task.voditelj_odobrio.value == "odobreno";
+	});
+
 	if (id_zadatak) {
 		assignment_highlight.value = id_zadatak;
+		currentPage.value = getAssignmentPage(id_zadatak);
 	}
-	let result = await mainStore.fetchCompanies();
-	allCompanies.value = result.data.results;
+
+	let resultCompanies = await mainStore.fetchCompanies();
+	allCompanies.value = resultCompanies.data.results;
 }
 
 watch(() => route.params.id_zadatak, loadData, {
@@ -56,22 +82,11 @@ const getCompanyLogo = (assignment) => {
 	return company && company["logo"] && company["logo"][0] && company["logo"][0]["url"] ? company["logo"][0]["url"] : "No-Logo.png";
 };
 
-const perPage = ref(5);
-const currentPage = ref(0);
-const assignmentsPaginated = computed(() => allAvailableAssignments.value.slice(perPage.value * currentPage.value, perPage.value * (currentPage.value + 1)));
-
-const numPages = computed(() => Math.ceil(allAvailableAssignments.value.length / perPage.value));
-const currentPageHuman = computed(() => currentPage.value + 1);
-
-const pagesList = computed(() => {
-	const pagesList = [];
-
-	for (let i = 0; i < numPages.value; i++) {
-		pagesList.push(i);
-	}
-
-	return pagesList;
-});
+function getAssignmentPage(id) {
+	const index = allAvailableAssignments.value.findIndex((assignment) => assignment["id_zadatak"] === id);
+	if (index === -1) return 0;
+	return Math.floor(index / perPage.value);
+}
 
 const assignmentCheckedStates = ref({});
 

@@ -32,13 +32,22 @@ function showDiagram(student) {
 onMounted(async () => {
 	if (route.params.process_instance_id) {
 		selectedStudentInstanceID.value = route.params.process_instance_id;
-		adminStore.setSelectedStudent(students.value.find((student) => student["process_instance_id"] === route.params.process_instance_id));
+		const selectedStudent = students.value.find((student) => student["process_instance_id"] === route.params.process_instance_id);
+		adminStore.setSelectedStudent(selectedStudent);
+		updateCurrentPageForSelectedStudent(selectedStudent);
 	} else {
 		selectedStudentInstanceID.value = null;
 		adminStore.setSelectedStudent(null);
 	}
 	await adminStore.getStudents();
 });
+
+function updateCurrentPageForSelectedStudent(selectedStudent) {
+	const selectedIndex = students.value.indexOf(selectedStudent);
+	if (selectedIndex !== -1) {
+		currentPage.value = Math.floor(selectedIndex / perPage.value);
+	}
+}
 
 const perPage = ref(5);
 const currentPage = ref(0);

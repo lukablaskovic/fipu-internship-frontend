@@ -1,7 +1,7 @@
 <script setup>
 import { ref, computed, onMounted, watch } from "vue";
 import { adminStore, mainStore, snackBarStore } from "@/main.js";
-import { mdiAccountMultiple, mdiAccountSchoolOutline, mdiProgressClock, mdiViewDashboard, mdiCommentProcessing, mdiMonitorAccount, mdiAccountCancel, mdiAlphaSBox, mdiClockTimeEight, mdiCalendarClock, mdiChartBar } from "@mdi/js";
+import { mdiAccountMultiple, mdiAccountSchoolOutline, mdiProgressClock, mdiViewDashboard, mdiCommentProcessing, mdiMonitorAccount, mdiAccountCancel, mdiAlphaSBox, mdiClockTimeEight, mdiCalendarClock, mdiChartBar, mdiAccountGroup } from "@mdi/js";
 import { useRouter } from "vue-router";
 import moment from "@/moment-setup";
 import { useLayoutStore } from "@/stores/layout.js";
@@ -13,7 +13,7 @@ import LayoutAuthenticated from "@/layouts/LayoutAuthenticated.vue";
 import SectionTitleLineWithButton from "@/components/Section/SectionTitleLineWithButton.vue";
 import SkeletonLoader from "@/components/SkeletonLoader.vue";
 import SkeletonLoaderEvent from "@/components/SkeletonLoaderEvent.vue";
-import LineChart from "@/components/Charts/LineChart.vue";
+//import LineChart from "@/components/Charts/LineChart.vue";
 
 import BaseLevel from "@/components/Base/BaseLevel.vue";
 import BaseButtons from "@/components/Base/BaseButtons.vue";
@@ -27,8 +27,6 @@ import { latestEvents } from "@/filterOptions.js";
 import Utils from "@/helpers/utils";
 
 const router = useRouter();
-
-snackBarStore.pushMessage(`Dobrodošli natrag! ${mainStore.currentUser.username} `, "contrast");
 
 const ongoing_internships = ref(0);
 const waiting_for_allocation = ref(0);
@@ -63,6 +61,25 @@ onMounted(async () => {
 	}
 });
 
+const toggleActiveEventsFilter = () => {
+	adminStore.filterActiveInstances = !adminStore.filterActiveInstances;
+};
+
+const filteredEvents = computed(() => {
+	if (!adminStore.filterActiveInstances) {
+		const endedInstances = events.value.filter((event) => event.activity_id === "end_event_student").map((event) => event.instance_id);
+
+		const filtered = events.value.filter((event) => !endedInstances.includes(event.instance_id));
+
+		return filtered;
+	}
+	return events.value;
+});
+
+watch(filteredEvents, () => {
+	currentPage.value = 0;
+});
+
 const eventsOptionsActive = ref(false);
 const formattedDate = (timestamp) => {
 	if (adminStore.relativeToNowTimestmap == true) {
@@ -74,7 +91,7 @@ const formattedDate = (timestamp) => {
 
 const perPage = ref(10);
 const currentPage = ref(0);
-const itemsPaginated = computed(() => events.value.slice(perPage.value * currentPage.value, perPage.value * (currentPage.value + 1)));
+const itemsPaginated = computed(() => filteredEvents.value.slice(perPage.value * currentPage.value, perPage.value * (currentPage.value + 1)));
 const leftItems = computed(() => {
 	return itemsPaginated.value.slice(0, 5);
 });
@@ -163,6 +180,9 @@ onMounted(() => {
 						<div class="mb-4">
 							<PillTag class="cursor-pointer" :left="false" :icon="adminStore.relativeToNowTimestmap ? mdiClockTimeEight : mdiCalendarClock" :color="adminStore.relativeToNowTimestmap ? 'info' : 'success'" :label="adminStore.relativeToNowTimestmap ? 'Relativno vrijeme' : 'Datum'" @click="toggleDateType" />
 						</div>
+					</div>
+					<div class="flex flex-row">
+						<div class="mb-4"><PillTag class="cursor-pointer" :left="false" :icon="adminStore.filterActiveInstances ? mdiAccountGroup : mdiAccountMultiple" :color="adminStore.filterActiveInstances ? 'info' : 'success'" :label="adminStore.filterActiveInstances ? 'Sve instance' : 'Samo aktivne'" @click="toggleActiveEventsFilter" /></div>
 					</div>
 				</div>
 				<div v-if="!eventsFetchError && !Utils.isArrayEmpty(events)" class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">

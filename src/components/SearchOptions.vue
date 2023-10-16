@@ -233,7 +233,7 @@ function navigateToStudent(student) {
 	router.push(`/studenti/${instanceId}`);
 }
 
-const routes = ["dashboard", "studenti", "alokacije", "dostupni-zadaci", "poslodavci", "bpmn/microservices", "profile", "poruke", "poslodavci/novi-zadatak"];
+const routes = ["dashboard", "studenti", "alokacije", "dostupni-zadaci", "poslodavci", "bpmn/microservices", "profil", "poruke", "poslodavci/novi-zadatak"];
 
 const helpItems = [
 	{ prefix: "", description: "usmjeravanje po aplikaciji" },

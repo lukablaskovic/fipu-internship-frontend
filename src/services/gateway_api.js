@@ -13,7 +13,6 @@ const Auth = {
 	async update_process_instance(student_id, process_instance_id) {
 		try {
 			let result = await AxiosWrapper.patch(`/students/${student_id}/process-instance`, { process_instance_id: process_instance_id });
-			console.log(result);
 			return result;
 		} catch (error) {
 			return error;

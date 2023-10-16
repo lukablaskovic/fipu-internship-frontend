@@ -8,7 +8,7 @@ export default [
 				{
 					icon: mdiAccount,
 					label: "Moj profil",
-					to: "/profile",
+					to: "/profil",
 				},
 				{
 					icon: mdiEmail,
@@ -48,7 +48,7 @@ export default [
 		{
 			icon: mdiAccount,
 			label: "Moj profil",
-			to: "/profile",
+			to: "/profil",
 		},
 		{
 			icon: mdiEmail,
