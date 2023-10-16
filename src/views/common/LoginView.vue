@@ -130,6 +130,11 @@ function navigateToRegister() {
 								<a class="hover-underline-animation cursor-pointer text-fipu_text_blue hover:text-fipu_blue" @click="router.push('/moja-praksa')"> ovdje</a>.
 							</h2>
 
+							<h2 class="md:text-sm lg:text-sm 2xl:text-base mb-2 2xl:mb-4 text-justify s">
+								Poslodavac ste ili mentor studentu te želite samo prijaviti novi projekt za praksu? Molimo da to učinite
+								<a class="hover-underline-animation cursor-pointer text-fipu_text_blue hover:text-fipu_blue" @click="router.push('/poslodavci/novi-zadatak')"> ovdje</a>.
+							</h2>
+
 							<FormField label="E-mail">
 								<FormControl v-model="loginForm.email" :icon-left="mdiAccount" name="email" autocomplete="email" :error="getFirstErrorForField(v$, 'email')" />
 							</FormField>

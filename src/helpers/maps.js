@@ -224,7 +224,7 @@ class UserTaskMappings {
 	}
 }
 
-import { mdiRayStartArrow, mdiProgressClock, mdiThumbsUpDownOutline, mdiNoteCheck, mdiAccountTie, mdiNotebook, mdiFileDocumentPlus, mdiRayEnd, mdiContentSaveOutline, mdiApi, mdiEmailArrowRight, mdiCertificate, mdiCancel } from "@mdi/js";
+import { mdiRayStartArrow, mdiProgressClock, mdiCheck, mdiThumbsUpDownOutline, mdiNoteCheck, mdiAccountTie, mdiNotebook, mdiFileDocumentPlus, mdiRayEnd, mdiContentSaveOutline, mdiApi, mdiEmailArrowRight, mdiCertificate, mdiCancel } from "@mdi/js";
 
 class ActivityEventMappings {
 	static events = [
@@ -298,19 +298,19 @@ class ActivityEventMappings {
 			activity_id: "razgovor_za_praksu_poslodavac",
 			icon: mdiAccountTie,
 			type: "warning",
-			message: "Evaluacija poslodavca u tijeku",
+			message: "Evaluacija poslodavca",
 		},
 		{
 			activity_id: "evaluacija_poslodavac",
 			icon: mdiAccountTie,
-			type: "warning",
-			message: "Poslodavac obavio evaluaciju",
+			type: "success",
+			message: "Kandidat evaluiran",
 		},
 		{
 			activity_id: "spremanje_zahtjeva_prihvacanje",
-			icon: mdiContentSaveOutline,
+			icon: mdiCheck,
 			type: "success",
-			message: "Student prihvaćen nakon evaluacije",
+			message: "Student prihvaćen",
 		},
 		{
 			activity_id: "obavjestavanje_studenta_nakon_prihvacanja_email",

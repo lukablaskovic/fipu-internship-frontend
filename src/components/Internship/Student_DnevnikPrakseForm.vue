@@ -25,11 +25,11 @@ import { mainStore, snackBarStore, studentStore } from "@/main.js";
 
 import Utils from "@/helpers/utils.js";
 import { UserTaskMappings } from "@/helpers/maps";
-
+const studentData = ref(null);
 const allocated_assignment = ref(null);
 onMounted(async () => {
-	await studentStore.getInstanceInfo(mainStore.currentUser.internship_process.id);
-
+	studentData.value = await studentStore.getInstanceInfo(mainStore.currentUser.internship_process.id);
+	console.log(studentData.value);
 	if (studentStore.allocated_assignment == null) {
 		let result = await studentStore.getAssignmentDetails(studentStore.student_process_instance_data.variables["Alocirani_zadatak"]);
 		studentStore.allocated_assignment = result.data.results[0];
@@ -113,6 +113,10 @@ async function submit_diary_form() {
 			<p>
 				📓Template za dnevnik prakse možete preuzeti
 				<a href="https://bit.ly/fipu-praksa-template" target="_blank" class="text-fipu_blue cursor-pointer">ovdje</a>.
+			</p>
+			<p>
+				📃Praznu potvrdu o obavljenoj praksi možete preuzeti
+				<a :href="studentData.variables.pdf_attachment_url" target="_blank" class="text-fipu_blue cursor-pointer">ovdje</a>.
 			</p>
 			<br />
 			<hr />

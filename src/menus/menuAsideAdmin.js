@@ -41,6 +41,10 @@ export default [
 				label: "PDF Generator",
 				externalURL: "https://html-to-pdf-maker.netlify.app/",
 			},
+			{
+				to: "/poslodavci/novi-zadatak",
+				label: "Forma za prijavu zadatka",
+			},
 		],
 	},
 ];
