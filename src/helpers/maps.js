@@ -224,14 +224,14 @@ class UserTaskMappings {
 	}
 }
 
-import { mdiRayStartArrow, mdiThumbsUpDownOutline, mdiNoteCheck, mdiAccountTie, mdiNotebook, mdiFileDocumentPlus, mdiRayEnd, mdiContentSaveOutline, mdiApi, mdiEmailArrowRight, mdiCertificate, mdiCancel } from "@mdi/js";
+import { mdiRayStartArrow, mdiProgressClock, mdiThumbsUpDownOutline, mdiNoteCheck, mdiAccountTie, mdiNotebook, mdiFileDocumentPlus, mdiRayEnd, mdiContentSaveOutline, mdiApi, mdiEmailArrowRight, mdiCertificate, mdiCancel } from "@mdi/js";
 
 class ActivityEventMappings {
 	static events = [
 		{
 			activity_id: "start_event_student",
 			icon: mdiRayStartArrow,
-			type: "success",
+			type: "info",
 			message: "Pokrenut proces prakse",
 		},
 		{
@@ -242,9 +242,9 @@ class ActivityEventMappings {
 		},
 		{
 			activity_id: "spremanje_preferencije",
-			icon: mdiContentSaveOutline,
+			icon: mdiProgressClock,
 			type: "danger",
-			message: "Čeka alokaciju profesora",
+			message: "Čeka alokaciju",
 		},
 		{
 			activity_id: "alociranje_profesor",
@@ -255,7 +255,7 @@ class ActivityEventMappings {
 		{
 			activity_id: "odabir_prihvacen",
 			icon: mdiThumbsUpDownOutline,
-			type: "success",
+			type: "info",
 			message: "Odabir ažuriran",
 		},
 		{
@@ -273,7 +273,7 @@ class ActivityEventMappings {
 		{
 			activity_id: "spremanje_alokacija",
 			icon: mdiContentSaveOutline,
-			type: "info",
+			type: "success",
 			message: "Alokacija pohranjena",
 		},
 		{
@@ -357,8 +357,8 @@ class ActivityEventMappings {
 		{
 			activity_id: "spremanje_dnevnika",
 			icon: mdiContentSaveOutline,
-			type: "info",
-			message: "Dnevnik prakse pohranjen",
+			type: "success",
+			message: "Dnevnik pohranjen",
 		},
 		{
 			activity_id: "upis_ocjene",

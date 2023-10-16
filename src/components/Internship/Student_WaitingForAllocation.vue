@@ -11,6 +11,7 @@ import SectionTitleLineWithButton from "@/components/Section/SectionTitleLineWit
 import CardBoxWidget from "@/components/Cardbox/CardBoxWidget.vue";
 import BaseIcon from "@/components/Base/BaseIcon.vue";
 import CardBoxModal from "@/components/Cardbox/CardBoxModal.vue";
+import CardboxAllocation from "@/components/Cardbox/CardBoxAllocation.vue";
 
 import { mainStore, studentStore } from "@/main.js";
 
