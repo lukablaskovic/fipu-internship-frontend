@@ -20,4 +20,4 @@ COPY --from=build /app/dist /app/dist
 
 RUN npm install -g serve
 
-CMD ["sh", "-c", "serve -s dist -l $PORT"]
+CMD ["sh", "-c", "serve -s dist]
