@@ -1,3 +1,4 @@
+# Build stage
 FROM node:16 AS build
 
 WORKDIR /app
@@ -10,6 +11,7 @@ COPY . .
 
 RUN npm run build
 
+# Production stage
 FROM node:16-slim
 
 WORKDIR /app
@@ -19,5 +21,7 @@ USER node
 COPY --from=build /app/dist /app/dist
 
 RUN npm install -g serve
+
+EXPOSE 3000
 
 CMD ["sh", "-c", "serve -s dist"]
