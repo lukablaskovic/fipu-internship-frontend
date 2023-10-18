@@ -3,6 +3,7 @@ import { User } from "@/services/gateway_api";
 import { nextTick } from "vue";
 
 import { mainStore } from "@/main.js";
+import { snackBarStore } from "@/main";
 import { Student } from "@/services/baserow_client_api.js";
 
 let wait = function (seconds) {
@@ -30,13 +31,9 @@ export const useChatStore = defineStore("chat", {
 		async wait(time) {
 			await wait(time);
 		},
-		getUserName(m) {
-			for (let i = 0; i < this.users.length; i++) if (this.users[i].id == m.sender_id) return this.users[i].ime;
-			return mainStore.currentUser.ime;
-		},
-		getUserAvatar(m) {
-			for (let i = 0; i < this.users.length; i++) if (this.users[i].id == m.sender_id) return this.users[i].avatar;
-			return mainStore.currentUser.avatar;
+		getUser(m) {
+			for (let i = 0; i < this.users.length; i++) if (this.users[i].id == m.sender_id) return this.users[i];
+			return mainStore.currentUser;
 		},
 		getUserDataFromConversationItem(c) {
 			let id = c.user_1_id == mainStore.currentUser.id ? c.user_2_id : c.user_1_id;
@@ -60,6 +57,7 @@ export const useChatStore = defineStore("chat", {
 			this.users = users;
 		},
 		async getMessages(id) {
+			if (id == "") return;
 			let response = await User.getMessages(id);
 			function compareTimestamps(a, b) {
 				return new Date(a.timestamp) - new Date(b.timestamp);
@@ -97,7 +95,7 @@ export const useChatStore = defineStore("chat", {
 			await nextTick();
 			this.update = true;
 			const doc = document.getElementById("messageContainer");
-			doc.scrollTop = doc.scrollHeight;
+			if (doc != null) doc.scrollTop = doc.scrollHeight;
 		},
 		async getLastMessage(id) {
 			let lastMessage = await User.getLastMessage(id);
@@ -118,6 +116,7 @@ export const useChatStore = defineStore("chat", {
 			return response.sort(compareTimestamps);
 		},
 		async updateConversations(id) {
+			if (id == "") return;
 			function compareTimestamps(b, a) {
 				return new Date(a.timestamp) - new Date(b.timestamp);
 			}
@@ -138,12 +137,12 @@ export const useChatStore = defineStore("chat", {
 				receiver_id: this.selectedConversation,
 				content: this.content,
 			};
+			await this.updateUserActivity(false);
 			let response = await User.sendMessage(message);
 			if (response) await this.getMessages(this.selectedConversation);
 			this.content = "";
 			this.update = false;
 			await nextTick();
-			await this.updateUserActivity(false);
 			this.conversations = await this.getConversations(mainStore.currentUser.id);
 			await nextTick();
 			this.update = true;
@@ -211,6 +210,19 @@ export const useChatStore = defineStore("chat", {
 				user_2_active: this.c.user_2_id == mainStore.currentUser.id ? value : null,
 			};
 			await User.updateConversation(this.c.id, updates);
+		},
+		async checkForNewMessages() {
+			await wait(3);
+			await this.updateConversations(mainStore.currentUser.id);
+			let newMessage = false;
+			for (let index = 0; index < this.conversations.length; index++) {
+				if (this.checkNewMessage(this.conversations[index])) newMessage = true;
+			}
+			if (newMessage) snackBarStore.pushMessage("✉️ Dobili ste novu poruku!", "success");
+		},
+		checkNewMessage(conversation) {
+			if (conversation.user_1_id == mainStore.currentUser.id) return conversation.user_1_last_message_read_id < conversation.user_2_last_message_read_id;
+			else return conversation.user_1_last_message_read_id > conversation.user_2_last_message_read_id;
 		},
 	},
 	persist: false,

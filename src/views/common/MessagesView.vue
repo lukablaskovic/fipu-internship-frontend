@@ -23,7 +23,7 @@ onMounted(() => {});
 						<ConversationPanel v-if="chatStore.selectedConversation != ''">
 							<div class="absolute w-full h-16 bg-gradient-to-b dark:from-fipu_gray2 dark:via-fipu_gray2 from-white via-white top-0 right-2 pointer-events-none z-10"></div>
 							<Conversation>
-								<Message v-for="m in chatStore.messages" :text="m.content" :user="chatStore.getUserName(m)" :reverse="m.receiver_id == chatStore.selectedConversation" :avatar="chatStore.getUserAvatar(m)" />
+								<Message v-for="m in chatStore.messages" :text="m.content" :user="chatStore.getUser(m)" :reverse="m.receiver_id == chatStore.selectedConversation" />
 							</Conversation>
 							<MessageInput />
 						</ConversationPanel>
@@ -36,3 +36,26 @@ onMounted(() => {});
 		</div>
 	</LayoutAuthenticated>
 </template>
+<script>
+import { chatStore } from "@/main.js";
+import { mainStore } from "@/main.js";
+
+export default {
+	data() {
+		return {
+			intervalId: null,
+			messageContainerRef: null,
+		};
+	},
+	created() {
+		clearInterval(this.intervalId);
+		this.intervalId = setInterval(async () => {
+			await chatStore.updateConversations(mainStore.currentUser.id);
+			await chatStore.getMessages(chatStore.selectedConversation);
+		}, 1000);
+	},
+	unmounted() {
+		clearInterval(this.intervalId);
+	},
+};
+</script>

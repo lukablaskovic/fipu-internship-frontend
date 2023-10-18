@@ -19,29 +19,6 @@ import { chatStore, mainStore } from "@/main.js";
 		</div>
 	</div>
 </template>
-<script>
-import { chatStore } from "@/main.js";
-import { mainStore } from "@/main.js";
-
-export default {
-	data() {
-		return {
-			intervalId: null,
-			messageContainerRef: null,
-		};
-	},
-	created() {
-		clearInterval(this.intervalId);
-		this.intervalId = setInterval(async () => {
-			await chatStore.updateConversations(mainStore.currentUser.id);
-			await chatStore.getMessages(chatStore.selectedConversation);
-		}, 1000);
-	},
-	unmounted() {
-		clearInterval(this.intervalId);
-	},
-};
-</script>
 
 <style scoped>
 @keyframes bounce {

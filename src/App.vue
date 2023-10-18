@@ -4,7 +4,7 @@ import { useRouter, RouterView } from "vue-router";
 
 import { Control } from "@/services/microservices_control";
 import Tooltip from "@/components/Base/Tooltip.vue";
-import { mainStore } from "./main";
+import { chatStore, mainStore } from "@/main.js";
 
 //import GlobalStoreDebug from "@/components/Helpers/GlobalStoreDebug.vue";
 
@@ -19,6 +19,8 @@ onMounted(async () => {
 	intervalId = setInterval(async () => {
 		serviceStatuses.value = await Control.checkAllServiceStatuses();
 	}, REFRESH_INTERVAL * 60 * 1000);
+
+	await chatStore.checkForNewMessages();
 });
 
 onUnmounted(() => {
@@ -39,7 +41,7 @@ watchEffect(() => {
 </script>
 
 <template>
-	<!--<GlobalStoreDebug />-->
+	<!--GlobalStoreDebug /-->
 	<Tooltip />
 	<router-view :key="$route.fullPath"></router-view>
 </template>

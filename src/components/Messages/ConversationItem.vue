@@ -1,4 +1,5 @@
 <script setup>
+import { RouterLink } from "vue-router";
 import { chatStore, layoutStore, mainStore } from "@/main.js";
 import BaseIcon from "@/components/Base/BaseIcon.vue";
 import { mdiStarOutline, mdiStar, mdiArchiveOutline, mdiArchive } from "@mdi/js";
@@ -7,13 +8,16 @@ import { mdiStarOutline, mdiStar, mdiArchiveOutline, mdiArchive } from "@mdi/js"
 	<div v-if="cstatus == chatStore.grouping || mainStore.currentUser.account_type != 'admin'" class="flex flex-col -mx-5 lg:-mx-4 mt-1 lg:mt-2" @click="!hover ? chatStore.selectConversation(c.id, conversation) : ''">
 		<div class="flex items-center pt-2.5 pb-2.5 lg:pt-4 lg:pb-4 relative hover:bg-white dark:hover:bg-gray-800/25" :class="selected ? 'border-l-2 bg-gradient-to-r pl-1.5 pr-2 lg:pr-4 lg:pl-3.5 from-sky-200 dark:from-sky-950/50 to-transparent border-fipu_dark_blue dark:border-fipu_dark_blue' : 'pl-2 pr-2 lg:pr-4 lg:pl-4 hover:rounded'">
 			<div class="absolute text-xs text-gray-500 font-medium right-2 lg:right-0 top-2 lg:top-0 lg:mr-4 lg:mt-3">{{ timestamp }}</div>
-			<div class="flex items-center justify-center h-9 w-9 lg:h-10 lg:w-10 rounded-full bg-fipu_blue text-white dark:text-fipu_gray dark:font-bold font-medium flex-shrink-0 relative overflow-hidden">
-				<img v-if="getAvatar(c) != ''" class="absolute" :src="getAvatar(c)" alt="" />
-				<div>
-					{{ c != null ? c.ime[0] : "" }}
+
+			<RouterLink class="cursor-default" :to="c != null && mainStore.currentUser.account_type == 'admin' ? '/studenti/' + c.process_instance_id : ''">
+				<div :class="mainStore.currentUser.account_type == 'admin' ? 'cursor-pointer hover:scale-105 transition-all' : 'cursor-default'" class="flex items-center justify-center h-9 w-9 lg:h-10 lg:w-10 rounded-full bg-fipu_blue text-white dark:text-fipu_gray dark:font-bold font-medium flex-shrink-0 relative">
+					<img v-if="getAvatar(c) != ''" class="absolute rounded-full aspect-square h-9 w-9 lg:h-10 lg:w-10" :src="getAvatar(c)" alt="" />
+					<div>
+						{{ c != null ? c.ime[0] : "" }}
+					</div>
+					<div v-if="checkNewMessage() && conversation.id != chatStore.selectedConversationID" class="flex items-center justify-center animate-ping h-1.5 w-1.5 bg-rose-500 text-white font-medium text-xs rounded-full absolute -top-1 -right-1"></div>
 				</div>
-				<div v-if="checkNewMessage() && conversation.id != chatStore.selectedConversationID" class="flex items-center justify-center animate-ping h-1.5 w-1.5 bg-rose-500 text-white font-medium text-xs rounded-full absolute -top-1 -right-1"></div>
-			</div>
+			</RouterLink>
 
 			<div v-if="mainStore.currentUser.account_type == 'admin'" class="absolute right-1 lg:right-3 bottom-0 lg:bottom-2 flex gap-0 lg:gap-2">
 				<div
@@ -48,8 +52,7 @@ import { mdiStarOutline, mdiStar, mdiArchiveOutline, mdiArchive } from "@mdi/js"
 
 <script>
 import moment from "@/moment-setup";
-import { chatStore } from "@/main.js";
-import { mainStore } from "@/main.js";
+import { chatStore, mainStore } from "@/main.js";
 
 export default {
 	props: {
