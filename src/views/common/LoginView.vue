@@ -112,7 +112,7 @@ function navigateToRegister() {
 <template>
 	<SectionSplitLogin bg="blue" class="flex items-start min-h-screen">
 		<Transition appear enter-active-class="animate__animated animate__fadeIn" leave-active-class="animate__animated animate__slideOutRight fast-animation" @after-leave="navigateToRegister">
-			<div v-if="!transitioning" class="flex flex-col justify-center items-center overflow-hidden h-screen md:py-12 md:px-4 || transition-all duration-300">
+			<div v-if="!transitioning" class="flex flex-col justify-center items-center overflow-hidden h-screen md:py-4 2xl:py-12 md:px-4 || transition-all duration-300">
 				<div class="flex flex-col md:flex-row flex-shrink h-full rounded-lg overflow-hidden">
 					<div class="flex flex-col md:flex-row flex-shrink h-full || bg-white overflow-y-auto fipu_vertical_scrollbar || transition-all duration-300 px-0 lg:px-6 xl:px-16 2xl:px-28 || xl:gap-4 2xl:gap-8">
 						<CardBox has-table class="hidden xl:flex justify-center items-center flex-1 bg-opacity-0 grow p-16 xl:px-0 xl:py-16 2xl:py-24 || transition-all duration-300">

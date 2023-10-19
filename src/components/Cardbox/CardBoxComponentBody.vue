@@ -12,8 +12,8 @@ defineProps({
 		:class="[
 			{
 				'p-6 ': !noPadding,
-				'md:flex md:flex-col md:justify-center md:items-center md:w-full md:h-full': centeredContent,
-				'md:flex md:flex-col md:justify-center md:w-full md:h-full': verticalCentered,
+				'md:flex md:flex-col md:justify-center md:items-center md:w-full md:h-full ': centeredContent,
+				'md:flex md:flex-col md:justify-center md:w-full md:h-full ': verticalCentered,
 			},
 		]">
 		<slot></slot>
