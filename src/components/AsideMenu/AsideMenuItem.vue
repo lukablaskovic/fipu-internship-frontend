@@ -101,7 +101,7 @@ const menuClick = (event) => {
 			class="flex cursor-pointer transition-all duration-150"
 			:class="[componentClass, isCompact ? 'justify-center' : 'justify-start', item.color == 'info' ? 'hover:bg-fipu_dark_blue' : 'hover:bg-gray-900/75']">
 			<BaseIcon v-if="item.icon" :path="item.icon" class="flex-none transition-all duration-300" :w="isCompact ? 'w-8 lg:w-16' : 'w-8'" :size="item.size ? item.size : 18" :class="[vSlot && vSlot.isExactActive ? asideMenuItemActiveStyle : asideMenuItemInactiveStyle, { relative: item.updateMark }, item.color == 'info' ? 'text-slate-800' : '']">
-				<UpdateMark v-if="item.updateMark && adminStore.dashboard_data.waiting_for_allocation > 0" :color="item.updateMark" :position="isCompact ? 'top-0 left-9' : 'top-0 left-5'" />
+				<UpdateMark v-if="item.updateMark && adminStore.dashboard_data.waiting_for_allocation > 0" :color="item.updateMark" :position="isCompact ? 'top-0 left-5 md:left-9' : 'top-0 left-5'" />
 			</BaseIcon>
 
 			<span class="transition-all duration-300 text-clip line-clamp-1" :class="[{ '': isCompact, '': !hasSub }, vSlot && vSlot.isExactActive ? asideMenuItemActiveStyle : asideMenuItemInactiveStyle, isCompact ? (item.menu == undefined ? 'w-52 lg:w-0' : 'w-40 lg:w-0') : 'w-40', item.color == 'info' ? 'text-slate-900 font-medium hover:underline' : '']">
