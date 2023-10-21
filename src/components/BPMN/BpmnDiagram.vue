@@ -242,4 +242,10 @@ function applyCustomStyling(highlightColor, highlightElementId, viewer) {
 	width: 100%;
 	user-select: none;
 }
+
+@media (max-width: 600px) {
+	.bpmn-container {
+		height: 50vh;
+	}
+}
 </style>
