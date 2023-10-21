@@ -23,6 +23,7 @@ export const useStudentStore = defineStore("student", {
 				Treci_odabir: [assignmentsData[2]["id_zadatak"]],
 				napomena: napomena,
 				process_instance_id: mainStore.currentUser.internship_process.id,
+				frontend_url: import.meta.env.VITE_FRONTEND_URL,
 			};
 			try {
 				let process_instance_id = mainStore.currentUser.internship_process.id;
