@@ -151,8 +151,8 @@ const menuClick = (event, item) => {
 					</li>
 				</ol>
 				<BaseDivider></BaseDivider>
-				<p><b>Važno!</b> Aplikacija <em>FIPU Praksa</em> razvijena je 2023. godine u sklopu istraživačkog laboratorija FIPU-lab za potrebe pojednostavljenja procesa izvođenja studentske prakse, za studente, voditelja te poslodavce.</p>
-				<p class="mt-2">Aplikacija je razvijena eksperimentalnim BPMN model-based development-om i integracijom mikroservisa te je, kao i svaki drugi programski proizvod, podložna 🐞!</p>
+				<p><b>Važno!</b> Aplikacija <em>FIPU Praksa</em> razvijena je 2023. godine u sklopu istraživačkog laboratorija FIPU-lab za potrebe pojednostavljenja i automatizacije procesa izvođenja studentske prakse, za studente, voditelja te poslodavce.</p>
+				<p class="mt-2">Aplikacija je razvijena eksperimentalnim BPMN model-based development-om i integracijom mikroservisa te je, kao i svaki drugi programski proizvod, podložna bugovima🐞!</p>
 				<p class="mt-2">Stoga vas molimo da sve bugove koje pronađete prijavite otvaranjem novog Github issue-a, <a class="hover-underline-animation cursor-pointer text-fipu_text_blue" target="_blank" href="https://github.com/lukablaskovic/fipu-internship-frontend/issues">ovdje!</a></p>
 				<p class="mt-2">Hvala! 🙂</p>
 			</CardBoxModal>
@@ -247,8 +247,8 @@ const menuClick = (event, item) => {
 					<li>Na ovoj stranici također možete pronaći javni link koji se proslijeđuje poslodavcima za prijavu novog zadatka.</li>
 				</ol>
 				<BaseDivider></BaseDivider>
-				<p><b>Važno!</b> Aplikacija <em>Fipu Praksa</em> razvijena je 2023. godine u sklopu istraživačkog laboratorija FIPU-lab za potrebe pojednostavljenja procesa izvođenja studentske prakse, za studente, voditelja te poslodavce.</p>
-				<p class="mt-2">Aplikacija je razvijena eksperimentalnim BPMN model-based development-om i integracijom mikroservisa te je, kao i svaki drugi programski proizvod, podložna 🐞!</p>
+				<p><b>Važno!</b> Aplikacija <em>Fipu Praksa</em> razvijena je 2023. godine u sklopu istraživačkog laboratorija FIPU-lab za potrebe pojednostavljenja i automatizacije procesa izvođenja studentske prakse, za studente, voditelja te poslodavce.</p>
+				<p class="mt-2">Aplikacija je razvijena eksperimentalnim BPMN model-based development-om i integracijom mikroservisa te je, kao i svaki drugi programski proizvod, podložna bugovima🐞!</p>
 				<p class="mt-2">Stoga vas molimo da sve bugove koje pronađete prijavite otvaranjem novog Github issue-a, <a class="hover-underline-animation cursor-pointer text-fipu_text_blue" target="_blank" href="https://github.com/lukablaskovic/fipu-internship-frontend/issues">ovdje!</a></p>
 				<p class="mt-2">Hvala! 🙂</p>
 			</CardBoxModal>

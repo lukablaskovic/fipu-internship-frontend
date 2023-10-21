@@ -66,7 +66,7 @@ export const useAdminStore = defineStore("admin", {
 			});
 
 			if (type === "Potvrda") {
-				this.modalTitle = "Prazna potvrda o praksi";
+				this.modalTitle = "Potvrda o praksi (nepotpisano)";
 				if (student) {
 					this.pdfSource = student.process_instance_data.variables.pdf_attachment_url;
 				} else {

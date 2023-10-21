@@ -9,11 +9,19 @@ const tableAttributes = ref([]);
 
 onMounted(async () => {
 	variables.value = adminStore.selectedStudent.process_instance_data.variables;
-
+	//Znam ružno je ali bit ce bolje
 	if (adminStore.bpmn_diagram.clicked_task_id == "odabiranje_zadatka_student") {
 		tableAttributes.value = ["Prvi_odabir", "Drugi_odabir", "Treci_odabir", "napomena"];
 	} else if (adminStore.bpmn_diagram.clicked_task_id == "alociranje_profesor") {
 		tableAttributes.value = ["Alocirani_zadatak"];
+	} else if (adminStore.bpmn_diagram.clicked_task_id == "ispunjavanje_prijavnice_student") {
+		tableAttributes.value = ["mentor_ime", "mentor_prezime", "mentor_email", "student_broj_mobitela", "student_OIB", "dogovoreni_broj_sati", "pocetak_prakse", "kraj_prakse", "mjesto_izvrsavanja"];
+	} else if (adminStore.bpmn_diagram.clicked_task_id == "predavanje_dnevnika_student") {
+		tableAttributes.value = ["prijavljen_rok", "nastavak_radnog_odnosa"];
+	} else if (adminStore.bpmn_diagram.clicked_task_id == "evaluacija_poslodavac") {
+		tableAttributes.value = ["kandidat_odobren"];
+	} else if (adminStore.bpmn_diagram.clicked_task_id == "upis_ocjene") {
+		tableAttributes.value = ["ocjena_unesena_studomat"];
 	}
 });
 
@@ -31,16 +39,20 @@ const formattedVariables = computed(() => {
 
 <template>
 	<table class="mb-4">
-		<thead class="text-sm">
-			<tr>
+		<tbody class="text-sm">
+			<tr v-if="tableAttributes.length <= 5">
 				<th v-for="(attribute, index) in tableAttributes" :key="index">
-					{{ tableAttributes[index] }}
+					{{ attribute }}
 				</th>
 			</tr>
-		</thead>
-		<tbody class="text-sm">
-			<tr>
+			<tr v-if="tableAttributes.length <= 5">
 				<td v-for="(attribute, index) in tableAttributes" :key="index" :data-label="attribute">
+					{{ formattedVariables[attribute] }}
+				</td>
+			</tr>
+			<tr v-else v-for="(attribute, index) in tableAttributes" :key="index">
+				<th>{{ attribute }}</th>
+				<td :data-label="attribute">
 					{{ formattedVariables[attribute] }}
 				</td>
 			</tr>

@@ -27,9 +27,9 @@ const filteredAllocations = computed(() => {
 	return allocations.value.filter((allocation) => allocation["Alocirani_zadatak"] !== null);
 });
 
-function getIdDnevnikPrakseByIdAlokacija(id_alokacija) {
+function getVariableByIdAlokacija(id_alokacija, variableName) {
 	const student = adminStore.students.find((stud) => stud.process_instance_data.variables.id_alokacija == id_alokacija);
-	return student ? student.process_instance_data.variables.id_dnevnik_prakse : null;
+	return student ? student.process_instance_data.variables[variableName] : null;
 }
 
 async function fetchPDF(type, search) {
@@ -68,9 +68,9 @@ const pagesList = computed(() => {
 	<table>
 		<thead>
 			<tr>
+				<th>Ime i prezime</th>
 				<th>JMBAG</th>
 				<th>Alocirani zadatak</th>
-				<th>Opis zadatka</th>
 				<th>Poduzeće kontakt</th>
 				<th v-if="mainStore.userAdmin">Status zahtjeva</th>
 				<th>Prijavnica ispunjena</th>
@@ -80,15 +80,15 @@ const pagesList = computed(() => {
 		<tbody>
 			<tr v-for="allocation in allocationsPaginated" :key="allocation['id_alokacija']">
 				<TableCheckboxCell v-if="checkable" :assignment-data="company" />
-
+				<td data-label="Ime i prezime">
+					{{ getVariableByIdAlokacija(allocation["id_alokacija"], "student_ime") }}
+					{{ getVariableByIdAlokacija(allocation["id_alokacija"], "student_prezime") }}
+				</td>
 				<td data-label="JMBAG">
 					{{ allocation["JMBAG"] }}
 				</td>
 				<td data-label="Alocirani zadatak" class="underline hover:text-fipu_blue">
 					<router-link :to="`/dostupni-zadaci/${allocation['Alocirani_zadatak']}`">{{ allocation["Alocirani_zadatak"] }}</router-link>
-				</td>
-				<td data-label="Opis zadatka">
-					{{ allocation["opis_zadatka"] }}
 				</td>
 
 				<td data-label="Kontakt">
@@ -100,14 +100,14 @@ const pagesList = computed(() => {
 				<td data-label="Prijavnica ispunjena">
 					<div class="flex items-center">
 						<TableCheckboxCell readonly :value="allocation['popunjena_prijavnica']" />
-						<a v-if="allocation['popunjena_prijavnica'] && mainStore.userAdmin" class="text-sm underline cursor-pointer hover:text-fipu_light_blue ml-8" @click="adminStore.openPDFModal(allocation, 'Potvrda', 'source_url_for_potvrda')"> Otvori praznu potvrdu📜 </a>
+						<a v-if="allocation['popunjena_prijavnica'] && mainStore.userAdmin" class="text-sm underline cursor-pointer hover:text-fipu_light_blue ml-8" @click="adminStore.openPDFModal(allocation, 'Potvrda', 'source_url_for_potvrda')"> Generirana potvrda📜</a>
 					</div>
 				</td>
 				<td data-label="Dnevnik prakse predan">
 					<div class="flex items-center">
 						<TableCheckboxCell readonly :value="allocation[(allocation, 'predan_dnevnik_prakse')]" />
-						<p v-if="allocation['predan_dnevnik_prakse'] && mainStore.userAdmin" class="text-sm underline cursor-pointer hover:text-fipu_light_blue ml-8" @click="fetchPDF('potvrda', getIdDnevnikPrakseByIdAlokacija(allocation['id_alokacija']))">Otvori potvrdu📃</p>
-						<p v-if="allocation['predan_dnevnik_prakse'] && mainStore.userAdmin" class="text-sm underline cursor-pointer hover:text-fipu_light_blue ml-8" @click="fetchPDF('dnevnik', getIdDnevnikPrakseByIdAlokacija(allocation['id_alokacija']))">Otvori dnevnik📓</p>
+						<p v-if="allocation['predan_dnevnik_prakse'] && mainStore.userAdmin" class="text-sm underline cursor-pointer hover:text-fipu_light_blue ml-8" @click="fetchPDF('potvrda', getVariableByIdAlokacija(allocation['id_alokacija']))">Otvori potvrdu📃</p>
+						<p v-if="allocation['predan_dnevnik_prakse'] && mainStore.userAdmin" class="text-sm underline cursor-pointer hover:text-fipu_light_blue ml-8" @click="fetchPDF('dnevnik', getVariableByIdAlokacija(allocation['id_alokacija']))">Otvori dnevnik📓</p>
 					</div>
 				</td>
 			</tr>
