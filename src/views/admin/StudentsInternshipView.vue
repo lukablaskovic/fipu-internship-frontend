@@ -2,7 +2,7 @@
 import { ref, onMounted, watch } from "vue";
 import { useRouter, useRoute } from "vue-router";
 import axios from "axios";
-import { mdiAccountMultiple } from "@mdi/js";
+import { mdiAccountMultiple, mdiAccount } from "@mdi/js";
 
 import { adminStore, mainStore, snackBarStore } from "@/main.js";
 import { UserTaskMappings, SendTaskMappings } from "@/helpers/maps";
@@ -18,7 +18,8 @@ import BpmnDiagram from "@/components/BPMN/BpmnDiagram.vue";
 import CardBoxModal from "@/components/Cardbox/CardBoxModal.vue";
 import TableInstanceData from "@/components/BPMN/TableInstanceData.vue";
 import LoadingAnimatedIcon from "@/components/LoadingAnimatedIcon.vue";
-
+import FormField from "@/components/Form/FormField.vue";
+import FormControl from "@/components/Form/FormControl.vue";
 import LayoutAuthenticated from "@/layouts/LayoutAuthenticated.vue";
 
 let bpmn_diagram_active = ref(false);
@@ -75,7 +76,7 @@ async function loadDataForStudent() {
 		process_instance_data.value = await adminStore.getProcessInstanceData(student);
 	}
 }
-
+const newEmail = ref(null);
 function getPostDataForSendEmail() {
 	// Find the task based on clicked_task_id
 	const taskMapping = SendTaskMappings.tasks.find((task) => task._id === adminStore.bpmn_diagram.clicked_task_id);
@@ -103,7 +104,11 @@ function getPostDataForSendEmail() {
 }
 
 async function sendAnAdditionalEmail() {
-	const { postData, template, to } = getPostDataForSendEmail();
+	let { postData, template, to } = getPostDataForSendEmail();
+
+	if (newEmail.value) {
+		to = newEmail.value;
+	}
 
 	if (postData && template && to) {
 		await adminStore.sendAnAdditionalEmail(postData, to, template);
@@ -167,7 +172,12 @@ onMounted(loadDataForStudent);
 				</CardBoxModal>
 
 				<CardBoxModal v-if="modal_send_task" v-model="modal_send_task" :title="'Ponovno slanje emaila'" has-cancel button-label="Pošalji" @confirm="sendAnAdditionalEmail()">
-					<p class="mb-2">E-mail je već poslan koristeći kroz BPMN engine, no možete ga poslati ponovo pritiskom na 'Pošalji'</p>
+					<p class="">E-mail je već poslan koristeći kroz BPMN engine, no možete ga poslati ponovo pritiskom na 'Pošalji'</p>
+					<p class="mb-2">Dodatno, možete unijeti e-mail te poslati na novu adresu. Ako želite poslati na adresu pohranjenu u engine-u, ostavite prazno.</p>
+
+					<FormField label="Novi E-mail">
+						<FormControl v-model="newEmail" :icon-left="mdiAccount" name="email" autocomplete="email" />
+					</FormField>
 				</CardBoxModal>
 
 				<CardBoxModal v-if="bpmn_help_modal" v-model="bpmn_help_modal" :title="'BPMN Graf - Upute'" button-label="Povratak">
