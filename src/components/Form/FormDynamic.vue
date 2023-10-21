@@ -1,5 +1,5 @@
 <template>
-	<CardBox is-form @submit.prevent="submitForm">
+	<CardBox is-form vertical-centered @submit.prevent="submitForm">
 		<div class="mb-2">{{ documentation }}</div>
 
 		<div v-for="(field, key) in formFields" :key="key">

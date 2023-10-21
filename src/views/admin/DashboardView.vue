@@ -172,7 +172,7 @@ onMounted(() => {
 
 				<SectionTitleLineWithButton :icon="mdiCommentProcessing" title="Najnoviji događaji" main @click="eventsOptionsActive = true"> </SectionTitleLineWithButton>
 
-				<div v-if="!eventsFetchError" class="flex flex-row">
+				<div v-if="!eventsFetchError" class="flex flex-wrap md:flex-row">
 					<div class="mb-4">
 						<PillTagFilter class="cursor-pointer" trend-type="filter" :trend="'Događaji'" :options="latestEvents" :left="true" />
 					</div>
