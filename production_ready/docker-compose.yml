@@ -1,0 +1,175 @@
+version: "3.4"
+
+services:
+  fipu-praksa-frontend:
+    image: lukablaskovic/fp-fipu-internship-frontend
+    env_file:
+      - .env
+    environment:
+      - VITE_FRONTEND_URL=${VITE_FRONTEND_URL}
+      - VITE_GATEWAY_API_URL=${VITE_GATEWAY_API_URL}
+      - VITE_BPMN_ENGINE_API_URL=${VITE_BPMN_ENGINE_API_URL}
+      - VITE_BASEROW_API_URL=${VITE_BASEROW_API_URL}
+      - VITE_SENDGRID_API_URL=${VITE_SENDGRID_API_URL}
+      - VITE_PDF_API_URL=${VITE_PDF_API_URL}
+      - VITE_BUGSNAG=${VITE_BUGSNAG}
+    depends_on:
+      - postgres-db
+      - baserow-db
+      - gateway-api
+      - python-bpmn-engine
+      - baserow-connector
+      - sendgrid-connector
+      - pdf-connector
+    volumes:
+      - fipu-praksa-frontend_build:/app/dist
+    ports:
+      - "3000:3000"
+
+  nginx:
+    image: lukablaskovic/fp-fipu-internship-frontend
+    container_name: nginx
+    ports:
+      - "4000:3000"
+    depends_on:
+      - fipu-praksa-frontend
+    networks:
+      - app-network
+
+  python-bpmn-engine:
+    image: lukablaskovic/fp-python-bpmn-engine
+    env_file:
+      - .env
+    environment:
+      - FRONTEND_URL=${FRONTEND_URL}
+      - POSTGRES_PROVIDER=${POSTGRES_PROVIDER}
+      - POSTGRES_HOST=${POSTGRES_HOST}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - POSTGRES_DB_NAME=${POSTGRES_DB1_NAME}
+      - POSTGRES_USER=${POSTGRES_USER}
+      - BASEROW_CONNECTOR_URL=${BASEROW_CONNECTOR_URL}
+      - SENDGRID_CONNECTOR_URL=${SENDGRID_CONNECTOR_URL}
+      - PDF_CONNECTOR_URL=${PDF_CONNECTOR_URL}
+      - BUGSNAG=${PBE_BUGSNAG}
+      - PORT=${PBE_PORT}
+    depends_on:
+      - postgres-db
+      - baserow-db
+    ports:
+      - "8080:8080"
+
+  gateway-api:
+    image: lukablaskovic/fp-internship-gateway-api
+    env_file:
+      - .env
+    environment:
+      - BASEROW_CONNECTOR_URL=${BASEROW_CONNECTOR_URL}
+      - BPMN_ENGINE_URL=${BPMN_ENGINE_URL}
+      - POSTGRES_HOSTNAME=${POSTGRES_HOST}
+      - POSTGRES_DB_NAME=${POSTGRES_DB2_NAME}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - POSTGRES_PORT=${POSTGRES_PORT}
+      - POSTGRES_USERNAME=${POSTGRES_USER}
+      - PASS_HASHING_ALGORITHM=${PASS_HASHING_ALGORITHM}
+      - ACCESS_TOKEN_EXPIRE_MINUTES=${ACCESS_TOKEN_EXPIRE_MINUTES}
+      - REMEMBER_ME_EXPIRE_MINUTES=${REMEMBER_ME_EXPIRE_MINUTES}
+      - SECRET_KEY=${SECRET_KEY}
+      - BUGSNAG=${FIGA_BUGSNAG}
+      - PORT=${FIGA_PORT}
+      - DEBUG=1
+    depends_on:
+      - postgres-db
+      - baserow-db
+    ports:
+      - "8081:8081"
+
+  baserow-connector:
+    image: lukablaskovic/fp-baserow-connector-service
+    env_file:
+      - .env
+    environment:
+      - BASEROW_TOKEN=${BASEROW_TOKEN}
+      - BASE_URL=${BASEROW_BASE_URL}
+      - BUGSNAG=${BCS_BUGSNAG}
+      - PORT=${BCS_PORT}
+      - DEBUG=1
+
+    depends_on:
+      - postgres-db
+      - baserow-db
+    ports:
+      - "8082:8082"
+
+  sendgrid-connector:
+    image: lukablaskovic/fp-sendgrid-connector-service
+    env_file:
+      - .env
+    environment:
+      - API_KEY=${SENDGRID_API_KEY}
+      - FROM_EMAIL=${FROM_EMAIL}
+      - MENTOR_SEND_PDF_TEMPLATE=${MENTOR_SEND_PDF_TEMPLATE}
+      - POSLODAVAC_AFTER_ALLOCATION_NOTIFICATION_TEMPLATE=${POSLODAVAC_AFTER_ALLOCATION_NOTIFICATION_TEMPLATE}
+      - STUDENT_AFTER_ALLOCATION_NOTIFICATION_TEMPLATE=${STUDENT_AFTER_ALLOCATION_NOTIFICATION_TEMPLATE}
+      - STUDENT_AFTER_APPROVAL_TEMPLATE=${STUDENT_AFTER_APPROVAL_TEMPLATE}
+      - STUDENT_AFTER_REFUSAL_TEMPLATE=${STUDENT_AFTER_REFUSAL_TEMPLATE}
+      - STUDENT_AFTER_RETURN_TEMPLATE=${STUDENT_AFTER_RETURN_TEMPLATE}
+      - STUDENT_SEND_PDF_TEMPLATE=${STUDENT_SEND_PDF_TEMPLATE}
+      - BUGSNAG=${SCS_BUGSNAG}
+      - PORT=${SCS_PORT}
+    depends_on:
+      - postgres-db
+      - baserow-db
+    ports:
+      - "8083:8083"
+
+  pdf-connector:
+    image: lukablaskovic/fp-pdf-connector-service
+    env_file:
+      - .env
+    environment:
+      - PORT=${PCS_PORT}
+      - SERVICE_URL=${PCS_SERVICE_URL}
+      - BUGSNAG=${PCS_BUGSNAG}
+    depends_on:
+      - postgres-db
+      - baserow-db
+    ports:
+      - "8084:8084"
+
+  baserow-db:
+    image: baserow/baserow:1.20.2
+    env_file:
+      - .env
+    environment:
+      - BASEROW_PUBLIC_URL=${BASEROW_PUBLIC_URL}
+      - BASEROW_EXTRA_ALLOWED_HOSTS=${BASEROW_EXTRA_ALLOWED_HOSTS}
+      - ALLOWED_HOSTS=${ALLOWED_HOSTS}
+    ports:
+      - "80:80"
+    expose:
+      - "80"
+    volumes:
+      - baserow_data:/baserow/data
+
+  postgres-db:
+    image: postgres
+    env_file:
+      - .env
+    environment:
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+    expose:
+      - "5432"
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    command: -p 5432
+
+volumes:
+  postgres_data:
+  baserow_data:
+  fipu-praksa-frontend_build:
+
+networks:
+  app-network:
