@@ -1,2 +1,6 @@
 node_modules
-*.log
+.git
+.gitignore
+Dockerfile
+*.md
+*.lock
