@@ -23,8 +23,6 @@ services:
       - pdf-connector
     volumes:
       - fipu-praksa-frontend_build:/app/dist
-    ports:
-      - "3000:3000"
 
   nginx:
     image: lukablaskovic/fp-fipu-internship-frontend
