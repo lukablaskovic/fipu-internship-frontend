@@ -21,7 +21,7 @@ import LoadingAnimatedIcon from "@/components/LoadingAnimatedIcon.vue";
 import FormField from "@/components/Form/FormField.vue";
 import FormControl from "@/components/Form/FormControl.vue";
 import LayoutAuthenticated from "@/layouts/LayoutAuthenticated.vue";
-
+import PillTag from "@/components/PillTag/PillTag.vue";
 let bpmn_diagram_active = ref(false);
 
 import BPMN_green from "/BPMN/green_bpmn_done.png";

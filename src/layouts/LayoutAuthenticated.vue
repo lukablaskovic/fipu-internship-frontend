@@ -189,15 +189,7 @@ const menuClick = (event, item) => {
 					<li>Možete stisnuti na pojedini event log, što će vas odnijeti na studenti/:id gdje je id jednak instanci tog procesa prakse za tog studenta</li>
 					<li>Tražilicu možete otvoriti pritiskom <b>CTRL + k</b> ili <b>/</b>. Običnim upisivanjem možete brzo prelaziti kroz stranice aplikacije, a prefiksima (ispisani su u uputama tražilice) mogu se tražiti određene stavke, poput studenata po JMBAGU, emailu, ili poduzeća.</li>
 				</ol>
-				<BaseDivider></BaseDivider>
-				<div class="text-xl mb-2">Završetak prakse i prijava ispita</div>
-				<ol class="list-decimal ml-4">
-					<li>Nakon što završite sa stručnom praksu potrebno je predati Dnevnik, također putem aplikacije.</li>
-					<li>
-						Za kraj, potrebno je prijaviti ispit preko Studomata. Na ispit
-						<b>ne morate</b> dolaziti, samo ga prijavite.
-					</li>
-				</ol>
+
 				<BaseDivider></BaseDivider>
 				<div class="text-xl mb-2">Alokacije</div>
 				<ol class="list-decimal ml-4">
