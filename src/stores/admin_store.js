@@ -27,6 +27,7 @@ export const useAdminStore = defineStore("admin", {
 		events: [],
 		relativeToNowTimestmap: true,
 		filterActiveInstances: true,
+		filterFinishedInstances: true,
 		availableAssignmentsFilter: true,
 
 		bpmn_diagram: {

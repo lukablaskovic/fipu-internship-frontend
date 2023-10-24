@@ -32,7 +32,7 @@ watchEffect(() => {
 
 	if (downServices.length > 0) {
 		console.warn("Some services are down:", downServices);
-		router.push({ name: "ErrorView" }).catch((err) => {});
+		router.push({ name: "ErrorView" }).catch(() => {});
 		mainStore.servicesUp = false;
 	} else {
 		mainStore.servicesUp = true;

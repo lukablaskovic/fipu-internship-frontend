@@ -51,8 +51,15 @@ function updateCurrentPageForSelectedStudent(selectedStudent) {
 
 const perPage = ref(5);
 const currentPage = ref(0);
-const studentsPaginated = computed(() => students.value.slice(perPage.value * currentPage.value, perPage.value * (currentPage.value + 1)));
+const studentsPaginated = computed(() => {
+	let filteredStudents = students.value;
 
+	if (!adminStore.filterFinishedInstances) {
+		filteredStudents = filteredStudents.filter((student) => UserTaskMappings.getTaskProperty(student["process_instance_data"]["pending"][0], "name", student["process_instance_data"]["state"]) !== "Student ocjenjen");
+	}
+
+	return filteredStudents.slice(perPage.value * currentPage.value, perPage.value * (currentPage.value + 1));
+});
 const numPages = computed(() => Math.ceil(students.value.length / perPage.value));
 const currentPageHuman = computed(() => currentPage.value + 1);
 

@@ -2,7 +2,7 @@
 import { ref, onMounted, watch } from "vue";
 import { useRouter, useRoute } from "vue-router";
 import axios from "axios";
-import { mdiAccountMultiple, mdiAccount } from "@mdi/js";
+import { mdiAccountMultiple, mdiAccount, mdiAccountGroup } from "@mdi/js";
 
 import { adminStore, mainStore, snackBarStore } from "@/main.js";
 import { UserTaskMappings, SendTaskMappings } from "@/helpers/maps";
@@ -103,6 +103,10 @@ function getPostDataForSendEmail() {
 	};
 }
 
+const toggleActiveEventsFilter = () => {
+	adminStore.filterFinishedInstances = !adminStore.filterFinishedInstances;
+};
+
 async function sendAnAdditionalEmail() {
 	let { postData, template, to } = getPostDataForSendEmail();
 
@@ -144,7 +148,9 @@ onMounted(loadDataForStudent);
 		<LayoutAuthenticated v-if="mainStore.userAuthenticated">
 			<SectionMain>
 				<SectionTitleLineWithButton :icon="mdiAccountMultiple" title="Studenti u procesu prakse" button-enabled main @click="bpmn_help_modal = true"> </SectionTitleLineWithButton>
-
+				<div class="flex flex-row">
+					<div class="mb-4"><PillTag class="cursor-pointer" :left="false" :icon="adminStore.filterFinishedInstances ? mdiAccountGroup : mdiAccountMultiple" :color="adminStore.filterFinishedInstances ? 'info' : 'success'" :label="adminStore.filterFinishedInstances ? 'Sve instance' : 'Samo aktivne'" @click="toggleActiveEventsFilter" /></div>
+				</div>
 				<CardBox has-table>
 					<TableStudents @show-student-diagram="handleProcessDiagram" />
 				</CardBox>
@@ -180,7 +186,7 @@ onMounted(loadDataForStudent);
 					</FormField>
 				</CardBoxModal>
 
-				<CardBoxModal v-if="bpmn_help_modal" v-model="bpmn_help_modal" :title="'BPMN Graf - Upute'" button-label="Povratak">
+				<CardBoxModal v-if="bpmn_help_modal" v-model="bpmn_help_modal" :title="'BPMN Graf - Legenda'" button-label="Povratak">
 					<div class="flex items-center space-x-4 mb-4">
 						<img :src="BPMN_blue" alt="Description 1" class="w-32 h-32 object-contain" />
 						<p class="text-sm"><b>Plava boja</b> - pending task. Zahtjeva akciju studenta ili poslodavca.</p>

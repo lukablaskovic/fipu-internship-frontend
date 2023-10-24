@@ -1,7 +1,7 @@
 <script setup>
 import { ref, computed, onMounted, watch } from "vue";
 import { adminStore, mainStore, snackBarStore } from "@/main.js";
-import { mdiAccountMultiple, mdiAccountSchoolOutline, mdiProgressClock, mdiViewDashboard, mdiCommentProcessing, mdiMonitorAccount, mdiAccountCancel, mdiAlphaSBox, mdiClockTimeEight, mdiCalendarClock, mdiChartBar, mdiAccountGroup } from "@mdi/js";
+import { mdiAccountMultiple, mdiAccountSchoolOutline, mdiProgressClock, mdiViewDashboard, mdiCommentProcessing, mdiMonitorAccount, mdiAccountCancel, mdiAlphaSBox, mdiClockTimeEight, mdiCalendarClock, mdiAccountGroup } from "@mdi/js";
 import { useRouter } from "vue-router";
 import moment from "@/moment-setup";
 import { useLayoutStore } from "@/stores/layout.js";
