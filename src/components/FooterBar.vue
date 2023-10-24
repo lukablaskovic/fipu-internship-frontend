@@ -13,7 +13,7 @@ const year = new Date().getFullYear();
 				<slot />
 			</div>
 			<div class="md:py-2">
-				<p>FIPU Praksa v1.0</p>
+				<p>FIPU Praksa v1.0.0</p>
 			</div>
 		</BaseLevel>
 	</footer>
