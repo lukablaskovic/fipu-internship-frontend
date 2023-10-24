@@ -187,7 +187,7 @@ const menuClick = (event, item) => {
 				<ol class="list-decimal ml-4">
 					<li>Dashboard se trenutno sastoji od 2 dijela - <b>Nadzorna ploča</b>, gdje možete vidjeti općenite numeričke podatke o izvođenju prakse, te <b>Najnoviji događaji</b>, gdje se nalaze event logovi iz BPMN engine-a</li>
 					<li>Možete stisnuti na pojedini event log, što će vas odnijeti na studenti/:id gdje je id jednak instanci tog procesa prakse za tog studenta</li>
-					<li>Tražilicu možete otvoriti pritiskom <b>CTRL + k</b> ili <b>/</b>. Običnim upisivanjem možete brzo prelaziti kroz stranice aplikacije, a prefiksima (ispisani su u uputama tražilice) mogu se tražiti određene stavke, poput studenata po JMBAGU, emailu, ili poduzeća.</li>
+					<li>Tražilicu možete otvoriti pritiskom <b>CTRL + k</b>. Običnim upisivanjem možete brzo prelaziti kroz stranice aplikacije, a prefiksima (ispisani su u uputama tražilice) mogu se tražiti određene stavke, poput studenata po JMBAGU, emailu, ili poduzeća.</li>
 				</ol>
 
 				<BaseDivider></BaseDivider>

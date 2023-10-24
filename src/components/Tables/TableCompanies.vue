@@ -17,9 +17,21 @@ defineProps({
 
 const perPage = ref(5);
 const currentPage = ref(0);
-const companiesPaginated = computed(() => allCompanies.value.slice(perPage.value * currentPage.value, perPage.value * (currentPage.value + 1)));
 
-const numPages = computed(() => Math.ceil(allCompanies.value.length / perPage.value));
+const filteredCompanies = computed(() => {
+	return allCompanies.value.filter((company) => {
+		return company["OIB"] && company["maticni_broj"];
+	});
+});
+
+const companiesPaginated = computed(() => {
+	return filteredCompanies.value.slice(perPage.value * currentPage.value, perPage.value * (currentPage.value + 1));
+});
+
+const numPages = computed(() => {
+	return Math.ceil(filteredCompanies.value.length / perPage.value);
+});
+
 const currentPageHuman = computed(() => currentPage.value + 1);
 
 const pagesList = computed(() => {

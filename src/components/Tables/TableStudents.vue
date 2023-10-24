@@ -60,7 +60,8 @@ const studentsPaginated = computed(() => {
 
 	return filteredStudents.slice(perPage.value * currentPage.value, perPage.value * (currentPage.value + 1));
 });
-const numPages = computed(() => Math.ceil(students.value.length / perPage.value));
+const numPages = computed(() => Math.ceil(studentsPaginated.value.length / perPage.value));
+
 const currentPageHuman = computed(() => currentPage.value + 1);
 
 const pagesList = computed(() => {

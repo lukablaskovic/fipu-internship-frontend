@@ -32,10 +32,15 @@ function getVariableByIdAlokacija(id_alokacija, variableName) {
 	return student ? student.process_instance_data.variables[variableName] : null;
 }
 
+function getVariableByJMBAG(jmbag, variableName) {
+	const student = adminStore.students.find((stud) => stud.process_instance_data.variables.JMBAG == jmbag);
+	return student ? student.process_instance_data.variables[variableName] : null;
+}
+
 async function fetchPDF(type, search) {
 	let result = await adminStore.fetchPDF(search);
 	let url;
-
+	console.log(result.data.results[0]);
 	if (type == "potvrda") {
 		url = result.data.results[0]["ispunjena_potvrda_upload"][0].url;
 	} else {
@@ -81,8 +86,8 @@ const pagesList = computed(() => {
 			<tr v-for="allocation in allocationsPaginated" :key="allocation['id_alokacija']">
 				<TableCheckboxCell v-if="checkable" :assignment-data="company" />
 				<td data-label="Ime i prezime">
-					{{ getVariableByIdAlokacija(allocation["id_alokacija"], "student_ime") }}
-					{{ getVariableByIdAlokacija(allocation["id_alokacija"], "student_prezime") }}
+					{{ getVariableByJMBAG(allocation["JMBAG"], "student_ime") }}
+					{{ getVariableByJMBAG(allocation["JMBAG"], "student_prezime") }}
 				</td>
 				<td data-label="JMBAG">
 					{{ allocation["JMBAG"] }}
@@ -106,8 +111,8 @@ const pagesList = computed(() => {
 				<td data-label="Dnevnik prakse predan">
 					<div class="flex items-center">
 						<TableCheckboxCell readonly :value="allocation[(allocation, 'predan_dnevnik_prakse')]" />
-						<p v-if="allocation['predan_dnevnik_prakse'] && mainStore.userAdmin" class="text-sm underline cursor-pointer hover:text-fipu_light_blue ml-8" @click="fetchPDF('potvrda', getVariableByIdAlokacija(allocation['id_alokacija']))">Otvori potvrdu📃</p>
-						<p v-if="allocation['predan_dnevnik_prakse'] && mainStore.userAdmin" class="text-sm underline cursor-pointer hover:text-fipu_light_blue ml-8" @click="fetchPDF('dnevnik', getVariableByIdAlokacija(allocation['id_alokacija']))">Otvori dnevnik📓</p>
+						<p v-if="allocation['predan_dnevnik_prakse'] && mainStore.userAdmin" class="text-sm underline cursor-pointer hover:text-fipu_light_blue ml-8" @click="fetchPDF('potvrda', getVariableByIdAlokacija(allocation['id_alokacija'], 'id_dnevnik_prakse'))">Otvori potvrdu📃</p>
+						<p v-if="allocation['predan_dnevnik_prakse'] && mainStore.userAdmin" class="text-sm underline cursor-pointer hover:text-fipu_light_blue ml-8" @click="fetchPDF('dnevnik', getVariableByIdAlokacija(allocation['id_alokacija'], 'id_dnevnik_prakse'))">Otvori dnevnik📓</p>
 					</div>
 				</td>
 			</tr>

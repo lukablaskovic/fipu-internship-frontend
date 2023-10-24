@@ -2,7 +2,7 @@
 	<Combobox v-model="selectedValue">
 		<div class="relative">
 			<div class="relative w-full cursor-default overflow-hidden rounded-lg bg-white dark:bg-gray-900 text-left shadow-md focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75 focus-visible:ring-offset-2 focus-visible:ring-offset-blue-300 sm:text-sm">
-				<ComboboxInput v-model="displayValue" placeholder="CTRL + k ili [ / ] za pretraživanje" class="inputClass w-64 md:w-96 border-none py-2 pl-3 pr-10 text-sm leading-5 text-gray-900 dark:text-gray-300 bg-gray-50 dark:bg-gray-900 focus:ring-0" autocomplete="off" @change="query = $event.target.value" />
+				<ComboboxInput v-model="displayValue" placeholder="CTRL + k za pretraživanje" class="inputClass w-64 md:w-96 border-none py-2 pl-3 pr-10 text-sm leading-5 text-gray-900 dark:text-gray-300 bg-gray-50 dark:bg-gray-900 focus:ring-0" autocomplete="off" @change="query = $event.target.value" />
 				<ComboboxButton class="absolute inset-y-0 right-0 flex items-center pr-2" @click="showHelp">
 					<MdiMagnify class="h-5 w-5 text-gray-700 hover:text-fipu_blue" aria-hidden="true" />
 				</ComboboxButton>
@@ -138,12 +138,6 @@ function showHelp() {
 
 onMounted(async () => {
 	function onKeydown(event) {
-		if (event.key === "/") {
-			event.preventDefault();
-			searchInput.value = document.querySelector(".inputClass");
-			searchInput.value && searchInput.value.focus();
-		}
-
 		// Check for the 'CTRL + K' combination
 		if (event.key.toLowerCase() === "k" && event.ctrlKey) {
 			event.preventDefault(); // Prevent default behavior

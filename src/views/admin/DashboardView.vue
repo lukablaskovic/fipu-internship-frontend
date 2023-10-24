@@ -98,7 +98,7 @@ const leftItems = computed(() => {
 const rightItems = computed(() => {
 	return itemsPaginated.value.slice(5, 10);
 });
-const numPages = computed(() => Math.ceil(events.value.length / perPage.value));
+const numPages = computed(() => Math.ceil(filteredEvents.value.length / perPage.value));
 const currentPageHuman = computed(() => currentPage.value + 1);
 const pagesList = computed(() => {
 	const pagesList = [];
