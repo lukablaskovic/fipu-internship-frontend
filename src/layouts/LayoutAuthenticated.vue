@@ -203,7 +203,7 @@ const menuClick = (event, item) => {
 						</div>
 					</li>
 					<li>Postoji nekoliko stanja alokacija: <em>student_prihvaćen</em>, <em>student_odbijen</em>, <em>evaluacija_u_tijeku</em>, <em>student_odustao</em>, <em>profesor_ponistio</em>.</li>
-					<li>U alokaciji se za sada prikazuju samo<em>student_prihvaćen</em>, <em>evaluacija_u_tijeku</em> <em>te student_odbijen</em>.</li>
+					<li>U alokaciji se za sada prikazuju: <em>student_prihvaćen</em>, <em>evaluacija_u_tijeku</em> <em>te student_odbijen</em>.</li>
 					<li>Možete za svakog studenta pregledati dnevnik prakse te poslanu prijavnicu.</li>
 				</ol>
 				<BaseDivider></BaseDivider>
@@ -220,7 +220,7 @@ const menuClick = (event, item) => {
 					</li>
 					<li>Poslodavci su podijeljeni u 2 tablice: <b>Novi Poslodavci</b> i <b>Svi Poslodavci</b>. Tablica Novi Poslodavci će prikazivati nove retke nakon što novo poduzeće (koje još nije partner) prijavi zadatak.</li>
 					<li>Tada je potrebno ručno unijeti podatke o poduzeću</li>
-					<li>Stvari je moguće ažurirati i direktno kroz bazu podataka Baserow.</li>
+					<li>Podatke o poslodavcu je moguće i direktno ažurirati Baserowu.</li>
 				</ol>
 				<BaseDivider></BaseDivider>
 				<div class="text-xl mb-2">Dostupni Zadaci</div>

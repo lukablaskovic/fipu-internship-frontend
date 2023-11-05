@@ -113,12 +113,6 @@ const rules = {
 	dogovoreni_broj_sati: {
 		required: helpers.withMessage("Polje je obavezno", required),
 		numeric: helpers.withMessage("Broj sati može sadržavati samo brojeve", numeric),
-		minRange: helpers.withMessage("Broj sati mora biti najmanje 90", (value) => {
-			return value >= 90;
-		}),
-		maxRange: helpers.withMessage("Broj sati ne smije biti veći od 150", (value) => {
-			return value <= 150;
-		}),
 	},
 	pocetak_prakse: {
 		required: helpers.withMessage("Polje je obavezno", required),
@@ -241,7 +235,7 @@ async function submit_application_form() {
 						<FormControl v-model="form.detaljan_opis_zadatka" type="textarea" :error="getFirstErrorForField(v$, 'detaljan_opis_zadatka')" :icon-left="mdiTextLong" placeholder="Detaljno opišite zadatak koji će se izvršavati na praksi." />
 					</FormField>
 
-					<FormField label="Dogovoreni broj sati" help="Mora biti u rasopnu od 90 do 150 sati." horizontal>
+					<FormField label="Dogovoreni broj sati" horizontal>
 						<FormField addons>
 							<FormControl v-model="form.dogovoreni_broj_sati" type="number" :icon-left="mdiClockTimeFiveOutline" placeholder="Dogovoreni broj sati" :error="getFirstErrorForField(v$, 'dogovoreni_broj_sati')" expanded />
 						</FormField>

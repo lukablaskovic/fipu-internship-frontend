@@ -291,7 +291,7 @@ const onCompanyChange = () => {
 								type="number"
 								:error="getFirstErrorForField(v$, 'trajanje_sati')"
 								:icon-left="mdiClockTimeFiveOutline"
-								placeholder="90 - 150 radnih sati"
+								placeholder="Preporuka je 90 - 150 radnih sati"
 								help="Preporučeno trajanje studentske prakse je između 90 i 150 radnih sati. U dogovoru sa studentom može se kasnije taj angažman produljiti. Dogovor kako će se izvršiti tih 90-150 sati je između vas i studenta (npr. koncentrirano u 2-3 tjedna ili par puta tjedno kroz dulje vrijeme).
 "
 								expanded />
