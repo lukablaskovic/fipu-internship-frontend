@@ -112,16 +112,16 @@ function navigateToRegister() {
 <template>
 	<SectionSplitLogin bg="blue" class="flex items-start min-h-screen">
 		<Transition appear enter-active-class="animate__animated animate__fadeIn" leave-active-class="animate__animated animate__slideOutRight fast-animation" @after-leave="navigateToRegister">
-			<div v-if="!transitioning" class="flex flex-col justify-center items-center overflow-hidden h-screen md:py-4 2xl:py-12 md:px-4 || transition-all duration-300">
+			<div v-if="!transitioning" class="flex flex-col justify-center items-center overflow-hidden h-screen md:py-4 xl:py-4 2xl:py-8 md:px-4 || transition-all duration-300">
 				<div class="flex flex-col md:flex-row flex-shrink h-full rounded-lg overflow-hidden">
 					<div class="flex flex-col md:flex-row flex-shrink h-full || bg-white overflow-y-auto fipu_vertical_scrollbar || transition-all duration-300 px-0 lg:px-6 xl:px-16 2xl:px-28 || xl:gap-4 2xl:gap-8">
-						<CardBox has-table class="hidden xl:flex justify-center items-center flex-1 bg-opacity-0 grow p-16 xl:px-0 xl:py-16 2xl:py-24 || transition-all duration-300">
-							<img :src="loginArt" alt="Login graphics" class="2xl:pr-8 aspect-square max-h-full" />
+						<CardBox has-table class="hidden xl:flex justify-center items-center flex-1 bg-opacity-0 grow p-16 xl:px-0 ultrawide xl:py-16 2xl:py-24 || transition-all duration-300">
+							<img :src="loginArt" alt="Login graphics" class="2xl:pr-8 ultrawide:w-3/4 ultrawide:pr-0 aspect-square max-h-full" />
 						</CardBox>
 
 						<CardBox has-table vertical-centered class="flex flex-col flex-shrink flex-1 bg-opacity-0 p-8 sm:p-16 xl:pl-2 xl:px-0 xl:py-24 || transition-all duration-300" is-form @submit.prevent="onSubmit">
 							<a href="https://fipu.unipu.hr/" target="_blank">
-								<img :src="fipu_unipu" alt="fipu logo" class="h-20 xl:h-20 mb-6 object-contain transition-all duration-300" />
+								<img :src="fipu_unipu" alt="fipu logo" class="h-20 xl:h-20 2xl:h-16 ultrawide:h-28 mb-3 2xl:mb-4 object-contain transition-all duration-300" />
 							</a>
 							<h2 class="text-2xl lg:text-3xl 2xl:text-4xl text-fipu_gray font-bold xl:mb-1 mb-2 md:mb-0 2xl:mb-4">Dobrodošli u <span class="text-fipu_blue">FIPU Praksa</span></h2>
 

@@ -40,7 +40,6 @@ function getVariableByJMBAG(jmbag, variableName) {
 async function fetchPDF(type, search) {
 	let result = await adminStore.fetchPDF(search);
 	let url;
-	console.log(result.data.results[0]);
 	if (type == "potvrda") {
 		url = result.data.results[0]["ispunjena_potvrda_upload"][0].url;
 	} else {

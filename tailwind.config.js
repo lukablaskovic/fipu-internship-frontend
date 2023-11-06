@@ -17,7 +17,12 @@ module.exports = {
 			warning: "yellow",
 			danger: "red",
 		},
+
 		extend: {
+			screens: {
+				"3xl": "1600px",
+				ultrawide: "2560px",
+			},
 			colors: {
 				fipu_blue: "#46bae0", //"#74d4f4",
 				fipu_gray: "#212529",

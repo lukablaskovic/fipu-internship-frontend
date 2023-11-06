@@ -93,7 +93,7 @@ async function submit_diary_form() {
 	<component :is="Layout">
 		<SectionMain v-if="allocated_assignment != null">
 			<SectionTitleLineWithButton :icon="mdiLaptop" title="Moja Praksa" main> </SectionTitleLineWithButton>
-			<p><b>Akademska godina:</b> 2023/2024</p>
+			<p><b>Akademska godina:</b> {{ mainStore.academicYear }}</p>
 			<p><b>Voditelj:</b> doc. dr. sc. Nikola Tanković</p>
 			<hr />
 			<br />

@@ -48,7 +48,7 @@ async function getAssignmentDetailsInModal(assignment_id) {
 	<component :is="Layout">
 		<SectionMain>
 			<SectionTitleLineWithButton :icon="mdiLaptop" title="Moja Praksa" main> </SectionTitleLineWithButton>
-			<p><b>Akademska godina:</b> 2023/2024</p>
+			<p><b>Akademska godina:</b> {{ mainStore.academicYear }}</p>
 			<p><b>Voditelj:</b> doc. dr. sc. Nikola Tanković</p>
 			<hr />
 			<br />

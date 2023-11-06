@@ -67,6 +67,17 @@ export const useMainStore = defineStore("main", {
 		userAdmin() {
 			return this.currentUser && this.currentUser.account_type === "admin";
 		},
+		academicYear() {
+			const today = new Date();
+			const year = today.getFullYear();
+			const month = today.getMonth();
+
+			if (month < 9) {
+				return `${year - 1}/${year}`;
+			} else {
+				return `${year}/${year + 1}`;
+			}
+		},
 	},
 	actions: {
 		async fetchCurrentUser() {

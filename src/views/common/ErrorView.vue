@@ -8,7 +8,7 @@ import CardBox from "@/components/Cardbox/CardBox.vue";
 		<CardBox class="rounded-lg" :class="cardClass">
 			<div class="space-y-3">
 				<h1 class="text-2xl">❌Nešto se zeznulo. Sorry!</h1>
-				<p>Aplikacija ne radi. Vjerojatno radimo na tome, probaj refreshat!</p>
+				<p>Aplikacija ne radi. Vjerojatno radimo na tome, probaj refreshati!</p>
 			</div>
 		</CardBox>
 	</SectionFullScreen>

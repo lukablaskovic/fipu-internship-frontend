@@ -192,7 +192,7 @@ const onCompanyChange = () => {
 					<img :src="FIPU_praksa_logo_transparent" class="max-h-14 object-contain" />
 				</a>
 			</SectionTitleLineWithButton>
-			<p><b>Akademska godina:</b> 2023/2024</p>
+			<p><b>Akademska godina:</b> {{ mainStore.academicYear }}</p>
 			<p><b>Voditelj:</b> doc. dr. sc. Nikola Tanković</p>
 			<hr />
 			<br />
@@ -292,7 +292,7 @@ const onCompanyChange = () => {
 								:error="getFirstErrorForField(v$, 'trajanje_sati')"
 								:icon-left="mdiClockTimeFiveOutline"
 								placeholder="Preporuka je 90 - 150 radnih sati"
-								help="Preporučeno trajanje studentske prakse je između 90 i 150 radnih sati. U dogovoru sa studentom može se kasnije taj angažman produljiti. Dogovor kako će se izvršiti tih 90-150 sati je između vas i studenta (npr. koncentrirano u 2-3 tjedna ili par puta tjedno kroz dulje vrijeme).
+								help="Preporučeno trajanje studentske prakse je između 90 i 150 radnih sati. U dogovoru sa studentom može se kasnije taj angažman produljiti. Dogovor kako će se izvršiti ti sati je između vas i studenta (npr. koncentrirano u 2-3 tjedna ili par puta tjedno kroz dulje vrijeme).
 "
 								expanded />
 						</FormField>

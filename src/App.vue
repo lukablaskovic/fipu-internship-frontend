@@ -27,6 +27,7 @@ onUnmounted(() => {
 	clearInterval(intervalId);
 });
 
+/*
 watchEffect(() => {
 	const downServices = Object.entries(serviceStatuses.value).filter(([, status]) => status.status !== "OK");
 
@@ -38,6 +39,7 @@ watchEffect(() => {
 		mainStore.servicesUp = true;
 	}
 });
+*/
 </script>
 
 <template>

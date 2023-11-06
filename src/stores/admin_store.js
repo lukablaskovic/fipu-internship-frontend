@@ -85,7 +85,6 @@ export const useAdminStore = defineStore("admin", {
 
 		async fetchPDF(query = "") {
 			try {
-				console.log(query);
 				let result = await Student.fetchPDF(query);
 				return result;
 			} catch (e) {
@@ -99,8 +98,7 @@ export const useAdminStore = defineStore("admin", {
 		async getProcessInstanceData(student) {
 			try {
 				const response = await ProcessInstance.get(student.process_instance_id);
-				console.log("student.process_instance_id", student.process_instance_id);
-				console.log("process_instance_data", response);
+
 				return response;
 			} catch (error) {
 				console.log("Error:", error);
@@ -118,7 +116,6 @@ export const useAdminStore = defineStore("admin", {
 			try {
 				this.studentsFetched = false;
 				const students = await User.getStudents();
-				console.log(students);
 
 				if (!students || students.length === 0) {
 					this.students = [];
@@ -177,7 +174,6 @@ export const useAdminStore = defineStore("admin", {
 				const response = await Model.search();
 				const model = response.results.find((result) => result.model_path === `${mainStore.bpmn_process_name}.bpmn`);
 				if (model && model.instances) {
-					console.log(model.instances);
 					this.dashboard_data.ongoing_internships = model.instances.length - this.dashboard_data.finished_internships;
 				}
 

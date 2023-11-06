@@ -175,7 +175,7 @@ async function submit_application_form() {
 	<component :is="Layout">
 		<SectionMain v-if="allocated_assignment != null">
 			<SectionTitleLineWithButton :icon="mdiLaptop" title="Moja Praksa" main> </SectionTitleLineWithButton>
-			<p><b>Akademska godina:</b> 2023/2024</p>
+			<p><b>Akademska godina:</b> {{ mainStore.academicYear }}</p>
 			<p><b>Voditelj:</b> doc. dr. sc. Nikola Tanković</p>
 			<hr />
 			<br />
@@ -228,7 +228,7 @@ async function submit_application_form() {
 					</FormField>
 
 					<FormField label="Email mentora" horizontal>
-						<FormControl v-model="form.mentor_email" :icon-left="mdiMail" :error="getFirstErrorForField(v$, 'mentor_email')" type="email" help="Email vašeg mentora" placeholder="Email mentora" />
+						<FormControl v-model="form.mentor_email" :icon-left="mdiMail" :error="getFirstErrorForField(v$, 'mentor_email')" type="email" help="Email mentora" placeholder="Email mentora" />
 					</FormField>
 					<BaseDivider />
 					<FormField label="Detaljan opis zadatka" horizontal>
@@ -242,11 +242,11 @@ async function submit_application_form() {
 					</FormField>
 
 					<FormField label="Datum početka" horizontal>
-						<FormControl v-model="form.pocetak_prakse" :icon-left="mdiCalendarWeekBegin" :error="getFirstErrorForField(v$, 'pocetak_prakse')" type="date" />
+						<FormControl v-model="form.pocetak_prakse" :error="getFirstErrorForField(v$, 'pocetak_prakse')" type="date" />
 					</FormField>
 
 					<FormField label="Datum završetka" horizontal>
-						<FormControl v-model="form.kraj_prakse" :icon-left="mdiCalendarEnd" :error="getFirstErrorForField(v$, 'kraj_prakse')" type="date" />
+						<FormControl v-model="form.kraj_prakse" :error="getFirstErrorForField(v$, 'kraj_prakse')" type="date" />
 					</FormField>
 
 					<BaseDivider />

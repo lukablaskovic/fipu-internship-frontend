@@ -154,7 +154,7 @@ function navigateToLogin() {
 <template>
 	<SectionSplitRegister bg="blue" class="flex items-start min-h-screen">
 		<Transition appear enter-active-class="animate__animated animate__slideInLeft fast-animation" leave-active-class="animate__animated animate__slideOutLeft fast-animation" @after-leave="navigateToLogin">
-			<div v-if="!transitioning" class="flex flex-col justify-center items-center overflow-hidden h-screen md:py-12 md:px-4 || transition-all duration-300">
+			<div v-if="!transitioning" class="flex flex-col justify-center items-center overflow-hidden h-screen md:py-2 xl:py-4 2xl:py-24 md:px-4 || transition-all duration-300">
 				<div class="flex flex-col md:flex-row flex-shrink h-full rounded-lg overflow-hidden">
 					<div class="flex flex-col md:flex-row flex-shrink h-full || bg-white overflow-y-auto fipu_vertical_scrollbar || transition-all duration-300 px-0 lg:px-6 xl:px-16 2xl:px-28 || xl:gap-4 2xl:gap-8">
 						<CardBox has-table class="hidden xl:flex justify-center items-center flex-1 bg-opacity-0 grow p-16 xl:px-0 xl:py-16 2xl:py-24 || transition-all duration-300">
@@ -163,7 +163,7 @@ function navigateToLogin() {
 
 						<CardBox has-table vertical-centered class="flex flex-col flex-shrink flex-1 bg-opacity-0 p-8 sm:p-16 xl:pl-2 xl:px-0 xl:py-24 || transition-all duration-300" is-form @submit.prevent="onSubmit">
 							<a href="https://fipu.unipu.hr/" target="_blank">
-								<img :src="fipu_unipu" alt="fipu logo" class="h-20 xl:h-20 mb-6 object-contain transition-all duration-300" />
+								<img :src="fipu_unipu" alt="fipu logo" class="h-20 xl:h-20 2xl:h-16 ultrawide:h-28 mb-3 2xl:mb-4 object-contain transition-all duration-300" />
 							</a>
 							<h2 class="text-2xl lg:text-3xl 2xl:text-4xl text-fipu_gray font-bold xl:mb-1 mb-2 md:mb-0 2xl:mb-4">Molimo unesite vaše podatke</h2>
 							<h2 class="md:text-sm lg:text-sm 2xl:text-base mb-2 2xl:mb-4 text-justify">
