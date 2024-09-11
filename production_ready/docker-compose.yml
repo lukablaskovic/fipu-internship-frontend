@@ -3,16 +3,6 @@ version: "3.4"
 services:
   fipu-praksa-frontend:
     image: lukablaskovic/fp-fipu-internship-frontend
-    env_file:
-      - .env
-    environment:
-      - VITE_FRONTEND_URL=${VITE_FRONTEND_URL}
-      - VITE_GATEWAY_API_URL=${VITE_GATEWAY_API_URL}
-      - VITE_BPMN_ENGINE_API_URL=${VITE_BPMN_ENGINE_API_URL}
-      - VITE_BASEROW_API_URL=${VITE_BASEROW_API_URL}
-      - VITE_SENDGRID_API_URL=${VITE_SENDGRID_API_URL}
-      - VITE_PDF_API_URL=${VITE_PDF_API_URL}
-      - VITE_BUGSNAG=${VITE_BUGSNAG}
     depends_on:
       - postgres-db
       - baserow-db
