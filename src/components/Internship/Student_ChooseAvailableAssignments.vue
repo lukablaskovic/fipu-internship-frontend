@@ -1,5 +1,5 @@
 <script setup>
-import { ref, computed, nextTick } from "vue";
+import { ref, computed } from "vue";
 import draggable from "vuedraggable";
 import { mdiClipboardCheckOutline, mdiClipboardTextOutline, mdiLaptop, mdiAlertCircle, mdiCheckCircle, mdiAlert, mdiClose } from "@mdi/js";
 
@@ -88,12 +88,6 @@ const registerPreferences = async () => {
 };
 
 const vas_odabir = ref(null);
-
-const scrollToSelection = () => {
-	nextTick(() => {
-		vas_odabir.value.$el.scrollIntoView({ behavior: "smooth" });
-	});
-};
 
 let wiggleEnabled = ref(true);
 const isFadedOut = ref(false);

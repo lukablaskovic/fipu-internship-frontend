@@ -1,10 +1,11 @@
-FROM nginx:alpine
+FROM node:latest as build-stage
+WORKDIR /app
+COPY package*.json ./
+RUN npm install
+COPY ./ .
+RUN npm run build
 
-COPY ./dist /usr/share/nginx/html
-
+FROM nginx as production-stage
+RUN mkdir /app
+COPY --from=build-stage /app/dist /app
 COPY nginx.conf /etc/nginx/nginx.conf
-RUN ln -snf /usr/share/zoneinfo/Europe/Berlin /etc/localtime && echo Europe/Berlin > /etc/timezone
-
-EXPOSE 3000
-
-CMD ["nginx", "-g", "daemon off;"]

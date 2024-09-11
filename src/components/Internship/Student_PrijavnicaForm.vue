@@ -1,9 +1,9 @@
 <script setup>
 import { ref, computed, onMounted, reactive } from "vue";
-import { mdiFileDocumentEdit, mdiLaptop, mdiBallot, mdiAccount, mdiMail, mdiClipboardCheck, mdiPhone, mdiCardAccountDetailsOutline, mdiDomain, mdiClockTimeFiveOutline, mdiTextLong, mdiCalendarWeekBegin, mdiCalendarEnd } from "@mdi/js";
+import { mdiFileDocumentEdit, mdiLaptop, mdiBallot, mdiAccount, mdiMail, mdiClipboardCheck, mdiPhone, mdiCardAccountDetailsOutline, mdiDomain, mdiClockTimeFiveOutline, mdiTextLong } from "@mdi/js";
 import { useVuelidate } from "@vuelidate/core";
-import { required, email, minLength, sameAs, helpers, numeric } from "@vuelidate/validators";
-import { croatianAlpha, getFirstErrorForField, isUnipuEmail, exactLength, containsAlpha, containsNumeric } from "@/helpers/validators";
+import { required, email, helpers, numeric } from "@vuelidate/validators";
+import { croatianAlpha, getFirstErrorForField, isUnipuEmail, exactLength, containsNumeric } from "@/helpers/validators";
 
 import LayoutAuthenticated from "@/layouts/LayoutAuthenticated.vue";
 import LayoutGuest from "@/layouts/LayoutGuest.vue";
