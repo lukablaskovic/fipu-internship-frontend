@@ -45,7 +45,10 @@ const Control = {
 							status_check_timestamp: new Date(),
 						},
 					}))
-					.catch(() => serviceStatusError(serviceName, serviceData.url))
+					.catch((error) => {
+						console.error(error);
+						return serviceStatusError(serviceName, serviceData.url);
+					})
 			)
 		);
 		return Object.assign({}, ...statuses);
