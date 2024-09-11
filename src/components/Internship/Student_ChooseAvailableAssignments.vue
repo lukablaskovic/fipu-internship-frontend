@@ -111,7 +111,7 @@ const isDraggableEnabled = computed(() => checkedAssignments.value.length === 3)
 		<SectionMain>
 			<SectionTitleLineWithButton :icon="mdiLaptop" title="Moja Praksa" main> </SectionTitleLineWithButton>
 			<p><b>Akademska godina:</b> {{ mainStore.academicYear }}</p>
-			<p><b>Voditelj:</b> doc. dr. sc. Nikola Tanković</p>
+			<p><b>Voditelj:</b> {{ mainStore.voditelj_prakse }}</p>
 			<hr />
 			<br />
 			<SectionTitleLineWithButton :icon="mdiClipboardTextOutline" main title="Dostupni zadaci za praksu"></SectionTitleLineWithButton>

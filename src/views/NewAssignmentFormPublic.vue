@@ -193,7 +193,7 @@ const onCompanyChange = () => {
 				</a>
 			</SectionTitleLineWithButton>
 			<p><b>Akademska godina:</b> {{ mainStore.academicYear }}</p>
-			<p><b>Voditelj:</b> doc. dr. sc. Nikola Tanković</p>
+			<p><b>Voditelj:</b> doc. dr. sc. Ivan Lorencin</p>
 			<hr />
 			<br />
 			<SectionTitleLineWithButton :icon="mdiClipboardText" main title="Prijava zadatka (Poslodavci)"></SectionTitleLineWithButton>
@@ -214,12 +214,12 @@ const onCompanyChange = () => {
 						<div class="flex items-start">
 							<div class="shrink-0">
 								<div class="inline-block rounded-md bg-primary-100 p-4 w-24 h-24 text-primary items-center">
-									<a href="https://ntankovic.unipu.hr/" target="_blank"><img class="rounded-full" src="https://avatars.githubusercontent.com/u/714889?v=4" alt="Nikola Tanković" /></a>
+									<a href="https://fipu.unipu.hr/fipu/ivan.lorencin" target="_blank"><img class="rounded-full" src="https://fipu.unipu.hr/images/users_profiles/Ivan-Lorencin.jpg" alt="Ivan Lorencin" /></a>
 								</div>
 							</div>
 							<div class="ml-3 grow">
-								<p class="mb-2 font-bold dark:text-white">doc. dr. sc. Nikola Tanković</p>
-								<p class="text-neutral-500 dark:text-neutral-200">nikola.tankovic@unipu.hr</p>
+								<p class="mb-2 font-bold dark:text-white">doc. dr. sc. Ivan Lorencin</p>
+								<p class="text-neutral-500 dark:text-neutral-200">ivan.lorencin@unipu.hr</p>
 								<p class="text-neutral-500 dark:text-neutral-200">+385 98 30 56 73</p>
 							</div>
 						</div>

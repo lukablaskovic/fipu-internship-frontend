@@ -252,7 +252,7 @@ const menuClick = (event, item) => {
 			<div class="mt-6">
 				<FooterBar
 					><br />
-					Made with <span style="color: #e25555">&#9829;</span> at FIPU.lab</FooterBar
+					Made with <span style="color: #e25555">&#9829;</span> at <a :href="mainStore.fipulab_web" target="_blank" class="hover-underline-animation cursor-pointer text-fipu_text_blue hover:text-fipu_blue">FIPU.lab</a></FooterBar
 				>
 			</div>
 			<SnackBar />

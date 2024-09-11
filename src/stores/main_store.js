@@ -8,6 +8,9 @@ import { Guest, Student, Admin } from "@/services/baserow_client_api";
 
 export const useMainStore = defineStore("main", {
 	state: () => ({
+		voditelj_prakse: "doc. dr. sc. Ivan Lorencin",
+		fipulab_web: "https://goreski.github.io/FIPULabWeb/",
+
 		servicesUp: true,
 		depth: 5,
 		debug: false,

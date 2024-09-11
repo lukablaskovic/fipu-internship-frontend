@@ -154,7 +154,7 @@ function navigateToLogin() {
 <template>
 	<SectionSplitRegister bg="blue" class="flex items-start min-h-screen">
 		<Transition appear enter-active-class="animate__animated animate__slideInLeft fast-animation" leave-active-class="animate__animated animate__slideOutLeft fast-animation" @after-leave="navigateToLogin">
-			<div v-if="!transitioning" class="flex flex-col justify-center items-center overflow-hidden h-screen md:py-2 xl:py-4 2xl:py-24 md:px-4 || transition-all duration-300">
+			<div v-if="!transitioning" class="flex flex-col justify-center items-center overflow-hidden h-screen md:py-2 xl:py-4 md:px-4 || transition-all duration-300">
 				<div class="flex flex-col md:flex-row flex-shrink h-full rounded-lg overflow-hidden">
 					<div class="flex flex-col md:flex-row flex-shrink h-full || bg-white overflow-y-auto fipu_vertical_scrollbar || transition-all duration-300 px-0 lg:px-6 xl:px-16 2xl:px-28 || xl:gap-4 2xl:gap-8">
 						<CardBox has-table class="hidden xl:flex justify-center items-center flex-1 bg-opacity-0 grow p-16 xl:px-0 xl:py-16 2xl:py-24 || transition-all duration-300">
@@ -203,7 +203,7 @@ function navigateToLogin() {
 									</FormField>
 
 									<div class="mt-2 lg:mt-8 flex items-center">
-										<FormCheckRadio v-model="data_confirmed" name="data_confirmed" type="checkbox" label="Potvrđujem ispravnost podataka." :input-value="true" />
+										<FormCheckRadio v-model="data_confirmed" name="data_confirmed" type="checkbox" label="Potvrđujem da sam pregledao i unio točne osobne podatke." :input-value="true" />
 									</div>
 								</div>
 							</div>

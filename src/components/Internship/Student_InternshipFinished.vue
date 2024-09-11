@@ -53,7 +53,7 @@ const Layout = computed(() => {
 		<SectionMain v-if="allocated_assignment != null">
 			<SectionTitleLineWithButton :icon="mdiLaptop" title="Moja Praksa" main> </SectionTitleLineWithButton>
 			<p><b>Akademska godina:</b> {{ mainStore.academicYear }}</p>
-			<p><b>Voditelj:</b> doc. dr. sc. Nikola Tanković</p>
+			<p><b>Voditelj:</b> {{ mainStore.voditelj_prakse }}</p>
 			<hr />
 			<br />
 			<SectionTitleLineWithButton :icon="mdiCheckDecagram" main title="Praksa gotova!"></SectionTitleLineWithButton>

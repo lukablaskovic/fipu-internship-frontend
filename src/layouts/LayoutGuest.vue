@@ -15,7 +15,7 @@ import AsideMenu from "@/components/AsideMenu/AsideMenu.vue";
 import FooterBar from "@/components/FooterBar.vue";
 import menuNavBarGuest from "@/menus/menuNavBarGuest";
 
-import { layoutStore } from "@/main.js";
+import { layoutStore, mainStore } from "@/main.js";
 import SnackBar from "@/components/Premium/SnackBar.vue";
 
 const layoutAsidePadding = computed(() => (layoutStore.isAsideLgActive ? "lg:pl-22" : "xl:pl-22"));
@@ -54,7 +54,10 @@ const menuClick = (event, item) => {
 			<AsideMenu :menu="menuAsideGuest" :is-aside-mobile-expanded="isAsideMobileExpanded" :is-aside-lg-active="isAsideLgActive" @menu-click="menuClick" @aside-lg-close-click="isAsideLgActive = false" />
 			<slot></slot>
 			<div class="mt-6">
-				<FooterBar><br />Made with <span style="color: #e25555">&#9829;</span> at FIPU.lab </FooterBar>
+				<FooterBar
+					><br />
+					Made with <span style="color: #e25555">&#9829;</span> at <a :href="mainStore.fipulab_web" target="_blank" class="hover-underline-animation cursor-pointer text-fipu_text_blue hover:text-fipu_blue">FIPU.lab</a></FooterBar
+				>
 			</div>
 			<SnackBar />
 		</div>

@@ -49,7 +49,7 @@ async function getAssignmentDetailsInModal(assignment_id) {
 		<SectionMain>
 			<SectionTitleLineWithButton :icon="mdiLaptop" title="Moja Praksa" main> </SectionTitleLineWithButton>
 			<p><b>Akademska godina:</b> {{ mainStore.academicYear }}</p>
-			<p><b>Voditelj:</b> doc. dr. sc. Nikola Tanković</p>
+			<p><b>Voditelj:</b> {{ mainStore.voditelj_prakse }}</p>
 			<hr />
 			<br />
 			<SectionTitleLineWithButton :icon="mdiProgressClock" main title="U procesu alokacije..."></SectionTitleLineWithButton>
