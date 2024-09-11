@@ -1,0 +1,1 @@
+import{b as e}from"./index.86b5d783.js";import{x as o,y as r,z as a}from"./vue.f9cfebed.js";const s={},n={class:"text-center py-12 text-gray-500 dark:text-slate-400"};function c(p,t){return o(),r("div",n,t[0]||(t[0]=[a("p",null,"Nema podataka...",-1)]))}const x=e(s,[["render",c]]);export{x as C};
