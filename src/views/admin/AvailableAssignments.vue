@@ -16,7 +16,9 @@ import FormField from "@/components/Form/FormField.vue";
 import FormControl from "@/components/Form/FormControl.vue";
 import PillTag from "@/components/PillTag/PillTag.vue";
 
-const VITE_FRONTEND_URL = import.meta.env.VITE_FRONTEND_URL;
+import { endpoints } from "@/config.js";
+
+const VITE_FRONTEND_URL = endpoints.VITE_FRONTEND_URL;
 
 const addNewAssignmentLink = ref(`${VITE_FRONTEND_URL}/poslodavci/novi-zadatak`);
 </script>

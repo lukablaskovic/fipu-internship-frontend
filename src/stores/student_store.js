@@ -3,6 +3,7 @@ import { mainStore } from "@/main";
 
 import { ProcessInstance } from "@/services/bpmn_engine_api";
 import { Student } from "@/services/baserow_client_api";
+import { endpoints } from "@/config";
 
 export const useStudentStore = defineStore("student", {
 	state: () => ({
@@ -23,7 +24,7 @@ export const useStudentStore = defineStore("student", {
 				Treci_odabir: [assignmentsData[2]["id_zadatak"]],
 				napomena: napomena,
 				process_instance_id: mainStore.currentUser.internship_process.id,
-				frontend_url: import.meta.env.VITE_FRONTEND_URL,
+				frontend_url: endpoints.VITE_FRONTEND_URL,
 			};
 			try {
 				let process_instance_id = mainStore.currentUser.internship_process.id;

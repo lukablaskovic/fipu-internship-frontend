@@ -23,8 +23,9 @@ import { darkModeKey, styleKey } from "@/config.js";
 import piniaPluginPersistedstate from "pinia-plugin-persistedstate";
 import NotificationBar from "@/components/Notification/NotificationBar.vue";
 
+// Initialize Bugsnag
 Bugsnag.start({
-	apiKey: import.meta.env.VITE_BUGSNAG,
+	apiKey: "7c2118391f2ecf5b781d78e4920b1478",
 	plugins: [new BugsnagPluginVue()],
 });
 
@@ -53,12 +54,9 @@ const chatStore = useChatStore(pinia);
 
 app.use(router);
 
-let VueAppInstance = null;
-let containerSelector = "#app";
-// check if app has been mounted already
-const mountPoint = document.querySelector(containerSelector);
+const mountPoint = document.querySelector("#app");
 if (mountPoint && mountPoint.__vue_app__ !== undefined) {
-	VueAppInstance = mountPoint.__vue_app__._instance.proxy;
+	// App is already mounted, no need to mount again
 } else {
 	app.mount("#app");
 }

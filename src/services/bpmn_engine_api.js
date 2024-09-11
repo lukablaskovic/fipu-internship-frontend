@@ -1,7 +1,9 @@
 import { mainStore } from "@/main";
 
+import { endpoints } from "@/config.js";
+
 import createAxiosInstance from "@/helpers/axios-wrapper";
-const AxiosWrapper = createAxiosInstance(import.meta.env.VITE_BPMN_ENGINE_API_URL);
+const AxiosWrapper = createAxiosInstance(endpoints.VITE_BPMN_ENGINE_API_URL);
 
 const Model = {
 	async get(id) {

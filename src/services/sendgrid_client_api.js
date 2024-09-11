@@ -1,5 +1,7 @@
+import { endpoints } from "@/config";
 import createAxiosInstance from "@/helpers/axios-wrapper";
-const AxiosWrapper = createAxiosInstance(import.meta.env.VITE_SENDGRID_API_URL);
+
+const AxiosWrapper = createAxiosInstance(endpoints.VITE_SENDGRID_API_URL);
 
 const SendGrid = {
 	async sendEmail(postData, to, template) {

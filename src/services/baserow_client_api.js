@@ -1,5 +1,8 @@
 import createAxiosInstance from "@/helpers/axios-wrapper";
-const AxiosWrapper = createAxiosInstance(import.meta.env.VITE_BASEROW_API_URL + "/api");
+
+import { endpoints } from "@/config.js";
+
+const AxiosWrapper = createAxiosInstance(endpoints.VITE_BASEROW_API_URL + "/api");
 
 const Guest = {
 	async fetchAvailableAssignments() {

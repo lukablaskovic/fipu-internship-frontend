@@ -1,11 +1,12 @@
 import createAxiosInstance from "@/helpers/axios-wrapper";
+import { endpoints } from "@/config.js";
 
 const SERVICES_CONFIG = {
-	bpmn_engine: import.meta.env.VITE_BPMN_ENGINE_API_URL,
-	internship_gateway_api: import.meta.env.VITE_GATEWAY_API_URL,
-	baserow_connector: import.meta.env.VITE_BASEROW_API_URL,
-	sendgrid_connector: import.meta.env.VITE_SENDGRID_API_URL,
-	pdf_generator_connector: import.meta.env.VITE_PDF_API_URL,
+	bpmn_engine: endpoints.VITE_BPMN_ENGINE_API_URL,
+	internship_gateway_api: endpoints.VITE_GATEWAY_API_URL,
+	baserow_connector: endpoints.VITE_BASEROW_API_URL,
+	sendgrid_connector: endpoints.VITE_SENDGRID_API_URL,
+	pdf_generator_connector: endpoints.VITE_PDF_API_URL,
 };
 
 const MICROSERVICES = Object.fromEntries(
