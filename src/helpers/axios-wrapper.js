@@ -7,6 +7,7 @@ function createAxiosInstance(API_URL) {
 		headers: {
 			"Content-Type": "application/json",
 		},
+		timeout: 10000,
 	});
 
 	// Request interceptor
