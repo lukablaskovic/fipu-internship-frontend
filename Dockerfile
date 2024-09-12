@@ -1,15 +1,15 @@
-FROM nginx
+FROM node:18 as build-stage
 
-# Remove default server definition
-RUN rm /etc/nginx/conf.d/default.conf
+WORKDIR /app
 
-# Copy the main configuration file to the proper location
-COPY nginx.conf /etc/nginx/nginx.conf
+COPY package.json package-lock.json ./
+RUN npm install
 
-# Copy your site's assets
-COPY dist /usr/share/nginx/html
+COPY . .
+RUN npm run build
 
-EXPOSE 3000
+FROM nginx:alpine
 
-# Start Nginx with foreground option
-CMD ["nginx", "-g", "daemon off;"]
+COPY --from=build-stage /app/dist /usr/share/nginx/html
+
+EXPOSE 80
