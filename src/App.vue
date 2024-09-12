@@ -30,6 +30,9 @@ onUnmounted(() => {
 watchEffect(() => {
 	const downServices = Object.entries(serviceStatuses.value).filter(([, status]) => status.status !== "OK");
 
+	console.log("downServices", downServices);
+
+	/*
 	if (downServices.length > 0) {
 		console.warn("Some services are down:", downServices);
 		router.push({ name: "ErrorView" }).catch(() => {});
@@ -37,6 +40,7 @@ watchEffect(() => {
 	} else {
 		mainStore.servicesUp = true;
 	}
+  */
 });
 </script>
 
