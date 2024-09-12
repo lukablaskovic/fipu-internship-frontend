@@ -116,7 +116,6 @@ export const useAdminStore = defineStore("admin", {
 			try {
 				this.studentsFetched = false;
 				const students = await User.getStudents();
-
 				if (!students || students.length === 0) {
 					this.students = [];
 					this.studentsFetched = true;

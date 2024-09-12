@@ -40,7 +40,6 @@ function createAxiosInstance(API_URL) {
 	return {
 		get: async (endpoint, params = {}, headers = {}) => {
 			const response = await AxiosInstance.get(endpoint, { params, headers });
-			console.log(`A response from the server on endpoint: ${endpoint}": ${response}`);
 			return response.data;
 		},
 		post: async (endpoint, data = {}, headers = {}) => {

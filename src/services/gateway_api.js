@@ -1,7 +1,6 @@
 import createAxiosInstance from "@/helpers/axios-wrapper";
 
 import { endpoints } from "@/config.js";
-
 const AxiosWrapper = createAxiosInstance(endpoints.VITE_GATEWAY_API_URL);
 
 const Auth = {
