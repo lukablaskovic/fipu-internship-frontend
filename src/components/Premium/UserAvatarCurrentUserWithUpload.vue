@@ -1,12 +1,12 @@
 <script setup>
-import { ref, watch } from "vue";
 import UserAvatarCurrentUser from "@/components/User/UserAvatarCurrentUser.vue";
-import { mdiCamera } from "@mdi/js";
 import FormFilePicker from "@/components/Form/FormFilePicker.vue";
-import { mainStore } from "@/main.js";
-import { snackBarStore } from "@/main.js";
-import Utils from "@/helpers/utils";
 import { User } from "@/services/gateway_api";
+import { snackBarStore } from "@/main.js";
+import { mainStore } from "@/main.js";
+import Utils from "@/helpers/utils";
+import { mdiCamera } from "@mdi/js";
+import { ref, watch } from "vue";
 
 const uploadedAvatar = ref(null);
 
@@ -16,13 +16,13 @@ watch(uploadedAvatar, async (newFile) => {
 			mainStore.avatarChanging = true;
 			let result = null;
 			if (mainStore.userAdmin === false) {
-				result = await mainStore.updateAvatarStudent(mainStore.currentUser.JMBAG, newFile);
+				//result = await mainStore.updateAvatarStudent(mainStore.currentUser.JMBAG, newFile);
 				mainStore.avatarChanging = false;
 			} else if (mainStore.userAdmin === true) {
-				result = await mainStore.updateAvatarAdmin(newFile);
+				//result = await mainStore.updateAvatarAdmin(newFile);
 
 				if (result.status_code === 200) {
-					let result2 = await User.updateAdminAvatarInPostgres(mainStore.currentUser.username, result.data.url);
+					//let result2 = await User.updateAdminAvatarInPostgres(mainStore.currentUser.username, result.data.url);
 					mainStore.avatarChanging = false;
 
 					if (!result2) return;
@@ -48,7 +48,7 @@ watch(uploadedAvatar, async (newFile) => {
 
 <template>
 	<UserAvatarCurrentUser class="relative">
-		<div class="absolute right-0 bottom-0">
+		<div class="absolute bottom-0 right-0">
 			<FormFilePicker v-model="uploadedAvatar" :icon="mdiCamera" is-round-icon />
 		</div>
 	</UserAvatarCurrentUser>

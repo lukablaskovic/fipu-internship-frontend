@@ -31,7 +31,7 @@ const menuClick = (event, item) => {
 	}
 
 	if (item.label == "Prijava") {
-		router.push("/login");
+		router.push("/prijava");
 	}
 };
 </script>

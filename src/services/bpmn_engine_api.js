@@ -42,11 +42,9 @@ const Model = {
 };
 
 const ProcessInstance = {
-	// Instance creation upon student registration
-	async create(bpmn_model) {
-		if (!bpmn_model) bpmn_model = `${mainStore.bpmn_process_name}.bpmn`;
+	async create(model) {
 		try {
-			let result = await AxiosWrapper.post(`/model/${bpmn_model}/instance`);
+			let result = await AxiosWrapper.post(`/model/${model}/instance`);
 			return result;
 		} catch (error) {
 			return { status: 500, message: "Internal server error", data: error };

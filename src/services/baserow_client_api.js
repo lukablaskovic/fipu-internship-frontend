@@ -35,15 +35,21 @@ const Guest = {
 };
 
 const Student = {
-	async updateAvatarStudent(student_jmbag, fileData) {
+	async create(studentData) {
 		try {
-			const formData = new FormData();
-			formData.append("file", fileData);
-
-			let result = await AxiosWrapper.post(`/upload/student-avatar/${student_jmbag}`, formData, {
-				headers: {
-					"Content-Type": "multipart/form-data",
-				},
+			let result = await AxiosWrapper.post("/student", studentData);
+			return result;
+		} catch (error) {
+			console.log("Error:", error);
+			return null;
+		}
+	},
+	async setProcessData(email, process_instance_id, model_prakse) {
+		try {
+			let result = await AxiosWrapper.patch(`/student/process`, {
+				email: email,
+				Model_prakse: model_prakse,
+				process_instance_id: process_instance_id,
 			});
 			return result;
 		} catch (error) {
@@ -54,7 +60,7 @@ const Student = {
 	async fetch(search_by) {
 		try {
 			let result = await AxiosWrapper.get(`/Student?search=${search_by}`);
-			return result.data.results[0];
+			return result;
 		} catch (error) {
 			console.log("Error:", error);
 			return null;
@@ -125,23 +131,6 @@ const Student = {
 };
 
 const Admin = {
-	async updateAvatarAdmin(fileData) {
-		try {
-			const formData = new FormData();
-			formData.append("file", fileData);
-
-			let result = await AxiosWrapper.post("/direct-file-upload", formData, {
-				headers: {
-					"Content-Type": "multipart/form-data",
-				},
-			});
-			return result;
-		} catch (error) {
-			console.log("Error:", error);
-			return null;
-		}
-	},
-
 	async getAllocations() {
 		try {
 			let result = await AxiosWrapper.get("/alokacija");

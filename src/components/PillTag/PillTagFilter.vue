@@ -161,6 +161,8 @@ const toggleSelection = (option) => {
 		selectedOptions.value.splice(index, 1);
 	}
 };
+
+//snackBarStore.pushMessage("Event-Filteri resetirani!", "success");
 </script>
 
 <template>

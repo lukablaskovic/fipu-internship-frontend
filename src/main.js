@@ -1,33 +1,36 @@
-import "./css/main.css";
-import "animate.css";
-import Bugsnag from "@bugsnag/js";
-import BugsnagPluginVue from "@bugsnag/plugin-vue";
+//import Bugsnag from "@bugsnag/js";
+//import BugsnagPluginVue from "@bugsnag/plugin-vue";
 
 import { createApp, markRaw } from "vue";
 import { createPinia } from "pinia";
-import App from "./App.vue";
 import { router } from "./router";
+import App from "./App.vue";
+import "./css/main.css";
+import "animate.css";
 
 /* Pinia global stores */
-import { useMainStore } from "@/stores/main_store.js";
+import { useSnackBarStore } from "@/stores/snackbar_store";
+import { useStudentStore } from "@/stores/student_store";
 import { useStyleStore } from "@/stores/style_store.js";
 import { useGuestStore } from "@/stores/guest_store.js";
 import { useAdminStore } from "@/stores/admin_store.js";
-import { useStudentStore } from "@/stores/student_store";
+import { useMainStore } from "@/stores/main_store.js";
 import { useLayoutStore } from "@/stores/layout";
-import { useSnackBarStore } from "@/stores/snackbar_store";
-import { useChatStore } from "@/stores/chat_store";
 
 import { darkModeKey, styleKey } from "@/config.js";
 
-import piniaPluginPersistedstate from "pinia-plugin-persistedstate";
 import NotificationBar from "@/components/Notification/NotificationBar.vue";
+import piniaPluginPersistedstate from "pinia-plugin-persistedstate";
+
+import vue3GoogleLogin from "vue3-google-login";
 
 // Initialize Bugsnag
+/*
 Bugsnag.start({
 	apiKey: "7c2118391f2ecf5b781d78e4920b1478",
 	plugins: [new BugsnagPluginVue()],
 });
+*/
 
 /* Init Pinia */
 const pinia = createPinia();
@@ -38,9 +41,13 @@ pinia.use(({ store }) => {
 });
 
 const app = createApp(App);
-app.use(Bugsnag.getPlugin("vue"));
+//app.use(Bugsnag.getPlugin("vue"));
 app.component("NotificationBar", NotificationBar);
 app.use(pinia);
+
+app.use(vue3GoogleLogin, {
+	clientId: "182844940133-k5k1t08dposga8083n6nek2r4gjo9a7l.apps.googleusercontent.com",
+});
 
 /* Init Pinia stores BEFORE setting up the router */
 const mainStore = useMainStore(pinia);
@@ -50,7 +57,6 @@ const adminStore = useAdminStore(pinia);
 const styleStore = useStyleStore(pinia);
 const layoutStore = useLayoutStore(pinia);
 const snackBarStore = useSnackBarStore(pinia);
-const chatStore = useChatStore(pinia);
 
 app.use(router);
 
@@ -81,4 +87,4 @@ router.afterEach((to) => {
 	document.title = to.meta?.title ? `${to.meta.title} — ${defaultDocumentTitle}` : defaultDocumentTitle;
 });
 
-export { mainStore, studentStore, adminStore, guestStore, styleStore, layoutStore, snackBarStore, chatStore };
+export { mainStore, studentStore, adminStore, guestStore, styleStore, layoutStore, snackBarStore };

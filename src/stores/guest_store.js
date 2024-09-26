@@ -1,9 +1,8 @@
-import { defineStore } from "pinia";
 import { mainStore } from "@/main.js";
+import { defineStore } from "pinia";
 
-import { Guest } from "@/services/baserow_client_api.js";
+import { Guest, Student } from "@/services/baserow_client_api.js";
 import { ProcessInstance } from "@/services/bpmn_engine_api.js";
-import { Auth } from "@/services/gateway_api.js";
 
 export const useGuestStore = defineStore("guest", {
 	state: () => ({
@@ -14,29 +13,21 @@ export const useGuestStore = defineStore("guest", {
 	}),
 	getters: {},
 	actions: {
-		async registerStudent(postData) {
+		async createInternshipInstance(selected_model = "A") {
 			try {
-				const response = await Auth.register(postData);
-				return response;
+				let bpmn_model = null;
+				if (selected_model === "A") {
+					bpmn_model = mainStore.bpmn_process_name_A;
+				}
+				const response_bpmn_engine = await ProcessInstance.create(`${bpmn_model}.bpmn`);
+
+				const response_bw = Student.setProcessData(mainStore.currentUser.email, response_bpmn_engine.id, selected_model);
+
+				await mainStore.fetchCurrentUser();
+
+				console.log(response_bw);
+				return response_bw;
 			} catch (error) {
-				console.log("Error:", error);
-			}
-		},
-		async createInternshipInstance() {
-			try {
-				const response = await ProcessInstance.create(`${mainStore.bpmn_process_name}.bpmn`);
-				return response;
-			} catch (error) {
-				console.log("Error:", error);
-				return error;
-			}
-		},
-		async update_process_instance(student_id, process_instance_id) {
-			try {
-				const response = await Auth.update_process_instance(student_id, process_instance_id);
-				return response;
-			} catch (error) {
-				console.log("Error:", error);
 				return error;
 			}
 		},

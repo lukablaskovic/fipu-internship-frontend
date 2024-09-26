@@ -8,7 +8,7 @@ const routes = [
 			if (mainStore.userAuthenticated) {
 				return mainStore.userAdmin ? "/dashboard" : "/moja-praksa";
 			}
-			return "/login";
+			return "/prijava";
 		},
 	},
 	{
@@ -133,28 +133,19 @@ const routes = [
 			requiresAuth: false,
 			transition: "login",
 		},
-		path: "/login",
+		path: "/prijava",
 		name: "login",
 		component: () => import("@/views/common/LoginView.vue"),
 	},
+
 	{
 		meta: {
-			title: "Password reset",
+			title: "Odabir procesa",
 			requiresAuth: false,
 		},
-		path: "/password-reset",
-		name: "password-reset",
-		component: () => import("@/views/common/PasswordResetView.vue"),
-	},
-	{
-		meta: {
-			title: "Registracija",
-			requiresAuth: false,
-			transition: "register",
-		},
-		path: "/register",
-		name: "register",
-		component: () => import("@/views/common/RegisterView.vue"),
+		path: "/odabir-procesa",
+		name: "odabir-procesa",
+		component: () => import("@/views/common/SelectProcess.vue"),
 	},
 
 	{

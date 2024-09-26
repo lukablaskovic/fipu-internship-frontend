@@ -1,178 +1,30 @@
-<script setup>
-import { ref, computed, reactive } from "vue";
-
-import { mdiAccount, mdiAlertCircle, mdiCheckCircle, mdiAlert, mdiClose, mdiLock } from "@mdi/js";
-import { useRouter } from "vue-router";
-
-import { useVuelidate } from "@vuelidate/core";
-import { required, email, minLength, helpers } from "@vuelidate/validators";
-
-import SectionSplitLogin from "@/components/Section/SectionSplitLogin.vue";
-import CardBox from "@/components/Cardbox/CardBox.vue";
-
-import FormCheckRadio from "@/components/Form/FormCheckRadio.vue";
-import FormField from "@/components/Form/FormField.vue";
-import FormControl from "@/components/Form/FormControl.vue";
-
-import BaseButton from "@/components/Base/BaseButton.vue";
-import BaseButtons from "@/components/Base/BaseButtons.vue";
-
-import Utils from "@/helpers/utils";
-import { getFirstErrorForField, isUnipuEmail } from "@/helpers/validators";
-import { mainStore } from "@/main";
-
-//Public images
-import loginArt from "/login_art.jpg";
-import fipu_unipu from "/fipu_unipu.png";
-
-const loginForm = reactive({
-	email: "",
-	password: "",
-	remember_me: false,
-});
-
-const rules = {
-	email: {
-		required: helpers.withMessage("Polje je obavezno", required),
-		email: helpers.withMessage("Molimo unesite ispravnu e-mail adresu", email),
-		isUnipuEmail: helpers.withMessage("Molimo unesite vašu UNIPU e-mail adresu", isUnipuEmail),
-	},
-	password: {
-		required: helpers.withMessage("Polje je obavezno", required),
-		minLength: helpers.withMessage("Lozinka mora sadržavati minimalno 6 znakova", minLength(6)),
-	},
-};
-
-const v$ = useVuelidate(rules, loginForm);
-
-const isLoading = ref(false);
-async function onSubmit() {
-	isLoading.value = true;
-	const validationResult = await v$.value.$validate();
-	if (!validationResult) {
-		isLoading.value = false;
-		return;
-	}
-
-	let loginResult = await mainStore.login(loginForm);
-	isLoading.value = false;
-
-	if (mainStore.userAuthenticated) {
-		showNotificationBar("success");
-		await Utils.wait(1);
-
-		mainStore.handleSuccessfulLogin();
-	} else if (loginResult.response.status === 403) showNotificationBar("warning");
-	else showNotificationBar("danger");
-}
-
-const notificationBar = ref(null);
-let notificationStatus = ref();
-let notificationMessage = ref();
-
-const notificationSettingsModel = ref([]);
-const notificationsOutline = computed(() => notificationSettingsModel.value.indexOf("outline") > -1);
-
-function showNotificationBar(type) {
-	switch (type) {
-		case "success":
-			notificationBar.value.color = "success";
-			notificationBar.value.icon = mdiCheckCircle;
-			notificationBar.value.duration = 1;
-			notificationStatus.value = "To je to!";
-			notificationMessage.value = " Uspješna prijava!";
-			break;
-		case "warning":
-			notificationBar.value.color = "warning";
-			notificationBar.value.icon = mdiAlert;
-			notificationStatus.value = "Upozorenje.";
-			notificationMessage.value = "Unijeli ste krive podatke. Provjerite unos i pokušajte ponovno.";
-			break;
-		case "danger":
-			notificationBar.value.color = "danger";
-			notificationBar.value.icon = mdiAlertCircle;
-			notificationStatus.value = "Greška!";
-			notificationMessage.value = "Greška u sustavu.  Nije do vas, molimo pokušajte opet ili kontaktirajte profesora.";
-			break;
-	}
-	notificationBar.value.show();
-}
-
-const transitioning = ref(false);
-function onRegisterClick() {
-	transitioning.value = true;
-}
-
-const router = useRouter();
-function navigateToRegister() {
-	router.push("/register");
-}
-</script>
-
 <template>
-	<SectionSplitLogin bg="blue" class="flex items-start min-h-screen">
-		<Transition appear enter-active-class="animate__animated animate__fadeIn" leave-active-class="animate__animated animate__slideOutRight fast-animation" @after-leave="navigateToRegister">
-			<div v-if="!transitioning" class="flex flex-col justify-center items-center overflow-hidden h-screen md:py-4 xl:py-4 2xl:py-8 || transition-all duration-300">
-				<div class="flex flex-col md:flex-row flex-shrink h-full rounded-lg overflow-hidden">
-					<div class="flex flex-col md:flex-row flex-shrink h-full || bg-white overflow-y-auto fipu_vertical_scrollbar || transition-all duration-300 px-0 lg:px-6 xl:px-16 2xl:px-28 || xl:gap-4 2xl:gap-8">
-						<CardBox has-table class="hidden xl:flex justify-center items-center flex-1 bg-opacity-0 grow p-16 xl:px-0 ultrawide xl:py-16 2xl:py-24 || transition-all duration-300">
-							<img :src="loginArt" alt="Login graphics" class="2xl:pr-8 ultrawide:w-3/4 ultrawide:pr-0 aspect-square max-h-full" />
-						</CardBox>
+	<div class="flex h-full min-h-screen w-full items-center justify-center bg-white bg-cover bg-center transition-all duration-300 sm:bg-[url('/background-blue.jpg')]">
+		<div class="|| flex flex-col items-center justify-center overflow-hidden transition-all duration-300">
+			<CardBox vertical-centered class="p-12 transition-all duration-300 sm:mx-96 sm:rounded-2xl" is-form>
+				<a href="https://fipu.unipu.hr/" target="_blank" class="mx-auto w-max">
+					<img :src="fipu_unipu" alt="Fakultet informatike u Puli - logotip" class="mb-3 object-contain transition-all duration-300 sm:h-32 2xl:mb-6" />
+				</a>
 
-						<CardBox has-table vertical-centered class="flex flex-col flex-shrink flex-1 bg-opacity-0 p-8 sm:p-16 xl:pl-2 xl:px-0 xl:py-24 || transition-all duration-300" is-form @submit.prevent="onSubmit">
-							<a href="https://fipu.unipu.hr/" target="_blank">
-								<img :src="fipu_unipu" alt="fipu logo" class="h-20 xl:h-20 2xl:h-16 ultrawide:h-28 mb-3 2xl:mb-4 object-contain transition-all duration-300" />
-							</a>
-							<h2 class="text-2xl lg:text-3xl 2xl:text-4xl text-fipu_gray font-bold xl:mb-1 mb-2 md:mb-0 2xl:mb-4">Dobrodošli u <span class="text-fipu_blue">FIPU Praksa</span></h2>
+				<h2 class="mb-4 mt-6 text-2xl font-bold text-fipu_gray md:text-center lg:text-3xl xl:mb-6 2xl:text-4xl">Dobrodošli na <span class="text-fipu_blue">FIPU Praksu</span></h2>
 
-							<h2 class="md:text-sm lg:text-sm 2xl:text-base mb-2 2xl:mb-4">
-								Molimo prijavite se kako biste pregledali stanje vaše prakse ili prijavili zadatke. Ukoliko želite samo pregledati dostupne zadatke i poduzeća, molimo nastavite kao gost
-								<a class="hover-underline-animation cursor-pointer text-fipu_text_blue hover:text-fipu_blue" @click="router.push('/moja-praksa')"> ovdje</a>.
-							</h2>
+				<h2 class="mb-2 text-center md:text-sm lg:text-sm 2xl:mb-10 2xl:text-base">
+					Molimo prijavite se kako biste pregledali stanje vaše prakse ili prijavili zadatke. Ukoliko želite samo pregledati dostupne zadatke i poduzeća, molimo nastavite kao gost
+					<a class="hover-underline-animation cursor-pointer text-fipu_text_blue hover:text-fipu_blue" @click="router.push('/moja-praksa')"> ovdje</a>.
+				</h2>
 
-							<h2 class="md:text-sm lg:text-sm 2xl:text-base mb-2 2xl:mb-4">
-								Poslodavac ste ili mentor te želite prijaviti novi zadatak za praksu? To možete učiniti
-								<a class="hover-underline-animation cursor-pointer text-fipu_text_blue hover:text-fipu_blue" @click="router.push('/poslodavci/novi-zadatak')"> ovdje</a>.
-							</h2>
-
-							<FormField label="E-mail">
-								<FormControl v-model="loginForm.email" :icon-left="mdiAccount" name="email" autocomplete="email" :error="getFirstErrorForField(v$, 'email')" />
-							</FormField>
-
-							<FormField label="Lozinka">
-								<FormControl v-model="loginForm.password" :icon-left="mdiLock" name="password" type="password" autocomplete="password" :error="getFirstErrorForField(v$, 'password')" />
-							</FormField>
-							<!--
-							<div class="text-right">
-								<a href="#" class="text-sm text-fipu_gray hover:text-fipu_blue underline">Zaboravili ste lozinku?</a>
-							</div>
-              -->
-							<FormCheckRadio v-model="loginForm.remember_me" name="remember" label="Zapamti me!" class="mb-4 2xl:mb-4" :input-value="true" />
-
-							<BaseButtons class="space-y-2">
-								<BaseButton type="submit" color="fipu_blue" label="Prijavi se" :disabled="isLoading" :loading="isLoading" class="w-full" />
-							</BaseButtons>
-
-							<div class="my-2 2xl:my-4 flex items-center before:mt-0.5 before:flex-1 before:border-t before:border-neutral-300 after:mt-0.5 after:flex-1 after:border-t after:border-neutral-300">
-								<p class="mx-4 mb-0 text-center dark:text-white">ili</p>
-							</div>
-
-							<BaseButtons class="space-y-2">
-								<BaseButton color="fipu_blue" outline label="Registracija" :disabled="isLoading" class="w-full" @click.prevent="onRegisterClick" />
-							</BaseButtons>
-
-							<NotificationBar ref="notificationBar" class="animate__animated animate__fadeInUp mt-4" :outline="notificationsOutline">
-								<b>{{ notificationStatus }}</b> {{ notificationMessage }}
-								<template #right>
-									<BaseButton :icon="mdiClose" :color="notificationsOutline ? 'success' : 'white'" :outline="notificationsOutline" rounded-full small />
-								</template>
-							</NotificationBar>
-						</CardBox>
-					</div>
+				<div class="mx-auto mb-4 flex">
+					<GoogleLogin :callback="callback" />
 				</div>
-			</div>
-		</Transition>
-	</SectionSplitLogin>
+
+				<h2 class="mb-2 text-center md:text-sm lg:text-sm 2xl:mb-4 2xl:text-base">
+					Poslodavac ste ili mentor te želite prijaviti novi zadatak za praksu? To možete učiniti
+					<a class="hover-underline-animation cursor-pointer text-fipu_text_blue hover:text-fipu_blue" @click="router.push('/poslodavci/novi-zadatak')"> ovdje</a>.
+				</h2>
+			</CardBox>
+		</div>
+		<SnackBar />
+	</div>
 </template>
 
 <style scoped>
@@ -206,3 +58,37 @@ body {
 	transform-origin: bottom left;
 }
 </style>
+
+<script setup>
+import SnackBar from "@/components/Premium/SnackBar.vue";
+import CardBox from "@/components/Cardbox/CardBox.vue";
+import { isUnipuEmail } from "@/helpers/validators";
+import { mainStore, snackBarStore } from "@/main";
+import { useRouter } from "vue-router";
+
+//Public images
+import fipu_unipu from "/fipu_unipu.png";
+
+const router = useRouter();
+
+import { decodeCredential } from "vue3-google-login";
+import Utils from "@/helpers/utils";
+
+const callback = async (response) => {
+	console.log(response);
+
+	const decodedToken = decodeCredential(response.credential);
+	console.log("Handle the userData", decodedToken);
+
+	if (isUnipuEmail(decodedToken.email)) {
+		let response = await mainStore.handleLogin(decodedToken);
+		console.log(response);
+		snackBarStore.pushMessage("Uspješna prijava!", "success");
+		await Utils.wait(1);
+
+		router.push("/odabir-procesa");
+	} else {
+		snackBarStore.pushMessage("Molimo koristite UNIPU e-mail za prijavu", "warning");
+	}
+};
+</script>

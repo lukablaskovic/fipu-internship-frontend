@@ -1,10 +1,8 @@
 import { defineStore } from "pinia";
-import { snackBarStore } from "@/main";
 import axios from "axios";
 
-import { Auth } from "@/services/gateway_api";
-import { User } from "@/services/gateway_api";
 import { Guest, Student, Admin } from "@/services/baserow_client_api";
+import { router } from "@/router";
 
 export const useMainStore = defineStore("main", {
 	state: () => ({
@@ -19,20 +17,20 @@ export const useMainStore = defineStore("main", {
 		transition_name: "",
 		enter_active_class: "",
 		leave_active_class: "",
-		bpmn_process_name: "strucna_praksa_edited",
+		bpmn_process_name_A: "strucna_praksa_edited",
+		bpmn_process_name_B: "strucna_praksa_B",
 
 		currentUser: {
-			id: "",
 			ime: "",
 			prezime: "",
-			username: "",
 			JMBAG: "",
 			email: "",
 			godina_studija: "",
 			avatar: "",
-			baserow_id: null,
-			account_type: "" || null,
 			loggedAt: null,
+			model_prakse: null,
+
+			baserow_id: null,
 
 			internship_process: {
 				id: null,
@@ -49,14 +47,11 @@ export const useMainStore = defineStore("main", {
 				this.godina_studija = "";
 				this.avatar = "";
 				this.baserow_id = null;
-				this.account_type = "" || null;
 
 				this.internship_process.id = null;
 				this.internship_process.pending_user_task = null;
 			},
 		},
-
-		access_token: null,
 		logoutModalActive: false,
 		helpModalActive: false,
 
@@ -65,10 +60,11 @@ export const useMainStore = defineStore("main", {
 	}),
 	getters: {
 		userAuthenticated() {
-			return Boolean(this.access_token);
+			return Boolean(localStorage.getItem("token"));
 		},
 		userAdmin() {
-			return this.currentUser && this.currentUser.account_type === "admin";
+			return false;
+			//return this.currentUser && this.currentUser.account_type === "admin";
 		},
 		academicYear() {
 			const today = new Date();
@@ -83,64 +79,79 @@ export const useMainStore = defineStore("main", {
 		},
 	},
 	actions: {
+		async handleLogin(decodedToken) {
+			let { iss, sub, hd, email, nbf, name, picture, iat, jti } = decodedToken;
+
+			let storageToken = {
+				iss,
+				sub,
+				hd,
+				email,
+				nbf,
+				name,
+				picture,
+				iat,
+				jti,
+			};
+
+			localStorage.setItem("token", JSON.stringify(storageToken));
+			this.acc;
+
+			try {
+				let student_data = {
+					JMBAG: "0000000000",
+					ime: decodedToken.given_name,
+					prezime: decodedToken.family_name,
+					email: decodedToken.email,
+					godina_studija: "1_prijediplomski",
+				};
+
+				// Check if student already exists
+				console.log("Fetching student data for user: ", decodedToken.email);
+				const response_student = await Student.fetch(decodedToken.email);
+
+				console.log("response_student", response_student);
+
+				let response = null;
+				if (response_student.data.count == 0) {
+					console.log("Student does not exist in the database");
+					response = await Student.create(student_data);
+					console.log(response);
+				} else {
+					console.log("Student already exists in the database");
+					router.push("/moja-praksa");
+					response = response_student.data.results[0];
+				}
+				return response;
+			} catch (error) {
+				console.log("Error:", error);
+			}
+		},
 		async fetchCurrentUser() {
+			console.log("Fetching current user");
 			try {
-				const response = await User.getCurrentUser();
-				if (response.process_instance_id !== undefined) {
-					this.currentUser.internship_process.id = response.process_instance_id;
-					delete response.process_instance_id;
-				}
-				this.currentUser = { ...this.currentUser, ...response };
+				console.log("Fetching current user");
+				let localStorageToken = JSON.parse(localStorage.getItem("token"));
+				let emailFromStorage = localStorageToken.email;
+				const response = await Student.fetch(emailFromStorage);
+				const data = response.data.results[0];
 
-				if (this.currentUser.account_type == "student") {
-					let userAvatar = await Student.fetch(this.currentUser.JMBAG);
-					this.currentUser.avatar = userAvatar["avatar"][0]["url"];
-				}
+				this.currentUser.ime = data.ime;
+				this.currentUser.prezime = data.prezime;
+				this.currentUser.JMBAG = data.JMBAG;
+				this.currentUser.email = data.email;
+				this.currentUser.godina_studija = data.godina_studija.value;
+				//this.currentUser.avatar = data.avatar;
+				this.currentUser.baserow_id = data.id;
+				this.currentUser.loggedAt = new Date();
+				this.currentUser.model_prakse = data.Model_prakse;
+				this.currentUser.internship_process.id = data.process_instance_id;
+				console.log("response", response);
 			} catch (error) {
-				console.log("Error fetching current user: ", error);
-			}
-		},
-
-		async updateAvatarStudent(student_jmbag, fileData) {
-			try {
-				const result = await Student.updateAvatarStudent(student_jmbag, fileData);
-				return result;
-			} catch (error) {
-				console.log("Error: ", error);
+				console.log("[handleLogin] Error:", error);
 			}
 		},
 
-		async updateAvatarAdmin(fileData) {
-			try {
-				const result = await Admin.updateAvatarAdmin(fileData);
-				return result;
-			} catch (error) {
-				console.log("Error: ", error);
-			}
-		},
-
-		async login(loginForm) {
-			try {
-				const loginResult = await Auth.login(loginForm);
-				if (loginResult.access_token != null) {
-					this.access_token = loginResult.access_token;
-					await this.fetchCurrentUser();
-					this.currentUser.loggedAt = loginResult.timestamp;
-					return this.access_token;
-				}
-				return loginResult;
-			} catch (error) {
-				console.log("Error: ", error);
-			}
-		},
-		handleSuccessfulLogin() {
-			if (this.currentUser.account_type == "student") {
-				this.router.push("/moja-praksa");
-			} else if (this.currentUser.account_type == "admin") {
-				this.router.push("/dashboard");
-			}
-			snackBarStore.pushMessage(`Dobrodošli natrag! ${this.currentUser.username} `, "contrast");
-		},
 		clearCurrentUser() {
 			this.access_token = null;
 			this.currentUser.reset();
@@ -183,14 +194,6 @@ export const useMainStore = defineStore("main", {
 			} catch (error) {
 				console.log("Error:", error);
 			}
-		},
-		async updatePassword(old_password, new_password) {
-			let updates = {
-				old_password: old_password,
-				new_password: new_password,
-			};
-			let response = await User.updatePassword(updates);
-			return response;
 		},
 	},
 	persist: true,

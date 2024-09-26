@@ -1,7 +1,8 @@
 <script setup>
 import { computed } from "vue";
 import { styleStore } from "@/main.js";
-import { gradientBgDark } from "@/colors";
+
+import blueImage from "/background-blue.jpg";
 
 const props = defineProps({
 	bg: {
@@ -11,22 +12,27 @@ const props = defineProps({
 	},
 });
 
-const colorClass = computed(() => {
+const backgroundStyle = computed(() => {
 	if (styleStore.darkMode) {
-		return gradientBgDark;
+		return {
+			backgroundImage: `url(${blueImage})`,
+		};
 	}
 
 	switch (props.bg) {
 		case "blue":
-			return "bg-gradient-to-tr from-blue-500 via-blue-300 to-fipu_blue";
-	}
+			return {
+				backgroundImage: `url(${blueImage})`,
+			};
 
-	return "";
+		default:
+			return {};
+	}
 });
 </script>
 
 <template>
-	<div class="md:px-8 lg:px-20 xl:px-16 transition-all duration-300 flex justify-center items-center w-full h-full" :class="colorClass">
+	<div class="transition-all duration-300 flex justify-center items-center w-full h-full bg-cover bg-center" :style="backgroundStyle">
 		<slot card-class="shadow-2xl" />
 	</div>
 </template>

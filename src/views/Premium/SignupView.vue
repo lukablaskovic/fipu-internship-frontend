@@ -43,7 +43,7 @@ const submit = () => {
 				<template #footer>
 					<BaseLevel mobile>
 						<BaseButton label="Signup" type="submit" color="info" />
-						<RouterLink to="/login" class="text-sm"> Have an account? </RouterLink>
+						<RouterLink to="/prijava" class="text-sm"> Have an account? </RouterLink>
 					</BaseLevel>
 				</template>
 			</CardBox>

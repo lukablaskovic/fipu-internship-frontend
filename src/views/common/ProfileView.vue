@@ -1,6 +1,6 @@
 <script setup>
-import { reactive, ref, computed } from "vue";
 import { useVuelidate } from "@vuelidate/core";
+import { reactive, ref, computed } from "vue";
 import { mainStore } from "@/main.js";
 import Utils from "@/helpers/utils";
 
@@ -10,20 +10,20 @@ import { containsAlpha, containsNumeric, getFirstErrorForField } from "@/helpers
 
 import { mdiAccount, mdiAccountCircle, mdiEmail, mdiAsterisk, mdiFormTextboxPassword, mdiCardAccountDetails, mdiSchool, mdiCheckDecagram, mdiPencil, mdiDomain, mdiAlert, mdiCheckCircle, mdiCalendarAccount } from "@mdi/js";
 
-import SectionMain from "@/components/Section/SectionMain.vue";
-import CardBox from "@/components/Cardbox/CardBox.vue";
-import BaseDivider from "@/components/Base/BaseDivider.vue";
-import FormField from "@/components/Form/FormField.vue";
-import FormControl from "@/components/Form/FormControl.vue";
-import BaseButton from "@/components/Base/BaseButton.vue";
-import BaseButtons from "@/components/Base/BaseButtons.vue";
-import LayoutAuthenticated from "@/layouts/LayoutAuthenticated.vue";
-import SectionTitleLineWithButton from "@/components/Section/SectionTitleLineWithButton.vue";
-import { StudentMappings } from "@/helpers/maps.js";
 import UserAvatarCurrentUserWithUpload from "@/components/Premium/UserAvatarCurrentUserWithUpload.vue";
-import BaseIcon from "@/components/Base/BaseIcon.vue";
+import SectionTitleLineWithButton from "@/components/Section/SectionTitleLineWithButton.vue";
 import SectionBannerProfile from "@/components/Premium/SectionBannerProfile.vue";
+import LayoutAuthenticated from "@/layouts/LayoutAuthenticated.vue";
 import PillTagPlain from "@/components/PillTag/PillTagPlain.vue";
+import SectionMain from "@/components/Section/SectionMain.vue";
+import BaseDivider from "@/components/Base/BaseDivider.vue";
+import FormControl from "@/components/Form/FormControl.vue";
+import BaseButtons from "@/components/Base/BaseButtons.vue";
+import BaseButton from "@/components/Base/BaseButton.vue";
+import FormField from "@/components/Form/FormField.vue";
+import CardBox from "@/components/Cardbox/CardBox.vue";
+import BaseIcon from "@/components/Base/BaseIcon.vue";
+import { StudentMappings } from "@/helpers/maps.js";
 
 import moment from "@/moment-setup";
 
@@ -63,23 +63,6 @@ const rules = {
 const v$ = useVuelidate(rules, passwordForm);
 
 const isLoading = ref(false);
-async function onSubmit() {
-	isLoading.value = true;
-	v$.value.$touch();
-	if (v$.value.$invalid) {
-		isLoading.value = false;
-		return;
-	}
-	let response = await mainStore.updatePassword(passwordForm.password_current, passwordForm.password);
-	if (response.message == "Invalid old password. Please try again.") showNotificationBar("warning");
-	else {
-		showNotificationBar("success");
-		await Utils.wait(2);
-		mainStore.logout();
-	}
-	await Utils.wait(3);
-	isLoading.value = false;
-}
 
 const notificationBar = ref(null);
 let notificationStatus = ref();
@@ -87,25 +70,6 @@ let notificationMessage = ref();
 
 const notificationSettingsModel = ref([]);
 const notificationsOutline = computed(() => notificationSettingsModel.value.indexOf("outline") > -1);
-function showNotificationBar(type) {
-	switch (type) {
-		case "success":
-			notificationBar.value.color = "success";
-			notificationBar.value.icon = mdiCheckCircle;
-			notificationBar.value.duration = 1;
-			notificationStatus.value = "To je to!";
-			notificationMessage.value = " Lozinka uspješno promijenjena!";
-			break;
-		case "warning":
-			notificationBar.value.color = "warning";
-			notificationBar.value.icon = mdiAlert;
-			notificationBar.value.duration = 1;
-			notificationStatus.value = "Upozorenje.";
-			notificationMessage.value = " Pogrešna stara lozinka. Molimo pokušajte ponovno.";
-			break;
-	}
-	notificationBar.value.show();
-}
 </script>
 
 <template>
@@ -113,15 +77,15 @@ function showNotificationBar(type) {
 		<SectionMain>
 			<SectionTitleLineWithButton :icon="mdiAccount" title="Korisnički profil" main />
 
-			<div class="grid grid-cols-1 xl:grid-cols-2 gap-6 mb-6">
+			<div class="mb-6 grid grid-cols-1 gap-6 xl:grid-cols-2">
 				<CardBox flex="flex-row" class="items-center rounded">
-					<div class="flex justify-start items-start">
-						<UserAvatarCurrentUserWithUpload class="w-24 h-24 md:w-36 md:h-36 mr-6" />
+					<div class="flex items-start justify-start">
+						<UserAvatarCurrentUserWithUpload class="mr-6 h-24 w-24 md:h-36 md:w-36" />
 
 						<div class="flex-1">
-							<div class="flex justify-between items-center">
-								<div class="flex justify-start items-center mb-3">
-									<h1 class="text-2xl mr-1.5">
+							<div class="flex items-center justify-between">
+								<div class="mb-3 flex items-center justify-start">
+									<h1 class="mr-1.5 text-2xl">
 										{{ mainStore.currentUser.ime }}
 										{{ mainStore.currentUser.prezime }}
 									</h1>
@@ -141,7 +105,7 @@ function showNotificationBar(type) {
 				<SectionBannerProfile />
 			</div>
 
-			<div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+			<div class="grid grid-cols-1 gap-6 lg:grid-cols-2">
 				<CardBox is-form class="rounded">
 					<FormField v-if="profileForm.account_type != 'student'" label="Korisničko ime">
 						<FormControl v-model="profileForm.username" :icon="mdiAccount" readonly name="userName" autocomplete="userName" />

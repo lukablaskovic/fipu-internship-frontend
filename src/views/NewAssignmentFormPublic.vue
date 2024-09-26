@@ -1,26 +1,26 @@
 <script setup>
-import { ref, reactive, onMounted, watch, computed } from "vue";
 import { mdiBallot, mdiEmail, mdiClipboardText, mdiLaptop, mdiDomain, mdiMapMarker, mdiClipboardTextClockOutline, mdiAccountGroup, mdiSchool, mdiTextLong, mdiXml, mdiThumbsUpDown, mdiClockTimeFiveOutline, mdiNoteTextOutline } from "@mdi/js";
+import { ref, reactive, onMounted, watch, computed } from "vue";
 import SectionMain from "@/components/Section/SectionMain.vue";
 
 import SectionTitleLineWithButton from "@/components/Section/SectionTitleLineWithButton.vue";
 
-import FooterBar from "@/components/FooterBar.vue";
-import SnackBar from "@/components/Premium/SnackBar.vue";
 import BaseButton from "@/components/Base/BaseButton.vue";
+import SnackBar from "@/components/Premium/SnackBar.vue";
+import FooterBar from "@/components/FooterBar.vue";
 
 import CardBox from "@/components/Cardbox/CardBox.vue";
 
-import FormField from "@/components/Form/FormField.vue";
-import FormControl from "@/components/Form/FormControl.vue";
-import FormCombobox from "@/components/Form/FormCombobox.vue";
-import FormCheckRadioGroup from "@/components/Form/FormCheckRadioGroup.vue";
-import BaseDivider from "@/components/Base/BaseDivider.vue";
 import CardBoxComponentTitle from "@/components/Cardbox/CardBoxComponentTitle.vue";
+import FormCheckRadioGroup from "@/components/Form/FormCheckRadioGroup.vue";
+import FormCombobox from "@/components/Form/FormCombobox.vue";
+import FormControl from "@/components/Form/FormControl.vue";
+import BaseDivider from "@/components/Base/BaseDivider.vue";
+import FormField from "@/components/Form/FormField.vue";
 
-import { useVuelidate } from "@vuelidate/core";
 import { required, email, helpers } from "@vuelidate/validators";
 import { getFirstErrorForField } from "@/helpers/validators";
+import { useVuelidate } from "@vuelidate/core";
 
 import Utils from "@/helpers/utils";
 
@@ -174,7 +174,7 @@ watch(
 		if (typeof newValue === "string") {
 			form.selekcija = newValue === "true";
 		}
-	}
+	},
 );
 
 const onCompanyChange = () => {
@@ -213,7 +213,7 @@ const onCompanyChange = () => {
 					<div class="mb-6 w-full shrink-0 grow-0 basis-auto md:w-6/12">
 						<div class="flex items-start">
 							<div class="shrink-0">
-								<div class="inline-block rounded-md bg-primary-100 p-4 w-24 h-24 text-primary items-center">
+								<div class="bg-primary-100 text-primary inline-block h-24 w-24 items-center rounded-md p-4">
 									<a href="https://fipu.unipu.hr/fipu/ivan.lorencin" target="_blank"><img class="rounded-full" src="https://fipu.unipu.hr/images/users_profiles/Ivan-Lorencin.jpg" alt="Ivan Lorencin" /></a>
 								</div>
 							</div>
@@ -226,8 +226,8 @@ const onCompanyChange = () => {
 					</div>
 				</div>
 			</div>
-			<div class="grid grid-cols-1 gap-6 mb-6">
-				<CardBox :icon="mdiBallot" class="mb-6 lg:mb-0 lg:col-span-2 xl:col-span-3" is-form @submit.prevent="onSubmit">
+			<div class="mb-6 grid grid-cols-1 gap-6">
+				<CardBox :icon="mdiBallot" class="mb-6 lg:col-span-2 lg:mb-0 xl:col-span-3" is-form @submit.prevent="onSubmit">
 					<CardBoxComponentTitle class="text-center" title="💼Prijava projekta za studentsku praksu " />
 
 					<FormField v-if="!form.Poslodavac_novi_naziv" label="Poduzeće partner" help="Ako niste partner, unesite naziv poduzeća ispod" horizontal>

@@ -1,15 +1,15 @@
 <script setup>
-import { computed } from "vue";
+import DebugSelectButton from "@/components/Helpers/DebugSelectButton.vue";
+import BaseIcon from "@/components/Base/BaseIcon.vue";
 import VueJsonPretty from "vue-json-pretty";
 import "vue-json-pretty/lib/styles.css";
-import Slider from "@vueform/slider";
-import BaseIcon from "@/components/Base/BaseIcon.vue";
-import DebugSelectButton from "@/components/Helpers/DebugSelectButton.vue";
 import { mdiHelpCircle } from "@mdi/js";
+import Slider from "@vueform/slider";
+import { computed } from "vue";
 
-import { mainStore, studentStore, adminStore, guestStore, styleStore, layoutStore, snackBarStore, chatStore } from "@/main.js";
+import { mainStore, studentStore, adminStore, guestStore, styleStore, layoutStore, snackBarStore } from "@/main.js";
 
-const storeNames = ["mainStore", "studentStore", "adminStore", "guestStore", "styleStore", "layoutStore", "snackBarStore", "chatStore"];
+const storeNames = ["mainStore", "studentStore", "adminStore", "guestStore", "styleStore", "layoutStore", "snackBarStore"];
 
 const newValueFormatted = computed(() => {
 	switch (mainStore.storeSelected) {
@@ -27,28 +27,26 @@ const newValueFormatted = computed(() => {
 			return layoutStore.$state;
 		case "snackBarStore":
 			return snackBarStore.$state;
-		case "chatStore":
-			return chatStore.$state;
 	}
 });
 </script>
 
 <template>
-	<div v-if="mainStore.debug" class="w-screen h-screen flex justify-center items-center fixed backdrop-blur-sm z-[1000] py-16 px-[8%]">
-		<div class="p-4 flex flex-col bg-black bg-opacity-90 shadow-xl rounded-xl h-full w-full text-slate-400">
+	<div v-if="mainStore.debug" class="fixed z-[1000] flex h-screen w-screen items-center justify-center px-[8%] py-16 backdrop-blur-sm">
+		<div class="flex h-full w-full flex-col rounded-xl bg-black bg-opacity-90 p-4 text-slate-400 shadow-xl">
 			<div class="text-center text-2xl font-bold">DEBUG INFO</div>
-			<Slider class="my-4 slider min-h-[8px] h-[8px] w-64 self-center" v-model="mainStore.depth" :min="1" :max="8" showTooltip="focus" :merge="1" :lazy="false" />
-			<div class="w-full flex justify-start items-center py-1 overflow-y-hidden overflow-x-auto fipu_vertical_scrollbar pb-4">
+			<Slider class="slider my-4 h-[8px] min-h-[8px] w-64 self-center" v-model="mainStore.depth" :min="1" :max="8" showTooltip="focus" :merge="1" :lazy="false" />
+			<div class="fipu_vertical_scrollbar flex w-full items-center justify-start overflow-x-auto overflow-y-hidden py-1 pb-4">
 				<DebugSelectButton v-for="name in storeNames" :name="name" />
 			</div>
 			<hr />
-			<div class="overflow-auto fipu_vertical_scrollbar">
+			<div class="fipu_vertical_scrollbar overflow-auto">
 				<vue-json-pretty showIcon :deep="mainStore.depth" :data="newValueFormatted" />
 			</div>
 		</div>
 	</div>
 	<div class="fixed bottom-2 right-2 z-[2000]" @click="mainStore.debug = !mainStore.debug">
-		<BaseIcon :path="mdiHelpCircle" h="40" w="40" :size="40" class="text-main_lighttext hover:text-main_cyan text-4xl hover:cursor-pointer mr-2 opacity-50" />
+		<BaseIcon :path="mdiHelpCircle" h="40" w="40" :size="40" class="text-main_lighttext hover:text-main_cyan mr-2 text-4xl opacity-50 hover:cursor-pointer" />
 	</div>
 </template>
 

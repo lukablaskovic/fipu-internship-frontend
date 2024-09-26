@@ -27,7 +27,7 @@ router.beforeEach((to, from, next) => {
 
 	// If route requires authentication and user is not authenticated
 	if (requiresAuth && !userAuthenticated) {
-		return next("/login");
+		return next("/prijava");
 	}
 
 	// If route requires admin role but user isn't admin
@@ -36,7 +36,7 @@ router.beforeEach((to, from, next) => {
 	}
 
 	// If user is trying to access login page but is already authenticated
-	if (to.path === "/login" && userAuthenticated) {
+	if (to.path === "/prijava" && userAuthenticated) {
 		// Send admins to the dashboard, others to "moja-praksa"
 		return next(userAdmin ? "/dashboard" : "/moja-praksa");
 	}

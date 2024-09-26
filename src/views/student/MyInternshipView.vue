@@ -1,7 +1,7 @@
 <script setup>
-import { ref, computed, onMounted } from "vue";
 import { mainStore, studentStore } from "@/main.js";
 import { UserTaskMappings } from "@/helpers/maps";
+import { ref, computed, onMounted } from "vue";
 
 import LoadingOverlay from "@/components/LoadingOverlay.vue";
 
@@ -27,6 +27,7 @@ const currentRenderingComponent = computed(() => {
 	}
 
 	if (!mainStore.userAuthenticated) {
+		console.log("User not authenticated");
 		return UserTaskMappings.getTaskProperty("odabiranje_zadatka_student", "component", studentStore.student_process_instance_data.state);
 	}
 

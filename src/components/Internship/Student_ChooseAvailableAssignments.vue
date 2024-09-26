@@ -1,23 +1,23 @@
 <script setup>
-import { ref, computed } from "vue";
-import draggable from "vuedraggable";
 import { mdiClipboardCheckOutline, mdiClipboardTextOutline, mdiLaptop, mdiAlertCircle, mdiCheckCircle, mdiAlert, mdiClose } from "@mdi/js";
+import draggable from "vuedraggable";
+import { ref, computed } from "vue";
 
 import LayoutAuthenticated from "@/layouts/LayoutAuthenticated.vue";
 import LayoutGuest from "@/layouts/LayoutGuest.vue";
 
-import SectionMain from "@/components/Section/SectionMain.vue";
-import CardBox from "@/components/Cardbox/CardBox.vue";
-import CardBoxModal from "@/components/Cardbox/CardBoxModal.vue";
-import BaseButtons from "@/components/Base/BaseButtons.vue";
-import BaseButton from "@/components/Base/BaseButton.vue";
 import SectionTitleLineWithButton from "@/components/Section/SectionTitleLineWithButton.vue";
 import TableAvailableAssignments from "@/components/Tables/TableAvailableAssignments.vue";
-import FormField from "@/components/Form/FormField.vue";
+import CardBoxModal from "@/components/Cardbox/CardBoxModal.vue";
+import SectionMain from "@/components/Section/SectionMain.vue";
+import BaseButtons from "@/components/Base/BaseButtons.vue";
 import FormControl from "@/components/Form/FormControl.vue";
+import BaseButton from "@/components/Base/BaseButton.vue";
+import FormField from "@/components/Form/FormField.vue";
+import CardBox from "@/components/Cardbox/CardBox.vue";
 
-import Utils from "@/helpers/utils.js";
 import { mainStore, guestStore, studentStore } from "@/main.js";
+import Utils from "@/helpers/utils.js";
 
 const Layout = computed(() => {
 	if (mainStore.userAuthenticated) {
@@ -119,12 +119,12 @@ const isDraggableEnabled = computed(() => checkedAssignments.value.length === 3)
 			<br />
 			<SectionTitleLineWithButton ref="vas_odabir" :icon="mdiClipboardCheckOutline" main title="Vaš odabir"></SectionTitleLineWithButton>
 			<p v-if="checkedAssignments.length === 3" class="mb-4">Zadatke možete rasporediti po vašim preferencijama.</p>
-			<div v-if="checkedAssignments.length" class="flex justify-center items-center">
+			<div v-if="checkedAssignments.length" class="flex items-center justify-center">
 				<div class="flex flex-row text-center">
-					<draggable :list="checkedAssignments" :disabled="!isDraggableEnabled" item-key="id" class="list-group flex flex-col md:flex-row space-y-4 md:space-y-0 md:space-x-4" ghost-class="ghost" @start="fadeOutAnimation" @end="vueDraggableDragging = false">
+					<draggable :list="checkedAssignments" :disabled="!isDraggableEnabled" item-key="id" class="list-group flex flex-col space-y-4 md:flex-row md:space-x-4 md:space-y-0" ghost-class="ghost" @start="fadeOutAnimation" @end="vueDraggableDragging = false">
 						<template #item="{ element, index }">
 							<div
-								class="drag-handle list-group-item flex-shrink-0 w-60 h-30 text-white bg-fipu_light_blue dark:bg-fipu_blue rounded-lg shadow-lg flex flex-col items-center justify-center text-lg p-4"
+								class="drag-handle list-group-item h-30 flex w-60 flex-shrink-0 flex-col items-center justify-center rounded-lg bg-fipu_light_blue p-4 text-lg text-white shadow-lg dark:bg-fipu_blue"
 								:class="{
 									wiggle: wiggleEnabled && isDraggableEnabled,
 									'not-draggable': !enabled,
@@ -140,12 +140,12 @@ const isDraggableEnabled = computed(() => checkedAssignments.value.length === 3)
 
 			<div v-else>Niste odabrali ni jedan zadatak.</div>
 			<div v-if="checkedAssignments.length == 3">
-				<div class="animation bg-center dark:invert bg-no-repeat bg-[url('/swipe-vertical.png')] md:bg-[url('/swipe-horizontal.png')]" :class="{ 'fade-out': isFadedOut }" @click="fadeOutAnimation"></div>
+				<div class="animation bg-[url('/swipe-vertical.png')] bg-center bg-no-repeat dark:invert md:bg-[url('/swipe-horizontal.png')]" :class="{ 'fade-out': isFadedOut }" @click="fadeOutAnimation"></div>
 
 				<FormField class="lg:mt-4" label="Napomena (nije obavezno)">
 					<FormControl v-model="napomena" type="textarea" placeholder="Slobodno dodaj napomenu za voditelja prakse." />
 				</FormField>
-				<BaseButtons class="space-y-2 mt-6 mb-16 justify-center items-center">
+				<BaseButtons class="mb-16 mt-6 items-center justify-center space-y-2">
 					<BaseButton type="submit" color="fipu_light_blue" label="Prijavi preferencije" :loading="isLoading" @click="modalConfirmPreferences = true" />
 				</BaseButtons>
 			</div>
