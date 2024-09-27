@@ -7,9 +7,9 @@ import { mdiHelpCircle } from "@mdi/js";
 import Slider from "@vueform/slider";
 import { computed } from "vue";
 
-import { mainStore, studentStore, adminStore, guestStore, styleStore, layoutStore, snackBarStore } from "@/main.js";
+import { mainStore, studentStore, adminStore, styleStore, layoutStore, snackBarStore } from "@/main.js";
 
-const storeNames = ["mainStore", "studentStore", "adminStore", "guestStore", "styleStore", "layoutStore", "snackBarStore"];
+const storeNames = ["mainStore", "studentStore", "adminStore", "styleStore", "layoutStore", "snackBarStore"];
 
 const newValueFormatted = computed(() => {
 	switch (mainStore.storeSelected) {
@@ -19,8 +19,6 @@ const newValueFormatted = computed(() => {
 			return studentStore.$state;
 		case "adminStore":
 			return adminStore.$state;
-		case "guestStore":
-			return guestStore.$state;
 		case "styleStore":
 			return styleStore.$state;
 		case "layoutStore":

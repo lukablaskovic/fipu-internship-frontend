@@ -1,9 +1,9 @@
 <script setup>
 import CardBox from "@/components/Cardbox/CardBox.vue";
-import { guestStore, mainStore } from "@/main";
 //Public images
 import fipu_unipu from "/fipu_unipu.png";
 import { useRouter } from "vue-router";
+import { mainStore } from "@/main";
 
 const router = useRouter();
 import { googleLogout } from "vue3-google-login";
@@ -14,7 +14,7 @@ const logout = () => {
 };
 
 const selectProcess = async (process) => {
-	let response = await guestStore.createInternshipInstance(process);
+	let response = await mainStore.createInternshipInstance(process);
 	router.push("/moja-praksa");
 };
 </script>

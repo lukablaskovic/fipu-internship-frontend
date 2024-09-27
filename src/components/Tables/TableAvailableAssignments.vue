@@ -4,12 +4,12 @@ import { computed, ref, onMounted, watch } from "vue";
 import CardboxAllocation from "@/components/Cardbox/CardBoxAllocation.vue";
 import TableCheckboxCell from "@/components/Tables/TableCheckboxCell.vue";
 import CardBoxModal from "@/components/Cardbox/CardBoxModal.vue";
-import { mainStore, guestStore, adminStore } from "@/main.js";
 import LoadingOverlay from "@/components/LoadingOverlay.vue";
 import BaseButtons from "@/components/Base/BaseButtons.vue";
 import BaseButton from "@/components/Base/BaseButton.vue";
 import UserAvatar from "@/components/User/UserAvatar.vue";
 import BaseLevel from "@/components/Base/BaseLevel.vue";
+import { mainStore, adminStore } from "@/main.js";
 import { mdiEye } from "@mdi/js";
 
 import { useRoute } from "vue-router";
@@ -40,7 +40,7 @@ const MAX_NUM_ASSIGNMENTS = 3;
 const isModalActive = ref(null);
 const allAvailableAssignments = ref([]);
 
-let checkedAssignments = computed(() => guestStore.checkedAssignments);
+let checkedAssignments = computed(() => mainStore.checkedAssignments);
 let assignment_highlight = ref("");
 
 const route = useRoute();
@@ -48,7 +48,7 @@ const route = useRoute();
 async function loadData() {
 	const id_zadatak = route.params.id_zadatak;
 
-	const resultAssignments = await guestStore.fetchAvailableAssignments();
+	const resultAssignments = await mainStore.fetchAvailableAssignments();
 	allAvailableAssignments.value = resultAssignments.filter((task) => {
 		const condition = adminStore.availableAssignmentsFilter ? task.dostupno_mjesta > 0 : task.dostupno_mjesta >= 0;
 		return condition && task.voditelj_odobrio.value == "odobreno";
@@ -67,17 +67,18 @@ watch(() => route.params.id_zadatak, loadData, {
 });
 
 onMounted(async () => {
-	const result = await guestStore.fetchAvailableAssignments();
+	const result = await mainStore.fetchAvailableAssignments();
 	allAvailableAssignments.value = result.filter((task) => {
 		const condition = adminStore.availableAssignmentsFilter ? task.dostupno_mjesta > 0 : task.dostupno_mjesta >= 0;
 		return condition && task.voditelj_odobrio.value == "odobreno";
 	});
-	guestStore.resetAssignments();
+	mainStore.resetAssignments();
 });
 
 const getCompanyLogo = (assignment) => {
 	const company = mainStore.allCompanies.find((c) => c.naziv === assignment["Poslodavac"][0].value);
-	return company["logo"][0]["url"] ? company["logo"][0]["url"] : "No-Logo.png";
+
+	return company && company["logo"] && company["logo"][0] && company["logo"][0]["url"] ? company["logo"][0]["url"] : "No-Logo.png";
 };
 
 function getAssignmentPage(id) {
@@ -101,7 +102,7 @@ watch(checkedAssignments, (newVals) => {
 watch(
 	() => adminStore.availableAssignmentsFilter,
 	async () => {
-		const result = await guestStore.fetchAvailableAssignments();
+		const result = await mainStore.fetchAvailableAssignments();
 
 		allAvailableAssignments.value = result.filter((task) => {
 			const condition = adminStore.availableAssignmentsFilter ? task.dostupno_mjesta > 0 : task.dostupno_mjesta >= 0;
@@ -123,9 +124,9 @@ const checked = (value, assignment) => {
 			assignmentCheckedStates[assignment["id_zadatak"]] = false;
 			return;
 		}
-		guestStore.addAssignment(assignment);
+		mainStore.addAssignment(assignment);
 	} else {
-		guestStore.removeAssignment(assignment);
+		mainStore.removeAssignment(assignment);
 	}
 };
 </script>

@@ -12,7 +12,6 @@ import "animate.css";
 import { useSnackBarStore } from "@/stores/snackbar_store";
 import { useStudentStore } from "@/stores/student_store";
 import { useStyleStore } from "@/stores/style_store.js";
-import { useGuestStore } from "@/stores/guest_store.js";
 import { useAdminStore } from "@/stores/admin_store.js";
 import { useMainStore } from "@/stores/main_store.js";
 import { useLayoutStore } from "@/stores/layout";
@@ -52,7 +51,6 @@ app.use(vue3GoogleLogin, {
 /* Init Pinia stores BEFORE setting up the router */
 const mainStore = useMainStore(pinia);
 const studentStore = useStudentStore(pinia);
-const guestStore = useGuestStore(pinia);
 const adminStore = useAdminStore(pinia);
 const styleStore = useStyleStore(pinia);
 const layoutStore = useLayoutStore(pinia);
@@ -87,4 +85,4 @@ router.afterEach((to) => {
 	document.title = to.meta?.title ? `${to.meta.title} — ${defaultDocumentTitle}` : defaultDocumentTitle;
 });
 
-export { mainStore, studentStore, adminStore, guestStore, styleStore, layoutStore, snackBarStore };
+export { mainStore, studentStore, adminStore, styleStore, layoutStore, snackBarStore };

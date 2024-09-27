@@ -1,18 +1,18 @@
 <script setup>
 import { mdiForwardburger, mdiBackburger, mdiMenu, mdiMagnify, mdiLaptop, mdiEmail, mdiAccountMultiple, mdiClipboardCheck, mdiDomain, mdiClipboardText } from "@mdi/js";
-import { ref, onMounted, computed } from "vue";
 import { mainStore, styleStore } from "@/main.js";
+import { ref, onMounted, computed } from "vue";
 
-import menuAsideAdmin from "@/menus/menuAsideAdmin.js";
 import AsideMenu from "@/components/AsideMenu/AsideMenu.vue";
+import menuAsideAdmin from "@/menus/menuAsideAdmin.js";
 
 import menuAsideStudent from "@/menus/menuAsideStudent.js";
 import menuNavBar from "@/menus/menuNavBar.js";
 
-import BaseIcon from "@/components/Base/BaseIcon.vue";
-import FormControl from "@/components/Form/FormControl.vue";
-import NavBar from "@/components/Navbar/NavBar.vue";
 import NavBarItemPlain from "@/components/Navbar/NavBarItemPlain.vue";
+import FormControl from "@/components/Form/FormControl.vue";
+import BaseIcon from "@/components/Base/BaseIcon.vue";
+import NavBar from "@/components/Navbar/NavBar.vue";
 import FooterBar from "@/components/FooterBar.vue";
 
 import CardBoxModal from "@/components/Cardbox/CardBoxModal.vue";
@@ -67,7 +67,7 @@ const menuClick = (event, item) => {
 			dark: styleStore.darkMode,
 			'overflow-hidden lg:overflow-visible': layoutStore.isAsideMobileExpanded,
 		}">
-		<div :class="[layoutAsidePadding, { 'ml-60 lg:ml-0': layoutStore.isAsideMobileExpanded }]" class="pt-14 min-h-screen w-screen transition-position lg:w-auto bg-gray-50 dark:bg-slate-800 dark:text-slate-100 flex flex-col">
+		<div :class="[layoutAsidePadding, { 'ml-60 lg:ml-0': layoutStore.isAsideMobileExpanded }]" class="flex min-h-screen w-screen flex-col bg-gray-50 pt-14 transition-position dark:bg-slate-800 dark:text-slate-100 lg:w-auto">
 			<NavBar :menu="menuNavBar" :class="[layoutAsidePadding, { 'ml-60 lg:ml-0': layoutStore.isAsideMobileExpanded }]" @menu-click="menuClick">
 				<NavBarItemPlain display="flex lg:hidden" @click.prevent="layoutStore.asideMobileToggle()">
 					<BaseIcon :path="layoutStore.isAsideMobileExpanded ? mdiBackburger : mdiForwardburger" size="24" />
@@ -84,12 +84,12 @@ const menuClick = (event, item) => {
 
 			<CardBoxModal v-if="!mainStore.userAdmin" v-model="helpModalActive" has-cancel :has-confirm="false" title="ℹ️ Upute za korištenje aplikacije" button-label="Povratak" @cancel="mainStore.activateHelpModal(false)">
 				<BaseDivider></BaseDivider>
-				<div class="text-xl mb-2">O kolegiju</div>
+				<div class="mb-2 text-xl">O kolegiju</div>
 				<div>Cilj kolegija <b>Stručna praksa</b> je omogućiti studentima praktični rad u IT poduzećima na projektima oblikovanja i implementacije programske podrške; usvajanja stručnih kompetencija iz područja djelovanja organizacije u kojoj se praksa provodi te razvijanje osjećaja odgovornosti i timskoga rada unutar zadanoga radnoga okruženja.</div>
 				<BaseDivider></BaseDivider>
-				<div class="text-xl mb-2">Prijava na praksu</div>
+				<div class="mb-2 text-xl">Prijava na praksu</div>
 
-				<ol class="list-decimal ml-4">
+				<ol class="ml-4 list-decimal">
 					<li>
 						Studenti se prijavljuju na praksu putem aplikacije
 						<em>FIPU Praksa</em> u kojem prvo odabiru 3 zadatka koja bi željeli raditi.
@@ -98,13 +98,13 @@ const menuClick = (event, item) => {
 					<li>Profesor može i odbiti zadatke koje ste odabrali te vas vratiti na početni korak odabira preferencija, ili vas može alocirati na neko 4. poduzeće ukoliko smatra da je to potrebno.</li>
 				</ol>
 				<BaseDivider></BaseDivider>
-				<div class="text-xl mb-2">Izvođenje prakse</div>
-				<ol class="list-decimal ml-4">
+				<div class="mb-2 text-xl">Izvođenje prakse</div>
+				<ol class="ml-4 list-decimal">
 					<li>Potrebno je s mentorom dogovoriti datum počekta izvođenja prakse. Kada sve finalno dogovorite s mentorom popunite Prijavnicu putem aplikacije <b>prije početka izvođenja prakse</b>.</li>
 					<li>
 						<div class="flex flex-wrap text-base">
 							Niste dobili email? Javite se profesoru putem
-							<span class="text-fipu_blue cursor-pointer inline-flex whitespace-normal items-center" @click="router.push('/poruke') && mainStore.activateHelpModal(false)">
+							<span class="inline-flex cursor-pointer items-center whitespace-normal text-fipu_blue" @click="router.push('/poruke') && mainStore.activateHelpModal(false)">
 								<BaseIcon :path="mdiEmail" class="flex-none align-middle" :size="18"></BaseIcon>
 								Poruke </span
 							>.
@@ -114,8 +114,8 @@ const menuClick = (event, item) => {
 					<li>Uživajte u izvođenju prakse 🙂 Have fun i učite! Nemojte zaboraviti svakodnevno voditi Dnevnik!</li>
 				</ol>
 				<BaseDivider></BaseDivider>
-				<div class="text-xl mb-2">Završetak prakse i prijava ispita</div>
-				<ol class="list-decimal ml-4">
+				<div class="mb-2 text-xl">Završetak prakse i prijava ispita</div>
+				<ol class="ml-4 list-decimal">
 					<li>Nakon što završite sa stručnom praksu potrebno je predati Dnevnik, također putem aplikacije.</li>
 					<li>
 						Za kraj, potrebno je prijaviti ispit preko Studomata. Na ispit
@@ -123,8 +123,8 @@ const menuClick = (event, item) => {
 					</li>
 				</ol>
 				<BaseDivider></BaseDivider>
-				<div class="text-xl mb-2">Aplikacija <em>FIPU praksa</em></div>
-				<ol class="list-decimal ml-4">
+				<div class="mb-2 text-xl">Aplikacija <em>FIPU praksa</em></div>
+				<ol class="ml-4 list-decimal">
 					<li>
 						Sve radnje (uključujući komunikaciju) vezane uz praksu obavljaju se isključivo putem aplikacije
 						<em>FIPU praksa</em>.
@@ -132,7 +132,7 @@ const menuClick = (event, item) => {
 					<li>
 						<div class="flex flex-wrap text-base">
 							Ovisno o stanju vaše prakse,
-							<span class="text-fipu_blue cursor-pointer inline-flex whitespace-normal items-center" @click="router.push('/moja-praksa') && mainStore.activateHelpModal(false)">
+							<span class="inline-flex cursor-pointer items-center whitespace-normal text-fipu_blue" @click="router.push('/moja-praksa') && mainStore.activateHelpModal(false)">
 								<BaseIcon :path="mdiLaptop" class="flex-none align-middle" :size="18"></BaseIcon>
 								Moja praksa
 							</span>
@@ -143,7 +143,7 @@ const menuClick = (event, item) => {
 					<li>
 						<div class="flex flex-wrap text-base">
 							Komunikaciju s profesorom vršite putem
-							<span class="text-fipu_blue cursor-pointer inline-flex whitespace-normal items-center" @click="router.push('/poruke') && mainStore.activateHelpModal(false)">
+							<span class="inline-flex cursor-pointer items-center whitespace-normal text-fipu_blue" @click="router.push('/poruke') && mainStore.activateHelpModal(false)">
 								<BaseIcon :path="mdiEmail" class="flex-none align-middle" :size="18"></BaseIcon>
 								Poruke </span
 							>.
@@ -159,12 +159,12 @@ const menuClick = (event, item) => {
 
 			<CardBoxModal v-else v-model="helpModalActive" has-cancel :has-confirm="false" title="ℹ️ Upute za korištenje aplikacije" button-label="Povratak" @cancel="mainStore.activateHelpModal(false)">
 				<BaseDivider></BaseDivider>
-				<div class="text-xl mb-2">O kolegiju</div>
+				<div class="mb-2 text-xl">O kolegiju</div>
 				<div>Cilj kolegija <b>Stručna praksa</b> je omogućiti studentima praktični rad u IT poduzećima na projektima oblikovanja i implementacije programske podrške; usvajanja stručnih kompetencija iz područja djelovanja organizacije u kojoj se praksa provodi te razvijanje osjećaja odgovornosti i timskoga rada unutar zadanoga radnoga okruženja.</div>
 				<BaseDivider></BaseDivider>
-				<div class="text-xl mb-2">Prijava na praksu</div>
+				<div class="mb-2 text-xl">Prijava na praksu</div>
 
-				<ol class="list-decimal ml-4">
+				<ol class="ml-4 list-decimal">
 					<li>
 						Studenti se prijavljuju na praksu putem aplikacije
 						<em>FIPU Praksa</em> u kojem prvo odabiru 3 zadatka koja bi željeli raditi.
@@ -172,7 +172,7 @@ const menuClick = (event, item) => {
 					<li>
 						<div class="flex flex-wrap text-base">
 							Studente možete alocirati putem
-							<span class="text-fipu_blue cursor-pointer inline-flex whitespace-normal items-center" @click="router.push('/studenti') && mainStore.activateHelpModal(false)">
+							<span class="inline-flex cursor-pointer items-center whitespace-normal text-fipu_blue" @click="router.push('/studenti') && mainStore.activateHelpModal(false)">
 								<BaseIcon :path="mdiAccountMultiple" class="flex-none align-middle" :size="18"></BaseIcon>
 								Studenti </span
 							>.
@@ -183,20 +183,20 @@ const menuClick = (event, item) => {
 					<li>Možete i odbiti preferencije nakon čega se studenta vraća na početni korak.</li>
 				</ol>
 				<BaseDivider></BaseDivider>
-				<div class="text-xl mb-2">Dashboard</div>
-				<ol class="list-decimal ml-4">
+				<div class="mb-2 text-xl">Dashboard</div>
+				<ol class="ml-4 list-decimal">
 					<li>Dashboard se trenutno sastoji od 2 dijela - <b>Nadzorna ploča</b>, gdje možete vidjeti općenite numeričke podatke o izvođenju prakse, te <b>Najnoviji događaji</b>, gdje se nalaze event logovi iz BPMN engine-a</li>
 					<li>Možete stisnuti na pojedini event log, što će vas odnijeti na studenti/:id gdje je id jednak instanci tog procesa prakse za tog studenta</li>
 					<li>Tražilicu možete otvoriti pritiskom <b>CTRL + k</b>. Običnim upisivanjem možete brzo prelaziti kroz stranice aplikacije, a prefiksima (ispisani su u uputama tražilice) mogu se tražiti određene stavke, poput studenata po JMBAGU, emailu, ili poduzeća.</li>
 				</ol>
 
 				<BaseDivider></BaseDivider>
-				<div class="text-xl mb-2">Alokacije</div>
-				<ol class="list-decimal ml-4">
+				<div class="mb-2 text-xl">Alokacije</div>
+				<ol class="ml-4 list-decimal">
 					<li>
 						<div class="flex flex-wrap text-base">
 							Alokacije možete provjeriti u
-							<span class="text-fipu_blue cursor-pointer inline-flex whitespace-normal items-center" @click="router.push('/alokacije') && mainStore.activateHelpModal(false)">
+							<span class="inline-flex cursor-pointer items-center whitespace-normal text-fipu_blue" @click="router.push('/alokacije') && mainStore.activateHelpModal(false)">
 								<BaseIcon :path="mdiClipboardCheck" class="flex-none align-middle" :size="18"></BaseIcon>
 								Alokacije </span
 							>.
@@ -207,12 +207,12 @@ const menuClick = (event, item) => {
 					<li>Možete za svakog studenta pregledati dnevnik prakse te poslanu prijavnicu.</li>
 				</ol>
 				<BaseDivider></BaseDivider>
-				<div class="text-xl mb-2">Poslodavci</div>
-				<ol class="list-decimal ml-4">
+				<div class="mb-2 text-xl">Poslodavci</div>
+				<ol class="ml-4 list-decimal">
 					<li>
 						<div class="flex flex-wrap text-base">
 							Sve prijavljene poslodavce možete pronaći u
-							<span class="text-fipu_blue cursor-pointer inline-flex whitespace-normal items-center" @click="router.push('/poslodavci') && mainStore.activateHelpModal(false)">
+							<span class="inline-flex cursor-pointer items-center whitespace-normal text-fipu_blue" @click="router.push('/poslodavci') && mainStore.activateHelpModal(false)">
 								<BaseIcon :path="mdiDomain" class="flex-none align-middle" :size="18"></BaseIcon>
 								Poslodavci </span
 							>.
@@ -223,12 +223,12 @@ const menuClick = (event, item) => {
 					<li>Podatke o poslodavcu je moguće i direktno ažurirati Baserowu.</li>
 				</ol>
 				<BaseDivider></BaseDivider>
-				<div class="text-xl mb-2">Dostupni Zadaci</div>
-				<ol class="list-decimal ml-4">
+				<div class="mb-2 text-xl">Dostupni Zadaci</div>
+				<ol class="ml-4 list-decimal">
 					<li>
 						<div class="flex flex-wrap text-base">
 							Novo-prijavljene zadatke možete pronaći u
-							<span class="text-fipu_blue cursor-pointer inline-flex whitespace-normal items-center" @click="router.push('/dostupni-zadaci') && mainStore.activateHelpModal(false)">
+							<span class="inline-flex cursor-pointer items-center whitespace-normal text-fipu_blue" @click="router.push('/dostupni-zadaci') && mainStore.activateHelpModal(false)">
 								<BaseIcon :path="mdiClipboardText" class="flex-none align-middle" :size="18"></BaseIcon>
 								Dostupni zadaci </span
 							>.
@@ -246,13 +246,13 @@ const menuClick = (event, item) => {
 			</CardBoxModal>
 
 			<AsideMenu :menu="menuAside" @menu-click="menuClick" />
-			<div class="grow relative">
+			<div class="relative grow">
 				<slot></slot>
 			</div>
 			<div class="mt-6">
 				<FooterBar
 					><br />
-					Made with <span style="color: #e25555">&#9829;</span> at <a :href="mainStore.fipulab_web" target="_blank" class="hover-underline-animation cursor-pointer text-fipu_text_blue hover:text-fipu_blue">FIPU.lab</a></FooterBar
+					Made with <span style="color: #e25555">&#9829;</span> at <a :href="mainStore.fipulab_web" target="_blank" class="hover-underline-animation cursor-pointer text-fipu_text_blue hover:text-fipu_blue">FIPU Lab</a></FooterBar
 				>
 			</div>
 			<SnackBar />

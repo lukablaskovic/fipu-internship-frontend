@@ -120,15 +120,6 @@ const routes = [
 	},
 	{
 		meta: {
-			title: "Poruke",
-			requiresAuth: true,
-		},
-		path: "/poruke",
-		name: "poruke",
-		component: () => import("@/views/common/MessagesView.vue"),
-	},
-	{
-		meta: {
 			title: "Prijava",
 			requiresAuth: false,
 			transition: "login",

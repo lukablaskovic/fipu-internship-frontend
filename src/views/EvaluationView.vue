@@ -1,21 +1,21 @@
 <script setup>
-import { ref, onMounted } from "vue";
 import { mdiAccountTie, mdiAccount, mdiClipboardCheck, mdiCloseCircle } from "@mdi/js";
 import Utils from "@/helpers/utils.js";
 import { useRoute } from "vue-router";
+import { ref, onMounted } from "vue";
 import { router } from "@/router";
 
 import { adminStore, studentStore, snackBarStore } from "@/main.js";
-import { StudentMappings } from "@/helpers/maps";
 import { UserTaskMappings } from "@/helpers/maps";
+import { StudentMappings } from "@/helpers/maps";
 
-import SectionMain from "@/components/Section/SectionMain.vue";
-import CardBoxAllocation from "@/components/Cardbox/CardBoxAllocation.vue";
 import SectionTitleLineWithButton from "@/components/Section/SectionTitleLineWithButton.vue";
-import FooterBar from "@/components/FooterBar.vue";
+import CardBoxAllocation from "@/components/Cardbox/CardBoxAllocation.vue";
+import SectionMain from "@/components/Section/SectionMain.vue";
 import FormDynamic from "@/components/Form/FormDynamic.vue";
-import SnackBar from "@/components/Premium/SnackBar.vue";
 import BaseButton from "@/components/Base/BaseButton.vue";
+import SnackBar from "@/components/Premium/SnackBar.vue";
+import FooterBar from "@/components/FooterBar.vue";
 
 import FIPU_praksa_logo_transparent from "/FIPU_praksa_logo_transparent.svg";
 
@@ -88,7 +88,7 @@ const updateDisabledCondition = (allFilled) => {
 						{{ studentInfo.student_email }}
 					</h3>
 
-					<p class="mt-1 text-small font-medium text-gray-600">
+					<p class="text-small mt-1 font-medium text-gray-600">
 						{{ StudentMappings.getGodinaStudija(studentInfo.student_godina_studija) }}
 					</p>
 				</div>
@@ -114,7 +114,7 @@ const updateDisabledCondition = (allFilled) => {
 			</div>
 		</SectionMain>
 
-		<FooterBar><br />Made with <span style="color: #e25555">&#9829;</span> at FIPU.lab</FooterBar>
+		<FooterBar><br />Made with <span style="color: #e25555">&#9829;</span> at FIPU Lab</FooterBar>
 		<SnackBar />
 	</div>
 </template>

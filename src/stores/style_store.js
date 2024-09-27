@@ -2,6 +2,8 @@ import { darkModeKey, styleKey } from "@/config";
 import { defineStore } from "pinia";
 import * as styles from "@/styles";
 
+import Utils from "@/helpers/utils";
+
 export const useStyleStore = defineStore("style", {
 	state: () => ({
 		/* Styles */

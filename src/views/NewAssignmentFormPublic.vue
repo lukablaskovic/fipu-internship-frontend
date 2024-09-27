@@ -24,7 +24,7 @@ import { useVuelidate } from "@vuelidate/core";
 
 import Utils from "@/helpers/utils";
 
-import { guestStore, mainStore, snackBarStore } from "@/main.js";
+import { mainStore, snackBarStore } from "@/main.js";
 
 import FIPU_praksa_logo_transparent from "/FIPU_praksa_logo_transparent.svg";
 
@@ -142,7 +142,7 @@ async function onSubmit() {
 		form.proces_selekcije = "Nema";
 	}
 
-	let result = await guestStore.submitNewInternshipProject(form);
+	let result = await mainStore.submitNewInternshipProject(form);
 	isLoading.value = false;
 
 	if (result) {
@@ -337,7 +337,7 @@ const onCompanyChange = () => {
 				</CardBox>
 			</div>
 		</SectionMain>
-		<FooterBar><br />Made with <span style="color: #e25555">&#9829;</span> at FIPU.lab</FooterBar>
+		<FooterBar><br />Made with <span style="color: #e25555">&#9829;</span> at FIPU Lab</FooterBar>
 		<SnackBar />
 	</div>
 </template>

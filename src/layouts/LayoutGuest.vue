@@ -1,22 +1,22 @@
 <script setup>
 import { mdiForwardburger, mdiBackburger, mdiMenu } from "@mdi/js";
-import { computed } from "vue";
 import { useRouter } from "vue-router";
 import { styleStore } from "@/main.js";
+import { computed } from "vue";
 
 import menuAsideGuest from "@/menus/menuAsideGuest.js";
 
 import BaseIcon from "@/components/Base/BaseIcon.vue";
 
-import NavBar from "@/components/Navbar/NavBar.vue";
 import NavBarItemPlain from "@/components/Navbar/NavBarItemPlain.vue";
 import AsideMenu from "@/components/AsideMenu/AsideMenu.vue";
+import NavBar from "@/components/Navbar/NavBar.vue";
 
-import FooterBar from "@/components/FooterBar.vue";
 import menuNavBarGuest from "@/menus/menuNavBarGuest";
+import FooterBar from "@/components/FooterBar.vue";
 
-import { layoutStore, mainStore } from "@/main.js";
 import SnackBar from "@/components/Premium/SnackBar.vue";
+import { layoutStore, mainStore } from "@/main.js";
 
 const layoutAsidePadding = computed(() => (layoutStore.isAsideLgActive ? "lg:pl-22" : "xl:pl-22"));
 const router = useRouter();
@@ -41,7 +41,7 @@ const menuClick = (event, item) => {
 			dark: styleStore.darkMode,
 			'overflow-hidden lg:overflow-visible': layoutStore.isAsideMobileExpanded,
 		}">
-		<div :class="[layoutAsidePadding, { 'ml-60 lg:ml-0': layoutStore.isAsideMobileExpanded }]" class="pt-14 min-h-screen w-screen transition-position lg:w-auto bg-gray-50 dark:bg-slate-800 dark:text-slate-100 flex flex-col">
+		<div :class="[layoutAsidePadding, { 'ml-60 lg:ml-0': layoutStore.isAsideMobileExpanded }]" class="flex min-h-screen w-screen flex-col bg-gray-50 pt-14 transition-position dark:bg-slate-800 dark:text-slate-100 lg:w-auto">
 			<NavBar :menu="menuNavBarGuest" :class="[layoutAsidePadding, { 'ml-60 lg:ml-0': layoutStore.isAsideMobileExpanded }]" @menu-click="menuClick">
 				<NavBarItemPlain display="flex lg:hidden" @click.prevent="layoutStore.asideMobileToggle()">
 					<BaseIcon :path="layoutStore.isAsideMobileExpanded ? mdiBackburger : mdiForwardburger" size="24" />
@@ -56,7 +56,7 @@ const menuClick = (event, item) => {
 			<div class="mt-6">
 				<FooterBar
 					><br />
-					Made with <span style="color: #e25555">&#9829;</span> at <a :href="mainStore.fipulab_web" target="_blank" class="hover-underline-animation cursor-pointer text-fipu_text_blue hover:text-fipu_blue">FIPU.lab</a></FooterBar
+					Made with <span style="color: #e25555">&#9829;</span> at <a :href="mainStore.fipulab_web" target="_blank" class="hover-underline-animation cursor-pointer text-fipu_text_blue hover:text-fipu_blue">FIPU Lab</a></FooterBar
 				>
 			</div>
 			<SnackBar />

@@ -1,16 +1,16 @@
 <script setup>
 import { computed, ref, onMounted, watch } from "vue";
 
-import { mdiEye } from "@mdi/js";
-import CardBoxModal from "@/components/Cardbox/CardBoxModal.vue";
 import TableCheckboxCell from "@/components/Tables/TableCheckboxCell.vue";
-import BaseLevel from "@/components/Base/BaseLevel.vue";
+import CardBoxModal from "@/components/Cardbox/CardBoxModal.vue";
+import CardBoxAllocation from "../Cardbox/CardBoxAllocation.vue";
+import LoadingOverlay from "@/components/LoadingOverlay.vue";
 import BaseButtons from "@/components/Base/BaseButtons.vue";
 import BaseButton from "@/components/Base/BaseButton.vue";
-import LoadingOverlay from "@/components/LoadingOverlay.vue";
-import { mainStore, guestStore } from "@/main.js";
-import CardBoxAllocation from "../Cardbox/CardBoxAllocation.vue";
+import BaseLevel from "@/components/Base/BaseLevel.vue";
 import { useRoute } from "vue-router";
+import { mainStore } from "@/main.js";
+import { mdiEye } from "@mdi/js";
 
 defineProps({
 	checkable: Boolean,
@@ -21,7 +21,7 @@ const MAX_NUM_ASSIGNMENTS = 3;
 const isModalActive = ref(null);
 const allAvailableAssignments = ref([]);
 
-let checkedAssignments = computed(() => guestStore.checkedAssignments);
+let checkedAssignments = computed(() => mainStore.checkedAssignments);
 let assignment_highlight = ref("");
 const route = useRoute();
 
@@ -37,10 +37,10 @@ watch(() => route.params.id_zadatak, loadData, {
 });
 
 onMounted(async () => {
-	const result = await guestStore.fetchAvailableAssignments();
+	const result = await mainStore.fetchAvailableAssignments();
 	allAvailableAssignments.value = result.filter((task) => task.voditelj_odobrio.value == "odbijeno");
 
-	guestStore.resetAssignments();
+	mainStore.resetAssignments();
 });
 
 const perPage = ref(5);
@@ -84,9 +84,9 @@ const checked = (value, assignment) => {
 			assignmentCheckedStates[assignment["id_zadatak"]] = false;
 			return;
 		}
-		guestStore.addAssignment(assignment);
+		mainStore.addAssignment(assignment);
 	} else {
-		guestStore.removeAssignment(assignment);
+		mainStore.removeAssignment(assignment);
 	}
 };
 </script>
@@ -141,7 +141,7 @@ const checked = (value, assignment) => {
 					{{ assignment["broj_studenata"] }}
 				</td>
 
-				<td class="before:hidden lg:w-1 whitespace-nowrap">
+				<td class="whitespace-nowrap before:hidden lg:w-1">
 					<BaseButtons type="justify-start lg:justify-end" no-wrap>
 						<BaseButton color="fipu_blue" :icon="mdiEye" small @click="isModalActive = assignment" />
 					</BaseButtons>
@@ -150,7 +150,7 @@ const checked = (value, assignment) => {
 		</tbody>
 	</table>
 
-	<div class="p-3 lg:px-6 border-t border-gray-100 dark:border-slate-800">
+	<div class="border-t border-gray-100 p-3 dark:border-slate-800 lg:px-6">
 		<BaseLevel>
 			<BaseButtons>
 				<BaseButton v-for="page in pagesList" :key="page" :active="page === currentPage" :label="page + 1" :color="page === currentPage ? 'lightDark' : 'whiteDark'" small @click="currentPage = page" />

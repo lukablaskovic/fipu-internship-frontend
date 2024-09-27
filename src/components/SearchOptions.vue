@@ -111,8 +111,8 @@ import { ref, computed, onMounted, onUnmounted, watch } from "vue";
 import MdiMagnify from "vue-material-design-icons/Magnify.vue";
 import MdiAccount from "vue-material-design-icons/Account.vue";
 import MdiDomain from "vue-material-design-icons/Domain.vue";
-import { mainStore, guestStore } from "@/main";
 import { adminStore } from "@/main";
+import { mainStore } from "@/main";
 import { router } from "@/router";
 
 const searchInput = ref(null);
@@ -154,7 +154,7 @@ onMounted(async () => {
 
 	let result = await mainStore.fetchCompanies();
 	allCompanies.value = result.data.results;
-	result = await guestStore.fetchAvailableAssignments();
+	result = await mainStore.fetchAvailableAssignments();
 	allAssignments.value = result;
 });
 
