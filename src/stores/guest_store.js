@@ -21,7 +21,7 @@ export const useGuestStore = defineStore("guest", {
 				}
 				const response_bpmn_engine = await ProcessInstance.create(`${bpmn_model}.bpmn`);
 
-				const response_bw = Student.setProcessData(mainStore.currentUser.email, response_bpmn_engine.id, selected_model);
+				const response_bw = await Student.setProcessData(mainStore.currentUser.email, response_bpmn_engine.id, selected_model);
 
 				await mainStore.fetchCurrentUser();
 

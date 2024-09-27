@@ -1,16 +1,16 @@
 <script setup>
 import { computed, ref, onMounted, watch } from "vue";
 
-import { mdiEye } from "@mdi/js";
-import CardBoxModal from "@/components/Cardbox/CardBoxModal.vue";
+import CardboxAllocation from "@/components/Cardbox/CardBoxAllocation.vue";
 import TableCheckboxCell from "@/components/Tables/TableCheckboxCell.vue";
-import BaseLevel from "@/components/Base/BaseLevel.vue";
+import CardBoxModal from "@/components/Cardbox/CardBoxModal.vue";
+import { mainStore, guestStore, adminStore } from "@/main.js";
+import LoadingOverlay from "@/components/LoadingOverlay.vue";
 import BaseButtons from "@/components/Base/BaseButtons.vue";
 import BaseButton from "@/components/Base/BaseButton.vue";
-import LoadingOverlay from "@/components/LoadingOverlay.vue";
-import { mainStore, guestStore, adminStore } from "@/main.js";
 import UserAvatar from "@/components/User/UserAvatar.vue";
-import CardboxAllocation from "@/components/Cardbox/CardBoxAllocation.vue";
+import BaseLevel from "@/components/Base/BaseLevel.vue";
+import { mdiEye } from "@mdi/js";
 
 import { useRoute } from "vue-router";
 
@@ -39,7 +39,6 @@ const MAX_NUM_ASSIGNMENTS = 3;
 
 const isModalActive = ref(null);
 const allAvailableAssignments = ref([]);
-const allCompanies = ref([]);
 
 let checkedAssignments = computed(() => guestStore.checkedAssignments);
 let assignment_highlight = ref("");
@@ -60,8 +59,7 @@ async function loadData() {
 		currentPage.value = getAssignmentPage(id_zadatak);
 	}
 
-	let resultCompanies = await mainStore.fetchCompanies();
-	allCompanies.value = resultCompanies.data.results;
+	await mainStore.fetchCompanies();
 }
 
 watch(() => route.params.id_zadatak, loadData, {
@@ -78,8 +76,9 @@ onMounted(async () => {
 });
 
 const getCompanyLogo = (assignment) => {
-	const company = allCompanies.value.find((c) => c.naziv === assignment["Poslodavac"][0].value);
-	return company && company["logo"] && company["logo"][0] && company["logo"][0]["url"] ? company["logo"][0]["url"] : "No-Logo.png";
+	const company = mainStore.allCompanies.find((c) => c.naziv === assignment["Poslodavac"][0].value);
+	console.log("LOGO:", company["logo"][0]["url"]);
+	return company["logo"][0]["url"] ? company["logo"][0]["url"] : "No-Logo.png";
 };
 
 function getAssignmentPage(id) {
@@ -110,7 +109,7 @@ watch(
 			return condition && task.voditelj_odobrio.value == "odobreno";
 		});
 	},
-	{ immediate: true }
+	{ immediate: true },
 );
 
 const isCheckedAssignment = (assignment) => {
@@ -165,8 +164,8 @@ const checked = (value, assignment) => {
 				}">
 				<TableCheckboxCell v-if="checkable" :value="isCheckedAssignment(assignment)" :disabled="disableUnchecked && !isCheckedAssignment(assignment)" @checked="checked($event, assignment)" />
 
-				<td class="border-b-0 lg:w-6 before:hidden">
-					<UserAvatar :avatar="getCompanyLogo(assignment)" class="w-24 h-24 mx-auto lg:w-6 lg:h-6" />
+				<td class="border-b-0 before:hidden lg:w-6">
+					<UserAvatar :avatar="getCompanyLogo(assignment)" class="mx-auto h-24 w-24 lg:h-6 lg:w-6" />
 				</td>
 
 				<td data-label="id_zadatak">
@@ -193,7 +192,7 @@ const checked = (value, assignment) => {
 					{{ assignment["dostupno_mjesta"] }}
 				</td>
 
-				<td class="before:hidden lg:w-1 whitespace-nowrap">
+				<td class="whitespace-nowrap before:hidden lg:w-1">
 					<BaseButtons type="justify-start lg:justify-end" no-wrap>
 						<BaseButton color="fipu_blue" :icon="mdiEye" small @click="isModalActive = assignment" />
 					</BaseButtons>
@@ -202,7 +201,7 @@ const checked = (value, assignment) => {
 		</tbody>
 	</table>
 
-	<div class="p-3 lg:px-6 border-t border-gray-100 dark:border-slate-800">
+	<div class="border-t border-gray-100 p-3 dark:border-slate-800 lg:px-6">
 		<BaseLevel>
 			<BaseButtons>
 				<BaseButton v-for="page in pagesList" :key="page" :active="page === currentPage" :label="page + 1" :color="page === currentPage ? 'lightDark' : 'whiteDark'" small @click="currentPage = page" />

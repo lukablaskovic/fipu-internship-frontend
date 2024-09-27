@@ -18,6 +18,10 @@ module.exports = {
 			danger: "red",
 		},
 
+		corePlugins: {
+			aspectRatio: false,
+		},
+
 		extend: {
 			screens: {
 				"3xl": "1600px",
@@ -120,6 +124,8 @@ module.exports = {
 	plugins: [
 		require("tailwind-scrollbar")({ nocompatible: true }),
 		require("@tailwindcss/forms"),
+		require("@tailwindcss/aspect-ratio"),
+
 		plugin(function ({ matchUtilities, theme }) {
 			matchUtilities(
 				{
@@ -145,7 +151,7 @@ module.exports = {
 						};
 					},
 				},
-				{ values: theme("asideScrollbars") }
+				{ values: theme("asideScrollbars") },
 			);
 		}),
 	],

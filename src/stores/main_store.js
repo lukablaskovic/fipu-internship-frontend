@@ -1,11 +1,11 @@
+import { Guest, Student } from "@/services/baserow_client_api";
 import { defineStore } from "pinia";
-import axios from "axios";
-
-import { Guest, Student, Admin } from "@/services/baserow_client_api";
 import { router } from "@/router";
+import axios from "axios";
 
 export const useMainStore = defineStore("main", {
 	state: () => ({
+		academicYear: "2024/2025",
 		voditelj_prakse: "doc. dr. sc. Ivan Lorencin",
 		fipulab_web: "https://goreski.github.io/FIPULabWeb/",
 
@@ -13,6 +13,8 @@ export const useMainStore = defineStore("main", {
 		depth: 5,
 		debug: false,
 		storeSelected: "mainStore",
+
+		allCompanies: [],
 
 		transition_name: "",
 		enter_active_class: "",
@@ -27,10 +29,9 @@ export const useMainStore = defineStore("main", {
 			email: "",
 			godina_studija: "",
 			avatar: "",
+			model_prakse: "",
+			baserow_id: "",
 			loggedAt: null,
-			model_prakse: null,
-
-			baserow_id: null,
 
 			internship_process: {
 				id: null,
@@ -38,25 +39,19 @@ export const useMainStore = defineStore("main", {
 			},
 
 			reset() {
-				this.id = "";
-				this.ime = "";
-				this.prezime = "";
-				this.username = "";
-				this.JMBAG = "";
-				this.email = "";
-				this.godina_studija = "";
-				this.avatar = "";
-				this.baserow_id = null;
+				for (let key in this) {
+					this[key] = null;
+				}
 
 				this.internship_process.id = null;
 				this.internship_process.pending_user_task = null;
 			},
 		},
+
 		logoutModalActive: false,
 		helpModalActive: false,
 
 		isFieldFocusRegistered: false,
-		avatarChanging: false,
 	}),
 	getters: {
 		userAuthenticated() {
@@ -65,17 +60,6 @@ export const useMainStore = defineStore("main", {
 		userAdmin() {
 			return false;
 			//return this.currentUser && this.currentUser.account_type === "admin";
-		},
-		academicYear() {
-			const today = new Date();
-			const year = today.getFullYear();
-			const month = today.getMonth();
-
-			if (month < 9) {
-				return `${year - 1}/${year}`;
-			} else {
-				return `${year}/${year + 1}`;
-			}
 		},
 	},
 	actions: {
@@ -99,11 +83,12 @@ export const useMainStore = defineStore("main", {
 
 			try {
 				let student_data = {
-					JMBAG: "0000000000",
+					JMBAG: "0000000000", // default value, student must change this
 					ime: decodedToken.given_name,
 					prezime: decodedToken.family_name,
 					email: decodedToken.email,
 					godina_studija: "1_prijediplomski",
+					avatar: decodedToken.picture,
 				};
 
 				// Check if student already exists
@@ -133,19 +118,22 @@ export const useMainStore = defineStore("main", {
 				console.log("Fetching current user");
 				let localStorageToken = JSON.parse(localStorage.getItem("token"));
 				let emailFromStorage = localStorageToken.email;
+
 				const response = await Student.fetch(emailFromStorage);
 				const data = response.data.results[0];
-
+				console.log("data", data);
 				this.currentUser.ime = data.ime;
 				this.currentUser.prezime = data.prezime;
 				this.currentUser.JMBAG = data.JMBAG;
 				this.currentUser.email = data.email;
 				this.currentUser.godina_studija = data.godina_studija.value;
-				//this.currentUser.avatar = data.avatar;
+				this.currentUser.avatar = data.avatar;
 				this.currentUser.baserow_id = data.id;
+
 				this.currentUser.loggedAt = new Date();
 				this.currentUser.model_prakse = data.Model_prakse;
 				this.currentUser.internship_process.id = data.process_instance_id;
+
 				console.log("response", response);
 			} catch (error) {
 				console.log("[handleLogin] Error:", error);
@@ -153,7 +141,6 @@ export const useMainStore = defineStore("main", {
 		},
 
 		clearCurrentUser() {
-			this.access_token = null;
 			this.currentUser.reset();
 			localStorage.removeItem("main");
 			localStorage.removeItem("admin");
@@ -164,6 +151,7 @@ export const useMainStore = defineStore("main", {
 		logout() {
 			this.clearCurrentUser();
 			this.logoutModalActive = false;
+			localStorage.removeItem("token");
 			this.router.go();
 		},
 
@@ -189,7 +177,7 @@ export const useMainStore = defineStore("main", {
 		async fetchCompanies(search = "") {
 			try {
 				const response = await Guest.fetchCompanies(search);
-				this.companies = response;
+				this.allCompanies = response.data.results;
 				return response;
 			} catch (error) {
 				console.log("Error:", error);

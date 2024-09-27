@@ -28,6 +28,14 @@ const Layout = computed(() => {
 });
 
 const checkedAssignments = computed(() => guestStore.checkedAssignments);
+numberBlocks: [null, null, null];
+
+const numberBlocks = computed(() => {
+	const assignments = checkedAssignments.value.slice(0, 3); // Get only up to 3 assignments
+	const emptySlots = new Array(3 - assignments.length).fill(null); // Fill the rest with null
+	return [...assignments, ...emptySlots]; // Merge the assignments and empty slots
+});
+
 const modalConfirmPreferences = ref(false);
 const enabled = ref(true);
 const vueDraggableDragging = ref(false);
@@ -87,14 +95,22 @@ const registerPreferences = async () => {
 	}
 };
 
+const getCompanyLogo = (assignment) => {
+	const company = mainStore.allCompanies.find((c) => c.naziv === assignment["Poslodavac"][0].value);
+	return company["logo"][0]["url"] ? company["logo"][0]["url"] : "No-Logo.png";
+};
+
+const getDefaultImage = (index) => {
+	const defaultImages = ["/select_task_1.svg", "/select_task_2.svg", "/select_task_3.svg"];
+	return defaultImages[index] || "path/to/fallback.png";
+};
+
 const vas_odabir = ref(null);
 
-let wiggleEnabled = ref(true);
 const isFadedOut = ref(false);
 
 function fadeOutAnimation() {
 	isFadedOut.value = true;
-	wiggleEnabled.value = false;
 }
 
 const isDraggableEnabled = computed(() => checkedAssignments.value.length === 3);
@@ -119,26 +135,43 @@ const isDraggableEnabled = computed(() => checkedAssignments.value.length === 3)
 			<br />
 			<SectionTitleLineWithButton ref="vas_odabir" :icon="mdiClipboardCheckOutline" main title="Vaš odabir"></SectionTitleLineWithButton>
 			<p v-if="checkedAssignments.length === 3" class="mb-4">Zadatke možete rasporediti po vašim preferencijama.</p>
-			<div v-if="checkedAssignments.length" class="flex items-center justify-center">
-				<div class="flex flex-row text-center">
-					<draggable :list="checkedAssignments" :disabled="!isDraggableEnabled" item-key="id" class="list-group flex flex-col space-y-4 md:flex-row md:space-x-4 md:space-y-0" ghost-class="ghost" @start="fadeOutAnimation" @end="vueDraggableDragging = false">
-						<template #item="{ element, index }">
-							<div
-								class="drag-handle list-group-item h-30 flex w-60 flex-shrink-0 flex-col items-center justify-center rounded-lg bg-fipu_light_blue p-4 text-lg text-white shadow-lg dark:bg-fipu_blue"
-								:class="{
-									wiggle: wiggleEnabled && isDraggableEnabled,
-									'not-draggable': !enabled,
-									'cursor-move': enabled,
-								}">
-								<span class="mb-2 font-bold">{{ index + 1 }}. odabir</span>
-								{{ element["id_zadatak"] }}
-							</div>
-						</template>
-					</draggable>
+
+			<draggable :list="checkedAssignments" :disabled="!isDraggableEnabled" item-key="id" class="list-group flex flex-col space-y-4 md:flex-row md:space-x-4 md:space-y-0" ghost-class="ghost" @start="fadeOutAnimation" @end="!vueDraggableDragging">
+				<template #item="{ element, index }">
+					<div
+						class="drag-handle list-group-item flex w-full space-x-2"
+						:class="{
+							'not-draggable': !enabled,
+							'cursor-move': enabled,
+						}"></div>
+				</template>
+			</draggable>
+			<div class="flex w-full space-x-2">
+				<div class="flex-1" v-for="(assignment, index) in numberBlocks" :key="index">
+					<!-- Conditionally apply hover effect to the div only when assignment is present -->
+					<div
+						class="aspect-w-1 aspect-h-1 relative flex items-center justify-center border-2 bg-gray-50"
+						:class="{
+							'hover:bg-gray-400': assignment, // Only apply hover effect if there's an assignment
+							'transition-all': assignment, // Apply smooth transition only if there's an assignment
+						}"
+						:style="{ filter: assignment ? 'none' : 'blur(0)' }">
+						<!-- Ensure blur is not applied if no assignment -->
+
+						<!-- Transition for the image -->
+						<transition name="image-fade">
+							<!-- Show the company logo when there is an assignment -->
+							<img v-if="assignment" class="rounded-full p-22" :src="getCompanyLogo(assignment)" key="logo" />
+							<!-- Show the default image when no assignment is selected -->
+							<img v-else class="p-22" :src="getDefaultImage(index)" alt="Default Task" key="default" />
+						</transition>
+
+						<!-- Show assignment ID only if there is an assignment and hover over it -->
+						<div v-if="assignment" class="absolute inset-0 flex items-center justify-center bg-black bg-opacity-50 text-sm font-bold text-white opacity-0 transition-opacity hover:opacity-100">ID: {{ assignment["id_zadatak"] }}</div>
+					</div>
 				</div>
 			</div>
 
-			<div v-else>Niste odabrali ni jedan zadatak.</div>
 			<div v-if="checkedAssignments.length == 3">
 				<div class="animation bg-[url('/swipe-vertical.png')] bg-center bg-no-repeat dark:invert md:bg-[url('/swipe-horizontal.png')]" :class="{ 'fade-out': isFadedOut }" @click="fadeOutAnimation"></div>
 
@@ -169,85 +202,45 @@ const isDraggableEnabled = computed(() => checkedAssignments.value.length === 3)
 		</SectionMain>
 	</component>
 </template>
+
 <style scoped>
-.ghost {
-	opacity: 0.5;
-	background: #c8ebfb;
-}
-.drag-handle {
-	cursor: grab;
-}
-.drag-handle:active {
-	cursor: grabbing;
-}
-.drag-handle:hover {
-	transform: scale(1.03);
-	box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
-}
-@keyframes wiggle {
-	0% {
-		transform: rotate(-2deg);
-	}
-	50% {
-		transform: rotate(2deg);
-	}
-	100% {
-		transform: rotate(-2deg);
-	}
+.image-fade-enter-active,
+.image-fade-leave-active {
+	transition:
+		opacity 0.5s ease,
+		transform 0.5s ease;
 }
 
-@keyframes up-down {
-	0% {
-		top: -30px;
-	}
-	50% {
-		top: 30px;
-	}
-	100% {
-		top: -30px;
-	}
-}
-
-.drag-handle.wiggle {
-	animation: wiggle 0.5s ease-in-out infinite;
-}
-
-@keyframes left-right {
-	0% {
-		left: -30px;
-	}
-	50% {
-		left: 30px;
-	}
-	100% {
-		left: -30px;
-	}
-}
-
-div.animation {
-	position: relative;
-	width: 115px;
-	height: 143px;
-	margin: auto;
-
-	animation: up-down 1.8s ease-out infinite;
-
-	@media (min-width: 768px) {
-		animation: left-right 1.8s ease-out infinite;
-	}
-}
-
-@keyframes fade-out-anim {
-	0% {
-		opacity: 1;
-	}
-	100% {
-		opacity: 0;
-	}
-}
-
-div.animation.fade-out {
-	animation: fade-out-anim 0.5s ease 1;
+.image-fade-enter-from,
+.image-fade-leave-to {
 	opacity: 0;
+	transform: scale(0.9);
+}
+
+.image-fade-enter-to,
+.image-fade-leave-from {
+	opacity: 1;
+	transform: scale(1);
+}
+
+.aspect-w-1 {
+	transition: background-color 0.3s ease;
+}
+
+/* Only apply the hover effect if assignment is present */
+.hover-bg-dark:hover {
+	background-color: #4a5568; /* Darker gray for hover */
+	transition: background-color 0.3s ease;
+}
+
+.assignment-id {
+	position: absolute;
+	bottom: 8px;
+	left: 8px;
+	background: rgba(0, 0, 0, 0.5); /* Semi-transparent background */
+	color: white;
+	font-size: 0.875rem; /* Tailwind's text-sm */
+	padding: 4px 8px;
+	border-radius: 4px;
 }
 </style>

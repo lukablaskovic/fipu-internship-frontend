@@ -197,7 +197,7 @@ const onCompanyChange = () => {
 			<hr />
 			<br />
 			<SectionTitleLineWithButton :icon="mdiClipboardText" main title="Prijava zadatka (Poslodavci)"></SectionTitleLineWithButton>
-			<p>Ova prijavnica je namijenjena <u>poduzećima i organizacijama</u> koje žele provoditi studentsku praksu u suradnji s Fakultetom informatike u Puli. Na temelju ovog upitnika odredit će se idealni studenti za provođenje prakse u Vašem poduzeću.</p>
+			<p>Ova prijavnica je namijenjena <u>privatnim i javnim organizacijama</u> koje žele provoditi studentsku praksu u suradnji s Fakultetom informatike u Puli. Na temelju ovog upitnika odredit će se idealni studenti za provođenje prakse u Vašem poduzeću.</p>
 			<br />
 
 			<p>Studentima je ovo izborni kolegij i oni koji su prijavljeni, motivirani su i spremni za rad!</p>
