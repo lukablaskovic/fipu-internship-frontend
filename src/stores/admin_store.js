@@ -1,10 +1,10 @@
 import { defineStore } from "pinia";
 import { mainStore } from "@/main";
 
-import { User } from "@/services/gateway_api";
 import { Model, ProcessInstance } from "@/services/bpmn_engine_api";
 import { Admin, Student } from "@/services/baserow_client_api";
 import { SendGrid } from "@/services/sendgrid_client_api";
+import { User } from "@/services/gateway_api";
 import Utils from "@/helpers/utils";
 
 export const useAdminStore = defineStore("admin", {

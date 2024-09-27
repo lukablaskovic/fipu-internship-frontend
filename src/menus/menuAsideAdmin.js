@@ -33,11 +33,6 @@ export default [
 		icon: mdiSecurity,
 		menu: [
 			{
-				to: "/bpmn/microservices",
-				label: "Mikroservisi",
-			},
-
-			{
 				label: "PDF Generator",
 				externalURL: "https://html-to-pdf-maker.netlify.app/",
 			},

@@ -75,18 +75,12 @@ import { decodeCredential } from "vue3-google-login";
 import Utils from "@/helpers/utils";
 
 const callback = async (response) => {
-	console.log(response);
-
 	const decodedToken = decodeCredential(response.credential);
-	console.log("Handle the userData", decodedToken);
 
 	if (isUnipuEmail(decodedToken.email)) {
 		let response = await mainStore.handleLogin(decodedToken);
-		console.log(response);
-		snackBarStore.pushMessage("Uspješna prijava!", "success");
+		if (response.status === "success") snackBarStore.pushMessage("Uspješna prijava!", "success");
 		await Utils.wait(1);
-
-		router.push("/odabir-procesa");
 	} else {
 		snackBarStore.pushMessage("Molimo koristite UNIPU e-mail za prijavu", "warning");
 	}

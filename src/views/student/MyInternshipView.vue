@@ -27,8 +27,6 @@ const currentRenderingComponent = computed(() => {
 	}
 
 	if (!mainStore.userAuthenticated) {
-		console.log("User not authenticated");
-		console.log(studentStore.student_process_instance_data);
 		return UserTaskMappings.getTaskProperty("odabiranje_zadatka_student", "component", studentStore.student_process_instance_data.state);
 	}
 

@@ -3,56 +3,64 @@ import { defineStore } from "pinia";
 import { router } from "@/router";
 import axios from "axios";
 
+import { studentStore } from "@/main.js";
+
+class CurrentUser {
+	constructor() {
+		this.ime = "";
+		this.prezime = "";
+		this.JMBAG = "";
+		this.email = "";
+		this.godina_studija = "";
+		this.avatar = "";
+		this.model_prakse = "";
+		this.baserow_id = "";
+		this.loggedAt = null;
+		this.internship_process = {
+			id: null,
+			pending_user_task: null,
+		};
+	}
+
+	reset() {
+		this.ime = "";
+		this.prezime = "";
+		this.JMBAG = "";
+		this.email = "";
+		this.godina_studija = "";
+		this.avatar = "";
+		this.model_prakse = "";
+		this.baserow_id = "";
+		this.loggedAt = null;
+		this.internship_process.id = null;
+		this.internship_process.pending_user_task = null;
+	}
+}
+
 export const useMainStore = defineStore("main", {
 	state: () => ({
 		academicYear: "2024/2025",
 		voditelj_prakse: "doc. dr. sc. Ivan Lorencin",
 		fipulab_web: "https://goreski.github.io/FIPULabWeb/",
 
-		servicesUp: true,
+		//Debugger
 		depth: 5,
 		debug: false,
 		storeSelected: "mainStore",
 
 		allCompanies: [],
 
-		transition_name: "",
-		enter_active_class: "",
-		leave_active_class: "",
 		bpmn_process_name_A: "strucna_praksa_edited",
 		bpmn_process_name_B: "strucna_praksa_B",
 
-		currentUser: {
-			ime: "",
-			prezime: "",
-			JMBAG: "",
-			email: "",
-			godina_studija: "",
-			avatar: "",
-			model_prakse: "",
-			baserow_id: "",
-			loggedAt: null,
-
-			internship_process: {
-				id: null,
-				pending_user_task: null,
-			},
-
-			reset() {
-				for (let key in this) {
-					this[key] = null;
-				}
-
-				this.internship_process.id = null;
-				this.internship_process.pending_user_task = null;
-			},
-		},
-
+		currentUser: new CurrentUser(),
+		//Modal states
 		logoutModalActive: false,
 		helpModalActive: false,
 
 		isFieldFocusRegistered: false,
 	}),
+
 	getters: {
 		userAuthenticated() {
 			return Boolean(localStorage.getItem("token"));
@@ -65,7 +73,6 @@ export const useMainStore = defineStore("main", {
 	actions: {
 		async handleLogin(decodedToken) {
 			let { iss, sub, hd, email, nbf, name, picture, iat, jti } = decodedToken;
-
 			let storageToken = {
 				iss,
 				sub,
@@ -77,9 +84,8 @@ export const useMainStore = defineStore("main", {
 				iat,
 				jti,
 			};
-
+			// store public values in local storage
 			localStorage.setItem("token", JSON.stringify(storageToken));
-			this.acc;
 
 			try {
 				let student_data = {
@@ -87,29 +93,35 @@ export const useMainStore = defineStore("main", {
 					ime: decodedToken.given_name,
 					prezime: decodedToken.family_name,
 					email: decodedToken.email,
-					godina_studija: "1_prijediplomski",
+					godina_studija: "1_prijediplomski", // default value, student must change this
 					avatar: decodedToken.picture,
 				};
 
 				// Check if student already exists
-				console.log("Fetching student data for user: ", decodedToken.email);
 				const response_student = await Student.fetch(decodedToken.email);
-
-				console.log("response_student", response_student);
 
 				let response = null;
 				if (response_student.data.count == 0) {
-					console.log("Student does not exist in the database");
 					response = await Student.create(student_data);
-					console.log(response);
+					router.push("/odabir-procesa");
 				} else {
-					console.log("Student already exists in the database");
+					await this.fetchCurrentUser();
+					let processInstance = response_student.data.results[0].process_instance_id;
 					router.push("/moja-praksa");
+					if (processInstance) {
+						let pendingProcessTask = await studentStore.getPendingUserTask(processInstance);
+
+						if (pendingProcessTask != "end_event_student") {
+							router.push("/moja-praksa");
+						} else {
+							router.push("/odabir-procesa");
+						}
+					}
 					response = response_student.data.results[0];
 				}
-				return response;
+				return { status: "success", data: response };
 			} catch (error) {
-				console.log("Error:", error);
+				console.log("status:", error);
 			}
 		},
 		async fetchCurrentUser() {
@@ -136,7 +148,7 @@ export const useMainStore = defineStore("main", {
 
 				console.log("response", response);
 			} catch (error) {
-				console.log("[handleLogin] Error:", error);
+				console.log("[fetchCurrentUser] Error:", error);
 			}
 		},
 
@@ -171,9 +183,11 @@ export const useMainStore = defineStore("main", {
 		activateLogoutModal(state) {
 			this.logoutModalActive = state;
 		},
+
 		activateHelpModal(state) {
 			this.helpModalActive = state;
 		},
+
 		async fetchCompanies(search = "") {
 			try {
 				const response = await Guest.fetchCompanies(search);

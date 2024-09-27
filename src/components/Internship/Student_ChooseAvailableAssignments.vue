@@ -148,21 +148,15 @@ const isDraggableEnabled = computed(() => checkedAssignments.value.length === 3)
 			</draggable>
 			<div class="flex w-full space-x-2">
 				<div class="flex-1" v-for="(assignment, index) in numberBlocks" :key="index">
-					<!-- Conditionally apply hover effect to the div only when assignment is present -->
 					<div
 						class="aspect-w-1 aspect-h-1 relative flex items-center justify-center border-2 bg-gray-50"
 						:class="{
-							'hover:bg-gray-400': assignment, // Only apply hover effect if there's an assignment
-							'transition-all': assignment, // Apply smooth transition only if there's an assignment
+							'hover:bg-gray-400': assignment,
+							'transition-all': assignment,
 						}"
 						:style="{ filter: assignment ? 'none' : 'blur(0)' }">
-						<!-- Ensure blur is not applied if no assignment -->
-
-						<!-- Transition for the image -->
 						<transition name="image-fade">
-							<!-- Show the company logo when there is an assignment -->
 							<img v-if="assignment" class="rounded-full p-22" :src="getCompanyLogo(assignment)" key="logo" />
-							<!-- Show the default image when no assignment is selected -->
 							<img v-else class="p-22" :src="getDefaultImage(index)" alt="Default Task" key="default" />
 						</transition>
 

@@ -1,7 +1,6 @@
 <script setup>
 import UserAvatarCurrentUser from "@/components/User/UserAvatarCurrentUser.vue";
 import FormFilePicker from "@/components/Form/FormFilePicker.vue";
-import { User } from "@/services/gateway_api";
 import { snackBarStore } from "@/main.js";
 import { mainStore } from "@/main.js";
 import Utils from "@/helpers/utils";

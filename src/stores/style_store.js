@@ -1,12 +1,6 @@
+import { darkModeKey, styleKey } from "@/config";
 import { defineStore } from "pinia";
 import * as styles from "@/styles";
-import { darkModeKey, styleKey } from "@/config";
-
-let wait = function (seconds) {
-	return new Promise((resolveFn) => {
-		setTimeout(resolveFn, seconds * 1000);
-	});
-};
 
 export const useStyleStore = defineStore("style", {
 	state: () => ({
@@ -58,7 +52,7 @@ export const useStyleStore = defineStore("style", {
 
 				document.documentElement.classList[this.darkMode ? "add" : "remove"]("dark-scrollbars-compat");
 			}
-			await wait(0.25);
+			await Utils.wait(0.2);
 			app.classList.remove("darkModeTransition");
 		},
 	},

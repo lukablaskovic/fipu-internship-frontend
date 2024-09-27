@@ -2,13 +2,14 @@
 import { computed, ref, onMounted } from "vue";
 
 import TableCheckboxCell from "@/components/Tables/TableCheckboxCell.vue";
-import BaseLevel from "@/components/Base/BaseLevel.vue";
+import { mainStore, studentStore, adminStore } from "@/main.js";
 import BaseButtons from "@/components/Base/BaseButtons.vue";
 import BaseButton from "@/components/Base/BaseButton.vue";
+import BaseLevel from "@/components/Base/BaseLevel.vue";
 import LoadingOverlay from "../LoadingOverlay.vue";
-import { mainStore, studentStore, adminStore } from "@/main.js";
 import { StudentMappings } from "@/helpers/maps";
 import PillTag from "../PillTag/PillTag.vue";
+
 defineProps({
 	checkable: Boolean,
 });
@@ -104,21 +105,21 @@ const pagesList = computed(() => {
 				<td data-label="Prijavnica ispunjena">
 					<div class="flex items-center">
 						<TableCheckboxCell readonly :value="allocation['popunjena_prijavnica']" />
-						<a v-if="allocation['popunjena_prijavnica'] && mainStore.userAdmin" class="text-sm underline cursor-pointer hover:text-fipu_light_blue ml-8" @click="adminStore.openPDFModal(allocation, 'Potvrda', 'source_url_for_potvrda')"> Generirana potvrda📜</a>
+						<a v-if="allocation['popunjena_prijavnica'] && mainStore.userAdmin" class="ml-8 cursor-pointer text-sm underline hover:text-fipu_light_blue" @click="adminStore.openPDFModal(allocation, 'Potvrda', 'source_url_for_potvrda')"> Generirana potvrda📜</a>
 					</div>
 				</td>
 				<td data-label="Dnevnik prakse predan">
 					<div class="flex items-center">
 						<TableCheckboxCell readonly :value="allocation[(allocation, 'predan_dnevnik_prakse')]" />
-						<p v-if="allocation['predan_dnevnik_prakse'] && mainStore.userAdmin" class="text-sm underline cursor-pointer hover:text-fipu_light_blue ml-8" @click="fetchPDF('potvrda', getVariableByIdAlokacija(allocation['id_alokacija'], 'id_dnevnik_prakse'))">Otvori potvrdu📃</p>
-						<p v-if="allocation['predan_dnevnik_prakse'] && mainStore.userAdmin" class="text-sm underline cursor-pointer hover:text-fipu_light_blue ml-8" @click="fetchPDF('dnevnik', getVariableByIdAlokacija(allocation['id_alokacija'], 'id_dnevnik_prakse'))">Otvori dnevnik📓</p>
+						<p v-if="allocation['predan_dnevnik_prakse'] && mainStore.userAdmin" class="ml-8 cursor-pointer text-sm underline hover:text-fipu_light_blue" @click="fetchPDF('potvrda', getVariableByIdAlokacija(allocation['id_alokacija'], 'id_dnevnik_prakse'))">Otvori potvrdu📃</p>
+						<p v-if="allocation['predan_dnevnik_prakse'] && mainStore.userAdmin" class="ml-8 cursor-pointer text-sm underline hover:text-fipu_light_blue" @click="fetchPDF('dnevnik', getVariableByIdAlokacija(allocation['id_alokacija'], 'id_dnevnik_prakse'))">Otvori dnevnik📓</p>
 					</div>
 				</td>
 			</tr>
 		</tbody>
 	</table>
 
-	<div class="p-3 lg:px-6 border-t border-gray-100 dark:border-slate-800">
+	<div class="border-t border-gray-100 p-3 dark:border-slate-800 lg:px-6">
 		<BaseLevel>
 			<BaseButtons>
 				<BaseButton v-for="page in pagesList" :key="page" :active="page === currentPage" :label="page + 1" :color="page === currentPage ? 'lightDark' : 'whiteDark'" small @click="currentPage = page" />

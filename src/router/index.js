@@ -19,12 +19,6 @@ router.beforeEach((to, from, next) => {
 	const requiresAuth = to.matched.some((record) => record.meta.requiresAuth);
 	const requiresAdmin = to.matched.some((record) => record.meta.requiresAdmin);
 
-	if (!mainStore.servicesUp && to.name !== "ErrorView") {
-		return next({ name: "ErrorView" });
-	} else if (mainStore.servicesUp && to.name === "ErrorView") {
-		return next({ name: "root" });
-	}
-
 	// If route requires authentication and user is not authenticated
 	if (requiresAuth && !userAuthenticated) {
 		return next("/prijava");

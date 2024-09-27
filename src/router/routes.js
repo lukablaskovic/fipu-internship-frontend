@@ -150,16 +150,6 @@ const routes = [
 
 	{
 		meta: {
-			title: "BPMN - Mikroservisi",
-			requiresAuth: true,
-			requiresAdmin: true,
-		},
-		path: "/bpmn/microservices",
-		name: "bpmn-microservices",
-		component: () => import("@/views/admin/bpmn/MicroservicesView.vue"),
-	},
-	{
-		meta: {
 			title: "Evaluacija studenta",
 			requiresAuth: false,
 			requiresAdmin: false,

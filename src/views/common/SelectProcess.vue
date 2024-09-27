@@ -15,7 +15,6 @@ const logout = () => {
 
 const selectProcess = async (process) => {
 	let response = await guestStore.createInternshipInstance(process);
-	console.log(response);
 	router.push("/moja-praksa");
 };
 </script>

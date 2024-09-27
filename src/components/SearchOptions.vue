@@ -1,16 +1,16 @@
 <template>
 	<Combobox v-model="selectedValue">
 		<div class="relative">
-			<div class="relative w-full cursor-default overflow-hidden rounded-lg bg-white dark:bg-gray-900 text-left shadow-md focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75 focus-visible:ring-offset-2 focus-visible:ring-offset-blue-300 sm:text-sm">
-				<ComboboxInput v-model="displayValue" placeholder="CTRL + k za pretraživanje" class="inputClass w-64 md:w-96 border-none py-2 pl-3 pr-10 text-sm leading-5 text-gray-900 dark:text-gray-300 bg-gray-50 dark:bg-gray-900 focus:ring-0" autocomplete="off" @change="query = $event.target.value" />
+			<div class="relative w-full cursor-default overflow-hidden rounded-lg bg-white text-left shadow-md focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75 focus-visible:ring-offset-2 focus-visible:ring-offset-blue-300 dark:bg-gray-900 sm:text-sm">
+				<ComboboxInput v-model="displayValue" placeholder="CTRL + k za pretraživanje" class="inputClass w-64 border-none bg-gray-50 py-2 pl-3 pr-10 text-sm leading-5 text-gray-900 focus:ring-0 dark:bg-gray-900 dark:text-gray-300 md:w-96" autocomplete="off" @change="query = $event.target.value" />
 				<ComboboxButton class="absolute inset-y-0 right-0 flex items-center pr-2" @click="showHelp">
 					<MdiMagnify class="h-5 w-5 text-gray-700 hover:text-fipu_blue" aria-hidden="true" />
 				</ComboboxButton>
 			</div>
 			<TransitionRoot leave="transition ease-in duration-100" leave-from="opacity-100" leave-to="opacity-0" @after-leave="query = ''">
-				<ComboboxOptions class="absolute mt-1 max-h-60 w-full overflow-auto rounded-md text-gray-900 dark:text-gray-300 bg-gray-50 dark:bg-gray-900 py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm">
+				<ComboboxOptions class="absolute mt-1 max-h-60 w-full overflow-auto rounded-md bg-gray-50 py-1 text-base text-gray-900 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none dark:bg-gray-900 dark:text-gray-300 sm:text-sm">
 					<!-- Display help when query doesn't match any specific command -->
-					<div v-if="query === ''" class="relative cursor-default select-none py-2 px-4 text-sm md:text-base text-gray-700 dark:text-gray-200">
+					<div v-if="query === ''" class="relative cursor-default select-none px-4 py-2 text-sm text-gray-700 dark:text-gray-200 md:text-base">
 						<b>Kratke upute kako koristiti tražilicu</b>
 						<hr />
 						<br />
@@ -18,8 +18,8 @@
 						<p>ℹ️ Za pregled stavaka, prvo upišite odgovarajući prefix (boldano) te nakon toga pojam.</p>
 						<br />
 
-						<div v-for="helpItem in helpItems" :key="helpItem.prefix" class="cursor-pointer hover:bg-fipu_blue hover:text-white hover:font-medium dark:hover:text-gray-900 py-1 px-2 rounded flex gap-1 group" @click="insertPrefix(helpItem.prefix)">
-							<div class="bg-fipu_blue text-gray-900 px-0.5 rounded w-6 flex justify-center items-center font-bold group-hover:bg-gray-50 group-hover:text-gray-700 dark:group-hover:bg-gray-900 dark:group-hover:text-gray-300">
+						<div v-for="helpItem in helpItems" :key="helpItem.prefix" class="group flex cursor-pointer gap-1 rounded px-2 py-1 hover:bg-fipu_blue hover:font-medium hover:text-white dark:hover:text-gray-900" @click="insertPrefix(helpItem.prefix)">
+							<div class="flex w-6 items-center justify-center rounded bg-fipu_blue px-0.5 font-bold text-gray-900 group-hover:bg-gray-50 group-hover:text-gray-700 dark:group-hover:bg-gray-900 dark:group-hover:text-gray-300">
 								{{ helpItem.prefix }}
 							</div>
 
@@ -28,7 +28,7 @@
 					</div>
 
 					<!-- Display "No results found" when there's no matching data -->
-					<div v-else-if="filteredResults.length === 0" class="relative cursor-default select-none py-2 px-4 text-gray-700 dark:text-gray-200">Nema rezultata.</div>
+					<div v-else-if="filteredResults.length === 0" class="relative cursor-default select-none px-4 py-2 text-gray-700 dark:text-gray-200">Nema rezultata.</div>
 
 					<ComboboxOption v-for="result in filteredResults" :key="result.id || result" v-slot="{ selected, active }" as="template" :value="result">
 						<li
@@ -104,16 +104,16 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted, onUnmounted, watch } from "vue";
-import { adminStore } from "@/main";
 import { Combobox, ComboboxInput, ComboboxButton, ComboboxOptions, ComboboxOption, TransitionRoot } from "@headlessui/vue";
-import { router } from "@/router";
-import { mainStore, guestStore } from "@/main";
-import MdiMagnify from "vue-material-design-icons/Magnify.vue";
-import MdiAccount from "vue-material-design-icons/Account.vue";
 import MdiPagePreviousOutline from "vue-material-design-icons/PagePreviousOutline.vue";
 import MdiClipboardText from "vue-material-design-icons/ClipboardText.vue";
+import { ref, computed, onMounted, onUnmounted, watch } from "vue";
+import MdiMagnify from "vue-material-design-icons/Magnify.vue";
+import MdiAccount from "vue-material-design-icons/Account.vue";
 import MdiDomain from "vue-material-design-icons/Domain.vue";
+import { mainStore, guestStore } from "@/main";
+import { adminStore } from "@/main";
+import { router } from "@/router";
 
 const searchInput = ref(null);
 
@@ -227,7 +227,7 @@ function navigateToStudent(student) {
 	router.push(`/studenti/${instanceId}`);
 }
 
-const routes = ["dashboard", "studenti", "alokacije", "dostupni-zadaci", "poslodavci", "bpmn/microservices", "profil", "poruke", "poslodavci/novi-zadatak"];
+const routes = ["dashboard", "studenti", "alokacije", "dostupni-zadaci", "poslodavci", "profil", "poruke", "poslodavci/novi-zadatak"];
 
 const helpItems = [
 	{ prefix: "", description: "usmjeravanje po aplikaciji" },

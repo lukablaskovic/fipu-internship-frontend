@@ -77,7 +77,6 @@ onMounted(async () => {
 
 const getCompanyLogo = (assignment) => {
 	const company = mainStore.allCompanies.find((c) => c.naziv === assignment["Poslodavac"][0].value);
-	console.log("LOGO:", company["logo"][0]["url"]);
 	return company["logo"][0]["url"] ? company["logo"][0]["url"] : "No-Logo.png";
 };
 
