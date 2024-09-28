@@ -4,7 +4,6 @@ import { mainStore } from "@/main";
 import { Model, ProcessInstance } from "@/services/bpmn_engine_api";
 import { Admin, Student } from "@/services/baserow_client_api";
 import { SendGrid } from "@/services/sendgrid_client_api";
-import { User } from "@/services/gateway_api";
 import Utils from "@/helpers/utils";
 
 // Define interfaces for state properties
@@ -139,6 +138,7 @@ export const useAdminStore = defineStore("admin", {
 		async getProcessInstanceData(student: Student) {
 			try {
 				const response = await ProcessInstance.get(student.process_instance_id);
+				console.log("adminStore, getProcessInstanceData", response); //ok
 				return response;
 			} catch (error) {
 				console.log("Error:", error);
@@ -155,7 +155,8 @@ export const useAdminStore = defineStore("admin", {
 		async getStudents() {
 			try {
 				this.studentsFetched = false;
-				const students = await User.getStudents();
+				const response = await Student.fetch();
+				const students = response.data.results;
 				if (!students || students.length === 0) {
 					this.students = [];
 					this.studentsFetched = true;
@@ -224,9 +225,11 @@ export const useAdminStore = defineStore("admin", {
 		async getEvents() {
 			try {
 				const response = await Model.getEvents();
+				console.log("adminStore, getEvents", response); //ok
 				if (Utils.isArrayEmpty(response.results)) return null;
 				else {
 					response.results.forEach((event: Event) => {
+						console.log("this.students", this.students);
 						const student = this.students.find((stud) => stud.process_instance_id === event.instance_id);
 						if (student) {
 							event.student_ime = student.ime;

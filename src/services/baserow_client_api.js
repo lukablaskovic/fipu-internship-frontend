@@ -59,6 +59,9 @@ const Student = {
 	},
 	async fetch(search_by) {
 		try {
+			if (!search_by) {
+				search_by = "";
+			}
 			let result = await AxiosWrapper.get(`/Student?search=${search_by}`);
 			return result;
 		} catch (error) {

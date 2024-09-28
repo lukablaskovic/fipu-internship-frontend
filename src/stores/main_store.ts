@@ -49,9 +49,6 @@ export const useMainStore = defineStore("main", {
 			return Boolean(localStorage.getItem("token"));
 		},
 		userAdmin(state): boolean {
-			console.log("state.currentUser.email", state.currentUser.email);
-			console.log("state.admin_emails", state.admin_emails);
-			console.log(state.admin_emails.includes(state.currentUser.email));
 			return !!this.currentUser.email && state.admin_emails.includes(state.currentUser.email);
 		},
 	},
@@ -159,7 +156,6 @@ export const useMainStore = defineStore("main", {
 
 		async fetchCompanies(search = "") {
 			try {
-				console.log("[mainstore.fetchCompanies] search:", search);
 				const response = await Guest.fetchCompanies(search);
 				return response.data.results;
 			} catch (error) {
