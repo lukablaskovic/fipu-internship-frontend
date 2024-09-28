@@ -15,7 +15,7 @@ export const useMainStore = defineStore("main", {
 		academicYear: "2024/2025",
 		voditelj_prakse: "doc. dr. sc. Ivan Lorencin",
 
-		admin_emails: ["lblaskovi@unipu.hr"],
+		admin_emails: ["lukablaskovic@unipu.hr"],
 
 		fipulab_web: "https://goreski.github.io/FIPULabWeb/",
 
@@ -50,6 +50,9 @@ export const useMainStore = defineStore("main", {
 		},
 		userAdmin(state): boolean {
 			return !!this.currentUser.email && state.admin_emails.includes(state.currentUser.email);
+		},
+		userHasActiveInstance(state): boolean {
+			return !!state.currentUser.internship_process.id && state.currentUser.internship_process.pending_user_task !== "end_event_student";
 		},
 	},
 
@@ -113,14 +116,16 @@ export const useMainStore = defineStore("main", {
 						router.push("/dashboard");
 					} else {
 						const processInstance = response_student.data.results[0].process_instance_id;
-						router.push("/moja-praksa");
+
 						if (processInstance) {
 							const pendingProcessTask = await studentStore.getPendingUserTask(processInstance);
-							if (pendingProcessTask !== "end_event_student") {
-								router.push("/moja-praksa");
+							if (this.userHasActiveInstance) {
+								router.push("/praksa");
 							} else {
 								router.push("/odabir-procesa");
 							}
+						} else {
+							router.push("/odabir-procesa");
 						}
 					}
 					response = response_student.data.results[0];

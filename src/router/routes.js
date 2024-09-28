@@ -132,7 +132,7 @@ const routes = [
 	{
 		meta: {
 			title: "Odabir procesa",
-			requiresAuth: false,
+			requiresAuth: true,
 		},
 		path: "/odabir-procesa",
 		name: "odabir-procesa",

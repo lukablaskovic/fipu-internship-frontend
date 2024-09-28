@@ -1,32 +1,32 @@
 <script setup>
-import { ref, onMounted, watch } from "vue";
-import { useRouter, useRoute } from "vue-router";
-import axios from "axios";
 import { mdiAccountMultiple, mdiAccount, mdiAccountGroup } from "@mdi/js";
+import { useRouter, useRoute } from "vue-router";
+import { ref, onMounted, watch } from "vue";
+import axios from "axios";
 
-import { adminStore, mainStore, snackBarStore } from "@/main.js";
 import { UserTaskMappings, SendTaskMappings } from "@/helpers/maps";
+import { adminStore, mainStore, snackBarStore } from "@/main.js";
 import Utils from "@/helpers/utils.js";
 
-import SectionMain from "@/components/Section/SectionMain.vue";
-import CardBox from "@/components/Cardbox/CardBox.vue";
-import FormDynamic from "@/components/Form/FormDynamic.vue";
-import CardBoxComponentEmpty from "@/components/Cardbox/CardBoxComponentEmpty.vue";
 import SectionTitleLineWithButton from "@/components/Section/SectionTitleLineWithButton.vue";
-import TableStudents from "@/components/Tables/TableStudents.vue";
-import BpmnDiagram from "@/components/BPMN/BpmnDiagram.vue";
-import CardBoxModal from "@/components/Cardbox/CardBoxModal.vue";
+import CardBoxComponentEmpty from "@/components/Cardbox/CardBoxComponentEmpty.vue";
 import TableInstanceData from "@/components/BPMN/TableInstanceData.vue";
 import LoadingAnimatedIcon from "@/components/LoadingAnimatedIcon.vue";
-import FormField from "@/components/Form/FormField.vue";
-import FormControl from "@/components/Form/FormControl.vue";
 import LayoutAuthenticated from "@/layouts/LayoutAuthenticated.vue";
+import TableStudents from "@/components/Tables/TableStudents.vue";
+import CardBoxModal from "@/components/Cardbox/CardBoxModal.vue";
+import SectionMain from "@/components/Section/SectionMain.vue";
+import FormDynamic from "@/components/Form/FormDynamic.vue";
+import BpmnDiagram from "@/components/BPMN/BpmnDiagram.vue";
+import FormControl from "@/components/Form/FormControl.vue";
+import FormField from "@/components/Form/FormField.vue";
+import CardBox from "@/components/Cardbox/CardBox.vue";
 import PillTag from "@/components/PillTag/PillTag.vue";
 let bpmn_diagram_active = ref(false);
 
-import BPMN_green from "/BPMN/green_bpmn_done.png";
-import BPMN_blue from "/BPMN/blue_bpmn_default.png";
 import BPMN_red from "/BPMN/red_bpmn_professor_pending.png";
+import BPMN_blue from "/BPMN/blue_bpmn_default.png";
+import BPMN_green from "/BPMN/green_bpmn_done.png";
 import BPMN_msg_event from "/BPMN/msg_event.png";
 
 const modal_select_bpmn_task = ref(false);
@@ -187,23 +187,23 @@ onMounted(loadDataForStudent);
 				</CardBoxModal>
 
 				<CardBoxModal v-if="bpmn_help_modal" v-model="bpmn_help_modal" :title="'BPMN Graf - Legenda'" button-label="Povratak">
-					<div class="flex items-center space-x-4 mb-4">
-						<img :src="BPMN_blue" alt="Description 1" class="w-32 h-32 object-contain" />
+					<div class="mb-4 flex items-center space-x-4">
+						<img :src="BPMN_blue" alt="Description 1" class="h-32 w-32 object-contain" />
 						<p class="text-sm"><b>Plava boja</b> - pending task. Zahtjeva akciju studenta ili poslodavca.</p>
 					</div>
 
-					<div class="flex items-center space-x-4 mb-4">
-						<img :src="BPMN_green" alt="Description 2" class="w-32 h-32 object-contain" />
+					<div class="mb-4 flex items-center space-x-4">
+						<img :src="BPMN_green" alt="Description 2" class="h-32 w-32 object-contain" />
 						<p class="text-sm"><b>Zelena boja</b> - finished task. Uspješno procesirani kroz BPMN engine.</p>
 					</div>
 
-					<div class="flex items-center space-x-4 mb-4">
-						<img :src="BPMN_red" alt="Description 3" class="w-32 h-32 object-contain" />
+					<div class="mb-4 flex items-center space-x-4">
+						<img :src="BPMN_red" alt="Description 3" class="h-32 w-32 object-contain" />
 						<p class="text-sm"><b>Crvena boja</b> - pending task. Zahtjeva akciju voditelja prakse.</p>
 					</div>
 
-					<div class="flex items-center space-x-4 mb-4">
-						<img :src="BPMN_msg_event" alt="Description 3" class="w-32 h-32 object-contain" />
+					<div class="mb-4 flex items-center space-x-4">
+						<img :src="BPMN_msg_event" alt="Description 3" class="h-32 w-32 object-contain" />
 						<p class="text-sm"><b>Send task</b> - Gotove/Prošle 'send taskove' je moguće ponovno pozvati.</p>
 					</div>
 
