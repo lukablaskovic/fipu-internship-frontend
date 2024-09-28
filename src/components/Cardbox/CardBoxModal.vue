@@ -1,10 +1,10 @@
 <script setup>
-import { computed, onMounted } from "vue";
-import BaseButton from "@/components/Base/BaseButton.vue";
-import BaseButtons from "@/components/Base/BaseButtons.vue";
-import CardBox from "@/components/Cardbox/CardBox.vue";
-import OverlayLayer from "@/components/OverlayLayer.vue";
 import CardBoxComponentTitle from "@/components/Cardbox/CardBoxComponentTitle.vue";
+import BaseButtons from "@/components/Base/BaseButtons.vue";
+import BaseButton from "@/components/Base/BaseButton.vue";
+import OverlayLayer from "@/components/OverlayLayer.vue";
+import CardBox from "@/components/Cardbox/CardBox.vue";
+import { computed, onMounted } from "vue";
 
 const props = defineProps({
 	title: {
@@ -70,9 +70,9 @@ window.addEventListener("keydown", (e) => {
 		<CardBox
 			v-show="value"
 			:class="{
-				'rounded shadow-lg max-h-modal w-11/12 md:w-3/5 lg:w-2/5 xl:w-6/12 2xl:3/12 z-50 modal-scrollable fipu_vertical_scrollbar': !large && !isLogout,
-				'rounded shadow-lg max-h-modal w-full md:w-4/5 lg:w-3/5 xl:w-3/5 z-50 modal-scrollable fipu_vertical_scrollbar': large && !isLogout,
-				'rounded shadow-lg max-h-modal w-11/12 md:w-3/5 lg:w-1/5 xl:w-4/12 2xl:3/12 z-50 modal-scrollable fipu_vertical_scrollbar': isLogout,
+				'2xl:3/12 modal-scrollable fipu_vertical_scrollbar z-50 max-h-modal w-11/12 rounded shadow-lg md:w-3/5 lg:w-2/5 xl:w-6/12': !large && !isLogout,
+				'modal-scrollable fipu_vertical_scrollbar z-50 max-h-modal w-full rounded shadow-lg md:w-4/5 lg:w-3/5 xl:w-3/5': large && !isLogout,
+				'2xl:3/12 modal-scrollable fipu_vertical_scrollbar z-50 max-h-modal w-11/12 rounded shadow-lg md:w-3/5 lg:w-1/5 xl:w-4/12': isLogout,
 			}"
 			is-modal>
 			<CardBoxComponentTitle :title="title"> </CardBoxComponentTitle>

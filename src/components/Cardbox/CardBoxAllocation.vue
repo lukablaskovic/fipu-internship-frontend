@@ -18,7 +18,7 @@
 			</div>
 
 			<div class="hidden sm:block sm:shrink-0">
-				<img alt="logo" :src="companyLogo" class="h-24 w-24 object-cover shadow-sm rounded-full block max-w-full bg-gray-100 dark:bg-slate-800" />
+				<img alt="logo" :src="companyLogo" class="block h-24 w-24 max-w-full rounded-full bg-gray-100 object-cover shadow-sm dark:bg-slate-800" />
 			</div>
 		</div>
 
@@ -78,8 +78,8 @@
 </template>
 
 <script setup>
-import { mainStore } from "@/main";
 import { ref, computed, onMounted } from "vue";
+import { mainStore } from "@/main";
 
 const props = defineProps({
 	data: {
@@ -98,7 +98,8 @@ const truncatedDescription = computed(() => {
 
 onMounted(async () => {
 	let result = await mainStore.fetchCompanies(props.data["Poslodavac"][0]["value"]);
-	companyLogo.value = result.data.results[0].logo[0].url;
+	console.log(result);
+	companyLogo.value = result[0].logo[0].url;
 });
 </script>
 <style></style>

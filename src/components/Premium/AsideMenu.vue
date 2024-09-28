@@ -1,12 +1,12 @@
 <script setup>
-import { computed, ref } from "vue";
-import { useRouter } from "vue-router";
-import { useLayoutStore } from "@/stores/layout.js";
 import { mdiClose, mdiChevronRightCircleOutline, mdiChevronLeftCircleOutline } from "@mdi/js";
-import BaseIcon from "@/components/BaseIcon.vue";
-import OverlayLayer from "@/components/OverlayLayer.vue";
 import AsideMenuLayer from "@/components/Premium/AsideMenuLayer.vue";
 import AsideMenuItem from "@/components/Premium/AsideMenuItem.vue";
+import OverlayLayer from "@/components/OverlayLayer.vue";
+import { useLayoutStore } from "@/stores/layout.js";
+import BaseIcon from "@/components/BaseIcon.vue";
+import { useRouter } from "vue-router";
+import { computed, ref } from "vue";
 
 defineProps({
 	menu: {
@@ -87,23 +87,25 @@ const expandCollapseItem = computed(() => ({
 </script>
 
 <template>
-	<AsideMenuLayer :menu="menu" :class="[layoutStore.isAsideMobileExpanded ? 'left-0' : '-left-60 lg:left-0', isPrimaryMenuCompact ? 'lg:w-22' : 'lg-w-64', { 'lg:hidden xl:flex': !layoutStore.isAsideLgActive }]" :is-compact="isPrimaryMenuCompact" :z-index="secondaryMenuItem ? 'z-40 md:z-50' : 'z-50'" :active-secondary-menu-key="secondaryMenuItem?.key" @menu-click="menuClickPrimaryMenu">
-		<div class="flex-1 px-3 flex justify-center">
-			<b class="font-black">One</b>
-		</div>
+	<div>
+		<AsideMenuLayer :menu="menu" :class="[layoutStore.isAsideMobileExpanded ? 'left-0' : '-left-60 lg:left-0', isPrimaryMenuCompact ? 'lg:w-22' : 'lg-w-64', { 'lg:hidden xl:flex': !layoutStore.isAsideLgActive }]" :is-compact="isPrimaryMenuCompact" :z-index="secondaryMenuItem ? 'z-40 md:z-50' : 'z-50'" :active-secondary-menu-key="secondaryMenuItem?.key" @menu-click="menuClickPrimaryMenu">
+			<div class="flex flex-1 justify-center px-3">
+				<b class="font-black">One</b>
+			</div>
 
-		<template #footer>
-			<ul class="hidden lg:block">
-				<AsideMenuItem :item="expandCollapseItem" :is-compact="isPrimaryMenuCompact" @menu-click="isPrimaryMenuCompact = !isPrimaryMenuCompact" />
-			</ul>
-		</template>
-	</AsideMenuLayer>
-	<AsideMenuLayer v-if="secondaryMenuItem" :menu="secondaryMenuItem.menuSecondary" :class="[isPrimaryMenuCompact ? 'lg:left-22' : 'md:left-60']" class="right-0 md:right-auto animate-fade-in-right-fast lg:animate-fade-in-left-fast" @menu-click="menuClickSecondaryMenu">
-		<BaseIcon v-if="secondaryMenuItem.icon" :path="secondaryMenuItem.icon" w="w-16" />
-		<div class="flex-1">
-			{{ secondaryMenuItem.label }}
-		</div>
-		<BaseIcon :path="mdiClose" class="cursor-pointer" w="w-12" @click="closeSecondaryMenu" />
-	</AsideMenuLayer>
-	<OverlayLayer :type="overlayLayerDisplayType" z-index="z-40" @overlay-click="overlayClick" />
+			<template #footer>
+				<ul class="hidden lg:block">
+					<AsideMenuItem :item="expandCollapseItem" :is-compact="isPrimaryMenuCompact" @menu-click="isPrimaryMenuCompact = !isPrimaryMenuCompact" />
+				</ul>
+			</template>
+		</AsideMenuLayer>
+		<AsideMenuLayer v-if="secondaryMenuItem" :menu="secondaryMenuItem.menuSecondary" :class="[isPrimaryMenuCompact ? 'lg:left-22' : 'md:left-60']" class="right-0 animate-fade-in-right-fast md:right-auto lg:animate-fade-in-left-fast" @menu-click="menuClickSecondaryMenu">
+			<BaseIcon v-if="secondaryMenuItem.icon" :path="secondaryMenuItem.icon" w="w-16" />
+			<div class="flex-1">
+				{{ secondaryMenuItem.label }}
+			</div>
+			<BaseIcon :path="mdiClose" class="cursor-pointer" w="w-12" @click="closeSecondaryMenu" />
+		</AsideMenuLayer>
+		<OverlayLayer :type="overlayLayerDisplayType" z-index="z-40" @overlay-click="overlayClick" />
+	</div>
 </template>

@@ -12,9 +12,10 @@ import BaseButton from "@/components/Base/BaseButton.vue";
 import FormField from "@/components/Form/FormField.vue";
 import CardBox from "@/components/Cardbox/CardBox.vue";
 import LayoutGuest from "@/layouts/LayoutGuest.vue";
+
+import { ref, computed, onMounted } from "vue";
 import Utils from "@/helpers/utils.js";
 import draggable from "vuedraggable";
-import { ref, computed } from "vue";
 
 const Layout = computed(() => (mainStore.userAuthenticated ? LayoutAuthenticated : LayoutGuest));
 
@@ -41,6 +42,10 @@ const registerPreferences = async () => {
 	await Utils.wait(2);
 	location.reload();
 };
+
+onMounted(async () => {
+	mainStore.allCompanies = await mainStore.fetchCompanies();
+});
 
 const getCompanyLogo = (assignment) => {
 	const company = mainStore.allCompanies.find((c) => c.naziv === assignment["Poslodavac"][0].value);
@@ -93,7 +98,7 @@ const handleDragEnd = () => {
 			<hr />
 			<br />
 			<SectionTitleLineWithButton :icon="mdiClipboardTextOutline" main title="Dostupni zadaci za praksu" />
-			<p>Pogledajte zanimljive slobodne zadatke te odaberite i rasporedite 3 najdraža - (1. odabir | 2. odabir | 3. odabir).</p>
+			<p>Pogledajte zanimljive slobodne zadatke te odaberite i rasporedite 3 najdraža, prema vašim preferencijama - (1. odabir | 2. odabir | 3. odabir).</p>
 			<p><b>Napomena:</b> Da biste prijavili preferencije, morate biti prijavljeni u aplikaciji!</p>
 			<br />
 			<CardBox has-table>
@@ -102,13 +107,12 @@ const handleDragEnd = () => {
 			<hr />
 			<br />
 			<SectionTitleLineWithButton ref="vas_odabir" :icon="mdiClipboardCheckOutline" main title="Vaš odabir" />
-			<p v-if="checkedAssignments.length === 0" class="mb-4">Odaberite zadatke koji vam se sviđaju iz tablice iznad.</p>
 			<p v-if="checkedAssignments.length === 3" class="mb-4">Zadatke možete rasporediti po vašim preferencijama.</p>
 
 			<draggable v-model="assignmentsForDrag" :disabled="!isDraggableEnabled" item-key="id" class="list-group flex w-full space-x-2" @start="handleDragStart" @end="handleDragEnd">
 				<template #item="{ element, index }">
 					<div class="flex-1">
-						<div class="draggable-item aspect-w-1 aspect-h-1 relative flex items-center justify-center border-2 bg-gray-50" :class="{ grab: isAssignment(element) && isDraggableEnabled, grabbing: vueDraggableDragging && isAssignment(element) && isDraggableEnabled }">
+						<div class="draggable-item aspect-h-1 aspect-w-1 relative flex items-center justify-center border-2 bg-gray-50" :class="{ grab: isAssignment(element) && isDraggableEnabled, grabbing: vueDraggableDragging && isAssignment(element) && isDraggableEnabled }">
 							<transition name="image-fade">
 								<img v-if="isAssignment(element)" class="rounded-full p-22" :src="getCompanyLogo(element)" />
 								<img v-else class="p-22" :src="getDefaultImage(index)" alt="Default Task" />

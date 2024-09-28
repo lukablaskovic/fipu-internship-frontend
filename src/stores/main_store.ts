@@ -3,9 +3,26 @@ import { defineStore } from "pinia";
 import { router } from "@/router";
 import axios from "axios";
 
-import { ProcessInstance } from "@/services/bpmn_engine_api.js";
-import { studentStore } from "@/main.js";
+import { ProcessInstance } from "@/services/bpmn_engine_api";
+import { studentStore } from "@/main";
+
+interface InternshipProcess {
+	id: number | null;
+	pending_user_task: string | null;
+}
+
 class CurrentUser {
+	ime: string;
+	prezime: string;
+	JMBAG: string;
+	email: string;
+	godina_studija: string;
+	avatar: string;
+	model_prakse: string;
+	baserow_id: string;
+	loggedAt: Date | null;
+	internship_process: InternshipProcess;
+
 	constructor() {
 		this.ime = "";
 		this.prezime = "";
@@ -37,65 +54,61 @@ class CurrentUser {
 	}
 }
 
+export interface Assignment {
+	id_zadatak: number;
+}
+
 export const useMainStore = defineStore("main", {
 	state: () => ({
 		academicYear: "2024/2025",
 		voditelj_prakse: "doc. dr. sc. Ivan Lorencin",
 		fipulab_web: "https://goreski.github.io/FIPULabWeb/",
 
-		//Debugger
+		// Debugger
 		depth: 5,
 		debug: false,
 		storeSelected: "mainStore",
 
-		allCompanies: [],
+		allCompanies: [] as any[],
 
 		bpmn_process_name_A: "strucna_praksa_edited",
 		bpmn_process_name_B: "strucna_praksa_B",
 
 		currentUser: new CurrentUser(),
-		//Modal states
+
+		// Modal states
 		logoutModalActive: false,
 		helpModalActive: false,
 
 		isFieldFocusRegistered: false,
 
 		// from guest store
-
-		assignments: [],
-		checkedAssignments: [],
+		assignments: [] as Assignment[],
+		checkedAssignments: [] as Assignment[],
 		isLoading: false,
-		error: null,
+		error: null as string | null,
 	}),
 
 	getters: {
-		userAuthenticated() {
+		userAuthenticated(): boolean {
 			return Boolean(localStorage.getItem("token"));
 		},
-		userAdmin() {
+		userAdmin(): boolean {
 			return false;
-			//return this.currentUser && this.currentUser.account_type === "admin";
+			// return this.currentUser && this.currentUser.account_type === "admin";
 		},
 	},
+
 	actions: {
-		async handleLogin(decodedToken) {
-			let { iss, sub, hd, email, nbf, name, picture, iat, jti } = decodedToken;
-			let storageToken = {
-				iss,
-				sub,
-				hd,
-				email,
-				nbf,
-				name,
-				picture,
-				iat,
-				jti,
-			};
-			// store public values in local storage
+		async handleLogin(decodedToken: any) {
+			const { iss, sub, hd, email, nbf, name, picture, iat, jti } = decodedToken;
+			const storageToken = { iss, sub, hd, email, nbf, name, picture, iat, jti };
+
+			// Store public values in local storage
 			localStorage.setItem("token", JSON.stringify(storageToken));
 
 			try {
-				let student_data = {
+				const student_data = {
 					JMBAG: "0000000000", // default value, student must change this
 					ime: decodedToken.given_name,
 					prezime: decodedToken.family_name,
@@ -106,19 +119,18 @@ export const useMainStore = defineStore("main", {
 
 				// Check if student already exists
 				const response_student = await Student.fetch(decodedToken.email);
-
 				let response = null;
-				if (response_student.data.count == 0) {
+
+				if (response_student.data.count === 0) {
 					response = await Student.create(student_data);
 					router.push("/odabir-procesa");
 				} else {
 					await this.fetchCurrentUser();
-					let processInstance = response_student.data.results[0].process_instance_id;
+					const processInstance = response_student.data.results[0].process_instance_id;
 					router.push("/moja-praksa");
 					if (processInstance) {
-						let pendingProcessTask = await studentStore.getPendingUserTask(processInstance);
-
-						if (pendingProcessTask != "end_event_student") {
+						const pendingProcessTask = await studentStore.getPendingUserTask(processInstance);
+						if (pendingProcessTask !== "end_event_student") {
 							router.push("/moja-praksa");
 						} else {
 							router.push("/odabir-procesa");
@@ -131,16 +143,15 @@ export const useMainStore = defineStore("main", {
 				console.log("status:", error);
 			}
 		},
+
 		async fetchCurrentUser() {
 			console.log("Fetching current user");
 			try {
-				console.log("Fetching current user");
-				let localStorageToken = JSON.parse(localStorage.getItem("token"));
-				let emailFromStorage = localStorageToken.email;
+				const localStorageToken = JSON.parse(localStorage.getItem("token") || "{}");
+				const emailFromStorage = localStorageToken.email;
 
 				const response = await Student.fetch(emailFromStorage);
 				const data = response.data.results[0];
-				console.log("data", data);
 				this.currentUser.ime = data.ime;
 				this.currentUser.prezime = data.prezime;
 				this.currentUser.JMBAG = data.JMBAG;
@@ -148,12 +159,9 @@ export const useMainStore = defineStore("main", {
 				this.currentUser.godina_studija = data.godina_studija.value;
 				this.currentUser.avatar = data.avatar;
 				this.currentUser.baserow_id = data.id;
-
 				this.currentUser.loggedAt = new Date();
 				this.currentUser.model_prakse = data.Model_prakse;
 				this.currentUser.internship_process.id = data.process_instance_id;
-
-				console.log("response", response);
 			} catch (error) {
 				console.log("[fetchCurrentUser] Error:", error);
 			}
@@ -171,10 +179,10 @@ export const useMainStore = defineStore("main", {
 			this.clearCurrentUser();
 			this.logoutModalActive = false;
 			localStorage.removeItem("token");
-			this.router.go();
+			router.go(0); // Refresh the page
 		},
 
-		fetch(sampleDataKey) {
+		fetch(sampleDataKey: string) {
 			axios
 				.get(`data-sources/${sampleDataKey}.json`)
 				.then((r) => {
@@ -187,73 +195,74 @@ export const useMainStore = defineStore("main", {
 				});
 		},
 
-		activateLogoutModal(state) {
+		activateLogoutModal(state: boolean) {
 			this.logoutModalActive = state;
 		},
 
-		activateHelpModal(state) {
+		activateHelpModal(state: boolean) {
 			this.helpModalActive = state;
 		},
 
 		async fetchCompanies(search = "") {
 			try {
+				console.log("[mainstore.fetchCompanies] search:", search);
 				const response = await Guest.fetchCompanies(search);
-				this.allCompanies = response.data.results;
-				return response;
+				return response.data.results;
 			} catch (error) {
 				console.log("Error:", error);
 			}
 		},
 
-		// from guest store
-
 		async createInternshipInstance(selected_model = "A") {
 			try {
-				let bpmn_model = null;
+				let bpmn_model: string | null = null;
 				if (selected_model === "A") {
-					bpmn_model = mainStore.bpmn_process_name_A;
+					bpmn_model = this.bpmn_process_name_A;
 				}
 				const response_bpmn_engine = await ProcessInstance.create(`${bpmn_model}.bpmn`);
 
-				const response_bw = await Student.setProcessData(mainStore.currentUser.email, response_bpmn_engine.id, selected_model);
+				const response_bw = await Student.setProcessData(this.currentUser.email, response_bpmn_engine.id, selected_model);
 
-				await mainStore.fetchCurrentUser();
-
-				console.log(response_bw);
+				await this.fetchCurrentUser();
 				return response_bw;
 			} catch (error) {
 				return error;
 			}
 		},
+
 		async fetchAvailableAssignments() {
 			this.isLoading = true;
 			this.error = null;
 			try {
-				let result = await Guest.fetchAvailableAssignments();
+				const result = await Guest.fetchAvailableAssignments();
 				this.assignments = result.results;
 				return this.assignments;
-			} catch (e) {
+			} catch (e: any) {
 				this.error = e.message;
 			} finally {
 				this.isLoading = false;
 			}
 		},
-		addAssignment(assignment) {
-			const assignmentExists = this.checkedAssignments.some((a) => a["id_zadatak"] === assignment["id_zadatak"]);
+
+		addAssignment(assignment: Assignment) {
+			const assignmentExists = this.checkedAssignments.some((a) => a.id_zadatak === assignment.id_zadatak);
 			if (!assignmentExists) {
 				this.checkedAssignments.push(assignment);
 			}
 		},
-		removeAssignment(assignment) {
-			this.checkedAssignments = this.checkedAssignments.filter((a) => a["id_zadatak"] !== assignment["id_zadatak"]);
+
+		removeAssignment(assignment: Assignment) {
+			this.checkedAssignments = this.checkedAssignments.filter((a) => a.id_zadatak !== assignment.id_zadatak);
 		},
+
 		resetAssignments() {
 			this.checkedAssignments = [];
 		},
-		async submitNewInternshipProject(formData) {
+
+		async submitNewInternshipProject(formData: any) {
 			const postData = {
 				...formData,
-				Poslodavac: [],
+				Poslodavac: [] as string[],
 			};
 
 			if (formData.Poslodavac) {

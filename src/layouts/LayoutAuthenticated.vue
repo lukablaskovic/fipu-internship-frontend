@@ -102,13 +102,7 @@ const menuClick = (event, item) => {
 				<ol class="ml-4 list-decimal">
 					<li>Potrebno je s mentorom dogovoriti datum počekta izvođenja prakse. Kada sve finalno dogovorite s mentorom popunite Prijavnicu putem aplikacije <b>prije početka izvođenja prakse</b>.</li>
 					<li>
-						<div class="flex flex-wrap text-base">
-							Niste dobili email? Javite se profesoru putem
-							<span class="inline-flex cursor-pointer items-center whitespace-normal text-fipu_blue" @click="router.push('/poruke') && mainStore.activateHelpModal(false)">
-								<BaseIcon :path="mdiEmail" class="flex-none align-middle" :size="18"></BaseIcon>
-								Poruke </span
-							>.
-						</div>
+						<div class="flex flex-wrap text-base">Niste dobili email? Javite se profesoru ili voditelju prakse.</div>
 					</li>
 					<li>Nakon ispunjavanja prijavnice, na mail ćete vi i mentor dobiti praznu Potvrdu. Mora ju ispuniti <b>mentor</b> i to po završetku odrađenog posla.</li>
 					<li>Uživajte u izvođenju prakse 🙂 Have fun i učite! Nemojte zaboraviti svakodnevno voditi Dnevnik!</li>
@@ -141,13 +135,7 @@ const menuClick = (event, item) => {
 					</li>
 					<li>Putem iste poveznice predajete dnevnik prakse, dok prijavnicu dobivate na vaš email.</li>
 					<li>
-						<div class="flex flex-wrap text-base">
-							Komunikaciju s profesorom vršite putem
-							<span class="inline-flex cursor-pointer items-center whitespace-normal text-fipu_blue" @click="router.push('/poruke') && mainStore.activateHelpModal(false)">
-								<BaseIcon :path="mdiEmail" class="flex-none align-middle" :size="18"></BaseIcon>
-								Poruke </span
-							>.
-						</div>
+						<div class="flex flex-wrap text-base">Komunikaciju s profesorom vršite putem...</div>
 					</li>
 				</ol>
 				<BaseDivider></BaseDivider>

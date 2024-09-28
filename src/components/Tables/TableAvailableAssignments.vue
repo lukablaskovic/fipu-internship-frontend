@@ -1,136 +1,3 @@
-<script setup>
-import { computed, ref, onMounted, watch } from "vue";
-
-import CardboxAllocation from "@/components/Cardbox/CardBoxAllocation.vue";
-import TableCheckboxCell from "@/components/Tables/TableCheckboxCell.vue";
-import CardBoxModal from "@/components/Cardbox/CardBoxModal.vue";
-import LoadingOverlay from "@/components/LoadingOverlay.vue";
-import BaseButtons from "@/components/Base/BaseButtons.vue";
-import BaseButton from "@/components/Base/BaseButton.vue";
-import UserAvatar from "@/components/User/UserAvatar.vue";
-import BaseLevel from "@/components/Base/BaseLevel.vue";
-import { mainStore, adminStore } from "@/main.js";
-import { mdiEye } from "@mdi/js";
-
-import { useRoute } from "vue-router";
-
-defineProps({
-	checkable: Boolean,
-});
-
-const perPage = ref(5);
-const currentPage = ref(0);
-const assignmentsPaginated = computed(() => allAvailableAssignments.value.slice(perPage.value * currentPage.value, perPage.value * (currentPage.value + 1)));
-
-const numPages = computed(() => Math.ceil(allAvailableAssignments.value.length / perPage.value));
-const currentPageHuman = computed(() => currentPage.value + 1);
-
-const pagesList = computed(() => {
-	const pagesList = [];
-
-	for (let i = 0; i < numPages.value; i++) {
-		pagesList.push(i);
-	}
-
-	return pagesList;
-});
-
-const MAX_NUM_ASSIGNMENTS = 3;
-
-const isModalActive = ref(null);
-const allAvailableAssignments = ref([]);
-
-let checkedAssignments = computed(() => mainStore.checkedAssignments);
-let assignment_highlight = ref("");
-
-const route = useRoute();
-
-async function loadData() {
-	const id_zadatak = route.params.id_zadatak;
-
-	const resultAssignments = await mainStore.fetchAvailableAssignments();
-	allAvailableAssignments.value = resultAssignments.filter((task) => {
-		const condition = adminStore.availableAssignmentsFilter ? task.dostupno_mjesta > 0 : task.dostupno_mjesta >= 0;
-		return condition && task.voditelj_odobrio.value == "odobreno";
-	});
-
-	if (id_zadatak) {
-		assignment_highlight.value = id_zadatak;
-		currentPage.value = getAssignmentPage(id_zadatak);
-	}
-
-	await mainStore.fetchCompanies();
-}
-
-watch(() => route.params.id_zadatak, loadData, {
-	immediate: true,
-});
-
-onMounted(async () => {
-	const result = await mainStore.fetchAvailableAssignments();
-	allAvailableAssignments.value = result.filter((task) => {
-		const condition = adminStore.availableAssignmentsFilter ? task.dostupno_mjesta > 0 : task.dostupno_mjesta >= 0;
-		return condition && task.voditelj_odobrio.value == "odobreno";
-	});
-	mainStore.resetAssignments();
-});
-
-const getCompanyLogo = (assignment) => {
-	const company = mainStore.allCompanies.find((c) => c.naziv === assignment["Poslodavac"][0].value);
-
-	return company && company["logo"] && company["logo"][0] && company["logo"][0]["url"] ? company["logo"][0]["url"] : "No-Logo.png";
-};
-
-function getAssignmentPage(id) {
-	const index = allAvailableAssignments.value.findIndex((assignment) => assignment["id_zadatak"] === id);
-	if (index === -1) return 0;
-	return Math.floor(index / perPage.value);
-}
-
-const assignmentCheckedStates = ref({});
-
-const disableUnchecked = computed(() => {
-	return checkedAssignments.value.length >= MAX_NUM_ASSIGNMENTS;
-});
-
-watch(checkedAssignments, (newVals) => {
-	newVals.forEach((assignment) => {
-		assignmentCheckedStates.value[assignment["id_zadatak"]] = false;
-	});
-});
-
-watch(
-	() => adminStore.availableAssignmentsFilter,
-	async () => {
-		const result = await mainStore.fetchAvailableAssignments();
-
-		allAvailableAssignments.value = result.filter((task) => {
-			const condition = adminStore.availableAssignmentsFilter ? task.dostupno_mjesta > 0 : task.dostupno_mjesta >= 0;
-			return condition && task.voditelj_odobrio.value == "odobreno";
-		});
-	},
-	{ immediate: true },
-);
-
-const isCheckedAssignment = (assignment) => {
-	return checkedAssignments.value.some((a) => a["id_zadatak"] === assignment["id_zadatak"]);
-};
-
-const checked = (value, assignment) => {
-	// When checking
-	if (value) {
-		if (checkedAssignments.value.length >= MAX_NUM_ASSIGNMENTS) {
-			alert("You can only select a maximum of 3 assignments.");
-			assignmentCheckedStates[assignment["id_zadatak"]] = false;
-			return;
-		}
-		mainStore.addAssignment(assignment);
-	} else {
-		mainStore.removeAssignment(assignment);
-	}
-};
-</script>
-
 <template>
 	<LoadingOverlay :is-active="!allAvailableAssignments.length" title="Učitavanje..." description="Može potrajati nekoliko sekundi, molimo ne zatvarajte stranicu."> </LoadingOverlay>
 	<CardBoxModal v-if="isModalActive" v-model="isModalActive" button-label="Zatvori" button="fipu_blue" has-cancel:false @cancel="mainStore.activateLogoutModal(false)">
@@ -138,6 +5,9 @@ const checked = (value, assignment) => {
 
 		<br />
 	</CardBoxModal>
+	<div class="mb-4">
+		<input type="text" placeholder="Pretraži zadatke..." class="w-full p-2" />
+	</div>
 
 	<table>
 		<thead>
@@ -210,3 +80,135 @@ const checked = (value, assignment) => {
 		</BaseLevel>
 	</div>
 </template>
+
+<script setup>
+import { computed, ref, onMounted, watch } from "vue";
+
+import CardboxAllocation from "@/components/Cardbox/CardBoxAllocation.vue";
+import TableCheckboxCell from "@/components/Tables/TableCheckboxCell.vue";
+import CardBoxModal from "@/components/Cardbox/CardBoxModal.vue";
+import LoadingOverlay from "@/components/LoadingOverlay.vue";
+import BaseButtons from "@/components/Base/BaseButtons.vue";
+import BaseButton from "@/components/Base/BaseButton.vue";
+import UserAvatar from "@/components/User/UserAvatar.vue";
+import BaseLevel from "@/components/Base/BaseLevel.vue";
+import { mainStore, adminStore } from "@/main.js";
+import { mdiEye } from "@mdi/js";
+
+import { useRoute } from "vue-router";
+
+defineProps({
+	checkable: Boolean,
+});
+
+const perPage = ref(5);
+const currentPage = ref(0);
+const assignmentsPaginated = computed(() => allAvailableAssignments.value.slice(perPage.value * currentPage.value, perPage.value * (currentPage.value + 1)));
+
+const numPages = computed(() => Math.ceil(allAvailableAssignments.value.length / perPage.value));
+const currentPageHuman = computed(() => currentPage.value + 1);
+
+const pagesList = computed(() => {
+	const pagesList = [];
+
+	for (let i = 0; i < numPages.value; i++) {
+		pagesList.push(i);
+	}
+
+	return pagesList;
+});
+
+const MAX_NUM_ASSIGNMENTS = 3;
+
+const isModalActive = ref(null);
+
+const allAvailableAssignments = ref([]);
+
+let checkedAssignments = computed(() => mainStore.checkedAssignments);
+let assignment_highlight = ref("");
+
+const route = useRoute();
+
+async function loadData() {
+	const id_zadatak = route.params.id_zadatak;
+
+	const resultAssignments = await mainStore.fetchAvailableAssignments();
+	allAvailableAssignments.value = resultAssignments.filter((task) => {
+		const condition = adminStore.availableAssignmentsFilter ? task.dostupno_mjesta > 0 : task.dostupno_mjesta >= 0;
+		return condition && task.voditelj_odobrio.value == "odobreno";
+	});
+
+	if (id_zadatak) {
+		assignment_highlight.value = id_zadatak;
+		currentPage.value = getAssignmentPage(id_zadatak);
+	}
+}
+
+watch(() => route.params.id_zadatak, loadData, {
+	immediate: true,
+});
+
+onMounted(async () => {
+	const result = await mainStore.fetchAvailableAssignments();
+	allAvailableAssignments.value = result.filter((task) => {
+		const condition = adminStore.availableAssignmentsFilter ? task.dostupno_mjesta > 0 : task.dostupno_mjesta >= 0;
+		return condition && task.voditelj_odobrio.value == "odobreno";
+	});
+	mainStore.resetAssignments();
+});
+
+const getCompanyLogo = (assignment) => {
+	return mainStore.allCompanies.find((c) => c.naziv === assignment?.Poslodavac?.[0]?.value)?.logo?.[0]?.url ?? "No-Logo.png";
+};
+
+function getAssignmentPage(id) {
+	const index = allAvailableAssignments.value.findIndex((assignment) => assignment["id_zadatak"] === id);
+	if (index === -1) return 0;
+	return Math.floor(index / perPage.value);
+}
+
+const assignmentCheckedStates = ref({});
+
+const disableUnchecked = computed(() => {
+	return checkedAssignments.value.length >= MAX_NUM_ASSIGNMENTS;
+});
+
+watch(checkedAssignments, (newVals) => {
+	newVals.forEach((assignment) => {
+		assignmentCheckedStates.value[assignment["id_zadatak"]] = false;
+	});
+});
+
+watch(
+	() => adminStore.availableAssignmentsFilter,
+	async () => {
+		const result = await mainStore.fetchAvailableAssignments();
+
+		allAvailableAssignments.value = result.filter((task) => {
+			const condition = adminStore.availableAssignmentsFilter ? task.dostupno_mjesta > 0 : task.dostupno_mjesta >= 0;
+			return condition && task.voditelj_odobrio.value == "odobreno";
+		});
+	},
+	{ immediate: true },
+);
+
+const isCheckedAssignment = (assignment) => {
+	return checkedAssignments.value.some((a) => a["id_zadatak"] === assignment["id_zadatak"]);
+};
+
+const checked = (value, assignment) => {
+	// When checking
+	if (value) {
+		if (checkedAssignments.value.length >= MAX_NUM_ASSIGNMENTS) {
+			alert("Možete odabrati najviše 3 zadatka.");
+			assignmentCheckedStates[assignment["id_zadatak"]] = false;
+			return;
+		}
+		mainStore.addAssignment(assignment);
+	} else {
+		mainStore.removeAssignment(assignment);
+	}
+};
+</script>
+
+<style scoped></style>

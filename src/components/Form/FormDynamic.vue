@@ -11,7 +11,7 @@
 
 			<component :is="tableComponent" v-if="field.type.startsWith('selectFromTable') && isTableComponentVisible" :data="getTableType(field.type)" @row-selected="handleRowSelected" />
 
-			<p v-if="field.type.startsWith('selectFromTable') && isTableComponentVisible" class="mt-2 mb-4">
+			<p v-if="field.type.startsWith('selectFromTable') && isTableComponentVisible" class="mb-4 mt-2">
 				Odabrali ste: <b> {{ formValues["Alocirani_zadatak"] }} </b>
 			</p>
 		</div>
@@ -21,10 +21,10 @@
 <script setup>
 import { onMounted, computed, reactive, watch } from "vue";
 
-import CardBox from "../Cardbox/CardBox.vue";
-import FormField from "./FormField.vue";
 import FormCheckRadioGroup from "./FormCheckRadioGroup.vue";
 import TaskTable from "../BPMN/TaskTable.vue";
+import CardBox from "../Cardbox/CardBox.vue";
+import FormField from "./FormField.vue";
 
 const emit = defineEmits(["update:modelValue", "allFieldsFilled"]);
 
@@ -97,7 +97,7 @@ watch(
 	(newValues, oldValues) => {
 		emit("update:modelValue", newValues);
 	},
-	{ deep: true }
+	{ deep: true },
 );
 
 const submitForm = () => {

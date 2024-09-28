@@ -27,7 +27,7 @@ watch(
 	() => props.value,
 	(newVal) => {
 		checked.value = newVal;
-	}
+	},
 );
 </script>
 

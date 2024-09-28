@@ -10,11 +10,6 @@ export default [
 					label: "Moj profil",
 					to: "/profil",
 				},
-				{
-					icon: mdiEmail,
-					label: "Poruke",
-					to: "/poruke",
-				},
 			],
 		},
 		{
@@ -49,11 +44,6 @@ export default [
 			icon: mdiAccount,
 			label: "Moj profil",
 			to: "/profil",
-		},
-		{
-			icon: mdiEmail,
-			label: "Poruke",
-			to: "/poruke",
 		},
 		{
 			icon: mdiHelpBoxOutline,

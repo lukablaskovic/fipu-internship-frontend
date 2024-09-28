@@ -1,8 +1,8 @@
-import path from "path";
 import { fileURLToPath } from "url";
+import path from "path";
 
-import { defineConfig } from "vite";
 import vue from "@vitejs/plugin-vue";
+import { defineConfig } from "vite";
 
 const __filename = fileURLToPath(import.meta.url);
 
@@ -13,6 +13,9 @@ export default defineConfig({
 	//base: "/fipu/",
 	assetsInclude: "**/*.xml",
 	plugins: [vue()],
+	define: {
+		__VUE_PROD_HYDRATION_MISMATCH_DETAILS__: true,
+	},
 	resolve: {
 		alias: [{ find: "@", replacement: path.resolve(__dirname, "src") }],
 	},

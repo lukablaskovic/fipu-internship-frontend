@@ -1,16 +1,17 @@
 <script setup>
-import { getButtonColor } from "@/colors.js";
-import { controlTextColor } from "@/colorsPremium.js";
 import { computed, ref, onMounted, onBeforeUnmount } from "vue";
-import { mainStore } from "@/main";
+
 import { mdiUnfoldMoreHorizontal, mdiAlertCircle, mdiCheckCircle, mdiAsterisk, mdiLockOff, mdiContentCopy } from "@mdi/js";
+import FormControlListbox from "@/components/Premium/FormControlListbox.vue";
 import FormControlIcon from "@/components/Premium/FormControlIcon.vue";
 import FormFieldHelp from "@/components/Premium/FormFieldHelp.vue";
-import FormControlListbox from "@/components/Premium/FormControlListbox.vue";
-import BaseIcon from "@/components/Base/BaseIcon.vue";
-import TipTag from "@/components/Premium/TipTag.vue";
 import SearchOptions from "@/components/SearchOptions.vue";
+import BaseIcon from "@/components/Base/BaseIcon.vue";
+import { controlTextColor } from "@/colorsPremium.js";
+import TipTag from "@/components/Premium/TipTag.vue";
+import { getButtonColor } from "@/colors.js";
 import { snackBarStore } from "@/main";
+import { mainStore } from "@/main";
 
 const props = defineProps({
 	firstAddon: Boolean,
