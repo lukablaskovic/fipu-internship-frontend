@@ -52,7 +52,6 @@ const form = reactive({ ...DEFAULT_FORM_VALUES });
 const greaterThanZero = (value) => value > 0;
 
 const rules = reactive({
-	// ... other fields
 	Poslodavac: computed(() => {
 		if (form.Poslodavac_novi_naziv) return {};
 		return {

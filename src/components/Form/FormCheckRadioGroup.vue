@@ -1,6 +1,6 @@
 <script setup>
-import { computed } from "vue";
 import FormCheckRadio from "@/components/Form/FormCheckRadio.vue";
+import { computed } from "vue";
 
 const props = defineProps({
 	options: {
@@ -38,7 +38,7 @@ const computedValue = computed({
 </script>
 
 <template>
-	<div class="flex justify-start flex-wrap -mb-3" :class="{ 'flex-col': isColumn }">
-		<FormCheckRadio v-for="(value, key) in options" :key="key" v-model="computedValue" :type="type" :name="name" :input-value="key" :label="value" :class="componentClass" class="mr-6 mb-3 last:mr-0" />
+	<div class="m flex flex-wrap items-center" :class="{ 'flex-col': isColumn }">
+		<FormCheckRadio v-for="(value, key) in options" :key="key" v-model="computedValue" :type="type" :name="name" :input-value="key" :label="value" :class="componentClass" class="mx-2 mb-3 mr-6 w-32 last:mr-0" />
 	</div>
 </template>

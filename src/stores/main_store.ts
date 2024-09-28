@@ -120,7 +120,7 @@ export const useMainStore = defineStore("main", {
 						if (processInstance) {
 							const pendingProcessTask = await studentStore.getPendingUserTask(processInstance);
 							if (this.userHasActiveInstance) {
-								router.push("/praksa");
+								router.push("/moja-praksa");
 							} else {
 								router.push("/odabir-procesa");
 							}

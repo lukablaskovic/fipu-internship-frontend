@@ -1,16 +1,16 @@
 <template>
 	<div class="flex h-full min-h-screen w-full items-center justify-center bg-white bg-cover bg-center transition-all duration-300 sm:bg-[url('/background-blue.jpg')]">
 		<div class="flex flex-col items-center justify-center overflow-hidden transition-all duration-300">
-			<CardBox vertical-centered class="p-12 transition-all duration-300 sm:mx-96 sm:rounded-2xl" is-form>
-				<a href="https://fipu.unipu.hr/" target="_blank" class="mx-auto w-max">
-					<img :src="fipu_unipu" alt="Fakultet informatike u Puli - logotip" class="mb-3 object-contain transition-all duration-300 sm:h-32 2xl:mb-6" />
+			<CardBox vertical-centered class="p-6 transition-all duration-300 sm:mx-10 sm:rounded-2xl sm:p-12 md:mx-32 lg:mx-96" is-form>
+				<a href="https://fipu.unipu.hr/" target="_blank" class="mx-auto flex w-max">
+					<img :src="fipu_unipu" alt="Fakultet informatike u Puli - logotip" class="mb-3 h-16 object-contain transition-all duration-300 sm:h-32 2xl:mb-6" />
 				</a>
 
-				<h2 class="mb-4 mt-6 text-2xl font-bold text-fipu_gray md:text-center lg:text-3xl xl:mb-6 2xl:text-4xl">Molimo odaberite vašu izvedbu stručne prakse</h2>
+				<h2 class="mb-4 mt-4 text-center text-xl font-bold text-fipu_gray sm:text-2xl lg:text-3xl xl:mb-6 2xl:text-4xl">Molimo odaberite vašu izvedbu stručne prakse</h2>
 
-				<div class="flex justify-center space-x-4">
+				<div class="flex flex-col justify-center space-y-4 sm:flex-row sm:space-x-4 sm:space-y-0">
 					<!-- Button 1: Nemam poduzeće -->
-					<button class="relative flex items-center justify-center border border-gray-300 px-24 py-24 text-xl font-semibold text-gray-700 transition-transform duration-300 hover:scale-105 hover:bg-gray-200" @click.prevent="selectProcess('A')" @mouseover="hoveredButton = 'A'" @mouseleave="hoveredButton = ''">
+					<button :class="['relative flex w-full items-center justify-center border border-gray-300 px-8 py-12 text-sm font-semibold text-gray-700 transition-transform duration-300 hover:scale-105 hover:bg-gray-200 sm:w-auto sm:px-24 sm:py-24 sm:text-xl', selectedProcess === 'A' ? 'bg-fipu_blue text-white' : '']" @click.prevent="selectProcess('A')" @mouseover="hoveredButton = 'A'" @mouseleave="hoveredButton = ''">
 						<!-- Button Text -->
 						<span :class="{ 'opacity-0': hoveredButton === 'A', 'transition-opacity': true }">Nemam poduzeće (Model A)</span>
 						<!-- Bullet points on hover for Button A -->
@@ -22,7 +22,7 @@
 					</button>
 
 					<!-- Button 2: Imam već dogovoreno -->
-					<button class="relative flex items-center justify-center border border-gray-300 px-24 py-24 text-xl font-semibold text-gray-800 transition-transform duration-300 hover:scale-105 hover:bg-gray-200" @click.prevent="selectProcess('B')" @mouseover="hoveredButton = 'B'" @mouseleave="hoveredButton = ''">
+					<button :class="['relative flex w-full items-center justify-center border border-gray-300 px-8 py-12 text-sm font-semibold text-gray-800 transition-transform duration-300 hover:scale-105 hover:bg-gray-200 sm:w-auto sm:px-24 sm:py-24 sm:text-xl', selectedProcess === 'B' ? 'bg-fipu_blue text-white' : '']" @click.prevent="selectProcess('B')" @mouseover="hoveredButton = 'B'" @mouseleave="hoveredButton = ''">
 						<!-- Button Text -->
 						<span :class="{ 'opacity-0': hoveredButton === 'B', 'transition-opacity': true }">Imam već dogovoreno (Model B)</span>
 						<!-- Bullet points on hover for Button B -->
@@ -34,25 +34,76 @@
 					</button>
 				</div>
 
-				<h2 class="mt-4 text-center text-sm">
+				<div class="mb-6 grid grid-cols-1 gap-6">
+					<CardBox :icon="mdiBallot" class="mb-6 lg:col-span-2 lg:mb-0 xl:col-span-3" is-form @submit.prevent="onSubmit">
+						<FormField label="Ime i prezime" horizontal>
+							<FormControl v-model="fixedUserData.ime_prezime" :icon-left="mdiEmail" type="email" readonly />
+						</FormField>
+
+						<FormField label="E-mail" horizontal>
+							<FormControl v-model="fixedUserData.email" :icon-left="mdiAccount" type="email" readonly />
+						</FormField>
+
+						<FormField label="JMBAG" horizontal>
+							<FormControl v-model="form.jmbag" :icon-left="mdiCardAccountDetails" type="text" :error="getFirstErrorForField(v$, 'jmbag')" />
+						</FormField>
+
+						<FormField label="Godina studija" horizontal>
+							<FormCheckRadioGroup v-model="form.godina_studija" name="godina_studija_selection" :error="getFirstErrorForField(v$, 'godina_studija')" type="radio" :options="selectionSelect" component-class="check-radio-warning" />
+						</FormField>
+
+						<FormField horizontal>
+							<BaseButton label="Započni proces prakse" type="submit" :disabled="isLoading" :loading="isLoading" color="fipu_blue" />
+						</FormField>
+					</CardBox>
+				</div>
+				<h2 class="mt-4 text-center text-xs sm:text-sm">
 					Povratak na
 					<a class="hover-underline-animation cursor-pointer text-fipu_text_blue hover:text-fipu_blue" @click="logout">prijavu</a>.
 				</h2>
 			</CardBox>
 		</div>
+		<SnackBar />
 	</div>
 </template>
 
 <script setup>
+import { mdiBallot, mdiEmail, mdiAccount, mdiCardAccountDetails } from "@mdi/js";
+import FormCheckRadioGroup from "@/components/Form/FormCheckRadioGroup.vue";
+import { required, helpers, numeric } from "@vuelidate/validators";
+import SnackBar from "@/components/Premium/SnackBar.vue";
+
+import { getFirstErrorForField, exactLength } from "@/helpers/validators";
+import FormControl from "@/components/Form/FormControl.vue";
+import BaseButton from "@/components/Base/BaseButton.vue";
+import FormField from "@/components/Form/FormField.vue";
+
+import { useVuelidate } from "@vuelidate/core";
+
+import Utils from "@/helpers/utils";
+
 import CardBox from "@/components/Cardbox/CardBox.vue";
+import { ref, reactive, onMounted } from "vue";
+
 // Public images
+import { mainStore, snackBarStore } from "@/main.js";
 import fipu_unipu from "/fipu_unipu.png";
 import { useRouter } from "vue-router";
-import { mainStore } from "@/main";
-import { ref } from "vue";
-
 const router = useRouter();
 import { googleLogout } from "vue3-google-login";
+
+const selectionSelect = { "1_prijediplomski": "1. prijediplomski", "2_prijediplomski": "2. prijediplomski", "3_prijediplomski": "3. prijediplomski", "1_diplomski": "1. diplomski", "2_diplomski": "2. diplomski" };
+
+const fixedUserData = reactive({
+	ime_prezime: "",
+	email: "",
+});
+
+onMounted(() => {
+	let currentUser = mainStore.currentUser;
+	fixedUserData.ime_prezime = currentUser.ime + " " + currentUser.prezime;
+	fixedUserData.email = currentUser.email;
+});
 
 const logout = () => {
 	googleLogout();
@@ -60,9 +111,55 @@ const logout = () => {
 };
 
 const selectProcess = async (process) => {
-	let response = await mainStore.createInternshipInstance(process);
-	router.push("/moja-praksa");
+	selectedProcess.value = process;
 };
+
+const DEFAULT_FORM_VALUES = {
+	jmbag: "",
+	godina_studija: "3_prijediplomski",
+};
+
+const form = reactive({ ...DEFAULT_FORM_VALUES });
+const rules = reactive({
+	godina_studija: {
+		required: helpers.withMessage("Polje je obavezno", required),
+	},
+	jmbag: {
+		required: helpers.withMessage("Polje je obavezno", required),
+		numeric: helpers.withMessage("JMBAG smije sadržavati samo brojeve", numeric),
+		exactLength: helpers.withMessage("JMBAG mora sadržavati točno 10 brojeva", exactLength(10)),
+	},
+});
+
+const isLoading = ref(false);
+
+const v$ = useVuelidate(rules, form);
+
+async function onSubmit() {
+	isLoading.value = true;
+	v$.value.$touch();
+	if (v$.value.$invalid) {
+		isLoading.value = false;
+		console.log("Invalid form", v$.value);
+		snackBarStore.pushMessage("Molimo ispravite sva polja", "danger");
+		return;
+	}
+
+	if (!selectedProcess.value || selectedProcess.value === "") {
+		snackBarStore.pushMessage("Molimo odaberite izvedbu prakse!", "danger");
+		isLoading.value = false;
+		return;
+	}
+
+	isLoading.value = false;
+	const response = await mainStore.createInternshipInstance(selectedProcess.value);
+
+	if (response) {
+		snackBarStore.pushMessage("Uspješno ste započeli proces prakse!", "success");
+		await Utils.wait(1);
+		router.push("/moja-praksa");
+	}
+}
 
 // Data for bullet points for each button
 const hoverTexts = {
@@ -70,7 +167,8 @@ const hoverTexts = {
 	B: ["Model B ide u dogovoru s nastavnikom", "Praksa već dogovorena ili odrađena", "Potrebno prijaviti zadatak"],
 };
 
-const hoveredButton = ref(""); // Track which button is hovered
+const hoveredButton = ref("");
+const selectedProcess = ref("");
 </script>
 
 <style scoped>
