@@ -1,13 +1,13 @@
 <script setup>
-import { ref, computed, onMounted } from "vue";
 import { mdiProgressClock, mdiLaptop, mdiClipboardCheck } from "@mdi/js";
+import { ref, computed, onMounted } from "vue";
 
 import LayoutAuthenticated from "@/layouts/LayoutAuthenticated.vue";
 import LayoutGuest from "@/layouts/LayoutGuest.vue";
 
-import SectionMain from "@/components/Section/SectionMain.vue";
 import SectionTitleLineWithButton from "@/components/Section/SectionTitleLineWithButton.vue";
 import CardboxAllocation from "@/components/Cardbox/CardBoxAllocation.vue";
+import SectionMain from "@/components/Section/SectionMain.vue";
 
 import { mainStore, studentStore } from "@/main.js";
 
@@ -42,7 +42,7 @@ const Layout = computed(() => {
 			<p><b>Voditelj:</b> {{ mainStore.voditelj_prakse }}</p>
 			<hr />
 			<br />
-			<SectionTitleLineWithButton :icon="mdiProgressClock" main title="U procesu Evaluacije"></SectionTitleLineWithButton>
+			<SectionTitleLineWithButton :icon="mdiProgressClock" main title="U procesu evaluacije"></SectionTitleLineWithButton>
 			<p>
 				Alocirani ste na zadatak:
 				<b>{{ studentStore.allocated_assignment["id_zadatak"] }} </b>
@@ -53,7 +53,7 @@ const Layout = computed(() => {
 				>.
 			</p>
 			<br />
-			<p>Predstavite se i recite da ste dobili zadatak. Ukoliko se provodi selekcija, morat ćete istu obaviti u dogovoru s poslodavcem.</p>
+			<p>Predstavite se i recite koji ste zadatak dobili u sklopu studentske prakse. Ukoliko se provodi selekcija, morat ćete istu obaviti u dogovoru s poslodavcem.</p>
 			<p>
 				Kada vas poslodavac prihvati, o tome ćete biti pravovremeno obaviješteni te morate dogovoriti datum početka prakse i ostale detalje.
 				<u>Nakon</u> što to obavite, ovdje ćete popuniti <b>Prijavnicu</b> prije početka izvođenja same prakse.

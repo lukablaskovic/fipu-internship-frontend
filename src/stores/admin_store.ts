@@ -212,7 +212,7 @@ export const useAdminStore = defineStore("admin", {
 		async searchModels() {
 			try {
 				const response = await Model.search();
-				const model = response.results.find((result) => result.model_path === `${mainStore.bpmn_process_name}.bpmn`);
+				const model = response.results.find((result) => result.model_path === `${mainStore.bpmn_process_name_A}.bpmn`);
 				if (model && model.instances) {
 					this.dashboard_data.ongoing_internships = model.instances.length - this.dashboard_data.finished_internships;
 				}

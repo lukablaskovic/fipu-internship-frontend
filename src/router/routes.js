@@ -13,6 +13,16 @@ const routes = [
 	},
 	{
 		meta: {
+			title: "Stanje procesa",
+			requiresAuth: true,
+			requiresAdmin: false,
+		},
+		path: "/stanje-procesa",
+		name: "stanje-procesa",
+		component: () => import("@/views/student/ProcessStateViewStudent.vue"),
+	},
+	{
+		meta: {
 			title: "Studenti",
 			requiresAuth: true,
 			requiresAdmin: true,

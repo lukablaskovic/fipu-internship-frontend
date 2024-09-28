@@ -10,8 +10,8 @@ import { containsAlpha, containsNumeric, getFirstErrorForField } from "@/helpers
 
 import { mdiAccount, mdiAccountCircle, mdiEmail, mdiAsterisk, mdiFormTextboxPassword, mdiCardAccountDetails, mdiSchool, mdiCheckDecagram, mdiPencil, mdiDomain, mdiAlert, mdiCheckCircle, mdiCalendarAccount } from "@mdi/js";
 
-import UserAvatarCurrentUserWithUpload from "@/components/Premium/UserAvatarCurrentUserWithUpload.vue";
 import SectionTitleLineWithButton from "@/components/Section/SectionTitleLineWithButton.vue";
+import UserAvatarCurrentUser from "@/components/Premium/UserAvatarCurrentUser.vue";
 import SectionBannerProfile from "@/components/Premium/SectionBannerProfile.vue";
 import LayoutAuthenticated from "@/layouts/LayoutAuthenticated.vue";
 import PillTagPlain from "@/components/PillTag/PillTagPlain.vue";
@@ -36,40 +36,6 @@ const profileForm = reactive({
 	godina_studija: mainStore.currentUser.godina_studija,
 	email: mainStore.currentUser.email,
 });
-
-const passwordForm = reactive({
-	password_current: "",
-	password: "",
-	password_confirmation: "",
-});
-const password = computed(() => passwordForm.password);
-const password_current = computed(() => passwordForm.password_current);
-const rules = {
-	password_current: {
-		required: helpers.withMessage("Polje je obavezno", required),
-	},
-	password: {
-		sameAs: helpers.withMessage("Nova lozinka ne smije biti identična staroj", not(sameAs(password_current))),
-		required: helpers.withMessage("Polje je obavezno", required),
-		minLength: helpers.withMessage("Lozinka mora sadržavati minimalno 6 znakova", minLength(6)),
-		containsAlpha: helpers.withMessage("Lozinka mora sadržavati barem jedno slovo", containsAlpha),
-		containsNumeric: helpers.withMessage("Lozinka mora sadržavati barem jedan broj", containsNumeric),
-	},
-	password_confirmation: {
-		required: helpers.withMessage("Polje je obavezno", required),
-		sameAs: helpers.withMessage("Lozinke se ne podudaraju", sameAs(password)),
-	},
-};
-const v$ = useVuelidate(rules, passwordForm);
-
-const isLoading = ref(false);
-
-const notificationBar = ref(null);
-let notificationStatus = ref();
-let notificationMessage = ref();
-
-const notificationSettingsModel = ref([]);
-const notificationsOutline = computed(() => notificationSettingsModel.value.indexOf("outline") > -1);
 </script>
 
 <template>
@@ -80,7 +46,7 @@ const notificationsOutline = computed(() => notificationSettingsModel.value.inde
 			<div class="mb-6 grid grid-cols-1 gap-6 xl:grid-cols-2">
 				<CardBox flex="flex-row" class="items-center rounded">
 					<div class="flex items-start justify-start">
-						<UserAvatarCurrentUserWithUpload class="mr-6 h-24 w-24 md:h-36 md:w-36" />
+						<UserAvatarCurrentUser class="mr-6 h-24 w-24 md:h-36 md:w-36" />
 
 						<div class="flex-1">
 							<div class="flex items-center justify-between">
@@ -107,10 +73,6 @@ const notificationsOutline = computed(() => notificationSettingsModel.value.inde
 
 			<div class="grid grid-cols-1 gap-6 lg:grid-cols-2">
 				<CardBox is-form class="rounded">
-					<FormField v-if="profileForm.account_type != 'student'" label="Korisničko ime">
-						<FormControl v-model="profileForm.username" :icon="mdiAccount" readonly name="userName" autocomplete="userName" />
-					</FormField>
-
 					<FormField label="Ime">
 						<FormControl v-model="profileForm.ime" :icon="mdiAccount" name="ime" readonly autocomplete="ime" />
 					</FormField>
@@ -132,33 +94,6 @@ const notificationsOutline = computed(() => notificationSettingsModel.value.inde
 							<FormControl :model-value="StudentMappings.getGodinaStudija(profileForm.godina_studija)" :icon="mdiSchool" type="JMBAG" name="JMBAG" readonly autocomplete="JMBAG" />
 						</FormField>
 					</div>
-				</CardBox>
-
-				<CardBox is-form class="rounded" @submit.prevent="onSubmit">
-					<FormField label="Trenutna lozinka" help="Obavezno. Vaša trenutna lozinka">
-						<FormControl v-model="passwordForm.password_current" :icon="mdiAsterisk" :error="getFirstErrorForField(v$, 'password_current')" name="password_current" type="password" required autocomplete="password_current" />
-					</FormField>
-
-					<BaseDivider />
-
-					<FormField label="Nova lozinka" help="Obavezno. Vaša nova lozinka">
-						<FormControl v-model="passwordForm.password" :icon="mdiFormTextboxPassword" required :error="getFirstErrorForField(v$, 'password')" type="password" name="password" autocomplete="password" />
-					</FormField>
-
-					<FormField label="Potvrdi lozinku" help="Obavezno. Nova lozinka još jednom">
-						<FormControl v-model="passwordForm.password_confirmation" :icon="mdiFormTextboxPassword" required :error="getFirstErrorForField(v$, 'password_confirmation')" type="password" name="password_confirmation" autocomplete="password_confirmation" />
-					</FormField>
-
-					<BaseButtons>
-						<BaseButton :disabled="isLoading" :loading="isLoading" type="submit" color="fipu_blue" label="Ažuriraj!" />
-					</BaseButtons>
-
-					<NotificationBar ref="notificationBar" class="animate__animated animate__fadeInUp mt-2" :outline="notificationsOutline">
-						<b>{{ notificationStatus }}</b> {{ notificationMessage }}
-						<template #right>
-							<BaseButton :icon="mdiClose" :color="notificationsOutline ? 'success' : 'white'" :outline="notificationsOutline" rounded-full small />
-						</template>
-					</NotificationBar>
 				</CardBox>
 			</div>
 		</SectionMain>

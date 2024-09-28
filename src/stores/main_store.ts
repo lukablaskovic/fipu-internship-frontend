@@ -30,6 +30,7 @@ export const useMainStore = defineStore("main", {
 		bpmn_process_name_B: "strucna_praksa_B",
 
 		currentUser: new CurrentUser(),
+		currentUserProcessInstanceData: {} as any,
 
 		// Modal states
 		logoutModalActive: false,

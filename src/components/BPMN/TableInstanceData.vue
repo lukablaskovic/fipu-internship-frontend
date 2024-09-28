@@ -1,14 +1,19 @@
 <script setup>
 import { ref, onMounted, computed } from "vue";
-
 import { adminStore } from "@/main.js";
+import { mainStore } from "@/main.js";
 
 const variables = ref({});
 
 const tableAttributes = ref([]);
 
 onMounted(async () => {
-	variables.value = adminStore.selectedStudent.process_instance_data.variables;
+	if (mainStore.userAdmin) {
+		variables.value = adminStore.selectedStudent.process_instance_data.variables;
+	} else {
+		variables.value = mainStore.currentUserProcessInstanceData.variables;
+	}
+
 	//Znam ružno je ali bit ce bolje
 	if (adminStore.bpmn_diagram.clicked_task_id == "odabiranje_zadatka_student") {
 		tableAttributes.value = ["Prvi_odabir", "Drugi_odabir", "Treci_odabir", "napomena"];

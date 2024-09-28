@@ -1,15 +1,15 @@
 <script setup>
 import { computed, ref, onMounted, watch } from "vue";
 
-import { mdiWeb } from "@mdi/js";
 import TableCheckboxCell from "@/components/Tables/TableCheckboxCell.vue";
-import BaseLevel from "@/components/Base/BaseLevel.vue";
 import BaseButtons from "@/components/Base/BaseButtons.vue";
 import BaseButton from "@/components/Base/BaseButton.vue";
-import LoadingOverlay from "../LoadingOverlay.vue";
-import { mainStore } from "@/main.js";
 import UserAvatar from "@/components/User/UserAvatar.vue";
+import BaseLevel from "@/components/Base/BaseLevel.vue";
+import LoadingOverlay from "../LoadingOverlay.vue";
 import { useRoute } from "vue-router";
+import { mainStore } from "@/main.js";
+import { mdiWeb } from "@mdi/js";
 
 defineProps({
 	checkable: Boolean,
@@ -52,8 +52,8 @@ const route = useRoute();
 async function loadData() {
 	const naziv = route.params.naziv;
 
-	let result = await mainStore.fetchCompanies();
-	allCompanies.value = result.data.results;
+	let response = await mainStore.fetchCompanies();
+	allCompanies.value = response;
 
 	if (naziv) {
 		company_highlight.value = naziv;
@@ -72,8 +72,8 @@ watch(() => route.params.naziv, loadData, {
 });
 
 onMounted(async () => {
-	let result = await mainStore.fetchCompanies();
-	allCompanies.value = result.data.results;
+	let response = await mainStore.fetchCompanies();
+	allCompanies.value = response;
 });
 
 const goToCompanyWeb = (url) => {
@@ -107,11 +107,11 @@ const goToCompanyWeb = (url) => {
 			<tr v-for="company in companiesPaginated" :key="company['naziv']">
 				<TableCheckboxCell v-if="checkable" :assignment-data="company" />
 
-				<td v-if="company['logo'][0]" class="border-b-0 lg:w-6 before:hidden">
-					<UserAvatar :avatar="company['logo'][0]['url']" class="w-24 h-24 mx-auto lg:w-6 lg:h-6" />
+				<td v-if="company['logo'][0]" class="border-b-0 before:hidden lg:w-6">
+					<UserAvatar :avatar="company['logo'][0]['url']" class="mx-auto h-24 w-24 lg:h-6 lg:w-6" />
 				</td>
 				<td v-else>
-					<UserAvatar avatar="No-Logo.png" class="w-24 h-24 mx-auto lg:w-6 lg:h-6" />
+					<UserAvatar avatar="No-Logo.png" class="mx-auto h-24 w-24 lg:h-6 lg:w-6" />
 				</td>
 
 				<td data-label="Naziv">
@@ -121,7 +121,7 @@ const goToCompanyWeb = (url) => {
 					<a class="underline" :href="company['web']" target="_blank">{{ company["web"] }}</a>
 				</td>
 
-				<td class="before:hidden lg:w-1 whitespace-nowrap">
+				<td class="whitespace-nowrap before:hidden lg:w-1">
 					<BaseButtons type="justify-start lg:justify-end" no-wrap>
 						<BaseButton color="fipu_blue" :icon="mdiWeb" small @click="goToCompanyWeb(company['web'])" />
 					</BaseButtons>
@@ -137,11 +137,11 @@ const goToCompanyWeb = (url) => {
 				}">
 				<TableCheckboxCell v-if="checkable" :assignment-data="company" />
 
-				<td v-if="company['logo'][0]" class="border-b-0 lg:w-6 before:hidden">
-					<UserAvatar :avatar="company['logo'][0]['url']" class="w-24 h-24 mx-auto lg:w-6 lg:h-6" />
+				<td v-if="company['logo'][0]" class="border-b-0 before:hidden lg:w-6">
+					<UserAvatar :avatar="company['logo'][0]['url']" class="mx-auto h-24 w-24 lg:h-6 lg:w-6" />
 				</td>
 				<td v-else>
-					<UserAvatar avatar="No-Logo.png" class="w-24 h-24 mx-auto lg:w-6 lg:h-6" />
+					<UserAvatar avatar="No-Logo.png" class="mx-auto h-24 w-24 lg:h-6 lg:w-6" />
 				</td>
 
 				<td data-label="Naziv">
@@ -166,7 +166,7 @@ const goToCompanyWeb = (url) => {
 					{{ company["adresa"] }}
 				</td>
 
-				<td class="before:hidden lg:w-1 whitespace-nowrap">
+				<td class="whitespace-nowrap before:hidden lg:w-1">
 					<BaseButtons type="justify-start lg:justify-end" no-wrap>
 						<BaseButton color="fipu_blue" :icon="mdiWeb" small @click="goToCompanyWeb(company['web'])" />
 					</BaseButtons>
@@ -175,7 +175,7 @@ const goToCompanyWeb = (url) => {
 		</tbody>
 	</table>
 
-	<div class="p-3 lg:px-6 border-t border-gray-100 dark:border-slate-800">
+	<div class="border-t border-gray-100 p-3 dark:border-slate-800 lg:px-6">
 		<BaseLevel>
 			<BaseButtons>
 				<BaseButton v-for="page in pagesList" :key="page" :active="page === currentPage" :label="page + 1" :color="page === currentPage ? 'lightDark' : 'whiteDark'" small @click="currentPage = page" />

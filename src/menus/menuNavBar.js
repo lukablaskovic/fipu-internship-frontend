@@ -1,4 +1,4 @@
-import { mdiAccount, mdiEmail, mdiLogout, mdiThemeLightDark, mdiHelpBoxOutline, mdiBug } from "@mdi/js";
+import { mdiAccount, mdiLogout, mdiThemeLightDark, mdiHelpBoxOutline, mdiBug } from "@mdi/js";
 
 export default [
 	[
@@ -9,6 +9,10 @@ export default [
 					icon: mdiAccount,
 					label: "Moj profil",
 					to: "/profil",
+				},
+				{
+					icon: mdiLogout,
+					label: "Odjava",
 				},
 			],
 		},

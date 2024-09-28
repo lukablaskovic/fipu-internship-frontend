@@ -1,27 +1,27 @@
 <script setup>
-import { reactive, ref } from "vue";
-import { useMainStore } from "@/stores/main";
 import { mdiAccount, mdiMail, mdiAsterisk, mdiFormTextboxPassword, mdiCreditCardOutline, mdiCreditCard, mdiCheckDecagram, mdiMapMarker, mdiAccountCircle, mdiDomain, mdiPencil, mdiInformation, mdiPlusCircle, mdiAccountCreditCard, mdiCloudLock } from "@mdi/js";
-import SectionMain from "@/components/SectionMain.vue";
-import CardBox from "@/components/CardBox.vue";
-import BaseDivider from "@/components/BaseDivider.vue";
-import FormField from "@/components/FormField.vue";
-import FormControl from "@/components/FormControl.vue";
-import FormFilePicker from "@/components/FormFilePicker.vue";
-import BaseButton from "@/components/BaseButton.vue";
-import BaseButtons from "@/components/BaseButtons.vue";
-import LayoutAuthenticated from "@/layouts/LayoutAuthenticated.vue";
 import SectionTitleLineWithButton from "@/components/SectionTitleLineWithButton.vue";
-import UserAvatarCurrentUserWithUpload from "@/components/Premium/UserAvatarCurrentUserWithUpload.vue";
-import PillTag from "@/components/PillTag.vue";
-import PillTagPlain from "@/components/PillTagPlain.vue";
-import BaseIcon from "@/components/BaseIcon.vue";
+import UserAvatarCurrentUser from "@/components/Premium/UserAvatarCurrentUser.vue";
 import UserCardProfileNumber from "@/components/Premium/UserCardProfileNumber.vue";
 import SectionBannerProfile from "@/components/Premium/SectionBannerProfile.vue";
-import NotificationBar from "@/components/NotificationBar.vue";
-import CardBoxBillingItem from "@/components/Premium/CardBoxBillingItem.vue";
 import CardBoxPaymentMethod from "@/components/Premium/CardBoxPaymentMethod.vue";
+import CardBoxBillingItem from "@/components/Premium/CardBoxBillingItem.vue";
+import LayoutAuthenticated from "@/layouts/LayoutAuthenticated.vue";
+import NotificationBar from "@/components/NotificationBar.vue";
+import FormFilePicker from "@/components/FormFilePicker.vue";
 import FormCheckRadio from "@/components/FormCheckRadio.vue";
+import PillTagPlain from "@/components/PillTagPlain.vue";
+import SectionMain from "@/components/SectionMain.vue";
+import BaseDivider from "@/components/BaseDivider.vue";
+import FormControl from "@/components/FormControl.vue";
+import BaseButtons from "@/components/BaseButtons.vue";
+import BaseButton from "@/components/BaseButton.vue";
+import FormField from "@/components/FormField.vue";
+import BaseIcon from "@/components/BaseIcon.vue";
+import CardBox from "@/components/CardBox.vue";
+import PillTag from "@/components/PillTag.vue";
+import { useMainStore } from "@/stores/main";
+import { reactive, ref } from "vue";
 
 const mainStore = useMainStore();
 
@@ -106,14 +106,14 @@ const twoFactorEnabled = ref(true);
 				<BaseButton href="https://justboil.me/tailwind-admin-templates/vue-dashboard/" label="Buy dashboard" :icon="mdiCreditCardOutline" color="contrast" rounded-full small />
 			</SectionTitleLineWithButton>
 
-			<div class="grid grid-cols-1 xl:grid-cols-2 gap-6 mb-6">
+			<div class="mb-6 grid grid-cols-1 gap-6 xl:grid-cols-2">
 				<CardBox flex="flex-row" class="items-center">
-					<div class="flex justify-start items-start">
-						<UserAvatarCurrentUserWithUpload class="w-24 h-24 md:w-36 md:h-36 mr-6" />
+					<div class="flex items-start justify-start">
+						<UserAvatarCurrentUser class="mr-6 h-24 w-24 md:h-36 md:w-36" />
 						<div class="flex-1">
-							<div class="flex justify-between items-center">
-								<div class="flex justify-start items-center mb-3">
-									<h1 class="text-2xl mr-1.5">
+							<div class="flex items-center justify-between">
+								<div class="mb-3 flex items-center justify-start">
+									<h1 class="mr-1.5 text-2xl">
 										{{ mainStore.userName }}
 									</h1>
 									<BaseIcon :path="mdiCheckDecagram" :size="22" class="text-blue-400" />
@@ -149,9 +149,9 @@ const twoFactorEnabled = ref(true);
 						<BaseButton label="See details" small rounded-full />
 					</template>
 				</NotificationBar>
-				<div class="md:flex md:justify-between md:items-center">
+				<div class="md:flex md:items-center md:justify-between">
 					<div class="md:flex md:items-center">
-						<div class="mb-6 text-center md:mr-6 md:mb-0 md:text-left">
+						<div class="mb-6 text-center md:mb-0 md:mr-6 md:text-left">
 							<p class="text-gray-500">Next payment on</p>
 							<h1 class="text-xl font-semibold">{{ firstDayOfNextMonth }}</h1>
 						</div>
@@ -217,7 +217,7 @@ const twoFactorEnabled = ref(true);
 
 			<SectionTitleLineWithButton :icon="mdiAccount" title="Manage profile" />
 
-			<div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+			<div class="grid grid-cols-1 gap-6 lg:grid-cols-2">
 				<CardBox is-form @submit.prevent="submitProfile">
 					<FormField label="Avatar" help="Max 500kb">
 						<FormFilePicker label="Upload" />

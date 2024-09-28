@@ -152,10 +152,10 @@ onMounted(async () => {
 		document.removeEventListener("keydown", onKeydown);
 	});
 
-	let result = await mainStore.fetchCompanies();
-	allCompanies.value = result.data.results;
-	result = await mainStore.fetchAvailableAssignments();
-	allAssignments.value = result;
+	let response = await mainStore.fetchCompanies();
+	allCompanies.value = response;
+	let response2 = await mainStore.fetchAvailableAssignments();
+	allAssignments.value = response2;
 });
 
 let query = ref("");
@@ -182,7 +182,7 @@ let filteredResults = computed(() => {
 			const prezime = student.prezime.toLowerCase();
 
 			// If the user has typed both first and last names
-			if (terms.length > 1) {
+			if (terms.length >= 1) {
 				return ime.includes(terms[0]) && prezime.includes(terms[1]);
 			}
 
