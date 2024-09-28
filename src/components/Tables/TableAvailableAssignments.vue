@@ -2,11 +2,11 @@
 	<LoadingOverlay :is-active="!allAvailableAssignments.length" title="Učitavanje..." description="Može potrajati nekoliko sekundi, molimo ne zatvarajte stranicu."> </LoadingOverlay>
 	<CardBoxModal v-if="isModalActive" v-model="isModalActive" button-label="Zatvori" button="fipu_blue" has-cancel:false @cancel="mainStore.activateLogoutModal(false)">
 		<CardboxAllocation :data="isModalActive"></CardboxAllocation>
-
 		<br />
 	</CardBoxModal>
+
 	<div class="mb-4">
-		<input type="text" placeholder="Pretraži zadatke..." class="w-full p-2" />
+		<input type="text" v-model="searchQuery" placeholder="Pretraži zadatke po ID zadatka..." class="w-full p-2" />
 	</div>
 
 	<table>
@@ -21,13 +21,15 @@
 				<th>Lokacija</th>
 				<th v-if="mainStore.userAdmin">Max. mjesta</th>
 				<th v-if="mainStore.userAdmin">Dostupno mjesta</th>
-
 				<th />
 			</tr>
 		</thead>
 		<tbody>
+			<tr v-if="paginatedAssignments.length === 0">
+				<td colspan="9" class="py-4 text-center">Nema rezultata...</td>
+			</tr>
 			<tr
-				v-for="assignment in assignmentsPaginated"
+				v-for="assignment in paginatedAssignments"
 				:key="assignment['id_zadatak']"
 				:class="{
 					'selected-row': assignment_highlight === assignment['id_zadatak'],
@@ -103,18 +105,37 @@ defineProps({
 
 const perPage = ref(5);
 const currentPage = ref(0);
-const assignmentsPaginated = computed(() => allAvailableAssignments.value.slice(perPage.value * currentPage.value, perPage.value * (currentPage.value + 1)));
+const searchQuery = ref(""); // New search query
 
-const numPages = computed(() => Math.ceil(allAvailableAssignments.value.length / perPage.value));
+// Combine filtering and pagination logic
+const filteredAssignments = computed(() => {
+	const query = searchQuery.value.toLowerCase();
+	if (!query) {
+		return allAvailableAssignments.value;
+	}
+
+	return allAvailableAssignments.value.filter((assignment) => {
+		const idMatch = assignment["id_zadatak"].toString().toLowerCase().includes(query);
+		const techMatch = assignment["preferirane_tehnologije"].toLowerCase().includes(query);
+		return idMatch || techMatch;
+	});
+});
+
+// Paginated version of filtered assignments
+const paginatedAssignments = computed(() => {
+	const start = perPage.value * currentPage.value;
+	const end = perPage.value * (currentPage.value + 1);
+	return filteredAssignments.value.slice(start, end);
+});
+
+const numPages = computed(() => Math.ceil(filteredAssignments.value.length / perPage.value));
 const currentPageHuman = computed(() => currentPage.value + 1);
 
 const pagesList = computed(() => {
 	const pagesList = [];
-
 	for (let i = 0; i < numPages.value; i++) {
 		pagesList.push(i);
 	}
-
 	return pagesList;
 });
 
