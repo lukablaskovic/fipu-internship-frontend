@@ -18,11 +18,42 @@ const prviOdabir = ref(null);
 const drugiOdabir = ref(null);
 const treciOdabir = ref(null);
 
+let prviOdabirDetails = ref(null);
+let drugiOdabirDetails = ref(null);
+let treciOdabirDetails = ref(null);
+
+let PrviPoslodavacLogo = ref(null);
+let DrugiPoslodavacLogo = ref(null);
+let TreciPoslodavacLogo = ref(null);
+
+const isModalActive = ref(false);
+let selectedAssignmentDetails = ref(null);
+
+async function fetchAssignmentDetails(assignmentId) {
+	const response = await studentStore.getAssignmentDetails(assignmentId);
+	return response?.data?.results?.[0] || null;
+}
+
+async function fetchCompanyLogo(companyName) {
+	const response = await mainStore.fetchCompanies(companyName);
+	return response?.[0]?.logo?.[0]?.url || null;
+}
+
 onMounted(async () => {
 	let result = await studentStore.getInstanceInfo(mainStore.currentUser.internship_process.id);
 	prviOdabir.value = result.variables["Prvi_odabir"][0];
 	drugiOdabir.value = result.variables["Drugi_odabir"][0];
 	treciOdabir.value = result.variables["Treci_odabir"][0];
+
+	prviOdabirDetails.value = await fetchAssignmentDetails(prviOdabir.value);
+	drugiOdabirDetails.value = await fetchAssignmentDetails(drugiOdabir.value);
+	treciOdabirDetails.value = await fetchAssignmentDetails(treciOdabir.value);
+
+	PrviPoslodavacLogo.value = await fetchCompanyLogo(prviOdabirDetails.value["Poslodavac"][0]["value"]);
+	DrugiPoslodavacLogo.value = await fetchCompanyLogo(drugiOdabirDetails.value["Poslodavac"][0]["value"]);
+	TreciPoslodavacLogo.value = await fetchCompanyLogo(treciOdabirDetails.value["Poslodavac"][0]["value"]);
+
+	console.log(PrviPoslodavacLogo.value);
 });
 
 const Layout = computed(() => {
@@ -33,13 +64,9 @@ const Layout = computed(() => {
 	}
 });
 
-const isModalActive = ref(null);
-let modalLoading = ref(false);
-async function getAssignmentDetailsInModal(assignment_id) {
-	modalLoading.value = true;
-	let assignment = await studentStore.getAssignmentDetails(assignment_id);
-	isModalActive.value = assignment.data.results[0];
-	modalLoading.value = false;
+function openModal(assignmentDetails) {
+	selectedAssignmentDetails.value = assignmentDetails;
+	isModalActive.value = true;
 }
 </script>
 
@@ -51,25 +78,25 @@ async function getAssignmentDetailsInModal(assignment_id) {
 			<p><b>Voditelj:</b> {{ mainStore.voditelj_prakse }}</p>
 			<hr />
 			<br />
-			<SectionTitleLineWithButton :icon="mdiProgressClock" main title="U procesu alokacije..."></SectionTitleLineWithButton>
+			<SectionTitleLineWithButton :icon="mdiProgressClock" main title="Alokacija zadatka u tijeku"></SectionTitleLineWithButton>
 			<div class="flex flex-wrap text-base">Zadatak vam još nije dodijeljen. Ako čekate više od 10 dana, javite se voditelju prakse.</div>
 			<br />
 			<SectionTitleLineWithButton :icon="mdiClipboardCheckOutline" main title="Vaš odabir"></SectionTitleLineWithButton>
 
 			<div class="mb-6 grid grid-cols-1 gap-6 lg:grid-cols-3">
-				<CardBoxWidget :class="modalLoading ? 'cursor-wait' : 'cursor-pointer'" color="text-fipu_blue" hoverable :icon="mdiNumeric1Circle" :number="null" :text="prviOdabir" label="1. odabir" @click="getAssignmentDetailsInModal(prviOdabir)" />
-
-				<CardBoxWidget :class="modalLoading ? 'cursor-wait' : 'cursor-pointer'" color="text-fipu_blue" hoverable :icon="mdiNumeric2CircleOutline" :number="null" :text="drugiOdabir" label="2. odabir" @click="getAssignmentDetailsInModal(drugiOdabir)" />
-				<CardBoxWidget :class="modalLoading ? 'cursor-wait' : 'cursor-pointer'" color="text-fipu_blue" hoverable :icon="mdiNumeric3CircleOutline" :number="null" :text="treciOdabir" label="3. odabir" @click="getAssignmentDetailsInModal(treciOdabir)" />
+				<CardBoxWidget :class="!prviOdabirDetails ? 'cursor-wait' : 'cursor-pointer'" color="text-fipu_blue" hoverable :logo="PrviPoslodavacLogo" :number="null" :text="prviOdabir" label="1. odabir" @click="openModal(prviOdabirDetails)" />
+				<CardBoxWidget :class="!drugiOdabirDetails ? 'cursor-wait' : 'cursor-pointer'" color="text-fipu_blue" hoverable :logo="DrugiPoslodavacLogo" :number="null" :text="drugiOdabir" label="2. odabir" @click="openModal(drugiOdabirDetails)" />
+				<CardBoxWidget :class="!treciOdabirDetails ? 'cursor-wait' : 'cursor-pointer'" color="text-fipu_blue" hoverable :logo="TreciPoslodavacLogo" :number="null" :text="treciOdabir" label="3. odabir" @click="openModal(treciOdabirDetails)" />
 			</div>
-			<CardBoxModal v-if="isModalActive" v-model="isModalActive" button-label="Zatvori" button="fipu_blue" has-cancel:false @cancel="mainStore.activateLogoutModal(false)">
-				<CardboxAllocation :data="isModalActive"></CardboxAllocation>
 
+			<CardBoxModal v-if="isModalActive" v-model="isModalActive" button-label="Zatvori" button="fipu_blue" has-cancel:false>
+				<CardboxAllocation :data="selectedAssignmentDetails"></CardboxAllocation>
 				<br />
 			</CardBoxModal>
 		</SectionMain>
 	</component>
 </template>
+
 <style scoped>
 .ghost {
 	opacity: 0.5;

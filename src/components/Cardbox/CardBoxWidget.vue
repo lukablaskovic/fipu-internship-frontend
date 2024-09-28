@@ -1,11 +1,12 @@
 <script setup>
-import { mdiCog } from "@mdi/js";
-import CardBox from "@/components/Cardbox/CardBox.vue";
-import NumberDynamic from "@/components/NumberDynamic.vue";
-import BaseIcon from "@/components/Base/BaseIcon.vue";
-import BaseLevel from "@/components/Base/BaseLevel.vue";
 import PillTagTrend from "@/components/PillTag/PillTagTrend.vue";
+import NumberDynamic from "@/components/NumberDynamic.vue";
 import BaseButton from "@/components/Base/BaseButton.vue";
+import BaseLevel from "@/components/Base/BaseLevel.vue";
+import CardBox from "@/components/Cardbox/CardBox.vue";
+import BaseIcon from "@/components/Base/BaseIcon.vue";
+import BaseLogo from "@/components/Base/BaseLogo.vue";
+import { mdiCog } from "@mdi/js";
 
 defineProps({
 	number: {
@@ -17,6 +18,10 @@ defineProps({
 		default: null,
 	},
 	icon: {
+		type: String,
+		default: null,
+	},
+	logo: {
 		type: String,
 		default: null,
 	},
@@ -52,7 +57,7 @@ defineProps({
 </script>
 
 <template>
-	<CardBox is-hoverable :class="{ 'hover:border hover:ring hover:border-fipu_blue': hoverable }">
+	<CardBox is-hoverable :class="{ 'hover:border hover:border-fipu_blue hover:ring': hoverable }">
 		<BaseLevel v-if="trend" class="mb-3" mobile>
 			<PillTagTrend :trend="trend" :trend-type="trendType" small />
 			<BaseButton :icon="mdiCog" iconSize="18" color="lightDark" small />
@@ -62,7 +67,7 @@ defineProps({
 				<h3 class="text-lg leading-tight text-gray-500 dark:text-slate-400">
 					{{ label }}
 				</h3>
-				<h1 class="text-3xl leading-tight font-semibold">
+				<h1 class="text-3xl font-semibold leading-tight">
 					<NumberDynamic v-if="text != '' && number !== null && number !== undefined" :value="number" :prefix="prefix" :suffix="suffix" />
 
 					<span v-else class="text-2xl dark:text-slate-400">
@@ -71,6 +76,7 @@ defineProps({
 				</h1>
 			</div>
 			<BaseIcon v-if="icon" :path="icon" size="48" w="" h="h-16" :class="color" />
+			<BaseLogo v-if="logo" :src="logo" size="48" w="" h="h-16" :class="color" />
 		</BaseLevel>
 	</CardBox>
 </template>
