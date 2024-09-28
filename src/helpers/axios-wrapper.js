@@ -1,5 +1,5 @@
-import axios from "axios";
 import { mainStore } from "@/main.js";
+import axios from "axios";
 
 function createAxiosInstance(API_URL) {
 	const AxiosInstance = axios.create({
@@ -21,9 +21,9 @@ function createAxiosInstance(API_URL) {
 		},
 		(error) => {
 			return Promise.reject(error);
-		}
+		},
 	);
-
+	/*
 	// Response interceptor
 	AxiosInstance.interceptors.response.use(
 		(response) => {
@@ -36,7 +36,7 @@ function createAxiosInstance(API_URL) {
 			return Promise.reject(error);
 		}
 	);
-
+  */
 	return {
 		get: async (endpoint, params = {}, headers = {}) => {
 			const response = await AxiosInstance.get(endpoint, { params, headers });

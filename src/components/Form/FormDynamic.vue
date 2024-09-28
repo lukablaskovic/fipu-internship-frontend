@@ -81,17 +81,6 @@ watch(allFieldsFilled, (newValue) => {
 const isTableComponentVisible = computed(() => {
 	return formValues["odabir_prihvacen"] !== "false";
 });
-
-/*
-watch(
-	formValues,
-	(newValues, oldValues) => {
-		console.log("Form values changed:", newValues);
-		console.log('Old form values:', oldValues);
-	},
-	{ deep: true }
-);
-*/
 watch(
 	formValues,
 	(newValues, oldValues) => {

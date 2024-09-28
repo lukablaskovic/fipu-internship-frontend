@@ -98,7 +98,6 @@ const truncatedDescription = computed(() => {
 
 onMounted(async () => {
 	let result = await mainStore.fetchCompanies(props.data["Poslodavac"][0]["value"]);
-	console.log(result);
 	companyLogo.value = result[0].logo[0].url;
 });
 </script>

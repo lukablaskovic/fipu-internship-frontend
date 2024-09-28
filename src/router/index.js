@@ -24,6 +24,10 @@ router.beforeEach((to, from, next) => {
 		return next("/prijava");
 	}
 
+	if (to.path === "/moja-praksa" && mainStore.userAdmin) {
+		return next("/dashboard");
+	}
+
 	// If route requires admin role but user isn't admin
 	if (requiresAdmin && !userAdmin) {
 		return next("/moja-praksa");
