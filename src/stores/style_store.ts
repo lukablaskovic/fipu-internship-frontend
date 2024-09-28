@@ -4,8 +4,31 @@ import * as styles from "@/styles";
 
 import Utils from "@/helpers/utils";
 
+// Define a type for styles from the imported styles object
+type StylePayload = keyof typeof styles; // Extracting keys from styles to restrict payload to valid styles
+
+// Define an interface for the state structure
+interface StyleState {
+	/* Styles */
+	asideStyle: string;
+	asideScrollbarsStyle: string;
+	asideBrandStyle: string;
+	asideMenuItemStyle: string;
+	asideMenuItemActiveStyle: string;
+	asideMenuItemActiveBgStyle: string;
+	asideMenuItemInactiveStyle: string;
+	asideMenuDropdownStyle: string;
+	navBarItemLabelStyle: string;
+	navBarItemLabelHoverStyle: string;
+	navBarItemLabelActiveColorStyle: string;
+	overlayStyle: string;
+
+	/* Dark mode */
+	darkMode: boolean;
+}
+
 export const useStyleStore = defineStore("style", {
-	state: () => ({
+	state: (): StyleState => ({
 		/* Styles */
 		asideStyle: "",
 		asideScrollbarsStyle: "",
@@ -23,8 +46,9 @@ export const useStyleStore = defineStore("style", {
 		/* Dark mode */
 		darkMode: false,
 	}),
+
 	actions: {
-		setStyle(payload) {
+		setStyle(payload: StylePayload) {
 			if (!styles[payload]) {
 				return;
 			}
@@ -36,13 +60,19 @@ export const useStyleStore = defineStore("style", {
 			const style = styles[payload];
 
 			for (const key in style) {
-				this[`${key}Style`] = style[key];
+				if (Object.prototype.hasOwnProperty.call(style, key)) {
+					// Dynamically assign style properties with a key pattern
+					(this as any)[`${key}Style`] = style[key];
+				}
 			}
 		},
 
-		async setDarkMode(payload = null) {
+		async setDarkMode(payload: boolean | null = null) {
 			const app = document.getElementById("app");
-			app.classList.add("darkModeTransition");
+			if (app) {
+				app.classList.add("darkModeTransition");
+			}
+
 			this.darkMode = payload !== null ? payload : !this.darkMode;
 
 			if (typeof localStorage !== "undefined") {
@@ -51,12 +81,16 @@ export const useStyleStore = defineStore("style", {
 
 			if (typeof document !== "undefined") {
 				document.body.classList[this.darkMode ? "add" : "remove"]("dark-scrollbars");
-
 				document.documentElement.classList[this.darkMode ? "add" : "remove"]("dark-scrollbars-compat");
 			}
+
 			await Utils.wait(0.2);
-			app.classList.remove("darkModeTransition");
+
+			if (app) {
+				app.classList.remove("darkModeTransition");
+			}
 		},
 	},
+
 	persist: true,
 });

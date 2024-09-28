@@ -1,6 +1,6 @@
 <template>
-	<div :style="{ left: leftPosition + 'px', top: topPosition + 'px' }" :class="[layoutStore.tooltip.content != '' ? 'opacity-100  delay-1000 duration-300' : 'opacity-0 delay-0 duration-0', layoutStore.tooltip.justify]" class="z-100 fixed pointer-events-none flex transition-opacity bg-red-500">
-		<div id="tooltip" class="tooltip flex justify-left items-left absolute w-fit">
+	<div :style="{ left: leftPosition + 'px', top: topPosition + 'px' }" :class="[layoutStore.tooltip.content != '' ? 'opacity-100 delay-1000 duration-300' : 'opacity-0 delay-0 duration-0', layoutStore.tooltip.justify]" class="pointer-events-none fixed z-100 flex bg-red-500 transition-opacity">
+		<div id="tooltip" class="tooltip justify-left items-left absolute flex w-fit">
 			<span class="tooltip-text w-fit whitespace-nowrap">{{ layoutStore.tooltip.content }} </span>
 		</div>
 	</div>
@@ -8,8 +8,7 @@
 
 <script setup>
 import { ref, onMounted, onBeforeUnmount } from "vue";
-import { useLayoutStore } from "@/stores/layout.js";
-const layoutStore = useLayoutStore();
+import { layoutStore } from "@/main";
 
 const mouseX = ref(0);
 const mouseY = ref(0);

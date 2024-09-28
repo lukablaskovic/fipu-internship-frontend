@@ -7,13 +7,54 @@ import { SendGrid } from "@/services/sendgrid_client_api";
 import { User } from "@/services/gateway_api";
 import Utils from "@/helpers/utils";
 
+// Define interfaces for state properties
+interface DashboardData {
+	waiting_for_mark: number;
+	finished_internships: number;
+	ongoing_internships: number;
+	waiting_for_allocation: number;
+	waiting_for_evaluation: number;
+}
+
+interface BPMNDiagram {
+	clicked_task_id: string | null;
+	selected_send_task_id: string | null;
+}
+
+interface StudentProcessData {
+	variables: {
+		id_alokacija: number;
+		pdf_attachment_url: string;
+	};
+	pending: any[];
+	pending_task_info?: any;
+	state: string;
+}
+
+interface Student {
+	process_instance_data: StudentProcessData;
+	process_instance_id: string;
+	ime: string;
+	prezime: string;
+	JMBAG: string;
+	email: string;
+}
+
+interface Event {
+	instance_id: string;
+	student_ime?: string;
+	student_prezime?: string;
+	student_JMBAG?: string;
+	student_email?: string;
+}
+
 export const useAdminStore = defineStore("admin", {
 	state: () => ({
-		students: [],
-		selectedStudent: null,
-		companies: [],
+		students: [] as Student[], // Typed array of Student
+		selectedStudent: null as Student | null, // Nullable Student
+		companies: [] as any[], // Assuming companies are not yet typed
 		studentsFetched: false,
-		newAssignments: [],
+		newAssignments: [] as any[], // Assuming assignments are not yet typed
 
 		dashboard_data: {
 			waiting_for_mark: 0,
@@ -21,10 +62,10 @@ export const useAdminStore = defineStore("admin", {
 			ongoing_internships: 0,
 			waiting_for_allocation: 0,
 			waiting_for_evaluation: 0,
-		},
+		} as DashboardData,
 
-		selectedEvents: [],
-		events: [],
+		selectedEvents: [] as any[], // Assuming events are not yet typed
+		events: [] as Event[], // Typed array of Event
 		relativeToNowTimestmap: true,
 		filterActiveInstances: true,
 		filterFinishedInstances: true,
@@ -33,7 +74,7 @@ export const useAdminStore = defineStore("admin", {
 		bpmn_diagram: {
 			clicked_task_id: null,
 			selected_send_task_id: null,
-		},
+		} as BPMNDiagram,
 
 		pdfModalActive: false,
 		modalTitle: "",
@@ -46,22 +87,22 @@ export const useAdminStore = defineStore("admin", {
 	actions: {
 		async getAllocations() {
 			try {
-				let result = await Admin.getAllocations();
+				const result = await Admin.getAllocations();
 				return result;
 			} catch (error) {
 				return null;
 			}
 		},
-		async saveUpdatedCompany(postData) {
+		async saveUpdatedCompany(postData: any) {
 			try {
-				let result = await Admin.saveUpdatedCompany(postData);
+				const result = await Admin.saveUpdatedCompany(postData);
 				return result;
 			} catch (error) {
 				console.log("Error:", error);
 				return null;
 			}
 		},
-		openPDFModal(allocation, type) {
+		openPDFModal(allocation: any, type: string) {
 			const student = this.students.find((stud) => {
 				return stud.process_instance_data.variables.id_alokacija === allocation.id_alokacija;
 			});
@@ -83,28 +124,27 @@ export const useAdminStore = defineStore("admin", {
 			this.pdfModalActive = true;
 		},
 
-		async fetchPDF(query = "") {
+		async fetchPDF(query: string = "") {
 			try {
-				let result = await Student.fetchPDF(query);
+				const result = await Student.fetchPDF(query);
 				return result;
 			} catch (e) {
 				return null;
 			}
 		},
 
-		setSelectedStudent(student) {
+		setSelectedStudent(student: Student | null) {
 			this.selectedStudent = student;
 		},
-		async getProcessInstanceData(student) {
+		async getProcessInstanceData(student: Student) {
 			try {
 				const response = await ProcessInstance.get(student.process_instance_id);
-
 				return response;
 			} catch (error) {
 				console.log("Error:", error);
 			}
 		},
-		async getTaskInfo(it, task) {
+		async getTaskInfo(it: string, task: string) {
 			try {
 				const response = await ProcessInstance.getTaskInfo(it, task);
 				return response;
@@ -130,13 +170,13 @@ export const useAdminStore = defineStore("admin", {
 					waiting_for_evaluation: 0,
 				};
 
-				const taskToDashboardMapping = {
+				const taskToDashboardMapping: Record<string, keyof DashboardData> = {
 					alociranje_profesor: "waiting_for_allocation",
 					evaluacija_poslodavac: "waiting_for_evaluation",
 					upis_ocjene: "waiting_for_mark",
 				};
 
-				const promises = students.map(async (student) => {
+				const promises = students.map(async (student: Student) => {
 					const data = await this.getProcessInstanceData(student);
 					student.process_instance_data = data;
 
@@ -159,7 +199,7 @@ export const useAdminStore = defineStore("admin", {
 				this.studentsFetched = true;
 			}
 		},
-		async getPreferencesDetailed(id_alokacija) {
+		async getPreferencesDetailed(id_alokacija: number) {
 			try {
 				const response = await Admin.getPreferencesDetailed(id_alokacija);
 				return response;
@@ -186,13 +226,13 @@ export const useAdminStore = defineStore("admin", {
 				const response = await Model.getEvents();
 				if (Utils.isArrayEmpty(response.results)) return null;
 				else {
-					response.results.forEach((event) => {
+					response.results.forEach((event: Event) => {
 						const student = this.students.find((stud) => stud.process_instance_id === event.instance_id);
 						if (student) {
-							event.student_ime = student["ime"];
-							event.student_prezime = student["prezime"];
-							event.student_JMBAG = student["JMBAG"];
-							event.student_email = student["email"];
+							event.student_ime = student.ime;
+							event.student_prezime = student.prezime;
+							event.student_JMBAG = student.JMBAG;
+							event.student_email = student.email;
 						}
 					});
 					this.events = response.results;
@@ -204,7 +244,7 @@ export const useAdminStore = defineStore("admin", {
 			}
 		},
 
-		async handleTask(id_zadatak, action) {
+		async handleTask(id_zadatak: number, action: string) {
 			try {
 				const response = await Admin.handleTask(id_zadatak, action);
 				return response;
@@ -212,16 +252,15 @@ export const useAdminStore = defineStore("admin", {
 				console.log("Error:", error);
 			}
 		},
-		async handleNewInstance(instance_id, current_task, post_data) {
+		async handleNewInstance(instance_id: string, current_task: string, post_data: any) {
 			try {
 				const response = await ProcessInstance.handleNewInstance(instance_id, current_task, post_data);
-
 				return response;
 			} catch (error) {
 				console.log("Error:", error);
 			}
 		},
-		async sendAnAdditionalEmail(postData, to, template) {
+		async sendAnAdditionalEmail(postData: any, to: string, template: string) {
 			try {
 				const response = await SendGrid.sendEmail(postData, to, template);
 				return response;

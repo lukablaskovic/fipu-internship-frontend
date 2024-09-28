@@ -1,7 +1,6 @@
 <script setup>
 import NavBarItem from "@/components/Navbar/NavBarItem.vue";
-import { useLayoutStore } from "@/stores/layout.js";
-const layoutStore = useLayoutStore();
+import { layoutStore } from "@/main";
 
 defineProps({
 	menu: {

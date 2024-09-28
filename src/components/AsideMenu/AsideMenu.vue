@@ -1,12 +1,12 @@
 <script setup>
-import { computed, ref } from "vue";
-import { useRouter } from "vue-router";
-import { useLayoutStore } from "@/stores/layout.js";
 import { mdiClose, mdiChevronRightCircleOutline, mdiChevronLeftCircleOutline } from "@mdi/js";
-import BaseIcon from "@/components/Base/BaseIcon.vue";
-import OverlayLayer from "@/components/OverlayLayer.vue";
 import AsideMenuLayer from "@/components/AsideMenu/AsideMenuLayer.vue";
 import AsideMenuItem from "@/components/AsideMenu/AsideMenuItem.vue";
+import OverlayLayer from "@/components/OverlayLayer.vue";
+import BaseIcon from "@/components/Base/BaseIcon.vue";
+import { useRouter } from "vue-router";
+import { layoutStore } from "@/main";
+import { computed, ref } from "vue";
 
 import FIPU_praksa_logo_transparent from "/FIPU_praksa_logo_transparent.svg";
 
@@ -18,8 +18,6 @@ defineProps({
 });
 
 const emit = defineEmits(["menu-click"]);
-
-const layoutStore = useLayoutStore();
 
 const isPrimaryMenuCompact = ref(true);
 const secondaryMenuItem = ref(null);
@@ -102,7 +100,7 @@ const expandCollapseItem = computed(() => ({
 		</template>
 	</AsideMenuLayer>
 
-	<AsideMenuLayer v-if="secondaryMenuItem" :menu="secondaryMenuItem.menuSecondary" @menu-click="menuClickSecondaryMenu" :class="[isPrimaryMenuCompact ? 'lg:left-22' : 'md:left-60']" class="right-0 md:right-auto animate-fade-in-right-fast lg:animate-fade-in-left-fast">
+	<AsideMenuLayer v-if="secondaryMenuItem" :menu="secondaryMenuItem.menuSecondary" @menu-click="menuClickSecondaryMenu" :class="[isPrimaryMenuCompact ? 'lg:left-22' : 'md:left-60']" class="right-0 animate-fade-in-right-fast md:right-auto lg:animate-fade-in-left-fast">
 		<BaseIcon v-if="secondaryMenuItem.icon" :path="secondaryMenuItem.icon" w="w-16" />
 		<div class="flex-1">
 			{{ secondaryMenuItem.label }}

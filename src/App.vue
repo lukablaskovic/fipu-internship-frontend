@@ -6,13 +6,9 @@ import Tooltip from "@/components/Base/Tooltip.vue";
 
 import GlobalStoreDebug from "@/components/Helpers/GlobalStoreDebug.vue";
 
-let intervalId;
-
 onMounted(async () => {});
 
-onUnmounted(() => {
-	clearInterval(intervalId);
-});
+onUnmounted(() => {});
 </script>
 
 <template>

@@ -1,13 +1,12 @@
 <script setup>
-import { ref } from "vue";
+import NavBarItemPlain from "@/components/Navbar/NavBarItemPlain.vue";
+import NavBarMenuList from "@/components/Navbar/NavBarMenuList.vue";
+import BaseIcon from "@/components/Base/BaseIcon.vue";
 import { mdiClose, mdiDotsVertical } from "@mdi/js";
 import { containerMaxW } from "@/config.js";
-import BaseIcon from "@/components/Base/BaseIcon.vue";
-import NavBarMenuList from "@/components/Navbar/NavBarMenuList.vue";
-import NavBarItemPlain from "@/components/Navbar/NavBarItemPlain.vue";
-import { useLayoutStore } from "@/stores/layout.js";
+import { ref } from "vue";
 
-const layoutStore = useLayoutStore();
+import { layoutStore } from "@/main";
 
 defineProps({
 	menu: {
@@ -26,15 +25,15 @@ const isMenuNavBarActive = ref(false);
 </script>
 
 <template>
-	<nav class="top-0 inset-x-0 fixed bg-gray-50 h-14 z-30 transition-position w-screen lg:w-auto dark:bg-slate-800">
+	<nav class="fixed inset-x-0 top-0 z-30 h-14 w-screen bg-gray-50 transition-position dark:bg-slate-800 lg:w-auto">
 		<div class="flex lg:items-stretch" :class="containerMaxW">
-			<div class="flex flex-1 items-stretch h-14"><slot /></div>
-			<div class="flex-none items-stretch flex h-14 lg:hidden">
+			<div class="flex h-14 flex-1 items-stretch"><slot /></div>
+			<div class="flex h-14 flex-none items-stretch lg:hidden">
 				<NavBarItemPlain @click.prevent="isMenuNavBarActive = !isMenuNavBarActive">
 					<BaseIcon :path="isMenuNavBarActive ? mdiClose : mdiDotsVertical" size="24" />
 				</NavBarItemPlain>
 			</div>
-			<div class="max-h-screen-menu overflow-y-auto lg:overflow-visible fipu_vertical_scrollbar absolute w-screen top-14 -left-2 transition-size duration-300 bg-gray-50 shadow-lg lg:w-auto lg:flex lg:static lg:shadow-none dark:bg-slate-800" :style="isMenuNavBarActive && !layoutStore.isLg ? 'height: ' + menu[1].length * 42 + 'px;' : ''" :class="[isMenuNavBarActive ? 'h-64 lg:h-auto' : 'h-0 lg:h-auto']">
+			<div class="fipu_vertical_scrollbar absolute -left-2 top-14 max-h-screen-menu w-screen overflow-y-auto bg-gray-50 shadow-lg transition-size duration-300 dark:bg-slate-800 lg:static lg:flex lg:w-auto lg:overflow-visible lg:shadow-none" :style="isMenuNavBarActive && !layoutStore.isLg ? 'height: ' + menu[1].length * 42 + 'px;' : ''" :class="[isMenuNavBarActive ? 'h-64 lg:h-auto' : 'h-0 lg:h-auto']">
 				<NavBarMenuList :menu="menu" @menu-click="menuClick" />
 			</div>
 		</div>

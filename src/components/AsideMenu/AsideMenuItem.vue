@@ -1,14 +1,13 @@
 <script setup>
-import { ref, computed, watch } from "vue";
-import { RouterLink } from "vue-router";
-import { useStyleStore } from "@/stores/style_store.js";
-import { useLayoutStore } from "@/stores/layout.js";
-import { mdiMinus, mdiPlus, mdiChevronRight } from "@mdi/js";
-import { getButtonColor } from "@/colors.js";
-import BaseIcon from "@/components/Base/BaseIcon.vue";
 import AsideMenuList from "@/components/AsideMenu/AsideMenuList.vue";
 import UpdateMark from "@/components/Premium/UpdateMark.vue";
-import { adminStore } from "@/main.js";
+import { mdiMinus, mdiPlus, mdiChevronRight } from "@mdi/js";
+import BaseIcon from "@/components/Base/BaseIcon.vue";
+import { adminStore, styleStore } from "@/main.js";
+import { getButtonColor } from "@/colors.js";
+import { ref, computed, watch } from "vue";
+import { RouterLink } from "vue-router";
+import { layoutStore } from "@/main.js";
 
 const props = defineProps({
 	item: {
@@ -24,9 +23,6 @@ const props = defineProps({
 });
 
 const emit = defineEmits(["menu-click"]);
-
-const styleStore = useStyleStore();
-const layoutStore = useLayoutStore();
 
 const asideMenuItemInactiveStyle = computed(() => (hasColor.value ? "" : `${styleStore.asideMenuItemInactiveStyle} dark:text-gray-300`));
 
@@ -104,7 +100,7 @@ const menuClick = (event) => {
 				<UpdateMark v-if="item.updateMark && adminStore.dashboard_data.waiting_for_allocation > 0" :color="item.updateMark" :position="isCompact ? 'top-0 left-5 md:left-9' : 'top-0 left-5'" />
 			</BaseIcon>
 
-			<span class="transition-all duration-300 text-clip line-clamp-1" :class="[{ '': isCompact, '': !hasSub }, vSlot && vSlot.isExactActive ? asideMenuItemActiveStyle : asideMenuItemInactiveStyle, isCompact ? (item.menu == undefined ? 'w-52 lg:w-0' : 'w-40 lg:w-0') : 'w-40', item.color == 'info' ? 'text-slate-900 font-medium hover:underline' : '']">
+			<span class="line-clamp-1 text-clip transition-all duration-300" :class="[{ '': isCompact, '': !hasSub }, vSlot && vSlot.isExactActive ? asideMenuItemActiveStyle : asideMenuItemInactiveStyle, isCompact ? (item.menu == undefined ? 'w-52 lg:w-0' : 'w-40 lg:w-0') : 'w-40', item.color == 'info' ? 'font-medium text-slate-900 hover:underline' : '']">
 				{{ item.label }}
 			</span>
 

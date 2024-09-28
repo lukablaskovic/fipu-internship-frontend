@@ -2,8 +2,9 @@
 import { mdiClose, mdiChevronRightCircleOutline, mdiChevronLeftCircleOutline } from "@mdi/js";
 import AsideMenuLayer from "@/components/Premium/AsideMenuLayer.vue";
 import AsideMenuItem from "@/components/Premium/AsideMenuItem.vue";
+import { layoutStore } from "@/main";
+
 import OverlayLayer from "@/components/OverlayLayer.vue";
-import { useLayoutStore } from "@/stores/layout.js";
 import BaseIcon from "@/components/BaseIcon.vue";
 import { useRouter } from "vue-router";
 import { computed, ref } from "vue";
@@ -16,8 +17,6 @@ defineProps({
 });
 
 const emit = defineEmits(["menu-click"]);
-
-const layoutStore = useLayoutStore();
 
 const isPrimaryMenuCompact = ref(true);
 

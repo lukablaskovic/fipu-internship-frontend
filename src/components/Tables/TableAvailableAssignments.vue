@@ -6,7 +6,7 @@
 	</CardBoxModal>
 
 	<div class="mb-4">
-		<input type="text" v-model="searchQuery" placeholder="Pretraži zadatke po ID zadatka..." class="w-full p-2" />
+		<input type="text" v-model="searchQuery" placeholder="Pretraži zadatke..." class="w-full p-2" />
 	</div>
 
 	<table>

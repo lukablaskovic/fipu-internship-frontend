@@ -1,15 +1,13 @@
 <script setup>
-import { mdiChevronUp, mdiChevronDown } from "@mdi/js";
-import { RouterLink } from "vue-router";
-import { computed, ref, onMounted, onBeforeUnmount } from "vue";
-import { mainStore, styleStore } from "@/main.js";
-import { useLayoutStore } from "@/stores/layout.js";
-import BaseIcon from "@/components/Base/BaseIcon.vue";
 import UserAvatarCurrentUser from "@/components/User/UserAvatarCurrentUser.vue";
 import NavBarMenuList from "@/components/Navbar/NavBarMenuList.vue";
+import { computed, ref, onMounted, onBeforeUnmount } from "vue";
+import { mainStore, styleStore, layoutStore } from "@/main.js";
 import BaseDivider from "@/components/Base/BaseDivider.vue";
+import { mdiChevronUp, mdiChevronDown } from "@mdi/js";
+import BaseIcon from "@/components/Base/BaseIcon.vue";
+import { RouterLink } from "vue-router";
 
-const layoutStore = useLayoutStore();
 const props = defineProps({
 	item: {
 		type: Object,
@@ -87,18 +85,18 @@ onBeforeUnmount(() => {
 <template>
 	<BaseDivider v-if="item.isDivider" nav-bar />
 
-	<component :is="is" v-else ref="root" class="block lg:flex items-center relative cursor-pointer" :class="componentClass" :to="item.to ?? null" :href="item.href ?? null" :target="item.target ?? null" @click="menuClick">
-		<div class="flex items-center" :class="{ 'bg-gray-100 dark:bg-slate-800 lg:bg-transparent lg:dark:bg-transparent p-3 lg:p-0': item.menu }">
-			<UserAvatarCurrentUser v-if="item.isCurrentUser" class="w-6 h-6 mr-3 inline-flex" />
-			<BaseIcon v-if="item.icon" :size="item.size ? item.size : 19" :path="item.icon" class="transition-colors text-fipu_gray hover:text-fipu_blue dark:text-white dark:hover:text-fipu_blue" @mouseover="item.isDesktopNoLabel ? (layoutStore.tooltip = { content: itemLabel, offsetx: 0, offsety: 40, justify: 'justify-center items-center' }) : ''" @mouseleave="layoutStore.tooltip = { content: '', offsetx: 0, offsety: 0 }" />
+	<component :is="is" v-else ref="root" class="relative block cursor-pointer items-center lg:flex" :class="componentClass" :to="item.to ?? null" :href="item.href ?? null" :target="item.target ?? null" @click="menuClick">
+		<div class="flex items-center" :class="{ 'bg-gray-100 p-3 dark:bg-slate-800 lg:bg-transparent lg:p-0 lg:dark:bg-transparent': item.menu }">
+			<UserAvatarCurrentUser v-if="item.isCurrentUser" class="mr-3 inline-flex h-6 w-6" />
+			<BaseIcon v-if="item.icon" :size="item.size ? item.size : 19" :path="item.icon" class="text-fipu_gray transition-colors hover:text-fipu_blue dark:text-white dark:hover:text-fipu_blue" @mouseover="item.isDesktopNoLabel ? (layoutStore.tooltip = { content: itemLabel, offsetx: 0, offsety: 40, justify: 'justify-center items-center' }) : ''" @mouseleave="layoutStore.tooltip = { content: '', offsetx: 0, offsety: 0 }" />
 
-			<span class="px-2 transition-colors text-base" :class="{ 'lg:hidden': item.isDesktopNoLabel && item.icon }">
+			<span class="px-2 text-base transition-colors" :class="{ 'lg:hidden': item.isDesktopNoLabel && item.icon }">
 				{{ itemLabel }}
 			</span>
-			<BaseIcon v-if="item.menu != undefined" :path="isDropdownActive ? mdiChevronUp : mdiChevronDown" class="hidden lg:inline-flex transition-colors" />
+			<BaseIcon v-if="item.menu != undefined" :path="isDropdownActive ? mdiChevronUp : mdiChevronDown" class="hidden transition-colors lg:inline-flex" />
 		</div>
 
-		<div v-if="item.menu" :style="isDropdownActive ? 'height: ' + item.menu.length * 42 + 'px;' : 'height: 0px;'" class="text-sm lg:absolute lg:top-full lg:left-0 lg:min-w-full overflow-hidden lg:z-20 lg:rounded-lg lg:shadow-lg transition-size duration-300 bg-gray-100 dark:bg-slate-800">
+		<div v-if="item.menu" :style="isDropdownActive ? 'height: ' + item.menu.length * 42 + 'px;' : 'height: 0px;'" class="overflow-hidden bg-gray-100 text-sm transition-size duration-300 dark:bg-slate-800 lg:absolute lg:left-0 lg:top-full lg:z-20 lg:min-w-full lg:rounded-lg lg:shadow-lg">
 			<NavBarMenuList :is-submenu="true" :menu="item.menu" @menu-click="menuClickDropdown" />
 		</div>
 	</component>

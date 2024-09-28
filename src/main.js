@@ -9,12 +9,12 @@ import "./css/main.css";
 import "animate.css";
 
 /* Pinia global stores */
+import { useSnackBarStore } from "@/stores/snackbar_store.ts";
 import { useStudentStore } from "@/stores/student_store.ts";
-import { useSnackBarStore } from "@/stores/snackbar_store";
-import { useStyleStore } from "@/stores/style_store.js";
-import { useAdminStore } from "@/stores/admin_store.js";
+import { useLayoutStore } from "@/stores/layout_store.ts";
+import { useStyleStore } from "@/stores/style_store.ts";
+import { useAdminStore } from "@/stores/admin_store.ts";
 import { useMainStore } from "@/stores/main_store.ts";
-import { useLayoutStore } from "@/stores/layout";
 
 import { darkModeKey, styleKey } from "@/config.js";
 

@@ -1,25 +1,25 @@
 <script setup>
-import { ref, computed, watch, onMounted } from "vue";
-import { useMainStore } from "@/stores/main.js";
-import { useSnackBarStore } from "@/stores/snackbar_store.js";
-import { useLayoutStore } from "@/stores/layout.js";
 import { mdiAccountMultiple, mdiCartOutline, mdiChartTimelineVariant, mdiMonitorCellphone, mdiReload, mdiBell, mdiPlusCircle, mdiBroadcast, mdiBriefcaseVariant, mdiCalendarToday, mdiCameraSwitch, mdiChartPie, mdiCreditCardOutline } from "@mdi/js";
-import * as chartConfig from "@/components/Charts/chart.config.js";
-import LineChart from "@/components/Charts/LineChart.vue";
-import SectionMain from "@/components/SectionMain.vue";
 import SectionTitleLineWithButton from "@/components/SectionTitleLineWithButton.vue";
-import CardBoxWidget from "@/components/CardBoxWidget.vue";
-import CardBox from "@/components/CardBox.vue";
-import TableSampleClients from "@/components/TableSampleClients.vue";
-import NotificationBar from "@/components/NotificationBar.vue";
-import CardBoxClient from "@/components/CardBoxClient.vue";
-import CardBoxTransaction from "@/components/CardBoxTransaction.vue";
-import CardBoxProduct from "@/components/Premium/CardBoxProduct.vue";
 import CardBoxAmountItem from "@/components/Premium/CardBoxAmountItem.vue";
-import BaseButtons from "@/components/BaseButtons.vue";
-import BaseButton from "@/components/BaseButton.vue";
-import UserCard from "@/components/Premium/UserCard.vue";
+import CardBoxProduct from "@/components/Premium/CardBoxProduct.vue";
+import TableSampleClients from "@/components/TableSampleClients.vue";
+import CardBoxTransaction from "@/components/CardBoxTransaction.vue";
 import LayoutAuthenticated from "@/layouts/LayoutAuthenticated.vue";
+import * as chartConfig from "@/components/Charts/chart.config.js";
+import NotificationBar from "@/components/NotificationBar.vue";
+import { useSnackBarStore } from "@/stores/snackbar_store.js";
+import CardBoxWidget from "@/components/CardBoxWidget.vue";
+import CardBoxClient from "@/components/CardBoxClient.vue";
+import LineChart from "@/components/Charts/LineChart.vue";
+
+import UserCard from "@/components/Premium/UserCard.vue";
+import SectionMain from "@/components/SectionMain.vue";
+import BaseButtons from "@/components/BaseButtons.vue";
+import { ref, computed, watch, onMounted } from "vue";
+import BaseButton from "@/components/BaseButton.vue";
+import { useMainStore } from "@/stores/main.js";
+import CardBox from "@/components/CardBox.vue";
 
 const mainStore = useMainStore();
 
@@ -78,7 +78,7 @@ const productBarItems = computed(() => mainStore.products);
 			<SectionTitleLineWithButton :icon="mdiChartTimelineVariant" title="Overview" main>
 				<BaseButton href="https://justboil.me/tailwind-admin-templates/vue-dashboard/" label="Buy dashboard" :icon="mdiCreditCardOutline" color="contrast" rounded-full small />
 			</SectionTitleLineWithButton>
-			<div class="grid grid-cols-12 gap-6 mb-6">
+			<div class="mb-6 grid grid-cols-12 gap-6">
 				<div class="col-span-12 sm:col-span-6 xl:col-span-3">
 					<CardBoxWidget trend="12%" trend-type="up" color="text-green-500" :icon="mdiAccountMultiple" :number="512" label="Clients" />
 				</div>
@@ -93,7 +93,7 @@ const productBarItems = computed(() => mainStore.products);
 				</div>
 			</div>
 
-			<div class="grid grid-cols-1 xl:grid-cols-2 gap-6 mb-6">
+			<div class="mb-6 grid grid-cols-1 gap-6 xl:grid-cols-2">
 				<UserCard />
 				<div class="flex flex-col">
 					<CardBoxClient v-for="client in clientBarItems" :key="client.id" :name="client.name" :login="client.login" :date="client.created" :progress="client.progress" />
@@ -102,8 +102,8 @@ const productBarItems = computed(() => mainStore.products);
 
 			<SectionTitleLineWithButton :icon="mdiChartTimelineVariant" title="Finance" />
 
-			<div class="grid grid-cols-1 xl:grid-cols-4 xl:gap-6 mb-6">
-				<div class="xl:flex xl:flex-col xl:col-span-3 mb-6 xl:mb-0">
+			<div class="mb-6 grid grid-cols-1 xl:grid-cols-4 xl:gap-6">
+				<div class="mb-6 xl:col-span-3 xl:mb-0 xl:flex xl:flex-col">
 					<CardBoxTransaction v-for="(transaction, index) in transactionBarItems" :key="index" :amount="transaction.amount" :date="transaction.date" :business="transaction.business" :type="transaction.type" :name="transaction.name" :account="transaction.account" />
 				</div>
 				<CardBox>

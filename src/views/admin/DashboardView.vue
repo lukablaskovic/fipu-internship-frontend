@@ -1,26 +1,27 @@
 <script setup>
-import { ref, computed, onMounted, watch } from "vue";
-import { adminStore, mainStore, snackBarStore } from "@/main.js";
 import { mdiAccountMultiple, mdiAccountSchoolOutline, mdiProgressClock, mdiViewDashboard, mdiCommentProcessing, mdiMonitorAccount, mdiAccountCancel, mdiAlphaSBox, mdiClockTimeEight, mdiCalendarClock, mdiAccountGroup } from "@mdi/js";
+import { adminStore, mainStore, snackBarStore } from "@/main.js";
+import { layoutStore } from "@/main";
+
+import { ref, computed, onMounted, watch } from "vue";
 import { useRouter } from "vue-router";
 import moment from "@/moment-setup";
-import { useLayoutStore } from "@/stores/layout.js";
 
-import SectionMain from "@/components/Section/SectionMain.vue";
+import SectionTitleLineWithButton from "@/components/Section/SectionTitleLineWithButton.vue";
+import SkeletonLoaderEvent from "@/components/SkeletonLoaderEvent.vue";
+import LayoutAuthenticated from "@/layouts/LayoutAuthenticated.vue";
 import CardBoxWidget from "@/components/Cardbox/CardBoxWidget.vue";
 import CardBoxEvents from "@/components/Cardbox/CardBoxEvents.vue";
-import LayoutAuthenticated from "@/layouts/LayoutAuthenticated.vue";
-import SectionTitleLineWithButton from "@/components/Section/SectionTitleLineWithButton.vue";
+import PillTagFilter from "@/components/PillTag/PillTagFilter.vue";
+import * as chartConfig from "@/components/Charts/chart.config.js";
+import SectionMain from "@/components/Section/SectionMain.vue";
 import SkeletonLoader from "@/components/SkeletonLoader.vue";
-import SkeletonLoaderEvent from "@/components/SkeletonLoaderEvent.vue";
+import BaseButtons from "@/components/Base/BaseButtons.vue";
+import BaseButton from "@/components/Base/BaseButton.vue";
 //import LineChart from "@/components/Charts/LineChart.vue";
 
 import BaseLevel from "@/components/Base/BaseLevel.vue";
-import BaseButtons from "@/components/Base/BaseButtons.vue";
-import BaseButton from "@/components/Base/BaseButton.vue";
 import PillTag from "@/components/PillTag/PillTag.vue";
-import PillTagFilter from "@/components/PillTag/PillTagFilter.vue";
-import * as chartConfig from "@/components/Charts/chart.config.js";
 
 import { ActivityEventMappings } from "@/helpers/maps.js";
 import { latestEvents } from "@/filterOptions.js";
@@ -116,7 +117,6 @@ const toggleDateType = () => {
 
 // CHART
 
-const layoutStore = useLayoutStore();
 const isLg = computed(() => layoutStore.isLg);
 const isMd = computed(() => layoutStore.isMd);
 
@@ -148,7 +148,7 @@ onMounted(() => {
 		<LayoutAuthenticated v-if="mainStore.userAuthenticated">
 			<SectionMain>
 				<SectionTitleLineWithButton :icon="mdiViewDashboard" title="Nadzorna ploča" main> </SectionTitleLineWithButton>
-				<div class="grid grid-cols-1 gap-6 lg:grid-cols-3 mb-6">
+				<div class="mb-6 grid grid-cols-1 gap-6 lg:grid-cols-3">
 					<CardBoxWidget v-if="adminStore.studentsFetched" color="text-fipu_blue" class="rounded-lg" :icon="mdiAccountSchoolOutline" :number="finished_internships" label="Uspješno odrađenih praksi" />
 					<SkeletonLoader v-else></SkeletonLoader>
 
@@ -159,7 +159,7 @@ onMounted(() => {
 					<SkeletonLoader v-else></SkeletonLoader>
 				</div>
 
-				<div class="grid grid-cols-1 gap-6 lg:grid-cols-3 mb-6">
+				<div class="mb-6 grid grid-cols-1 gap-6 lg:grid-cols-3">
 					<CardBoxWidget v-if="adminStore.studentsFetched" color="text-fipu_blue" class="rounded-lg" :icon="mdiMonitorAccount" :number="waiting_for_evaluation" label="U procesu evaluacije" />
 					<SkeletonLoader v-else></SkeletonLoader>
 
@@ -185,7 +185,7 @@ onMounted(() => {
 						<div class="mb-4"><PillTag class="cursor-pointer" :left="false" :icon="adminStore.filterActiveInstances ? mdiAccountGroup : mdiAccountMultiple" :color="adminStore.filterActiveInstances ? 'info' : 'success'" :label="adminStore.filterActiveInstances ? 'Sve instance' : 'Samo aktivne'" @click="toggleActiveEventsFilter" /></div>
 					</div>
 				</div>
-				<div v-if="!eventsFetchError && !Utils.isArrayEmpty(events)" class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+				<div v-if="!eventsFetchError && !Utils.isArrayEmpty(events)" class="mb-6 grid grid-cols-1 gap-6 lg:grid-cols-2">
 					<div class="flex flex-col">
 						<CardBoxEvents
 							v-for="(event, index) in leftItems"
@@ -195,7 +195,7 @@ onMounted(() => {
 							:type="event.activity_id"
 							:jmbag="event.student_JMBAG == undefined ? 'Greška u dohvatu podataka - JMBAG' : event.student_JMBAG"
 							:email="event.student_email == undefined ? 'Greška u dohvatu podataka - email' : event.student_email"
-							class="rounded-lg cursor-pointer"
+							class="cursor-pointer rounded-lg"
 							@click="router.push(`/studenti/${event.instance_id}`)" />
 					</div>
 					<div class="flex flex-col">
@@ -207,11 +207,11 @@ onMounted(() => {
 							:type="event.activity_id"
 							:jmbag="event.student_JMBAG == undefined ? 'Greška u dohvatu podataka - JMBAG' : event.student_JMBAG"
 							:email="event.student_email == undefined ? 'Greška u dohvatu podataka - email' : event.student_email"
-							class="rounded-lg cursor-pointer"
+							class="cursor-pointer rounded-lg"
 							@click="router.push(`/studenti/${event.instance_id}`)" />
 					</div>
 				</div>
-				<div v-else-if="!eventsFetchError && Utils.isArrayEmpty(events)" class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+				<div v-else-if="!eventsFetchError && Utils.isArrayEmpty(events)" class="mb-6 grid grid-cols-1 gap-6 lg:grid-cols-2">
 					<div class="flex flex-col">
 						<SkeletonLoaderEvent />
 						<SkeletonLoaderEvent />
@@ -223,8 +223,8 @@ onMounted(() => {
 						<SkeletonLoaderEvent />
 					</div>
 				</div>
-				<div v-else class="text-red-500 mb-6">Nakon više ponovljenih pokušaja, nije moguće dohvatiti evente.</div>
-				<div v-if="!eventsFetchError" class="p-3 lg:px-6 border-t border-gray-100 dark:border-slate-800">
+				<div v-else class="mb-6 text-red-500">Nakon više ponovljenih pokušaja, nije moguće dohvatiti evente.</div>
+				<div v-if="!eventsFetchError" class="border-t border-gray-100 p-3 dark:border-slate-800 lg:px-6">
 					<BaseLevel>
 						<BaseButtons>
 							<BaseButton v-for="page in pagesList" :key="page" :active="page === currentPage" :label="page + 1" :color="page === currentPage ? 'lightDark' : 'whiteDark'" small @click="currentPage = page" />
