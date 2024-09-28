@@ -229,20 +229,20 @@ const onCompanyChange = () => {
 				<CardBox :icon="mdiBallot" class="mb-6 lg:col-span-2 lg:mb-0 xl:col-span-3" is-form @submit.prevent="onSubmit">
 					<CardBoxComponentTitle class="text-center" title="💼Prijava projekta za studentsku praksu " />
 
-					<FormField v-if="!form.Poslodavac_novi_naziv" label="Poduzeće partner" help="Ako niste partner, unesite naziv poduzeća ispod" horizontal>
+					<FormField v-if="!form.Poslodavac_novi_naziv" label="Poduzeće partner*" help="Ako niste partner, unesite naziv poduzeća ispod" horizontal>
 						<FormCombobox v-model="form.Poslodavac" :options="mappedCompanies" placeholder="Odaberite poduzeće ako ste postojeći partner" @change="onCompanyChange" />
 					</FormField>
 
-					<FormField v-if="!form.Poslodavac" label="Naziv poduzeća" horizontal>
+					<FormField v-if="!form.Poslodavac" label="Naziv poduzeća*" horizontal>
 						<FormControl v-model="form.Poslodavac_novi_naziv" :icon-left="mdiDomain" help="Ovdje unesite naziv poduzeća ako ste novi partner (nema vas u dropdown obrascu iznad)" :error="getFirstErrorForField(v$, 'Poslodavac_novi_naziv')" placeholder="Naziv poduzeća" />
 					</FormField>
 
-					<FormField label="Kontakt email" horizontal>
+					<FormField label="Kontakt email*" horizontal>
 						<FormControl v-model="form.poslodavac_email" :icon-left="mdiEmail" type="email" :error="getFirstErrorForField(v$, 'poslodavac_email')" help="E-mail adresa pri kojoj će se student obratiti oko dogovora za izvođenje studentske prakse ili provedbu selekcije. Ne mora nužno biti budući mentor." placeholder="Vaš kontakt email" />
 					</FormField>
 
 					<BaseDivider />
-					<FormField label="Detaljan opis zadatka" horizontal>
+					<FormField label="Detaljan opis zadatka*" horizontal>
 						<FormControl
 							v-model="form.opis_zadatka"
 							type="textarea"
@@ -266,16 +266,13 @@ const onCompanyChange = () => {
 " />
 					</FormField>
 
-					<FormField label="Broj studenata" horizontal>
+					<FormField label="Broj studenata*" horizontal>
 						<FormField addons>
 							<FormControl v-model="form.broj_studenata" type="number" :icon-left="mdiAccountGroup" :error="getFirstErrorForField(v$, 'broj_studenata')" :min="1" placeholder="Maksimalni broj studenata" help="Koliko studenata možete primiti u rješavanju ovog zadatka? Studenti mogu raditi odvojeno ili u timu. Ako imate više zadataka, možete ponovno popuniti formu za svaki zadatak posebno." expanded />
 						</FormField>
 					</FormField>
 
-					<FormField
-						label="Preferencije pri odabiru studenta
-"
-						horizontal>
+					<FormField label="Preferencije pri odabiru studenta" horizontal>
 						<FormControl v-model="form.preferencije_za_studenta" type="textarea" :error="getFirstErrorForField(v$, 'preferencije_za_studenta')" placeholder="Poželjni kandidat posjeduje znanja iz ... ima iskustva u..." :icon-left="mdiThumbsUpDown" help="U koliko smatrate važnim, opišite odlike poželjnog kandidata na praksi." />
 					</FormField>
 
@@ -283,7 +280,7 @@ const onCompanyChange = () => {
 						<FormControl v-model="form.potrebno_imati" :error="getFirstErrorForField(v$, 'potrebno_imati')" :icon-left="mdiDomain" help="Potrebna infrastruktura koju student mora posjedovati" placeholder="Npr. laptop" />
 					</FormField>
 
-					<FormField label="Željeno trajanje prakse" horizontal>
+					<FormField label="Željeno trajanje prakse*" horizontal>
 						<FormField addons>
 							<FormControl
 								v-model="form.trajanje_sati"
@@ -297,7 +294,7 @@ const onCompanyChange = () => {
 						</FormField>
 					</FormField>
 
-					<FormField label="Lokacija" horizontal>
+					<FormField label="Lokacija*" horizontal>
 						<FormControl v-model="form.lokacija" help="Moguća je 'remote' praksa" :error="getFirstErrorForField(v$, 'lokacija')" :icon-left="mdiMapMarker" placeholder="Lokacija održavanja prakse" />
 					</FormField>
 
@@ -305,7 +302,7 @@ const onCompanyChange = () => {
 						<FormControl v-model="form.zeljeno_okvirno_vrijeme_pocetka" :icon-left="mdiClipboardTextClockOutline" :error="getFirstErrorForField(v$, 'zeljeno_okvirno_vrijeme_pocetka')" placeholder="npr. Veljača 2024." help="Praksa se mora obaviti najkasnije do 1. rujna sljedeće godine." />
 					</FormField>
 
-					<FormField label="Angažman nastavnika s FIPU" help="Po želji, nastavno osoblje FIPU-a može pomoći pri izvođenju prakse na način da oni dijelom (ili u potpunosti) mentoriraju studenta. Moguće je čak da student u našem laboratoriju obavlja praksu, te povremeno dolazi prezentirati učinjeno." horizontal>
+					<FormField label="Angažman nastavnika s FIPU*" help="Po želji, nastavno osoblje FIPU-a može pomoći pri izvođenju prakse na način da oni dijelom (ili u potpunosti) mentoriraju studenta. Moguće je čak da student u našem laboratoriju obavlja praksu, te povremeno dolazi prezentirati učinjeno." horizontal>
 						<FormCheckRadioGroup v-model="form.angazman_selekcija" :error="getFirstErrorForField(v$, 'angazman_selekcija')" name="angazman_selection" type="radio" :options="angazmanSelect" component-class="check-radio-warning" />
 					</FormField>
 
@@ -318,7 +315,7 @@ const onCompanyChange = () => {
 					</FormField>
 
 					<FormField
-						label="Selekcijski postupak"
+						label="Selekcijski postupak*"
 						help="Želite li provesti dodatnu selekciju kandidata koji se prijave na praksu (npr. intervju, ispit) ?
 "
 						horizontal>
@@ -340,3 +337,5 @@ const onCompanyChange = () => {
 		<SnackBar />
 	</div>
 </template>
+
+<style></style>

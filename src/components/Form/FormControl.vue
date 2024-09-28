@@ -207,7 +207,7 @@ const inputElClass = computed(() => {
 	}
 
 	if (placeholderColor.value) {
-		base.push(placeholderColor.value);
+		base.push(placeholderColor.value || "placeholder-gray-500");
 	}
 
 	if (!props.firstAddon && !props.lastAddon && !props.middleAddon) {
@@ -246,7 +246,7 @@ const computedType = computed(() => {
 		return "text";
 	}
 
-	return props.type;
+	return props.type; // This should return "text" but ensure it's being used.
 });
 
 const computedIconLeft = computed(() => props.iconLeft ?? null);

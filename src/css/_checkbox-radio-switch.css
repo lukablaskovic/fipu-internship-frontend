@@ -74,10 +74,6 @@
 
 	/* Override input[type="text"] styles without rounded borders */
 	input[type="text"] {
-		@apply border border-gray-50 p-2 text-gray-700 outline-none focus:border-fipu_blue focus:ring-fipu_blue;
-	}
-
-	input[type="text"]::placeholder {
-		@apply text-gray-500;
+		@apply border border-gray-50 text-gray-700 outline-none focus:border-fipu_blue focus:ring-fipu_blue;
 	}
 }
