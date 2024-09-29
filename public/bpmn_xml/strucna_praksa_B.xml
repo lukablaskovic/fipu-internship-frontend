@@ -452,11 +452,11 @@ Prijavljene zadatke možete pregledati u tabu Zadaci.</bpmn:documentation>
         <camunda:formData>
           <camunda:formField id="Student" label="Pohrana reference na studenta" type="var-string" />
           <camunda:formField id="zadatak_odobren" label="Odobravate li prijavljeni zadatak za ovog studenta?" type="yes-no-boolean" />
-          <camunda:formField id="student_ime" type="string" />
-          <camunda:formField id="student_prezime" type="string" />
-          <camunda:formField id="student_email" type="string" />
-          <camunda:formField id="process_instance_id" type="string" />
-          <camunda:formField id="frontend_url" type="string" />
+          <camunda:formField id="student_ime" type="var-string" />
+          <camunda:formField id="student_prezime" type="var-string" />
+          <camunda:formField id="student_email" type="var-string" />
+          <camunda:formField id="process_instance_id" type="var-string" />
+          <camunda:formField id="frontend_url" type="var-string" />
         </camunda:formData>
       </bpmn:extensionElements>
       <bpmn:incoming>Flow_0q8jyt1</bpmn:incoming>

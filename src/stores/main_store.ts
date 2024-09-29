@@ -248,5 +248,9 @@ export const useMainStore = defineStore("main", {
 			}
 		},
 	},
-	persist: true,
+	persist: {
+		storage: localStorage,
+		omit: ["assignments", "checkedAssignments", "admin_emails"],
+		debug: true,
+	},
 });

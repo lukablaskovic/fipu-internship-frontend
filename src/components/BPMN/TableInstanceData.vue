@@ -19,6 +19,8 @@ onMounted(async () => {
 		tableAttributes.value = ["Prvi_odabir", "Drugi_odabir", "Treci_odabir", "napomena"];
 	} else if (adminStore.bpmn_diagram.clicked_task_id == "alociranje_profesor") {
 		tableAttributes.value = ["Alocirani_zadatak"];
+	} else if (adminStore.bpmn_diagram.clicked_task_id == "model_b_odobrenje_zadatka") {
+		tableAttributes.value = ["zadatak_odobren"];
 	} else if (adminStore.bpmn_diagram.clicked_task_id == "ispunjavanje_prijavnice_student") {
 		tableAttributes.value = ["mentor_ime", "mentor_prezime", "mentor_email", "student_broj_mobitela", "student_OIB", "dogovoreni_broj_sati", "pocetak_prakse", "kraj_prakse", "mjesto_izvrsavanja"];
 	} else if (adminStore.bpmn_diagram.clicked_task_id == "predavanje_dnevnika_student") {

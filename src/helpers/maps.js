@@ -228,10 +228,10 @@ class UserTaskMappings {
 			_id: "model_b_odobrenje_zadatka",
 			name: "Čeka odobrenje zadatka",
 			form_title: "Odobrenje zadatka",
-			snackbar_msg: "",
-			snackbar_color: "",
+			snackbar_msg: "Radnja registrirana. Hvala!",
+			snackbar_color: "success",
 			bpmn_pending_info_msg: "Student čeka odobrenje zadatka.",
-			bpmn_task_color: "#79d4f2",
+			bpmn_task_color: "#EF4444", //bg-red-500
 			component: Model_B_Student_WaitingForApproval,
 		},
 		{
@@ -249,7 +249,6 @@ class UserTaskMappings {
 	];
 
 	static getTaskProperty(taskId, property, state = "running") {
-		console.log("taskId", taskId, "property", property, "state", state);
 		if (state === "finished") {
 			taskId = "end_event_student";
 

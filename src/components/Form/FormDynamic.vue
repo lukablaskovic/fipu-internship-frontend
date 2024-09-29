@@ -53,6 +53,7 @@ onMounted(() => {
 			formValues[key] = props.variables[key];
 		}
 	}
+	console.log("formValues", formValues);
 });
 
 const handleRowSelected = (assignmentId) => {
@@ -66,11 +67,33 @@ const getTableType = (type) => {
 	}
 };
 
+const isTableComponentVisible = computed(() => {
+	return formValues["odabir_prihvacen"] !== "false";
+});
+
 const allFieldsFilled = computed(() => {
 	return Object.keys(formValues).every((key) => {
 		const field = props.formFields[key];
+		const value = formValues[key];
 		const isRendered = field.type === "yes-no-boolean" || (field.type.startsWith("selectFromTable") && isTableComponentVisible.value) || field.type === "var-string";
-		return !isRendered || (isRendered && formValues[key] !== null);
+
+		// Yes-No boolean fields must be filled (not null)
+		if (field.type === "yes-no-boolean") {
+			return value !== null;
+		}
+
+		// var-string fields can remain null, so don't require them to be filled
+		if (field.type === "var-string") {
+			return true;
+		}
+
+		// selectFromTable fields must have a selection
+		if (field.type.startsWith("selectFromTable") && isTableComponentVisible.value) {
+			return value !== null;
+		}
+
+		// For any other field types, fallback to true if not rendered
+		return true;
 	});
 });
 
@@ -78,9 +101,6 @@ watch(allFieldsFilled, (newValue) => {
 	emit("allFieldsFilled", newValue);
 });
 
-const isTableComponentVisible = computed(() => {
-	return formValues["odabir_prihvacen"] !== "false";
-});
 watch(
 	formValues,
 	(newValues, oldValues) => {

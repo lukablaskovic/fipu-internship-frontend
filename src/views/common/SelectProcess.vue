@@ -140,7 +140,6 @@ async function onSubmit() {
 	v$.value.$touch();
 	if (v$.value.$invalid) {
 		isLoading.value = false;
-		console.log("Invalid form", v$.value);
 		snackBarStore.pushMessage("Molimo ispravite sva polja", "danger");
 		return;
 	}
@@ -153,7 +152,6 @@ async function onSubmit() {
 
 	isLoading.value = false;
 	const response = await mainStore.createInternshipInstance(selectedProcess.value, form.godina_studija, form.jmbag);
-	console.log("RESPONSE", response);
 	if (response) {
 		snackBarStore.pushMessage("Uspješno ste započeli proces prakse!", "success");
 		await Utils.wait(1);

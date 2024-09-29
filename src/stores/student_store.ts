@@ -116,7 +116,6 @@ export const useStudentStore = defineStore("student", {
 			try {
 				const response = await ProcessInstance.get(process_instance_id);
 				this.student_process_instance_data = response;
-				console.log("this.student_process_instance_data", this.student_process_instance_data);
 				return response;
 			} catch (error) {
 				console.log("Error:", error);

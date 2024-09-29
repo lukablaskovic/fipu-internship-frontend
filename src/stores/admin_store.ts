@@ -138,7 +138,6 @@ export const useAdminStore = defineStore("admin", {
 		async getProcessInstanceData(student: Student) {
 			try {
 				const response = await ProcessInstance.get(student.process_instance_id);
-				console.log("adminStore, getProcessInstanceData", response); //ok
 				return response;
 			} catch (error) {
 				console.log("Error:", error);
@@ -158,7 +157,6 @@ export const useAdminStore = defineStore("admin", {
 				const response = await Student.fetch();
 				// only students with process_instance_id are relevant
 				const students = response.data.results.filter((student: Student) => student.process_instance_id);
-				console.log("adminStore, students", students); //ok
 				if (!students || students.length === 0) {
 					this.students = [];
 					this.studentsFetched = true;
@@ -227,11 +225,9 @@ export const useAdminStore = defineStore("admin", {
 		async getEvents() {
 			try {
 				const response = await Model.getEvents();
-				console.log("adminStore, getEvents", response); //ok
 				if (Utils.isArrayEmpty(response.results)) return null;
 				else {
 					response.results.forEach((event: Event) => {
-						console.log("this.students", this.students);
 						const student = this.students.find((stud) => stud.process_instance_id === event.instance_id);
 						if (student) {
 							event.student_ime = student.ime;

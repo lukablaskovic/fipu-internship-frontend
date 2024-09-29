@@ -53,7 +53,6 @@ const perPage = ref(5);
 const currentPage = ref(0);
 const studentsPaginated = computed(() => {
 	let filteredStudents = students.value;
-	console.log("filteredStudents", filteredStudents);
 	if (!adminStore.filterFinishedInstances) {
 		filteredStudents = filteredStudents.filter((student) => UserTaskMappings.getTaskProperty(student["process_instance_data"]["pending"][0], "name", student["process_instance_data"]["state"]) !== "Student ocjenjen");
 	}

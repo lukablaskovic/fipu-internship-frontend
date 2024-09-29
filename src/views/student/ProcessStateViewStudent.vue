@@ -42,9 +42,9 @@ const updateDisabledCondition = (allFilled) => {
 
 const formDynamicValues = ref({});
 
-async function fetchXML() {
+async function fetchXML(model) {
 	try {
-		const response = await axios.get(`/bpmn_xml/${mainStore.get_userModelPrakse}.xml`, {
+		const response = await axios.get(`/bpmn_xml/${model}.xml`, {
 			responseType: "text",
 		});
 
@@ -62,7 +62,7 @@ async function loadDataForStudent(process_instance_id) {
 		const student = { process_instance_id: process_instance_id };
 
 		process_instance_data.value = await adminStore.getProcessInstanceData(student); //ok
-		mainStore.currentUserProcessInstanceData = process_instance_data.value;
+		mainStore.currentUserProcessInstanceData = process_instance_data.value; //ok
 	}
 }
 const newEmail = ref(null);
@@ -123,10 +123,11 @@ const process_instance_id = ref(null);
 const bpmn_model = ref(null);
 
 onMounted(async () => {
-	process_instance_id.value = mainStore.currentUser.internship_process.id;
+	process_instance_id.value = mainStore.currentUser.internship_process.id; //ok
 	loadDataForStudent(process_instance_id.value);
-	console.log(process_instance_id.value);
-	bpmn_model.value = await fetchXML();
+	let model = mainStore.currentUserProcessInstanceData.model.model_path.split(".")[0];
+
+	bpmn_model.value = await fetchXML(model);
 });
 </script>
 

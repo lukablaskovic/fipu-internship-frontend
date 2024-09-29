@@ -52,8 +52,6 @@ onMounted(async () => {
 	PrviPoslodavacLogo.value = await fetchCompanyLogo(prviOdabirDetails.value["Poslodavac"][0]["value"]);
 	DrugiPoslodavacLogo.value = await fetchCompanyLogo(drugiOdabirDetails.value["Poslodavac"][0]["value"]);
 	TreciPoslodavacLogo.value = await fetchCompanyLogo(treciOdabirDetails.value["Poslodavac"][0]["value"]);
-
-	console.log(PrviPoslodavacLogo.value);
 });
 
 const Layout = computed(() => {

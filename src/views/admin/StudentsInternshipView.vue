@@ -69,7 +69,7 @@ async function handleProcessDiagram() {
 		// Navigate to the new URL with the process_instance_id
 		router.push(`/studenti/${process_instance_data.value.id}`);
 	} catch (e) {
-		console.log("ERRORRRR:", e);
+		console.error("Failed to fetch process instance data:", e);
 	}
 }
 
