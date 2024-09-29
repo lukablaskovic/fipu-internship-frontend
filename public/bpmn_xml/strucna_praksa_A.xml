@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:bioc="http://bpmn.io/schema/bpmn/biocolor/1.0" xmlns:modeler="http://camunda.org/schema/modeler/1.0" id="Definitions_1nk7pui" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="5.14.0" modeler:executionPlatform="Camunda Platform" modeler:executionPlatformVersion="7.15.0">
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:bioc="http://bpmn.io/schema/bpmn/biocolor/1.0" xmlns:modeler="http://camunda.org/schema/modeler/1.0" id="Definitions_1nk7pui" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="5.4.2" modeler:executionPlatform="Camunda Platform" modeler:executionPlatformVersion="7.15.0">
   <bpmn:collaboration id="Collaboration_0ojchsi">
-    <bpmn:participant id="sustav_pool" name="Sustav za prijavu prakse" processRef="Process_0or099w" />
+    <bpmn:participant id="sustav_pool" name="Provođenje prakse (model A)" processRef="Process_0or099w" />
   </bpmn:collaboration>
   <bpmn:process id="Process_0or099w" name="prijava_prakse" isExecutable="true">
     <bpmn:laneSet id="LaneSet_00d2bp4">
@@ -27,7 +27,6 @@
         <bpmn:flowNodeRef>obavjestavanje_studenta_nakon_alokacije</bpmn:flowNodeRef>
         <bpmn:flowNodeRef>obavjestavanje_poslodavca_nakon_alokacije</bpmn:flowNodeRef>
         <bpmn:flowNodeRef>odabir_prihvacen</bpmn:flowNodeRef>
-        <bpmn:flowNodeRef>spremanje_zahtjeva_profesor_ponistio</bpmn:flowNodeRef>
         <bpmn:flowNodeRef>uzimanje_podataka_o_poslodavcu_student</bpmn:flowNodeRef>
         <bpmn:flowNodeRef>spremanje_zahtjeva_prihvacanje</bpmn:flowNodeRef>
         <bpmn:flowNodeRef>spremanje_alokacija</bpmn:flowNodeRef>
@@ -42,6 +41,7 @@
         <bpmn:flowNodeRef>Gateway_0q2wy8q</bpmn:flowNodeRef>
         <bpmn:flowNodeRef>spremanje_dnevnika</bpmn:flowNodeRef>
         <bpmn:flowNodeRef>upis_ocjene</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>spremanje_zahtjeva_profesor_ponistio</bpmn:flowNodeRef>
       </bpmn:lane>
     </bpmn:laneSet>
     <bpmn:sequenceFlow id="Flow_12zi41o" sourceRef="start_event_student" targetRef="odabiranje_zadatka_student" />
@@ -117,7 +117,6 @@ Napomena: Da biste prijavili preferencije, morate biti prijavljeni u aplikaciji!
     <bpmn:sequenceFlow id="Flow_1xv4qjm" name="Ne" sourceRef="student_prihvacen" targetRef="spremanje_zahtjeva_odbijanje">
       <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">kandidat_odobren:false</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
-    <bpmn:sequenceFlow id="Flow_02synkt" sourceRef="spremanje_zahtjeva_profesor_ponistio" targetRef="obavjestavanje_studenta_nakon_ponistavanja_email" />
     <bpmn:sequenceFlow id="Flow_1hbk011" sourceRef="obavjestavanje_studenta_nakon_ponistavanja_email" targetRef="odabiranje_zadatka_student" />
     <bpmn:sendTask id="obavjestavanje_studenta_nakon_odbijanja_email" name="Obavještavanje studenta nakon odbijanja (email)">
       <bpmn:extensionElements>
@@ -227,23 +226,6 @@ Napomena: Da biste prijavili preferencije, morate biti prijavljeni u aplikaciji!
       <bpmn:outgoing>Flow_1op73tb</bpmn:outgoing>
       <bpmn:outgoing>Flow_0vu59te</bpmn:outgoing>
     </bpmn:exclusiveGateway>
-    <bpmn:serviceTask id="spremanje_zahtjeva_profesor_ponistio" name="Ažuriraj status zahtjeva">
-      <bpmn:extensionElements>
-        <camunda:connector>
-          <camunda:inputOutput>
-            <camunda:inputParameter name="url">/api/status_zahtjeva</camunda:inputParameter>
-            <camunda:inputParameter name="method">PATCH</camunda:inputParameter>
-          </camunda:inputOutput>
-          <camunda:connectorId>baserow</camunda:connectorId>
-        </camunda:connector>
-        <camunda:inputOutput>
-          <camunda:inputParameter name="id_alokacija">${id_alokacija}</camunda:inputParameter>
-          <camunda:inputParameter name="status_zahtjeva">profesor_ponistio</camunda:inputParameter>
-        </camunda:inputOutput>
-      </bpmn:extensionElements>
-      <bpmn:incoming>Flow_1op73tb</bpmn:incoming>
-      <bpmn:outgoing>Flow_02synkt</bpmn:outgoing>
-    </bpmn:serviceTask>
     <bpmn:sendTask id="obavjestavanje_studenta_nakon_ponistavanja_email" name="Obavještavanje studenta email">
       <bpmn:extensionElements>
         <camunda:connector>
@@ -289,7 +271,7 @@ Napomena: Da biste prijavili preferencije, morate biti prijavljeni u aplikaciji!
       <bpmn:outgoing>Flow_1xv4qjm</bpmn:outgoing>
     </bpmn:exclusiveGateway>
     <bpmn:serviceTask id="spremanje_zahtjeva_prihvacanje" name="Ažuriraj status zahtjeva">
-      <bpmn:documentation>Spremanje alokacije u baserow bazu podataka</bpmn:documentation>
+      <bpmn:documentation>Ažuriraj status zahtjeva jednom kad je student prihvaćen.</bpmn:documentation>
       <bpmn:extensionElements>
         <camunda:connector>
           <camunda:inputOutput>
@@ -623,11 +605,30 @@ https://www.isvu.hr/nastavnickiportal/hr/prijava</bpmn:documentation>
       <bpmn:incoming>Flow_1xv4qjm</bpmn:incoming>
       <bpmn:outgoing>Flow_1r5rnvg</bpmn:outgoing>
     </bpmn:serviceTask>
+    <bpmn:serviceTask id="spremanje_zahtjeva_profesor_ponistio" name="Ažuriraj status zahtjeva">
+      <bpmn:extensionElements>
+        <camunda:connector>
+          <camunda:inputOutput>
+            <camunda:inputParameter name="url">/api/status_zahtjeva</camunda:inputParameter>
+            <camunda:inputParameter name="method">PATCH</camunda:inputParameter>
+          </camunda:inputOutput>
+          <camunda:connectorId>baserow</camunda:connectorId>
+        </camunda:connector>
+        <camunda:inputOutput>
+          <camunda:inputParameter name="id_alokacija">${id_alokacija}</camunda:inputParameter>
+          <camunda:inputParameter name="status_zahtjeva">profesor_ponistio</camunda:inputParameter>
+        </camunda:inputOutput>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_1op73tb</bpmn:incoming>
+      <bpmn:outgoing>Flow_02synkt</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:sequenceFlow id="Flow_02synkt" sourceRef="spremanje_zahtjeva_profesor_ponistio" targetRef="obavjestavanje_studenta_nakon_ponistavanja_email" />
   </bpmn:process>
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
     <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="Collaboration_0ojchsi">
       <bpmndi:BPMNShape id="Participant_1yqxmat_di" bpmnElement="sustav_pool" isHorizontal="true">
         <dc:Bounds x="160" y="40" width="2260" height="620" />
+        <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Lane_01o4d06_di" bpmnElement="profesor_lane" isHorizontal="true">
         <dc:Bounds x="190" y="430" width="2230" height="230" />

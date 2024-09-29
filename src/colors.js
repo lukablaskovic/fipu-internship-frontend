@@ -95,7 +95,7 @@ export const getButtonColor = (color, isOutlined, hasHover, isActive = false) =>
 			success: "border-green-600 dark:border-green-300",
 			danger: "border-red-600 dark:border-red-500",
 			warning: "border-yellow-600 dark:border-yellow-500",
-			info: "border-blue-600 dark:border-blue-500",
+			info: "border-fipu_light_blue dark:border-fipu_dark_blue",
 			fipu_blue: "border-fipu_blue",
 			fipu_light_blue: "border-fipu_light_blue",
 			fipu_dark_blue: "border-fipu_dark_blue",

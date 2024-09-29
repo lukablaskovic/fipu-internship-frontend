@@ -6,6 +6,7 @@ import BaseButtons from "@/components/Base/BaseButtons.vue";
 import BaseButton from "@/components/Base/BaseButton.vue";
 import UserAvatar from "@/components/User/UserAvatar.vue";
 import BaseLevel from "@/components/Base/BaseLevel.vue";
+import PillTag from "@/components/PillTag/PillTag.vue";
 import LoadingOverlay from "../LoadingOverlay.vue";
 import { adminStore } from "@/main.js";
 import { useRoute } from "vue-router";
@@ -30,16 +31,18 @@ function showDiagram(student) {
 }
 
 onMounted(async () => {
+	await adminStore.getStudents();
 	if (route.params.process_instance_id) {
 		selectedStudentInstanceID.value = route.params.process_instance_id;
 		const selectedStudent = students.value.find((student) => student["process_instance_id"] === route.params.process_instance_id);
-		adminStore.setSelectedStudent(selectedStudent);
-		updateCurrentPageForSelectedStudent(selectedStudent);
+		if (selectedStudent) {
+			adminStore.setSelectedStudent(selectedStudent);
+			emit("show-student-diagram", selectedStudent); // Trigger the diagram display immediately
+		}
 	} else {
 		selectedStudentInstanceID.value = null;
 		adminStore.setSelectedStudent(null);
 	}
-	await adminStore.getStudents();
 });
 
 function updateCurrentPageForSelectedStudent(selectedStudent) {
@@ -105,7 +108,7 @@ function getProgressValue(student) {
 					<UserAvatar :avatar="student['avatar']" class="mx-auto flex h-22 w-22 lg:h-12 lg:w-12" />
 				</td>
 				<td data-label="Model_prakse">
-					{{ student["Model_prakse"]["value"] }}
+					<PillTag :color="student.Model_prakse.value == 'A' ? 'danger' : 'success'" :label="student.Model_prakse.value" />
 				</td>
 				<td data-label="JMBAG">
 					{{ student["JMBAG"] }}

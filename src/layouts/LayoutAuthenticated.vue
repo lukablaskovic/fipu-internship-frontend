@@ -35,6 +35,7 @@ const userAdmin = ref(false);
 let menuAside = ref([]);
 onMounted(() => {
 	userAdmin.value = mainStore.userAdmin;
+
 	if (userAdmin.value) {
 		menuAside.value = menuAsideAdmin;
 	}
@@ -75,7 +76,7 @@ const menuClick = (event, item) => {
 				<NavBarItemPlain display="hidden lg:flex xl:hidden" @click.prevent="layoutStore.asideLgToggle()">
 					<BaseIcon :path="layoutStore.isAsideLgActive ? mdiBackburger : mdiMenu" size="24" />
 				</NavBarItemPlain>
-				<NavBarItemPlain use-margin>
+				<NavBarItemPlain use-margin v-if="mainStore.userAdmin">
 					<FormControl :icon="mdiMagnify" search-bar borderless />
 				</NavBarItemPlain>
 			</NavBar>

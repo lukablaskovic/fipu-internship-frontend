@@ -1,27 +1,27 @@
 <script setup>
-import { ref, computed, onMounted, reactive } from "vue";
 import { mdiFileDocumentEdit, mdiLaptop, mdiBallot, mdiAccount, mdiMail, mdiClipboardCheck, mdiPhone, mdiCardAccountDetailsOutline, mdiDomain, mdiClockTimeFiveOutline, mdiTextLong } from "@mdi/js";
-import { useVuelidate } from "@vuelidate/core";
-import { required, email, helpers, numeric } from "@vuelidate/validators";
 import { croatianAlpha, getFirstErrorForField, isUnipuEmail, exactLength, containsNumeric } from "@/helpers/validators";
+import { required, email, helpers, numeric } from "@vuelidate/validators";
+import { ref, computed, onMounted, reactive } from "vue";
+import { useVuelidate } from "@vuelidate/core";
 
 import LayoutAuthenticated from "@/layouts/LayoutAuthenticated.vue";
 import LayoutGuest from "@/layouts/LayoutGuest.vue";
 
-import SectionMain from "@/components/Section/SectionMain.vue";
 import SectionTitleLineWithButton from "@/components/Section/SectionTitleLineWithButton.vue";
-import CardboxAllocation from "@/components/Cardbox/CardBoxAllocation.vue";
-import CardBox from "@/components/Cardbox/CardBox.vue";
+import CardBoxComponentTitle from "@/components/Cardbox/CardBoxComponentTitle.vue";
 import FormCheckRadioGroup from "@/components/Form/FormCheckRadioGroup.vue";
+import CardboxAllocation from "@/components/Cardbox/CardBoxAllocation.vue";
 import FormCheckRadio from "@/components/Form/FormCheckRadio.vue";
-import FormField from "@/components/Form/FormField.vue";
+import SectionMain from "@/components/Section/SectionMain.vue";
 import FormControl from "@/components/Form/FormControl.vue";
 import BaseDivider from "@/components/Base/BaseDivider.vue";
 import BaseButton from "@/components/Base/BaseButton.vue";
-import CardBoxComponentTitle from "@/components/Cardbox/CardBoxComponentTitle.vue";
+import FormField from "@/components/Form/FormField.vue";
+import CardBox from "@/components/Cardbox/CardBox.vue";
 
-import { UserTaskMappings } from "@/helpers/maps";
 import { mainStore, snackBarStore, studentStore } from "@/main.js";
+import { UserTaskMappings } from "@/helpers/maps";
 import Utils from "@/helpers/utils.js";
 
 const allocated_assignment = ref(null);
@@ -186,16 +186,12 @@ async function submit_application_form() {
 			<hr />
 			<br />
 			<SectionTitleLineWithButton :icon="mdiFileDocumentEdit" main title="Prijavnica"></SectionTitleLineWithButton>
-			<p><b>Važno!</b> Prijavnica se popunjava nakon što nastavnik odobri kontakt određenom poduzeću i nakon što student s tim poduzećem dogovir praksu.</p>
-			<p>Ispod možete pronaći prijavnicu za praksu. Neki podaci su već u sustavu te su samim time ispisani. Ostale podatke treba popuniti.</p>
-			<br />
-			<hr />
-			<p>Popunjenu prijavnicu šaljemo poduzeću na odobrenje i potpis.</p>
+
 			<br />
 			<hr />
 
-			<div class="grid grid-cols-1 gap-6 mb-8">
-				<CardBox :icon="mdiBallot" class="mb-6 lg:mb-0 lg:col-span-2 xl:col-span-3" is-form @submit.prevent="submit_application_form">
+			<div class="mb-8 grid grid-cols-1 gap-6">
+				<CardBox :icon="mdiBallot" class="mb-6 lg:col-span-2 lg:mb-0 xl:col-span-3" is-form @submit.prevent="submit_application_form">
 					<CardBoxComponentTitle title="📃Prijavnica na praksu" />
 					<FormField label="Ime i prezime" horizontal>
 						<FormControl v-model="form.student_ime" :icon-left="mdiAccount" help="Vaše ime" :error="getFirstErrorForField(v$, 'student_ime')" placeholder="Vaše ime" />
@@ -252,7 +248,7 @@ async function submit_application_form() {
 					<BaseDivider />
 
 					<FormField label="Praksu ću izvršavati" horizontal>
-						<FormCheckRadioGroup v-model="form.mjesto_izvrsavanja" name="sample-radio-two" type="radio" :error="getFirstErrorForField(v$, 'mjesto_izvrsavanja')" :options="nacinIzvrsavanjeRadioOptions" is-column />
+						<FormCheckRadioGroup v-model="form.mjesto_izvrsavanja" name="sample-radio-two" type="radio" :error="getFirstErrorForField(v$, 'mjesto_izvrsavanja')" :options="nacinIzvrsavanjeRadioOptions" />
 					</FormField>
 
 					<BaseDivider />

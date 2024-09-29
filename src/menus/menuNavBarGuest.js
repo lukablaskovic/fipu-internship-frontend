@@ -2,12 +2,14 @@ import { mdiLogin, mdiThemeLightDark, mdiBug } from "@mdi/js";
 
 export default [
 	[
+		/*
 		{
 			icon: mdiThemeLightDark,
 			label: "Promjena teme",
 			isDesktopNoLabel: true,
 			isToggleLightDark: true,
 		},
+    */
 		{
 			icon: mdiBug,
 			label: "Prijavi bug",
@@ -22,12 +24,14 @@ export default [
 		},
 	],
 	[
+		/*
 		{
 			icon: mdiThemeLightDark,
 			label: "Promjena teme",
 			isDesktopNoLabel: true,
 			isToggleLightDark: true,
 		},
+    */
 		{
 			icon: mdiBug,
 			label: "Prijavi bug",

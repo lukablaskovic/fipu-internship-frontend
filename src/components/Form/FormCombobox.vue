@@ -1,15 +1,15 @@
 <template>
 	<Combobox v-model="selected">
 		<div class="relative z-50">
-			<div class="relative w-full cursor-default overflow-hidden rounded bg-white text-left sm:text-sm border border-gray hover:border-fipu_blue focus:border-fipu_blue">
-				<ComboboxInput class="w-full px-3 py-2 max-w-full focus:ring focus:outline-none dark:placeholder-gray-400 h-12 dark:bg-slate-800" :display-value="(company) => company.label" :placeholder="props.placeholder" @change="query = $event.target.value" />
+			<div class="relative w-full cursor-default overflow-hidden rounded border border-black bg-white text-left sm:text-sm">
+				<ComboboxInput class="h-12 w-full max-w-full px-3 py-2 focus:outline-none focus:ring dark:bg-slate-800 dark:placeholder-gray-400" :display-value="(company) => company.label" :placeholder="props.placeholder" @change="query = $event.target.value" />
 				<ComboboxButton class="absolute inset-y-0 right-0 flex items-center pr-2">
 					<MdiUnfoldMoreHorizontal class="h-5 w-5 text-gray-700 hover:text-fipu_blue" aria-hidden="true" />
 				</ComboboxButton>
 			</div>
 			<TransitionRoot leave="transition ease-in duration-100" leave-from="opacity-100" leave-to="opacity-0" @after-leave="query = ''">
 				<ComboboxOptions class="absolute mt-1 max-h-60 w-full overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm">
-					<div v-if="companies.length === 0 && query !== ''" class="relative cursor-default select-none py-2 px-4 text-gray-700">Nema rezultata.</div>
+					<div v-if="companies.length === 0 && query !== ''" class="relative cursor-default select-none px-4 py-2 text-gray-700">Nema rezultata.</div>
 
 					<ComboboxOption v-for="company in companies" v-slot="{ selected, active }" :key="company.id" as="template" :value="company">
 						<li
@@ -33,11 +33,11 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted, watch } from "vue";
 import { Combobox, ComboboxInput, ComboboxButton, ComboboxOptions, ComboboxOption, TransitionRoot } from "@headlessui/vue";
+import { ref, computed, onMounted, watch } from "vue";
 
-import mdiCheck from "vue-material-design-icons/Check.vue";
 import MdiUnfoldMoreHorizontal from "vue-material-design-icons/UnfoldMoreHorizontal.vue";
+import mdiCheck from "vue-material-design-icons/Check.vue";
 const emit = defineEmits(["update:modelValue"]);
 
 const props = defineProps({
@@ -60,7 +60,7 @@ watch(
 	() => selected.value,
 	(newVal) => {
 		emit("update:modelValue", newVal);
-	}
+	},
 );
 
 watch(
@@ -69,6 +69,6 @@ watch(
 		if (!newQuery) {
 			selected.value = ref();
 		}
-	}
+	},
 );
 </script>

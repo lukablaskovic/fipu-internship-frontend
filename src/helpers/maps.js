@@ -63,8 +63,9 @@ import Student_WaitingForMark from "@/components/Internship/Student_WaitingForMa
 
 //model B
 import Model_B_Student_WaitingForApproval from "@/components/Internship/Model_B/Model_B_Student_WaitingForApproval.vue";
+import Model_B_Student_DirectApplication from "@/components/Internship/Model_B/Model_B_Student_DirectApplication.vue";
 
-import { adminStore, mainStore } from "@/main";
+import { adminStore } from "@/main";
 
 // Custom - Hardcoded frontend functionality
 class SendTaskMappings {
@@ -244,7 +245,7 @@ class UserTaskMappings {
 			snackbar_color: "",
 			bpmn_pending_info_msg: "Student se još nije prijavio na zadatak.",
 			bpmn_task_color: "#79d4f2",
-			component: Model_B_Student_WaitingForApproval,
+			component: Model_B_Student_DirectApplication,
 		},
 	];
 
@@ -409,10 +410,28 @@ class ActivityEventMappings {
 		},
 		//model B
 		{
+			activity_id: "model_b_dogovor_profesor",
+			icon: mdiThumbsUpDownOutline,
+			type: "success",
+			message: "Student potvrđuje dogovor",
+		},
+		{
 			activity_id: "model_b_odobrenje_zadatka",
 			icon: mdiThumbsUpDownOutline,
 			type: "success",
-			message: "Radnja registrirana",
+			message: "Zadatak odobren (B)",
+		},
+		{
+			activity_id: "end_event_zadatak_neodobren",
+			icon: mdiRayEnd,
+			type: "danger",
+			message: "Zadatak odbijen (B)",
+		},
+		{
+			activity_id: "direktna_prijava_student",
+			icon: mdiRayEnd,
+			type: "info",
+			message: "Student se mora prijaviti (B)",
 		},
 	];
 

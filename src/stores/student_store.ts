@@ -59,7 +59,40 @@ export const useStudentStore = defineStore("student", {
 				const response = await ProcessInstance.handleNewInstance(process_instance_id, pending_user_task, post_data);
 				return response;
 			} catch (error) {
-				console.log("Error:", error);
+				console.log("[student_store.registerPreferences] Error:", error);
+			}
+		},
+
+		async direct_application_B(assignment_data: AssignmentData, napomena: string) {
+			let response = await Student.directAllocation({
+				JMBAG: mainStore.currentUser["JMBAG"],
+				Student: [mainStore.currentUser["JMBAG"]],
+				Napomena: napomena,
+				id_instance: mainStore.currentUser.internship_process.id,
+				_frontend_url: endpoints.VITE_FRONTEND_URL,
+			});
+
+			const post_data = {
+				JMBAG: mainStore.currentUser["JMBAG"],
+				Student: [mainStore.currentUser["JMBAG"]],
+				student_email: mainStore.currentUser["email"],
+				student_ime: mainStore.currentUser["ime"],
+				student_prezime: mainStore.currentUser["prezime"],
+				student_godina_studija: mainStore.currentUser["godina_studija"],
+				Alocirani_zadatak: [assignment_data.id_zadatak],
+				napomena,
+				process_instance_id: mainStore.currentUser.internship_process.id,
+				frontend_url: endpoints.VITE_FRONTEND_URL,
+				id_alokacija: response["id_alokacija"],
+			};
+
+			try {
+				const process_instance_id = mainStore.currentUser.internship_process.id;
+				const pending_user_task = mainStore.currentUser.internship_process.pending_user_task;
+				const response = await ProcessInstance.handleNewInstance(process_instance_id, pending_user_task, post_data);
+				return response;
+			} catch (error) {
+				console.log("[student_store.direct_application_B] Error:", error);
 			}
 		},
 

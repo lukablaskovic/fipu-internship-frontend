@@ -2,6 +2,7 @@
 import { mdiAccountMultiple, mdiAccount, mdiAccountGroup } from "@mdi/js";
 import { useRouter, useRoute } from "vue-router";
 import { ref, onMounted, watch } from "vue";
+import { nextTick } from "vue";
 import axios from "axios";
 
 import { UserTaskMappings, SendTaskMappings } from "@/helpers/maps";
@@ -62,12 +63,16 @@ async function handleProcessDiagram() {
 	try {
 		process_instance_data.value = await adminStore.getProcessInstanceData(adminStore.selectedStudent);
 		let model = process_instance_data.value.model.model_path.split(".")[0];
+
 		bpmn_model.value = await fetchXML(model);
+
 		bpmn_diagram_active.value = true;
 
+		await nextTick();
+
 		bpmnKey.value++;
-		// Navigate to the new URL with the process_instance_id
-		router.push(`/studenti/${process_instance_data.value.id}`);
+
+		router.replace(`/studenti/${process_instance_data.value.id}`);
 	} catch (e) {
 		console.error("Failed to fetch process instance data:", e);
 	}
@@ -227,7 +232,7 @@ onMounted(loadDataForStudent);
 				@current-task-modal="modal_select_bpmn_task = true"
 				@past-task-modal="modal_past_bpmn_task = true"
 				@send-task-modal="modal_send_task = true" />
-			<div v-else class="flex items-center justify-center pt-36">
+			<div v-else-if="process_instance_data" class="flex items-center justify-center pt-36">
 				<LoadingAnimatedIcon></LoadingAnimatedIcon>
 			</div>
 		</LayoutAuthenticated>

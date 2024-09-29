@@ -21,19 +21,24 @@ router.beforeEach((to, from, next) => {
 
 	// If route requires authentication and user is not authenticated
 	if (requiresAuth && !userAuthenticated) {
+		console.log("A");
+
 		return next("/prijava");
 	}
 
 	if (to.path === "/moja-praksa" && mainStore.userAdmin) {
+		console.log("b");
 		return next("/dashboard");
 	}
 
-	if (to.path === "/moja-praksa" && !mainStore.userHasActiveInstance) {
+	if (to.path === "/moja-praksa" && !mainStore.userHasActiveInstance && mainStore.userAuthenticated) {
 		return next("/odabir-procesa");
 	}
 
 	// If route requires admin role but user isn't admin
 	if (requiresAdmin && !userAdmin) {
+		console.log("D");
+
 		return next("/moja-praksa");
 	}
 

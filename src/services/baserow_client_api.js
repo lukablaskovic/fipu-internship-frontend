@@ -80,6 +80,15 @@ const Student = {
 			return null;
 		}
 	},
+	async directAllocation(postData) {
+		try {
+			let result = await AxiosWrapper.post("/alokacija/direct", postData);
+			return result;
+		} catch (error) {
+			console.log("Error:", error);
+			return null;
+		}
+	},
 	async getAssignmentDetails(queryParams = {}) {
 		try {
 			let result = await AxiosWrapper.get("/Zadaci_za_odabir", queryParams);

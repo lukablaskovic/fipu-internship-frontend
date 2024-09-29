@@ -158,8 +158,8 @@ const angazmanSelect = { true: "Da", false: "Ne" };
 const selectionSelect = { true: "Da", false: "Ne" };
 
 onMounted(async () => {
-	let result = await mainStore.fetchCompanies();
-	allCompanies.value = result.data.results;
+	let results = await mainStore.fetchCompanies();
+	allCompanies.value = results;
 
 	mappedCompanies.value = allCompanies.value.map((items, index) => ({
 		id: index + 1,
@@ -187,7 +187,7 @@ const onCompanyChange = () => {
 	<div>
 		<SectionMain>
 			<SectionTitleLineWithButton :icon="mdiLaptop" title="FIPU Praksa" main>
-				<a href="/" target="_blank">
+				<a href="https://fipu-praksa.unipu.hr/" target="_blank">
 					<img :src="FIPU_praksa_logo_transparent" class="max-h-14 object-contain" />
 				</a>
 			</SectionTitleLineWithButton>
@@ -202,6 +202,8 @@ const onCompanyChange = () => {
 			<p>Studentima je ovo izborni kolegij i oni koji su prijavljeni, motivirani su i spremni za rad!</p>
 			<br />
 			<p><b>Važna napomena:</b> Pojedina organizacija može prijaviti i više zadataka. Molimo da za svaki zadatak zasebno popunite prijavnicu (isti link) te zatražite broj studenata koji može na njemu raditi (npr. može biti 2 zadataka, na prvom 3 studenta, na drugom 4).</p>
+			<br />
+			<p>Ako ste u dogovoru sa studentom, molimo da navedete njegovo ime i prezime u polju "Preferencije pri odabiru studenta".</p>
 			<br />
 			<p>Za sve dodatne informacije slobodno kontaktirajte voditelja stručne prakse:</p>
 
@@ -227,9 +229,9 @@ const onCompanyChange = () => {
 			</div>
 			<div class="mb-6 grid grid-cols-1 gap-6">
 				<CardBox :icon="mdiBallot" class="mb-6 lg:col-span-2 lg:mb-0 xl:col-span-3" is-form @submit.prevent="onSubmit">
-					<CardBoxComponentTitle class="text-center" title="💼Prijava projekta za studentsku praksu " />
+					<CardBoxComponentTitle class="text-center" title="💼 Prijava projekta za studentsku praksu " />
 
-					<FormField v-if="!form.Poslodavac_novi_naziv" label="Poduzeće partner*" help="Ako niste partner, unesite naziv poduzeća ispod" horizontal>
+					<FormField v-if="!form.Poslodavac_novi_naziv" label="Poduzeće partner*" help="Ako niste partner, unesite naziv poduzeća ispod." horizontal>
 						<FormCombobox v-model="form.Poslodavac" :options="mappedCompanies" placeholder="Odaberite poduzeće ako ste postojeći partner" @change="onCompanyChange" />
 					</FormField>
 
@@ -246,10 +248,10 @@ const onCompanyChange = () => {
 						<FormControl
 							v-model="form.opis_zadatka"
 							type="textarea"
-							placeholder="Zadatak će se sastojati od ... Student će raditi na ..."
+							placeholder="Zadatak će se sastojati od... Student će raditi na..."
 							:error="getFirstErrorForField(v$, 'opis_zadatka')"
 							:icon-left="mdiTextLong"
-							help="Opis zadataka koji bi student izvršavao. Može biti: mala (web, mobilna, desktop) aplikacija, program za obradu podataka, analiza podataka, poboljšanje postojećeg koda (engl. code refactoring), pomoć pri održavanju računalne ili aplikacijske infrastrukture - DevOps poslovi, ... Preporučuje se što detaljniji opis kako bi mogli alocirati idealnog kandidata." />
+							help="Opis zadataka koji bi student izvršavao. Može biti: mala (web, mobilna, desktop) aplikacija, program za obradu podataka, analiza podataka, poboljšanje postojećeg koda (engl. code refactoring), pomoć pri održavanju računalne ili aplikacijske infrastrukture - DevOps poslovi... Preporučuje se što detaljniji opis kako bi mogli alocirati idealnog kandidata." />
 					</FormField>
 
 					<FormField
@@ -260,24 +262,24 @@ const onCompanyChange = () => {
 							v-model="form.preferirane_tehnologije"
 							type="textarea"
 							:error="getFirstErrorForField(v$, 'preferirane_tehnologije')"
-							:placeholder="`Npr. PHP, Laravel, Python, Django, JavaScript, Vue.js, Unity, WordPress, TensorFlow...`"
+							:placeholder="`npr. PHP, Laravel, Python, Django, JavaScript, Vue.js, Unity, WordPress, TensorFlow...`"
 							:icon-left="mdiXml"
-							help="Što sve koristi vaša tvrtka ili na čemu će se temeljiti rad studenta? Npr. PHP, Laravel, Python, Django, JavaScript, Vue.js, Unity, WordPress, TensorFlow...
+							help="Što sve koristi vaša tvrtka ili na čemu će se temeljiti rad studenta? Navedite konkretne tehnologije.
 " />
 					</FormField>
 
 					<FormField label="Broj studenata*" horizontal>
 						<FormField addons>
-							<FormControl v-model="form.broj_studenata" type="number" :icon-left="mdiAccountGroup" :error="getFirstErrorForField(v$, 'broj_studenata')" :min="1" placeholder="Maksimalni broj studenata" help="Koliko studenata možete primiti u rješavanju ovog zadatka? Studenti mogu raditi odvojeno ili u timu. Ako imate više zadataka, možete ponovno popuniti formu za svaki zadatak posebno." expanded />
+							<FormControl v-model="form.broj_studenata" type="number" :icon-left="mdiAccountGroup" :error="getFirstErrorForField(v$, 'broj_studenata')" :min="1" placeholder="Maksimalni broj studenata" help="Koliko studenata možete primiti u rješavanju ovog zadatka? Studenti mogu raditi odvojeno ili u timu. Ako imate više zadataka, molimo da popunite formu za svaki zadatak posebno." expanded />
 						</FormField>
 					</FormField>
 
 					<FormField label="Preferencije pri odabiru studenta" horizontal>
-						<FormControl v-model="form.preferencije_za_studenta" type="textarea" :error="getFirstErrorForField(v$, 'preferencije_za_studenta')" placeholder="Poželjni kandidat posjeduje znanja iz ... ima iskustva u..." :icon-left="mdiThumbsUpDown" help="U koliko smatrate važnim, opišite odlike poželjnog kandidata na praksi." />
+						<FormControl v-model="form.preferencije_za_studenta" type="textarea" :error="getFirstErrorForField(v$, 'preferencije_za_studenta')" placeholder="Poželjni kandidat posjeduje znanja iz... mora imati iskustva u..." :icon-left="mdiThumbsUpDown" help="U koliko smatrate važnim, opišite odlike poželjnog kandidata na praksi. Ako već imate dogovor sa studentom, navedite ovdje njegovo ime i prezime." />
 					</FormField>
 
 					<FormField label="Potrebna infrastruktura koju student mora posjedovati" horizontal>
-						<FormControl v-model="form.potrebno_imati" :error="getFirstErrorForField(v$, 'potrebno_imati')" :icon-left="mdiDomain" help="Potrebna infrastruktura koju student mora posjedovati" placeholder="Npr. laptop" />
+						<FormControl v-model="form.potrebno_imati" :error="getFirstErrorForField(v$, 'potrebno_imati')" :icon-left="mdiDomain" help="Potrebna infrastruktura koju student mora posjedovati" placeholder="npr. laptop" />
 					</FormField>
 
 					<FormField label="Željeno trajanje prakse*" horizontal>
@@ -295,7 +297,7 @@ const onCompanyChange = () => {
 					</FormField>
 
 					<FormField label="Lokacija*" horizontal>
-						<FormControl v-model="form.lokacija" help="Moguća je 'remote' praksa" :error="getFirstErrorForField(v$, 'lokacija')" :icon-left="mdiMapMarker" placeholder="Lokacija održavanja prakse" />
+						<FormControl v-model="form.lokacija" help="Moguća je 'remote' praksa." :error="getFirstErrorForField(v$, 'lokacija')" :icon-left="mdiMapMarker" placeholder="Lokacija održavanja prakse" />
 					</FormField>
 
 					<FormField label="Željeno okvirno vrijeme početka" horizontal>
@@ -316,14 +318,14 @@ const onCompanyChange = () => {
 
 					<FormField
 						label="Selekcijski postupak*"
-						help="Želite li provesti dodatnu selekciju kandidata koji se prijave na praksu (npr. intervju, ispit) ?
+						help="Želite li provesti dodatnu selekciju kandidata koji se prijave na praksu (npr. intervju, ispit)?
 "
 						horizontal>
 						<FormCheckRadioGroup v-model="form.selekcija" name="selekcija_selection" :error="getFirstErrorForField(v$, 'selekcija')" type="radio" :options="selectionSelect" component-class="check-radio-warning" />
 					</FormField>
 
 					<FormField v-if="form.selekcija === true" label="Proces selekcije" horizontal>
-						<FormControl v-model="form.proces_selekcije" :error="getFirstErrorForField(v$, 'proces_selekcije')" type="textarea" :disabled="form.selekcija === false" help="Molimo da opišete postupak selekcije, da studenti otprilike znaju što očekivati." />
+						<FormControl v-model="form.proces_selekcije" :error="getFirstErrorForField(v$, 'proces_selekcije')" type="textarea" :disabled="form.selekcija === false" help="Molimo da opišete postupak selekcije, kako bi studenti znali što otprilike očekivati." />
 					</FormField>
 
 					<FormField horizontal grouped>

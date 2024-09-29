@@ -16,5 +16,6 @@ export const endpoints = {
 	//VITE_SENDGRID_API_URL: "https://fipubot.unipu.hr/api/sendgrid-connector",
 	VITE_SENDGRID_API_URL: "http://localhost:8083",
 
-	VITE_PDF_API_URL: "https://fipubot.unipu.hr/api/pdf-connector",
+	//VITE_PDF_API_URL: "https://fipubot.unipu.hr/api/pdf-connector",
+	VITE_PDF_API_URL: "http://localhost:8084",
 };

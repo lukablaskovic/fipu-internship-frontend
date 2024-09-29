@@ -182,6 +182,7 @@ export const useAdminStore = defineStore("admin", {
 					student.process_instance_data = data;
 
 					const pendingTask = student.process_instance_data.pending[0];
+
 					student.process_instance_data.pending_task_info = await this.getTaskInfo(student.process_instance_id, pendingTask);
 
 					if (taskToDashboardMapping[pendingTask]) {
@@ -212,9 +213,16 @@ export const useAdminStore = defineStore("admin", {
 		async searchModels() {
 			try {
 				const response = await Model.search();
-				const model = response.results.find((result) => result.model_path === `${mainStore.bpmn_process_name_A}.bpmn`);
-				if (model && model.instances) {
-					this.dashboard_data.ongoing_internships = model.instances.length - this.dashboard_data.finished_internships;
+				console.log("Model.search();", response);
+				const model_a = response.results.find((result: any) => result.model_path === `${mainStore.bpmn_process_name_A}.bpmn`);
+				const model_b = response.results.find((result: any) => result.model_path === `${mainStore.bpmn_process_name_B}.bpmn`);
+				let model_a_instances = model_a.instances;
+				let model_b_instances = model_b.instances;
+
+				let model_all_instances = model_a_instances.concat(model_b_instances);
+
+				if (model_a && model_b && model_all_instances) {
+					this.dashboard_data.ongoing_internships = model_all_instances.instances.length - this.dashboard_data.finished_internships;
 				}
 
 				return response.results;

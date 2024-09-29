@@ -3,6 +3,10 @@
 		<div class="mb-2">{{ documentation }}</div>
 
 		<div v-for="(field, key) in formFields" :key="key">
+			<FormField v-if="field.type === 'input'" :label="field.label">
+				<FormControl v-model="formValues[key]" type="text" />
+			</FormField>
+
 			<FormField v-if="field.type === 'yes-no-boolean'" :label="field.label">
 				<FormCheckRadioGroup v-model="formValues[key]" :name="key" type="radio" :options="{ true: 'Da', false: 'Ne' }" />
 			</FormField>
@@ -24,6 +28,7 @@ import { onMounted, computed, reactive, watch } from "vue";
 import FormCheckRadioGroup from "./FormCheckRadioGroup.vue";
 import TaskTable from "../BPMN/TaskTable.vue";
 import CardBox from "../Cardbox/CardBox.vue";
+import FormControl from "./FormControl.vue";
 import FormField from "./FormField.vue";
 
 const emit = defineEmits(["update:modelValue", "allFieldsFilled"]);
@@ -75,7 +80,6 @@ const allFieldsFilled = computed(() => {
 	return Object.keys(formValues).every((key) => {
 		const field = props.formFields[key];
 		const value = formValues[key];
-		const isRendered = field.type === "yes-no-boolean" || (field.type.startsWith("selectFromTable") && isTableComponentVisible.value) || field.type === "var-string";
 
 		// Yes-No boolean fields must be filled (not null)
 		if (field.type === "yes-no-boolean") {
@@ -90,6 +94,11 @@ const allFieldsFilled = computed(() => {
 		// selectFromTable fields must have a selection
 		if (field.type.startsWith("selectFromTable") && isTableComponentVisible.value) {
 			return value !== null;
+		}
+
+		// Input fields must not be empty
+		if (field.type === "input") {
+			return value !== null && value.trim() !== ""; // Ensure input field is not empty
 		}
 
 		// For any other field types, fallback to true if not rendered

@@ -1,288 +1,109 @@
 <script setup>
-import { computed, ref, onMounted, onBeforeUnmount } from "vue";
-
 import { mdiUnfoldMoreHorizontal, mdiAlertCircle, mdiCheckCircle, mdiAsterisk, mdiLockOff, mdiContentCopy } from "@mdi/js";
 import FormControlListbox from "@/components/Premium/FormControlListbox.vue";
 import FormControlIcon from "@/components/Premium/FormControlIcon.vue";
 import FormFieldHelp from "@/components/Premium/FormFieldHelp.vue";
+import { computed, ref, onMounted, onBeforeUnmount } from "vue";
 import SearchOptions from "@/components/SearchOptions.vue";
 import BaseIcon from "@/components/Base/BaseIcon.vue";
 import { controlTextColor } from "@/colorsPremium.js";
 import TipTag from "@/components/Premium/TipTag.vue";
+import { snackBarStore, mainStore } from "@/main";
 import { getButtonColor } from "@/colors.js";
-import { snackBarStore } from "@/main";
-import { mainStore } from "@/main";
 
 const props = defineProps({
 	firstAddon: Boolean,
 	middleAddon: Boolean,
 	lastAddon: Boolean,
 	expanded: Boolean,
-	inputW: {
-		type: String,
-		default: "w-full",
-	},
-	help: {
-		type: String,
-		default: null,
-	},
-	name: {
-		type: String,
-		default: null,
-	},
-	id: {
-		type: String,
-		default: null,
-	},
-	min: {
-		type: [String, Number],
-		default: null,
-	},
-	max: {
-		type: [String, Number],
-		default: null,
-	},
+	inputW: { type: String, default: "w-full" },
+	help: String,
+	name: String,
+	id: String,
+	min: [String, Number],
+	max: [String, Number],
 	required: Boolean,
-	autocomplete: {
-		type: String,
-		default: null,
-	},
-	placeholder: {
-		type: String,
-		default: null,
-	},
-	iconLeft: {
-		type: String,
-		default: null,
-	},
-	iconRight: {
-		type: String,
-		default: null,
-	},
-	error: {
-		type: [Boolean, String],
-		default: null,
-	},
-	success: {
-		type: [Boolean, String],
-		default: null,
-	},
-	options: {
-		type: Array,
-		default: null,
-	},
-	type: {
-		type: String,
-		default: "text",
-	},
-	modelValue: {
-		type: [String, Number, Boolean, Array, Object],
-		default: "",
-	},
-	buttonLabel: {
-		type: String,
-		default: null,
-	},
-	buttonIcon: {
-		type: String,
-		default: null,
-	},
-	buttonColor: {
-		type: String,
-		default: "white",
-	},
+	autocomplete: String,
+	placeholder: String,
+	iconLeft: String,
+	iconRight: String,
+	error: [Boolean, String],
+	success: [Boolean, String],
+	options: Array,
+	type: { type: String, default: "text" },
+	modelValue: { type: [String, Number, Boolean, Array, Object], default: "" },
+	buttonLabel: String,
+	buttonIcon: String,
+	buttonColor: { type: String, default: "white" },
 	buttonOutline: Boolean,
 	borderless: Boolean,
-	tipLeft: {
-		type: String,
-		default: null,
-	},
-	tipRight: {
-		type: String,
-		default: null,
-	},
+	tipLeft: String,
+	tipRight: String,
 	ctrlKFocus: Boolean,
 	searchBar: Boolean,
 	transparent: Boolean,
 	readonly: Boolean,
-	copyable: {
-		type: Boolean,
-		default: false,
-	},
+	copyable: { type: Boolean, default: false },
 	disabled: Boolean,
 });
 
 const emit = defineEmits(["update:modelValue", "right-icon-click"]);
-const showSearchBar = computed(() => props.searchBar);
+
+const passwordIsOpen = ref(false);
+const inputEl = ref(null);
 
 const computedValue = computed({
 	get: () => props.modelValue,
-	set: (value) => {
-		emit("update:modelValue", value);
-	},
+	set: (value) => emit("update:modelValue", value),
 });
 
-const borderColor = computed(() => {
-	if (props.error) {
-		return "border-red-600";
-	}
-
-	if (props.success) {
-		return "border-green-600";
-	}
-
-	return "border-gray-700";
+const showSearchBar = computed(() => props.searchBar);
+const computedType = computed(() => {
+	if (props.options && props.type !== "list") return "select";
+	if (props.buttonLabel || props.buttonIcon) return "button";
+	return props.type === "password" && passwordIsOpen.value ? "text" : props.type;
 });
 
-const textColor = computed(() => {
-	return controlTextColor(props.error, props.success);
-});
-
-const placeholderColor = computed(() => {
-	if (props.error) {
-		return "placeholder-red-600";
-	}
-
-	if (props.success) {
-		return "placeholder-green-600";
-	}
-
-	return null;
-});
-
-const wrapperBorder = computed(() => ["textarea"].indexOf(computedType.value) < 0);
-
+const borderColor = computed(() => (props.error ? "border-red-600" : props.success ? "border-green-600" : "border-gray-700"));
+const textColor = computed(() => controlTextColor(props.error, props.success));
+const placeholderColor = computed(() => (props.error ? "placeholder-red-600" : props.success ? "placeholder-green-600" : null));
+const wrapperBorder = computed(() => computedType.value !== "textarea");
 const upperWrapperClass = computed(() => (props.expanded ? "grow shrink" : ""));
 
 const wrapperClass = computed(() => {
 	const base = [];
-
-	if (props.searchBar) {
-		base.push("rounded");
-	}
-
-	if (computedType.value === "button") {
-		base.push(getButtonColor(props.buttonColor, props.buttonOutline, true));
-	} else {
-		base.push(borderColor.value);
-
-		if (wrapperBorder.value) {
-			base.push("dark:bg-slate-800", props.borderless ? "bg-gray-50" : "");
-		}
-	}
-
-	if (!props.borderless && wrapperBorder.value) {
-		base.push("border-t border-b");
-
-		if (!props.firstAddon && !props.lastAddon && !props.middleAddon) {
-			base.push("rounded border-l border-r");
-		} else if (props.firstAddon) {
-			base.push("rounded-l border-l");
-
-			if (computedType.value !== "button") {
-				base.push("pr-1");
-			}
-		} else if (props.lastAddon) {
-			base.push("rounded-r border-r");
-
-			if (computedType.value !== "button") {
-				base.push("pl-1");
-			}
-		}
-	}
-
-	return base;
-});
-
-const inputElClass = computed(() => {
-	const base = ["px-3 py-2 max-w-full focus:ring focus:ring-fipu_blue focus:outline-none dark:placeholder-gray-400", props.inputW, computedType.value === "textarea" ? "h-24" : "h-12", props.borderless || wrapperBorder.value ? "border-0" : "border"];
+	if (props.searchBar) base.push("rounded");
 	if (computedType.value === "button") {
 		base.push(getButtonColor(props.buttonColor, props.buttonOutline, true));
 	} else {
 		base.push(borderColor.value, "dark:bg-slate-800", props.borderless ? "bg-gray-50" : "");
+		if (wrapperBorder.value) base.push("border-t border-b", !props.firstAddon && !props.lastAddon && !props.middleAddon ? "rounded border-l border-r" : "");
+		if (props.firstAddon) base.push("rounded-l border-l");
+		if (props.lastAddon) base.push("rounded-r border-r");
 	}
-
-	if (textColor.value) {
-		base.push(textColor.value);
-	}
-
-	if (placeholderColor.value) {
-		base.push(placeholderColor.value || "placeholder-gray-500");
-	}
-
-	if (!props.firstAddon && !props.lastAddon && !props.middleAddon) {
-		base.push("rounded");
-	} else if (props.firstAddon) {
-		base.push("rounded-l");
-	} else if (props.lastAddon) {
-		base.push("rounded-r");
-	}
-
-	if (computedIconLeft.value) {
-		base.push("pl-10");
-	}
-
-	if (computedIconRight.value) {
-		base.push("pr-10");
-	}
-
-	if (props.searchBar) {
-		base.push("rounded");
-	}
-
 	return base;
 });
 
-const computedType = computed(() => {
-	if (props.options && props.type !== "list") {
-		return "select";
-	}
-
-	if (props.buttonLabel || props.buttonIcon) {
-		return "button";
-	}
-
-	if (props.type === "password" && passwordIsOpen.value) {
-		return "text";
-	}
-
-	return props.type; // This should return "text" but ensure it's being used.
+const inputElClass = computed(() => {
+	const base = ["px-3 py-2 max-w-full focus:ring focus:ring-fipu_blue focus:outline-none", props.inputW, computedType.value === "textarea" ? "h-24" : "h-12", wrapperBorder.value ? "border-0" : "border"];
+	base.push(textColor.value, placeholderColor.value || "placeholder-gray-500", computedIconLeft.value && "pl-10", computedIconRight.value && "pr-10");
+	if (!props.firstAddon && !props.lastAddon && !props.middleAddon) base.push("rounded");
+	return base;
 });
 
-const computedIconLeft = computed(() => props.iconLeft ?? null);
-
+const computedIconLeft = computed(() => props.iconLeft || null);
 const computedIconRight = computed(() => {
-	if (props.error) {
-		return mdiAlertCircle;
-	}
-
-	if (props.success) {
-		return mdiCheckCircle;
-	}
-
-	if (props.iconRight) {
-		return props.iconRight;
-	}
-
-	if (props.type === "password") {
-		return passwordIsOpen.value ? mdiLockOff : mdiAsterisk;
-	}
-
-	if (props.type === "list") {
-		return mdiUnfoldMoreHorizontal;
-	}
-
-	return null;
+	if (props.error) return mdiAlertCircle;
+	if (props.success) return mdiCheckCircle;
+	if (props.iconRight) return props.iconRight;
+	if (props.type === "password") return passwordIsOpen.value ? mdiLockOff : mdiAsterisk;
+	return props.type === "list" ? mdiUnfoldMoreHorizontal : null;
 });
 
 const controlIconH = computed(() => (props.type === "textarea" ? "h-full" : "h-12"));
 
-const passwordIsOpen = ref(false);
-
-const rightIconClickable = computed(() => props.type === "password");
-
 const openPasswordToggle = (e) => {
-	if (rightIconClickable.value) {
+	if (props.type === "password") {
 		passwordIsOpen.value = !passwordIsOpen.value;
 		emit("right-icon-click", e);
 	}
@@ -299,8 +120,6 @@ const copyToClipboard = async () => {
 	}
 };
 
-const inputEl = ref(null);
-
 if (props.ctrlKFocus) {
 	const fieldFocusHook = (e) => {
 		if (e.ctrlKey && e.key === "k") {
@@ -315,8 +134,6 @@ if (props.ctrlKFocus) {
 		if (!mainStore.isFieldFocusRegistered) {
 			window.addEventListener("keydown", fieldFocusHook);
 			mainStore.isFieldFocusRegistered = true;
-		} else {
-			console.error("Duplicate field focus event");
 		}
 	});
 
@@ -330,26 +147,37 @@ if (props.ctrlKFocus) {
 <template>
 	<div :class="upperWrapperClass">
 		<div class="relative" :class="wrapperClass">
-			<div v-if="computedType === 'static'" :class="inputElClass" class="inline-flex items-center whitespace-nowrap">
-				{{ modelValue }}
-			</div>
+			<!-- Static Field -->
+			<div v-if="computedType === 'static'" :class="inputElClass" class="inline-flex items-center whitespace-nowrap">{{ modelValue }}</div>
+
+			<!-- Search Bar -->
 			<div v-if="showSearchBar && mainStore.userAdmin" class="relative" :class="wrapperClass">
 				<SearchOptions />
 			</div>
+
+			<!-- Listbox -->
 			<FormControlListbox v-else-if="computedType === 'list'" v-model="computedValue" :readonly="readonly" :options="options" :button-class="inputElClass" />
+
+			<!-- Select Dropdown -->
 			<select v-else-if="computedType === 'select'" :id="id" v-model="computedValue" :readonly="readonly" :name="name" :class="inputElClass" :disabled="disabled">
-				<option v-for="option in options" :key="option.id ?? option" :readonly="readonly" :value="option">
-					{{ option.label ?? option }}
-				</option>
+				<option v-for="option in options" :key="option.id ?? option" :value="option">{{ option.label ?? option }}</option>
 			</select>
+
+			<!-- Textarea -->
 			<textarea v-else-if="computedType === 'textarea'" :id="id" v-model="computedValue" :class="inputElClass" :name="name" :readonly="readonly" :placeholder="placeholder" :required="required" :disabled="disabled" />
-			<button v-else-if="computedType === 'button'" :class="inputElClass" class="ring-fipu_blue" :disabled="disabled">
+
+			<!-- Button -->
+			<button v-else-if="computedType === 'button'" :class="inputElClass" :disabled="disabled">
 				<BaseIcon v-if="buttonIcon" :path="buttonIcon" w="w-8" h="h-8" size="20" />
 				<span v-if="buttonLabel" :class="{ 'ml-1': buttonIcon }">{{ buttonLabel }}</span>
 			</button>
+
+			<!-- Input Field -->
 			<input v-else :id="id" ref="inputEl" v-model="computedValue" :name="name" :autocomplete="autocomplete" :required="required" :readonly="readonly" :placeholder="placeholder" :type="computedType" :min="min" :max="max" :class="[inputElClass, computedType == 'date' ? 'dark:input' : '']" :disabled="disabled" />
+
+			<!-- Icons and Tip Tags -->
 			<FormControlIcon v-if="computedIconLeft" :icon="computedIconLeft" :h="controlIconH" :text-color="textColor" />
-			<FormControlIcon v-if="computedIconRight || props.copyable" :icon="props.copyable ? mdiContentCopy : computedIconRight" :h="controlIconH" :text-color="textColor" :clickable="rightIconClickable || props.copyable" is-right :class="props.copyable ? 'hover:text-fipu_blue' : ''" @icon-click="props.copyable ? copyToClipboard() : openPasswordToggle()" />
+			<FormControlIcon v-if="computedIconRight || props.copyable" :icon="props.copyable ? mdiContentCopy : computedIconRight" :h="controlIconH" :text-color="textColor" :clickable="rightIconClickable || props.copyable" is-right @icon-click="props.copyable ? copyToClipboard() : openPasswordToggle()" />
 			<TipTag v-if="tipLeft" :tip="tipLeft" left />
 			<TipTag v-if="tipRight" :tip="tipRight" right />
 		</div>
