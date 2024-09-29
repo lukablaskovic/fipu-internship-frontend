@@ -44,12 +44,14 @@ const Student = {
 			return null;
 		}
 	},
-	async setProcessData(email, process_instance_id, model_prakse) {
+	async setProcessData(email, process_instance_id, model_prakse, godina_studija, JMBAG) {
 		try {
 			let result = await AxiosWrapper.patch(`/student/process`, {
 				email: email,
 				Model_prakse: model_prakse,
 				process_instance_id: process_instance_id,
+				godina_studija: godina_studija,
+				JMBAG: JMBAG,
 			});
 			return result;
 		} catch (error) {

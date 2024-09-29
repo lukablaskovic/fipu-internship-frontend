@@ -77,12 +77,18 @@ import Utils from "@/helpers/utils";
 const callback = async (response) => {
 	const decodedToken = decodeCredential(response.credential);
 
+	let login_response = await mainStore.handleLogin(decodedToken);
+	if (login_response.status === "success") snackBarStore.pushMessage("Uspješna prijava!", "success");
+	await Utils.wait(1);
+
+	/*
 	if (isUnipuEmail(decodedToken.email)) {
 		let response = await mainStore.handleLogin(decodedToken);
 		if (response.status === "success") snackBarStore.pushMessage("Uspješna prijava!", "success");
 		await Utils.wait(1);
 	} else {
 		snackBarStore.pushMessage("Molimo koristite UNIPU e-mail za prijavu", "warning");
-	}
+  }
+  */
 };
 </script>

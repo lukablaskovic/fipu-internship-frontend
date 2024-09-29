@@ -41,9 +41,9 @@ const updateDisabledCondition = (allFilled) => {
 
 const formDynamicValues = ref({});
 
-async function fetchXML() {
+async function fetchXML(model) {
 	try {
-		const response = await axios.get(`/bpmn_xml/${mainStore.bpmn_process_name_A}.xml`, {
+		const response = await axios.get(`/bpmn_xml/${model}.xml`, {
 			responseType: "text",
 		});
 
@@ -55,15 +55,22 @@ async function fetchXML() {
 
 const router = useRouter();
 const process_instance_data = ref(null);
+const bpmn_model = ref(null);
 const bpmnKey = ref(0);
 
 async function handleProcessDiagram() {
-	bpmn_diagram_active.value = true;
-	process_instance_data.value = await adminStore.getProcessInstanceData(adminStore.selectedStudent);
-	bpmnKey.value++;
+	try {
+		process_instance_data.value = await adminStore.getProcessInstanceData(adminStore.selectedStudent);
+		let model = process_instance_data.value.model.model_path.split(".")[0];
+		bpmn_model.value = await fetchXML(model);
+		bpmn_diagram_active.value = true;
 
-	// Navigate to the new URL with the process_instance_id
-	router.push(`/studenti/${process_instance_data.value.id}`);
+		bpmnKey.value++;
+		// Navigate to the new URL with the process_instance_id
+		router.push(`/studenti/${process_instance_data.value.id}`);
+	} catch (e) {
+		console.log("ERRORRRR:", e);
+	}
 }
 
 const route = useRoute();
@@ -125,10 +132,8 @@ watch(() => route.params.process_instance_id, loadDataForStudent, {
 	immediate: true,
 });
 
-const bpmn_model = ref(null);
 onMounted(async () => {
 	await adminStore.getStudents();
-	bpmn_model.value = await fetchXML();
 });
 
 async function handleNewInstance() {
@@ -222,7 +227,7 @@ onMounted(loadDataForStudent);
 				@current-task-modal="modal_select_bpmn_task = true"
 				@past-task-modal="modal_past_bpmn_task = true"
 				@send-task-modal="modal_send_task = true" />
-			<div v-else-if="process_instance_data" class="flex items-center justify-center pt-36">
+			<div v-else class="flex items-center justify-center pt-36">
 				<LoadingAnimatedIcon></LoadingAnimatedIcon>
 			</div>
 		</LayoutAuthenticated>

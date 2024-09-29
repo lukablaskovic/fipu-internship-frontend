@@ -3,10 +3,10 @@
 </template>
 
 <script setup>
-import { ref, onMounted, onBeforeUnmount } from "vue";
-import BpmnViewer from "bpmn-js";
-import { adminStore } from "@/main";
 import { UserTaskMappings, SendTaskMappings } from "@/helpers/maps";
+import { ref, onMounted, onBeforeUnmount } from "vue";
+import { adminStore, mainStore } from "@/main";
+import BpmnViewer from "bpmn-js";
 
 const props = defineProps({
 	xml: {
@@ -81,11 +81,9 @@ function isHighlightableElement(elementType) {
 
 function handleElementHover(event, canvasElement) {
 	const element = event.element;
-
 	if (isHighlightableElement(element.type)) {
 		const taskOrder = getUserTaskOrder(element.id);
 
-		// Checking for 'evaluacija_poslodavac' task remains unchanged
 		if (element.id === "evaluacija_poslodavac" && taskOrder === props.currentOrder) {
 			canvasElement.style.cursor = "not-allowed";
 			return;
@@ -149,7 +147,6 @@ function handleElementClick(event, emitFunction, viewer) {
 		}
 	}
 }
-
 function getUserTaskOrder(taskId) {
 	const task = UserTaskMappings.tasks.find((task) => task._id === taskId);
 	return task ? task.order : -1;
@@ -211,13 +208,16 @@ function applyCustomStyling(highlightColor, highlightElementId, viewer) {
 
 	// Animate the highlighting in order
 	directPath.forEach((element, index) => {
-		setTimeout(() => {
-			if (element.id !== highlightElementId) {
-				applyHighlight(element, "highlight-previous");
-			} else {
-				applyHighlight(element, "highlight");
-			}
-		}, 0.025 * 1000 * index);
+		setTimeout(
+			() => {
+				if (element.id !== highlightElementId) {
+					applyHighlight(element, "highlight-previous");
+				} else {
+					applyHighlight(element, "highlight");
+				}
+			},
+			0.025 * 1000 * index,
+		);
 	});
 
 	const style = document.createElement("style");

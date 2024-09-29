@@ -53,15 +53,18 @@ class StudentMappings {
 		return getMappedProperty(this.statusZahtjeva, "dbLabel", dbLabel, property);
 	}
 }
-import Student_DnevnikPrakseForm from "@/components/Internship/Student_DnevnikPrakseForm.vue";
-import Student_PrijavnicaForm from "@/components/Internship/Student_PrijavnicaForm.vue";
+import Student_ChooseAvailableAssignments from "@/components/Internship/Student_ChooseAvailableAssignments.vue";
 import Student_WaitingForEvaluation from "@/components/Internship/Student_WaitingForEvaluation.vue";
 import Student_WaitingForAllocation from "@/components/Internship/Student_WaitingForAllocation.vue";
-import Student_ChooseAvailableAssignments from "@/components/Internship/Student_ChooseAvailableAssignments.vue";
 import Student_InternshipFinished from "@/components/Internship/Student_InternshipFinished.vue";
+import Student_DnevnikPrakseForm from "@/components/Internship/Student_DnevnikPrakseForm.vue";
+import Student_PrijavnicaForm from "@/components/Internship/Student_PrijavnicaForm.vue";
 import Student_WaitingForMark from "@/components/Internship/Student_WaitingForMark.vue";
 
-import { adminStore } from "@/main";
+//model B
+import Model_B_Student_WaitingForApproval from "@/components/Internship/Model_B/Model_B_Student_WaitingForApproval.vue";
+
+import { adminStore, mainStore } from "@/main";
 
 // Custom - Hardcoded frontend functionality
 class SendTaskMappings {
@@ -138,11 +141,11 @@ class SendTaskMappings {
 		},
 	];
 }
-
 class UserTaskMappings {
 	static tasks = [
 		{
 			order: 1,
+			model_type: "A",
 			_id: "odabiranje_zadatka_student",
 			name: "Mora odabrati zadatke",
 			form_title: "Prijavljene preferencije",
@@ -154,6 +157,7 @@ class UserTaskMappings {
 		},
 		{
 			order: 2,
+			model_type: "A",
 			_id: "alociranje_profesor",
 			name: "Čeka alokaciju profesora",
 			form_title: "Alokacija studenta",
@@ -164,6 +168,7 @@ class UserTaskMappings {
 		},
 		{
 			order: 3,
+			model_type: "A",
 			_id: "evaluacija_poslodavac",
 			name: "Evaluacija poslodavca u tijeku",
 			form_title: "Evaluacija poslodavca",
@@ -174,6 +179,7 @@ class UserTaskMappings {
 		},
 		{
 			order: 4,
+			model_type: "A",
 			_id: "ispunjavanje_prijavnice_student",
 			name: "Mora ispuniti prijavnicu",
 			snackbar_msg: "Prijavnica pohranjena. Hvala!",
@@ -185,6 +191,7 @@ class UserTaskMappings {
 		},
 		{
 			order: 5,
+			model_type: "A",
 			_id: "predavanje_dnevnika_student",
 			name: "Mora predati dnevnik prakse",
 			bpmn_pending_info_msg: "Student nije još predao dnevnik prakse i ispunjenu potvrdu.",
@@ -196,6 +203,7 @@ class UserTaskMappings {
 		},
 		{
 			order: 6,
+			model_type: "A",
 			_id: "upis_ocjene",
 			name: "Potrebno je potvrditi upis ocjene",
 			snackbar_msg: "Upis ocjene potvrđen. Hvala!",
@@ -206,6 +214,7 @@ class UserTaskMappings {
 		},
 		{
 			order: 7,
+			model_type: "A",
 			_id: "end_event_student",
 			name: "Student ocjenjen",
 			snackbar_msg: "",
@@ -213,9 +222,34 @@ class UserTaskMappings {
 			form_title: "Student ocjenjen",
 			component: Student_InternshipFinished,
 		},
+		{
+			order: 1,
+			model_type: "B",
+			_id: "model_b_odobrenje_zadatka",
+			name: "Čeka odobrenje zadatka",
+			form_title: "Odobrenje zadatka",
+			snackbar_msg: "",
+			snackbar_color: "",
+			bpmn_pending_info_msg: "Student čeka odobrenje zadatka.",
+			bpmn_task_color: "#79d4f2",
+			component: Model_B_Student_WaitingForApproval,
+		},
+		{
+			order: 2,
+			model_type: "B",
+			_id: "direktna_prijava_student",
+			name: "Student se mora prijaviti",
+			form_title: "Direktna prijava studenta",
+			snackbar_msg: "",
+			snackbar_color: "",
+			bpmn_pending_info_msg: "Student se još nije prijavio na zadatak.",
+			bpmn_task_color: "#79d4f2",
+			component: Model_B_Student_WaitingForApproval,
+		},
 	];
 
 	static getTaskProperty(taskId, property, state = "running") {
+		console.log("taskId", taskId, "property", property, "state", state);
 		if (state === "finished") {
 			taskId = "end_event_student";
 
@@ -225,6 +259,7 @@ class UserTaskMappings {
 }
 
 import { mdiRayStartArrow, mdiProgressClock, mdiCheck, mdiThumbsUpDownOutline, mdiNoteCheck, mdiAccountTie, mdiNotebook, mdiFileDocumentPlus, mdiRayEnd, mdiContentSaveOutline, mdiApi, mdiEmailArrowRight, mdiCertificate, mdiCancel } from "@mdi/js";
+
 import { endpoints } from "@/config";
 
 class ActivityEventMappings {
@@ -372,6 +407,13 @@ class ActivityEventMappings {
 			icon: mdiRayEnd,
 			type: "success",
 			message: "Student ocjenjen",
+		},
+		//model B
+		{
+			activity_id: "model_b_odobrenje_zadatka",
+			icon: mdiThumbsUpDownOutline,
+			type: "success",
+			message: "Radnja registrirana",
 		},
 	];
 

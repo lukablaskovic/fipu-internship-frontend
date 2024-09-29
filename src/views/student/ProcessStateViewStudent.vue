@@ -44,7 +44,7 @@ const formDynamicValues = ref({});
 
 async function fetchXML() {
 	try {
-		const response = await axios.get(`/bpmn_xml/${mainStore.bpmn_process_name_A}.xml`, {
+		const response = await axios.get(`/bpmn_xml/${mainStore.get_userModelPrakse}.xml`, {
 			responseType: "text",
 		});
 

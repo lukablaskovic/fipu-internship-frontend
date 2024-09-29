@@ -156,7 +156,9 @@ export const useAdminStore = defineStore("admin", {
 			try {
 				this.studentsFetched = false;
 				const response = await Student.fetch();
-				const students = response.data.results;
+				// only students with process_instance_id are relevant
+				const students = response.data.results.filter((student: Student) => student.process_instance_id);
+				console.log("adminStore, students", students); //ok
 				if (!students || students.length === 0) {
 					this.students = [];
 					this.studentsFetched = true;

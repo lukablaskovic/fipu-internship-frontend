@@ -1,30 +1,30 @@
 <script setup>
-import { ref, computed, onMounted, reactive } from "vue";
 import { mdiLaptop, mdiBallot, mdiNotebook, mdiClipboardCheck } from "@mdi/js";
+import { ref, computed, onMounted, reactive } from "vue";
 
-import { useVuelidate } from "@vuelidate/core";
-import { required, helpers } from "@vuelidate/validators";
 import { getFirstErrorForField } from "@/helpers/validators";
+import { required, helpers } from "@vuelidate/validators";
+import { useVuelidate } from "@vuelidate/core";
 
 import LayoutAuthenticated from "@/layouts/LayoutAuthenticated.vue";
 import LayoutGuest from "@/layouts/LayoutGuest.vue";
 
-import SectionMain from "@/components/Section/SectionMain.vue";
 import SectionTitleLineWithButton from "@/components/Section/SectionTitleLineWithButton.vue";
+import CardBoxComponentTitle from "@/components/Cardbox/CardBoxComponentTitle.vue";
 import CardboxAllocation from "@/components/Cardbox/CardBoxAllocation.vue";
-import CardBox from "@/components/Cardbox/CardBox.vue";
 import FormCheckRadio from "@/components/Form/FormCheckRadio.vue";
-import FormField from "@/components/Form/FormField.vue";
+import FormFilePicker from "@/components/Form/FormFilePicker.vue";
+import SectionMain from "@/components/Section/SectionMain.vue";
 import FormControl from "@/components/Form/FormControl.vue";
 import BaseDivider from "@/components/Base/BaseDivider.vue";
 import BaseButton from "@/components/Base/BaseButton.vue";
-import CardBoxComponentTitle from "@/components/Cardbox/CardBoxComponentTitle.vue";
-import FormFilePicker from "@/components/Form/FormFilePicker.vue";
+import FormField from "@/components/Form/FormField.vue";
+import CardBox from "@/components/Cardbox/CardBox.vue";
 
 import { mainStore, snackBarStore, studentStore } from "@/main.js";
 
-import Utils from "@/helpers/utils.js";
 import { UserTaskMappings } from "@/helpers/maps";
+import Utils from "@/helpers/utils.js";
 const studentData = ref(null);
 const allocated_assignment = ref(null);
 onMounted(async () => {
@@ -111,17 +111,17 @@ async function submit_diary_form() {
 			<br />
 			<p>
 				📓Template za dnevnik prakse možete preuzeti
-				<a href="https://bit.ly/fipu-praksa-template" target="_blank" class="text-fipu_blue cursor-pointer">ovdje</a>.
+				<a href="https://bit.ly/fipu-praksa-template" target="_blank" class="cursor-pointer text-fipu_blue">ovdje</a>.
 			</p>
 			<p>
 				📃Praznu potvrdu o obavljenoj praksi možete preuzeti
-				<a :href="studentData.variables.pdf_attachment_url" target="_blank" class="text-fipu_blue cursor-pointer">ovdje</a>.
+				<a :href="studentData.variables.pdf_attachment_url" target="_blank" class="cursor-pointer text-fipu_blue">ovdje</a>.
 			</p>
 			<br />
 			<hr />
 
-			<div class="grid grid-cols-1 gap-6 mb-6">
-				<CardBox :icon="mdiBallot" class="mb-6 lg:mb-0 lg:col-span-2 xl:col-span-3" is-form @submit.prevent="submit_diary_form">
+			<div class="mb-6 grid grid-cols-1 gap-6">
+				<CardBox :icon="mdiBallot" class="mb-6 lg:col-span-2 lg:mb-0 xl:col-span-3" is-form @submit.prevent="submit_diary_form">
 					<CardBoxComponentTitle title="📓 Dnevnik prakse" />
 
 					<FormField label="PDF dnevnika prakse" help="obavezno PDF format" horizontal>

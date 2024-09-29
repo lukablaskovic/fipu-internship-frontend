@@ -1,15 +1,15 @@
 <script setup>
 import { computed, ref, onMounted } from "vue";
 
-import { mdiEye } from "@mdi/js";
-import BaseLevel from "@/components/Base/BaseLevel.vue";
+import { StudentMappings, UserTaskMappings } from "@/helpers/maps";
 import BaseButtons from "@/components/Base/BaseButtons.vue";
 import BaseButton from "@/components/Base/BaseButton.vue";
+import UserAvatar from "@/components/User/UserAvatar.vue";
+import BaseLevel from "@/components/Base/BaseLevel.vue";
 import LoadingOverlay from "../LoadingOverlay.vue";
 import { adminStore } from "@/main.js";
-import { StudentMappings, UserTaskMappings } from "@/helpers/maps";
 import { useRoute } from "vue-router";
-import UserAvatar from "@/components/User/UserAvatar.vue";
+import { mdiEye } from "@mdi/js";
 const route = useRoute();
 
 defineProps({
@@ -24,8 +24,8 @@ const emit = defineEmits(["show-student-diagram"]);
 
 function showDiagram(student) {
 	selectedStudentInstanceID.value = student["process_instance_id"];
-
 	adminStore.setSelectedStudent(student);
+
 	emit("show-student-diagram", student);
 }
 
@@ -53,7 +53,7 @@ const perPage = ref(5);
 const currentPage = ref(0);
 const studentsPaginated = computed(() => {
 	let filteredStudents = students.value;
-
+	console.log("filteredStudents", filteredStudents);
 	if (!adminStore.filterFinishedInstances) {
 		filteredStudents = filteredStudents.filter((student) => UserTaskMappings.getTaskProperty(student["process_instance_data"]["pending"][0], "name", student["process_instance_data"]["state"]) !== "Student ocjenjen");
 	}
@@ -83,6 +83,7 @@ function getProgressValue(student) {
 		<thead>
 			<tr>
 				<th />
+				<th>Model</th>
 				<th>JMBAG</th>
 				<th>Ime</th>
 				<th>Prezime</th>
@@ -101,8 +102,11 @@ function getProgressValue(student) {
 				:class="{
 					'selected-row': selectedStudentInstanceID === student['process_instance_id'],
 				}">
-				<td class="border-b-0 lg:w-6 before:hidden">
-					<UserAvatar :avatar="student['avatar'][0]['url']" class="flex w-22 h-22 mx-auto lg:w-12 lg:h-12" />
+				<td class="border-b-0 before:hidden lg:w-6">
+					<UserAvatar :avatar="student['avatar']" class="mx-auto flex h-22 w-22 lg:h-12 lg:w-12" />
+				</td>
+				<td data-label="Model_prakse">
+					{{ student["Model_prakse"]["value"] }}
 				</td>
 				<td data-label="JMBAG">
 					{{ student["JMBAG"] }}
@@ -138,7 +142,7 @@ function getProgressValue(student) {
 					{{ UserTaskMappings.getTaskProperty(student["process_instance_data"]["pending"][0], "name", student["process_instance_data"]["state"]) }}
 				</td>
 
-				<td class="before:hidden lg:w-1 whitespace-nowrap">
+				<td class="whitespace-nowrap before:hidden lg:w-1">
 					<BaseButtons type="justify-start lg:justify-end" no-wrap>
 						<BaseButton color="fipu_blue" :icon="mdiEye" small @click="showDiagram(student)" />
 					</BaseButtons>
@@ -147,7 +151,7 @@ function getProgressValue(student) {
 		</tbody>
 	</table>
 
-	<div class="p-3 lg:px-6 border-t border-gray-100 dark:border-slate-800">
+	<div class="border-t border-gray-100 p-3 dark:border-slate-800 lg:px-6">
 		<BaseLevel>
 			<BaseButtons>
 				<BaseButton v-for="page in pagesList" :key="page" :active="page === currentPage" :label="page + 1" :color="page === currentPage ? 'lightDark' : 'whiteDark'" small @click="currentPage = page" />

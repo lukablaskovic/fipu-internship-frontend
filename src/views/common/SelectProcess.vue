@@ -152,8 +152,8 @@ async function onSubmit() {
 	}
 
 	isLoading.value = false;
-	const response = await mainStore.createInternshipInstance(selectedProcess.value);
-
+	const response = await mainStore.createInternshipInstance(selectedProcess.value, form.godina_studija, form.jmbag);
+	console.log("RESPONSE", response);
 	if (response) {
 		snackBarStore.pushMessage("Uspješno ste započeli proces prakse!", "success");
 		await Utils.wait(1);

@@ -15,7 +15,8 @@ export const useMainStore = defineStore("main", {
 		academicYear: "2024/2025",
 		voditelj_prakse: "doc. dr. sc. Ivan Lorencin",
 
-		admin_emails: ["lukablaskovic@unipu.hr"],
+		admin_emails: ["lukablaskovic2000@gmail.com"],
+		//admin_emails: ["lblaskovi@unipu.hr"],
 
 		fipulab_web: "https://goreski.github.io/FIPULabWeb/",
 
@@ -26,7 +27,7 @@ export const useMainStore = defineStore("main", {
 
 		allCompanies: [] as any[],
 
-		bpmn_process_name_A: "strucna_praksa_edited",
+		bpmn_process_name_A: "strucna_praksa_A",
 		bpmn_process_name_B: "strucna_praksa_B",
 
 		currentUser: new CurrentUser(),
@@ -54,6 +55,9 @@ export const useMainStore = defineStore("main", {
 		},
 		userHasActiveInstance(state): boolean {
 			return !!state.currentUser.internship_process.id && state.currentUser.internship_process.pending_user_task !== "end_event_student";
+		},
+		get_userModelPrakse(state): string {
+			return state.currentUser.model_prakse == "A" ? state.bpmn_process_name_A : state.bpmn_process_name_B;
 		},
 	},
 
@@ -107,17 +111,22 @@ export const useMainStore = defineStore("main", {
 				const response_student = await Student.fetch(decodedToken.email);
 				let response = null;
 
+				// If student does not exist, create a new student
 				if (response_student.data.count === 0) {
 					response = await Student.create(student_data);
+					await this.fetchCurrentUser();
 					router.push("/odabir-procesa");
 				} else {
 					await this.fetchCurrentUser();
 
+					// If admin is logged in, redirect to dashboard
 					if (this.userAdmin) {
 						router.push("/dashboard");
-					} else {
+					}
+					// if student is logged in, check if they have an active process instance
+					else {
 						const processInstance = response_student.data.results[0].process_instance_id;
-
+						// Has active process instance, so redirect to moja-praksa
 						if (processInstance) {
 							const pendingProcessTask = await studentStore.getPendingUserTask(processInstance);
 							if (this.userHasActiveInstance) {
@@ -125,7 +134,9 @@ export const useMainStore = defineStore("main", {
 							} else {
 								router.push("/odabir-procesa");
 							}
-						} else {
+						}
+						// No active process instance, so redirect to odabir-procesa
+						else {
 							router.push("/odabir-procesa");
 						}
 					}
@@ -137,18 +148,10 @@ export const useMainStore = defineStore("main", {
 			}
 		},
 
-		clearCurrentUser() {
-			this.currentUser.reset();
-			localStorage.removeItem("main");
-			localStorage.removeItem("admin");
-			localStorage.removeItem("student");
-			localStorage.removeItem("guest");
-		},
-
 		logout() {
-			this.clearCurrentUser();
+			this.currentUser.reset();
 			this.logoutModalActive = false;
-			localStorage.removeItem("token");
+			localStorage.clear();
 			router.go(0); // Refresh the page
 		},
 
@@ -169,15 +172,17 @@ export const useMainStore = defineStore("main", {
 			}
 		},
 
-		async createInternshipInstance(selected_model = "A"): Promise<any> {
+		async createInternshipInstance(selected_model = "A", godina_studija = "1_prijediplomski", jmbag = "0000000000"): Promise<any> {
 			try {
 				let bpmn_model: string | null = null;
 				if (selected_model === "A") {
 					bpmn_model = this.bpmn_process_name_A;
+				} else {
+					bpmn_model = this.bpmn_process_name_B;
 				}
 				const response_bpmn_engine = await ProcessInstance.create(`${bpmn_model}.bpmn`);
 
-				const response_bw = await Student.setProcessData(this.currentUser.email, response_bpmn_engine.id, selected_model);
+				const response_bw = await Student.setProcessData(this.currentUser.email, response_bpmn_engine.id, selected_model, godina_studija, jmbag);
 
 				await this.fetchCurrentUser();
 				return response_bw;
