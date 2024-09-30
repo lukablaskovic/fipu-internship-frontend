@@ -144,6 +144,13 @@ async function onSubmit() {
 		return;
 	}
 
+	if (!fixedUserData.ime_prezime || fixedUserData.ime_prezime === "" || !fixedUserData.email || fixedUserData.email === "") {
+		snackBarStore.pushMessage("Greška! Molimo pokušajte ponovo.", "danger");
+		isLoading.value = false;
+		router.go();
+		return;
+	}
+
 	if (!selectedProcess.value || selectedProcess.value === "") {
 		snackBarStore.pushMessage("Molimo odaberite izvedbu prakse!", "danger");
 		isLoading.value = false;
@@ -162,7 +169,7 @@ async function onSubmit() {
 // Data for bullet points for each button
 const hoverTexts = {
 	A: ["1️⃣Pogledajte dostupne zadatke", "2️⃣Prijavite se na 3 najdraža zadatka", "3️⃣Pričekajte alokaciju"],
-	B: ["Model B ide u dogovoru s nastavnikom", "Praksa već dogovorena ili odrađena", "Potrebno prijaviti zadatak"],
+	B: ["Model B ide u dogovoru s nastavnikom", "Praksa već dogovorena ili odrađena", "Prijava zadatka unaprijed"],
 };
 
 const hoveredButton = ref("");

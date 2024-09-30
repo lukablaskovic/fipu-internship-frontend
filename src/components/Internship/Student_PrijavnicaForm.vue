@@ -186,7 +186,7 @@ async function submit_application_form() {
 			<hr />
 			<br />
 			<SectionTitleLineWithButton :icon="mdiFileDocumentEdit" main title="Prijavnica"></SectionTitleLineWithButton>
-
+			<p>Molimo da ispunite prijavnicu prije početka izvođenja prakse. Popunjena prijavnica se potom šalje na e-mail mentora kojeg navedete na odobrenje i potpis.</p>
 			<br />
 			<hr />
 
@@ -224,7 +224,7 @@ async function submit_application_form() {
 					</FormField>
 
 					<FormField label="Email mentora" horizontal>
-						<FormControl v-model="form.mentor_email" :icon-left="mdiMail" :error="getFirstErrorForField(v$, 'mentor_email')" type="email" help="Email mentora" placeholder="Email mentora" />
+						<FormControl v-model="form.mentor_email" :icon-left="mdiMail" :error="getFirstErrorForField(v$, 'mentor_email')" type="email" help="Email mentora (provjeriti dvaput)" placeholder="Email mentora" />
 					</FormField>
 					<BaseDivider />
 					<FormField label="Detaljan opis zadatka" horizontal>

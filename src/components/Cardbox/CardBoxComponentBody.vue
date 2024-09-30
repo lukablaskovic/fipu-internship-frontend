@@ -8,12 +8,12 @@ defineProps({
 
 <template>
 	<div
-		class="flex-1 fipu_vertical_scrollbar"
+		class="fipu_vertical_scrollbar flex-1"
 		:class="[
 			{
-				'p-6 ': !noPadding,
-				'md:flex md:flex-col md:justify-center md:items-center md:w-full md:h-full ': centeredContent,
-				'md:flex md:flex-col md:justify-center md:w-full md:h-full ': verticalCentered,
+				'p-6': !noPadding,
+				'md:flex md:h-full md:w-full md:flex-col md:items-center md:justify-center': centeredContent,
+				'md:flex md:h-full md:w-full md:flex-col md:justify-center': verticalCentered,
 			},
 		]">
 		<slot></slot>

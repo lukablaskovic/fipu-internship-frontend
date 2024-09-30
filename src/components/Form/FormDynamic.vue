@@ -3,12 +3,12 @@
 		<div class="mb-2">{{ documentation }}</div>
 
 		<div v-for="(field, key) in formFields" :key="key">
-			<FormField v-if="field.type === 'input'" :label="field.label">
-				<FormControl v-model="formValues[key]" type="text" />
-			</FormField>
-
 			<FormField v-if="field.type === 'yes-no-boolean'" :label="field.label">
 				<FormCheckRadioGroup v-model="formValues[key]" :name="key" type="radio" :options="{ true: 'Da', false: 'Ne' }" />
+			</FormField>
+
+			<FormField v-if="field.type === 'input'" :label="field.label">
+				<FormControl class="my-2" v-model="formValues[key]" type="text" />
 			</FormField>
 
 			<template v-if="field.type === 'var-string'"> </template>
