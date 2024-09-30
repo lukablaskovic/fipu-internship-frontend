@@ -68,7 +68,13 @@ const borderColor = computed(() => (props.error ? "border-red-600" : props.succe
 const textColor = computed(() => controlTextColor(props.error, props.success));
 const placeholderColor = computed(() => (props.error ? "placeholder-red-600" : props.success ? "placeholder-green-600" : null));
 const wrapperBorder = computed(() => computedType.value !== "textarea");
-const upperWrapperClass = computed(() => (props.expanded ? "grow shrink" : ""));
+
+const upperWrapperClass = computed(() => {
+	const base = [];
+	if (props.expanded) base.push("grow shrink");
+	if (props.disabled) base.push("opacity-75 contrast-[0.9]");
+	return base;
+});
 
 const wrapperClass = computed(() => {
 	const base = [];

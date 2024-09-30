@@ -1,19 +1,19 @@
 <template>
-	<div class="flex h-full min-h-screen w-full items-center justify-center bg-white bg-cover bg-center transition-all duration-300 sm:bg-[url('/background-blue.jpg')]">
+	<div class="flex h-full min-h-screen w-full items-center justify-center bg-[url('/background-blue.jpg')] bg-cover bg-center transition-all duration-300">
 		<div class="flex flex-col items-center justify-center overflow-hidden transition-all duration-300">
-			<CardBox vertical-centered class="rounded-3xl p-12 transition-all duration-300 sm:mx-96 sm:rounded-2xl" is-form>
+			<CardBox vertical-centered class="rounded-none px-6 py-12 transition-all duration-300 sm:mx-8 sm:rounded-2xl sm:p-12 lg:mx-96" is-form>
 				<a href="https://fipu.unipu.hr/" target="_blank" class="mx-auto w-max">
 					<img :src="fipu_unipu" alt="Fakultet informatike u Puli - logotip" class="mb-3 object-contain transition-all duration-300 sm:h-32 2xl:mb-6" />
 				</a>
 
 				<h2 class="mb-4 mt-6 text-center text-2xl font-bold text-fipu_gray md:text-center lg:text-3xl xl:mb-6 2xl:text-4xl">Dobrodošli na <span class="text-fipu_blue">FIPU Praksu</span></h2>
 
-				<h2 class="mb-2 text-center md:text-sm lg:text-sm 2xl:mb-10 2xl:text-base">
+				<h2 class="mx-auto mb-2 mt-6 max-w-3xl text-center sm:mt-0 md:text-sm lg:text-sm 2xl:mb-10 2xl:text-base">
 					Molimo prijavite se kako biste pregledali stanje vaše prakse ili prijavili zadatke. Ukoliko želite samo pregledati dostupne zadatke i poduzeća, molimo nastavite kao gost
 					<a class="hover-underline-animation cursor-pointer text-fipu_text_blue hover:text-fipu_blue" @click="router.push('/moja-praksa')"> ovdje</a>.
 				</h2>
 
-				<div class="mx-auto mb-4 flex justify-center">
+				<div class="mx-auto my-6 flex justify-center sm:my-4">
 					<GoogleLogin :callback="callback" />
 				</div>
 

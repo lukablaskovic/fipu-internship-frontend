@@ -1,47 +1,28 @@
 <template>
 	<div class="flex h-full min-h-screen w-full items-center justify-center bg-white bg-cover bg-center transition-all duration-300 sm:bg-[url('/background-blue.jpg')]">
 		<div class="flex flex-col items-center justify-center overflow-hidden transition-all duration-300">
-			<CardBox vertical-centered class="p-6 transition-all duration-300 sm:mx-10 sm:rounded-2xl sm:p-12 md:mx-32 lg:mx-96" is-form>
+			<CardBox vertical-centered class="sm:p-124 p-6 transition-all duration-300 sm:mx-10 sm:rounded-2xl" is-form>
 				<a href="https://fipu.unipu.hr/" target="_blank" class="mx-auto flex w-max">
-					<img :src="fipu_unipu" alt="Fakultet informatike u Puli - logotip" class="mb-3 h-16 object-contain transition-all duration-300 sm:h-32 2xl:mb-6" />
+					<img :src="fipu_unipu" alt="Fakultet informatike u Puli - logotip" class="mb-3 h-16 object-contain transition-all duration-300 sm:h-28 2xl:mb-6" />
 				</a>
 
 				<h2 class="mb-4 mt-4 text-center text-xl font-bold text-fipu_gray sm:text-2xl lg:text-3xl xl:mb-6 2xl:text-4xl">Molimo odaberite vašu izvedbu stručne prakse</h2>
 
-				<div class="flex flex-col justify-center space-y-4 sm:flex-row sm:space-x-4 sm:space-y-0">
+				<div class="flex flex-col justify-center space-y-4 px-6 sm:flex-row sm:space-x-4 sm:space-y-0">
 					<!-- Button 1: Nemam poduzeće -->
-					<button :class="['relative flex w-full items-center justify-center border border-gray-300 px-8 py-12 text-sm font-semibold text-gray-700 transition-transform duration-300 hover:scale-105 hover:bg-gray-200 sm:w-auto sm:px-24 sm:py-24 sm:text-xl', selectedProcess === 'A' ? 'bg-fipu_blue text-white' : '']" @click.prevent="selectProcess('A')" @mouseover="hoveredButton = 'A'" @mouseleave="hoveredButton = ''">
-						<!-- Button Text -->
-						<span :class="{ 'opacity-0': hoveredButton === 'A', 'transition-opacity': true }">Nemam poduzeće (Model A)</span>
-						<!-- Bullet points on hover for Button A -->
-						<div v-if="hoveredButton === 'A'" class="absolute inset-0 flex items-center justify-center bg-gray-800 bg-opacity-60 text-white transition-opacity duration-300">
-							<ul class="space-y-2 text-left">
-								<li v-for="(text, index) in hoverTexts.A" :key="index">{{ text }}</li>
-							</ul>
-						</div>
-					</button>
-
+					<SelectProcessButton button="A" :hoveredButton="hoveredButton" :selectedProcess="selectedProcess" :hoverTexts="hoverTexts.A" @click.prevent="selectProcess('A')" @mouseover="hoveredButton = 'A'" @mouseleave="hoveredButton = ''" />
 					<!-- Button 2: Imam već dogovoreno -->
-					<button :class="['relative flex w-full items-center justify-center border border-gray-300 px-8 py-12 text-sm font-semibold text-gray-800 transition-transform duration-300 hover:scale-105 hover:bg-gray-200 sm:w-auto sm:px-24 sm:py-24 sm:text-xl', selectedProcess === 'B' ? 'bg-fipu_blue text-white' : '']" @click.prevent="selectProcess('B')" @mouseover="hoveredButton = 'B'" @mouseleave="hoveredButton = ''">
-						<!-- Button Text -->
-						<span :class="{ 'opacity-0': hoveredButton === 'B', 'transition-opacity': true }">Imam već dogovoreno (Model B)</span>
-						<!-- Bullet points on hover for Button B -->
-						<div v-if="hoveredButton === 'B'" class="absolute inset-0 flex items-center justify-center bg-gray-800 bg-opacity-60 text-white transition-opacity duration-300">
-							<ul class="list-disc space-y-2 text-left">
-								<li v-for="(text, index) in hoverTexts.B" :key="index">{{ text }}</li>
-							</ul>
-						</div>
-					</button>
+					<SelectProcessButton button="B" :hoveredButton="hoveredButton" :selectedProcess="selectedProcess" :hoverTexts="hoverTexts.B" @click.prevent="selectProcess('B')" @mouseover="hoveredButton = 'B'" @mouseleave="hoveredButton = ''" />
 				</div>
 
 				<div class="mb-6 grid grid-cols-1 gap-6">
 					<CardBox :icon="mdiBallot" class="mb-6 lg:col-span-2 lg:mb-0 xl:col-span-3" is-form @submit.prevent="onSubmit">
 						<FormField label="Ime i prezime" horizontal>
-							<FormControl v-model="fixedUserData.ime_prezime" :icon-left="mdiEmail" type="email" readonly />
+							<FormControl v-model="fixedUserData.ime_prezime" :icon-left="mdiEmail" type="text" readonly disabled />
 						</FormField>
 
 						<FormField label="E-mail" horizontal>
-							<FormControl v-model="fixedUserData.email" :icon-left="mdiAccount" type="email" readonly />
+							<FormControl v-model="fixedUserData.email" :icon-left="mdiAccount" type="email" readonly disabled />
 						</FormField>
 
 						<FormField label="JMBAG" horizontal>
@@ -57,7 +38,7 @@
 						</FormField>
 					</CardBox>
 				</div>
-				<h2 class="mt-4 text-center text-xs sm:text-sm">
+				<h2 class="text-center text-xs sm:text-sm">
 					Povratak na
 					<a class="hover-underline-animation cursor-pointer text-fipu_text_blue hover:text-fipu_blue" @click="logout">prijavu</a>.
 				</h2>
@@ -77,6 +58,8 @@ import { getFirstErrorForField, exactLength } from "@/helpers/validators";
 import FormControl from "@/components/Form/FormControl.vue";
 import BaseButton from "@/components/Base/BaseButton.vue";
 import FormField from "@/components/Form/FormField.vue";
+
+import SelectProcessButton from "@/components/SelectProcessButton.vue";
 
 import { useVuelidate } from "@vuelidate/core";
 
@@ -168,8 +151,8 @@ async function onSubmit() {
 
 // Data for bullet points for each button
 const hoverTexts = {
-	A: ["1️⃣Pogledajte dostupne zadatke", "2️⃣Prijavite se na 3 najdraža zadatka", "3️⃣Pričekajte alokaciju"],
-	B: ["Model B ide u dogovoru s nastavnikom", "Praksa već dogovorena ili odrađena", "Prijava zadatka unaprijed"],
+	A: ["1️⃣ Pogledajte dostupne zadatke", "2️⃣ Prijavite se na 3 najdraža zadatka", "3️⃣ Pričekajte alokaciju"],
+	B: ["1️⃣ Model B ide u dogovoru s nastavnikom", "2️⃣ Praksa već dogovorena ili odrađena", "3️⃣ Prijava zadatka unaprijed"],
 };
 
 const hoveredButton = ref("");
