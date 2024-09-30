@@ -1,74 +1,96 @@
-<template>
-	<Combobox v-model="selected">
-		<div class="relative z-50">
-			<div class="relative w-full cursor-default overflow-hidden rounded border border-black bg-white text-left sm:text-sm">
-				<ComboboxInput class="h-12 w-full max-w-full px-3 py-2 focus:outline-none focus:ring dark:bg-slate-800 dark:placeholder-gray-400" :display-value="(company) => company.label" :placeholder="props.placeholder" @change="query = $event.target.value" />
-				<ComboboxButton class="absolute inset-y-0 right-0 flex items-center pr-2">
-					<MdiUnfoldMoreHorizontal class="h-5 w-5 text-gray-700 hover:text-fipu_blue" aria-hidden="true" />
-				</ComboboxButton>
-			</div>
-			<TransitionRoot leave="transition ease-in duration-100" leave-from="opacity-100" leave-to="opacity-0" @after-leave="query = ''">
-				<ComboboxOptions class="absolute mt-1 max-h-60 w-full overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm">
-					<div v-if="companies.length === 0 && query !== ''" class="relative cursor-default select-none px-4 py-2 text-gray-700">Nema rezultata.</div>
-
-					<ComboboxOption v-for="company in companies" v-slot="{ selected, active }" :key="company.id" as="template" :value="company">
-						<li
-							class="relative cursor-default select-none py-2 pl-10 pr-4"
-							:class="{
-								'bg-fipu_blue text-white': active,
-								'text-gray-900': !active,
-							}">
-							<span class="block truncate" :class="{ 'font-medium': selected, 'font-normal': !selected }">
-								{{ company.label }}
-							</span>
-							<span v-if="selected" class="absolute inset-y-0 left-0 flex items-center pl-3" :class="{ 'text-white': active, 'text-fipu_blue': !active }">
-								<mdiCheck class="h-5 w-5 text-fipu_blue" aria-hidden="true" />
-							</span>
-						</li>
-					</ComboboxOption>
-				</ComboboxOptions>
-			</TransitionRoot>
-		</div>
-	</Combobox>
-</template>
-
 <script setup>
-import { Combobox, ComboboxInput, ComboboxButton, ComboboxOptions, ComboboxOption, TransitionRoot } from "@headlessui/vue";
-import { ref, computed, onMounted, watch } from "vue";
+import { defineModel, ref, computed } from "vue";
 
-import MdiUnfoldMoreHorizontal from "vue-material-design-icons/UnfoldMoreHorizontal.vue";
-import mdiCheck from "vue-material-design-icons/Check.vue";
-const emit = defineEmits(["update:modelValue"]);
+const props = defineProps(["labelName", "emitName", "list", "l", "disabled", "important", "help"]);
+const model = defineModel();
 
-const props = defineProps({
-	options: {
-		type: Array,
-		default: () => [],
-	},
-	placeholder: {
-		type: String,
-		default: "",
-	},
+function update(value) {
+	model.value = value;
+}
+const computedList = computed(() => {
+  // Return the list if it's empty
+  if (props.list.length === 0) return props.list;
+
+  // Ensure that model.value is defined before proceeding
+  const modelValue = model.value ? model.value.toLowerCase().replace(/\s+/g, '') : '';
+
+  // Check if the model's value exists in the list
+  const itemExists = props.list.findIndex((item) =>
+    item[props.labelName] && item[props.labelName] === model.value
+  ) !== -1;
+
+  // If the item exists, return the full list, otherwise filter the list based on the model's value
+  return itemExists
+    ? props.list
+    : props.list.filter((item) =>
+        item[props.labelName] &&
+        item[props.labelName].toLowerCase().replace(/\s+/g, '').includes(modelValue)
+      );
 });
 
-let query = ref("");
 
-let companies = computed(() => (query.value === "" ? props.options : props.options.filter((company) => company.label.toLowerCase().replace(/\s+/g, "").includes(query.value.toLowerCase().replace(/\s+/g, "")))));
-let selected = ref(companies.value[0]);
+const pfo = ref(false);
+async function preventFocusOut() {
+	pfo.value = true;
+	setTimeout(() => {
+		pfo.value = false;
+	}, "100");
+}
+function checkFocusOut() {
+	if (pfo.value) return;
+	if (props.list.findIndex((l) => l[props.labelName] == model.value) == -1) model.value = "";
+}
+</script>
 
-watch(
-	() => selected.value,
-	(newVal) => {
-		emit("update:modelValue", newVal);
+<template>
+	<div class="flex flex-col gap-2" :class="disabled ? 'pointer-events-none opacity-75 contrast-[0.9]' : ''">
+		<div class="group relative w-full">
+			<div class="rounded border" :class="important ? 'border-red-500' : 'border-gray-700'">
+				<input
+					@input="show = true"
+					@focusout="
+						!focus ? (show = false) : '';
+						checkFocusOut();
+					"
+					@click="show = !show"
+					v-model="model"
+					class="peer relative block w-full max-w-full cursor-text overflow-hidden rounded border-0 bg-transparent bg-white p-3 text-left hover:border-cyan-700 focus:outline-none focus:ring focus:ring-fipu_blue" />
+			</div>
+
+			<div class="absolute right-1.5 top-0 flex h-full items-center justify-center px-1" @focusout="!focus ? (show = false) : ''" @click="show = !show">
+				<div class="aspect-square absolute mr-4 flex h-fit w-fit items-center justify-center bg-white px-0.5">
+					<i class="fa-solid fa-caret-down cursor-pointer transition-all duration-300" :class="show ? '-scale-100' : '', important ? 'text-red-500' : 'text-gray-700'"></i>
+				</div>
+			</div>
+
+			<div @mouseleave="focus = false" @mouseenter="focus = true" :class="show ? 'h-fit max-h-64 opacity-100' : 'h-0 opacity-0'" class="fipu_vertical_scrollbar absolute z-50 mt-2 w-full overflow-hidden overflow-y-auto rounded bg-gray-50 drop-shadow-lg transition-opacity duration-300">
+				<ul class="z-50 w-full text-left" aria-labelledby="drop-shadow-lg" @mousedown="preventFocusOut()">
+					<div
+						v-for="(v, id) in computedList"
+						@click="
+							show = false;
+							update(emitName ? v[emitName] : v);
+						"
+						:key="id"
+						class="z-50 block cursor-pointer whitespace-nowrap px-2"
+						:class="[(labelName ? v[labelName] : v) == model ? 'bg-fipu_blue font-bold text-gray-50 hover:bg-opacity-80' : 'text-gray-950 hover:bg-gray-200 hover:font-bold hover:text-gray-700', l ? 'py-2 text-sm' : 'py-4']">
+						{{ labelName ? v[labelName] : v }}
+					</div>
+				</ul>
+			</div>
+		</div>
+    <div class="text-xs -mt-1" :class="important ? 'text-red-500' : 'text-gray-500'">{{important ? 'Polje je obavezno' : help}}</div>
+	</div>
+</template>
+
+<script>
+export default {
+	name: "Dropdown.vue",
+	data() {
+		return {
+			show: false,
+			focus: false,
+		};
 	},
-);
-
-watch(
-	() => query.value,
-	(newQuery) => {
-		if (!newQuery) {
-			selected.value = ref();
-		}
-	},
-);
+};
 </script>

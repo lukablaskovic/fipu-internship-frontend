@@ -106,7 +106,7 @@ const computedIconRight = computed(() => {
 	return props.type === "list" ? mdiUnfoldMoreHorizontal : null;
 });
 
-const controlIconH = computed(() => (props.type === "textarea" ? "h-full" : "h-12"));
+const controlIconH = computed(() => (props.type === "textarea" ? "h-12" : "h-12"));
 
 const openPasswordToggle = (e) => {
 	if (props.type === "password") {
@@ -170,7 +170,7 @@ if (props.ctrlKFocus) {
 			</select>
 
 			<!-- Textarea -->
-			<textarea v-else-if="computedType === 'textarea'" :id="id" v-model="computedValue" :class="inputElClass" :name="name" :readonly="readonly" :placeholder="placeholder" :required="required" :disabled="disabled" />
+			<textarea v-else-if="computedType === 'textarea'" class="peer relative" :id="id" v-model="computedValue" :placeholder="placeholder" :class="inputElClass" :name="name" :readonly="readonly" :required="required" :disabled="disabled"></textarea>
 
 			<!-- Button -->
 			<button v-else-if="computedType === 'button'" :class="inputElClass" :disabled="disabled">

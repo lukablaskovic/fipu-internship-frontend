@@ -114,6 +114,7 @@ const rules = reactive({
 });
 
 const isLoading = ref(false);
+const triggered = ref(false);
 
 const v$ = useVuelidate(rules, form);
 
@@ -127,6 +128,7 @@ function resetForm() {
 
 async function onSubmit() {
 	isLoading.value = true;
+	triggered.value = true;
 	v$.value.$touch();
 	if (v$.value.$invalid) {
 		isLoading.value = false;
@@ -175,12 +177,6 @@ watch(
 		}
 	},
 );
-
-const onCompanyChange = () => {
-	if (form.Poslodavac) {
-		form.Poslodavac_novi_naziv = "";
-	}
-};
 </script>
 
 <template>
@@ -231,12 +227,12 @@ const onCompanyChange = () => {
 				<CardBox :icon="mdiBallot" class="mb-6 lg:col-span-2 lg:mb-0 xl:col-span-3" is-form @submit.prevent="onSubmit">
 					<CardBoxComponentTitle class="text-center" title="💼 Prijava projekta za studentsku praksu " />
 
-					<FormField v-if="!form.Poslodavac_novi_naziv" label="Poduzeće partner*" help="Ako niste partner, unesite naziv poduzeća ispod." horizontal>
-						<FormCombobox v-model="form.Poslodavac" :options="mappedCompanies" placeholder="Odaberite poduzeće ako ste postojeći partner" @change="onCompanyChange" />
+					<FormField label="Poduzeće partner*" horizontal>
+						<FormCombobox :disabled="form.Poslodavac_novi_naziv" v-model="form.Poslodavac" :important="triggered && form.Poslodavac == '' && form.Poslodavac_novi_naziv == ''" :list="mappedCompanies" labelName="label" emitName="label" help="Ako niste partner, unesite naziv poduzeća ispod." />
 					</FormField>
 
-					<FormField v-if="!form.Poslodavac" label="Naziv poduzeća*" horizontal>
-						<FormControl v-model="form.Poslodavac_novi_naziv" :icon-left="mdiDomain" help="Ovdje unesite naziv poduzeća ako ste novi partner (nema vas u dropdown obrascu iznad)" :error="getFirstErrorForField(v$, 'Poslodavac_novi_naziv')" placeholder="Naziv poduzeća" />
+					<FormField label="Naziv poduzeća*" horizontal>
+						<FormControl :disabled="form.Poslodavac != ''" v-model="form.Poslodavac_novi_naziv" :icon-left="mdiDomain" help="Ovdje unesite naziv poduzeća ako ste novi partner (nema vas u dropdown obrascu iznad)" :error="getFirstErrorForField(v$, 'Poslodavac_novi_naziv')" placeholder="Naziv poduzeća" />
 					</FormField>
 
 					<FormField label="Kontakt email*" horizontal>

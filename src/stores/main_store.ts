@@ -227,7 +227,7 @@ export const useMainStore = defineStore("main", {
 			};
 
 			if (formData.Poslodavac) {
-				postData.Poslodavac = [formData.Poslodavac.label];
+				postData.Poslodavac = [formData.Poslodavac];
 			} else if (formData.Poslodavac_novi_naziv) {
 				postData.Poslodavac = [formData.Poslodavac_novi_naziv];
 			}
