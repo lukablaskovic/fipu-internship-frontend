@@ -1,18 +1,18 @@
 <script setup>
 import { computed, ref, onMounted, watch, reactive } from "vue";
 
-import { mdiContentSaveCheckOutline } from "@mdi/js";
 import TableCheckboxCell from "@/components/Tables/TableCheckboxCell.vue";
-import BaseLevel from "@/components/Base/BaseLevel.vue";
+import { mainStore, adminStore, snackBarStore } from "@/main.js";
 import BaseButtons from "@/components/Base/BaseButtons.vue";
 import BaseButton from "@/components/Base/BaseButton.vue";
-import CardBoxModal from "../Cardbox/CardBoxModal.vue";
-import { mainStore, adminStore, snackBarStore } from "@/main.js";
 import UserAvatar from "@/components/User/UserAvatar.vue";
+import BaseLevel from "@/components/Base/BaseLevel.vue";
+import CardBoxModal from "../Cardbox/CardBoxModal.vue";
+import { mdiContentSaveCheckOutline } from "@mdi/js";
 import FormControl from "../Form/FormControl.vue";
-import Utils from "@/helpers/utils";
-import { useRoute } from "vue-router";
 import { useVuelidate } from "@vuelidate/core";
+import { useRoute } from "vue-router";
+import Utils from "@/helpers/utils";
 
 import { required, helpers, numeric } from "@vuelidate/validators";
 
@@ -61,8 +61,8 @@ watch(() => route.params.naziv, loadData, {
 const companyForms = ref({});
 
 onMounted(async () => {
-	let result = await mainStore.fetchCompanies();
-	const filteredCompanies = result.data.results.filter((company) => {
+	let results = await mainStore.fetchCompanies();
+	const filteredCompanies = results.filter((company) => {
 		return (company.web === "" || company.web === null) && (company.OIB === "" || company.OIB === null) && (company.adresa === "" || company.adresa === null) && (company.maticni_broj === "" || company.maticni_broj === null) && (company.direktor === "" || company.direktor === null);
 	});
 	if (Utils.isArrayEmpty(filteredCompanies)) {
@@ -188,12 +188,12 @@ const pagesList = computed(() => {
 				}">
 				<TableCheckboxCell v-if="checkable" :assignment-data="company" />
 
-				<td v-if="company['logo'][0]" class="border-b-0 lg:w-6 before:hidden">
-					<UserAvatar :avatar="company['logo'][0]['url']" class="w-24 h-24 mx-auto lg:w-6 lg:h-6" />
+				<td v-if="company['logo'][0]" class="border-b-0 before:hidden lg:w-6">
+					<UserAvatar :avatar="company['logo'][0]['url']" class="mx-auto h-24 w-24 lg:h-6 lg:w-6" />
 				</td>
 
 				<td v-else>
-					<UserAvatar avatar="No-Logo.png" class="w-24 h-24 mx-auto lg:w-6 lg:h-6" />
+					<UserAvatar avatar="No-Logo.png" class="mx-auto h-24 w-24 lg:h-6 lg:w-6" />
 				</td>
 
 				<td data-label="Naziv">
@@ -220,7 +220,7 @@ const pagesList = computed(() => {
 					<FormControl v-model="companyForms[company.id].adresa" :error="getFirstErrorForField(v$, 'adresa')"></FormControl>
 				</td>
 
-				<td class="before:hidden lg:w-1 whitespace-nowrap">
+				<td class="whitespace-nowrap before:hidden lg:w-1">
 					<BaseButtons type="justify-start lg:justify-end" no-wrap>
 						<BaseButton color="fipu_blue" :icon="mdiContentSaveCheckOutline" small @click="previewCompany(company.id)" />
 					</BaseButtons>
@@ -246,7 +246,7 @@ const pagesList = computed(() => {
 		</div>
 	</CardBoxModal>
 
-	<div class="p-3 lg:px-6 border-t border-gray-100 dark:border-slate-800">
+	<div class="border-t border-gray-100 p-3 dark:border-slate-800 lg:px-6">
 		<BaseLevel>
 			<BaseButtons>
 				<BaseButton v-for="page in pagesList" :key="page" :active="page === currentPage" :label="page + 1" :color="page === currentPage ? 'lightDark' : 'whiteDark'" small @click="currentPage = page" />

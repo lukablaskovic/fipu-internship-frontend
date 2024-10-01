@@ -212,8 +212,6 @@ export const useAdminStore = defineStore("admin", {
 					student.process_instance_data.pending_task_info = await this.getTaskInfo(student.process_instance_id, pendingTask);
 
 					if (taskToDashboardMapping[pendingTask]) {
-						console.log("student.process_instance_data", student.process_instance_data);
-
 						this.dashboard_data[taskToDashboardMapping[pendingTask]]++;
 					} else if (student.process_instance_data.state === "finished") {
 						this.dashboard_data.finished_internships++;
