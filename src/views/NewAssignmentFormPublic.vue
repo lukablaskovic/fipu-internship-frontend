@@ -191,15 +191,15 @@ watch(
 			<p><b>Voditelj:</b> doc. dr. sc. Ivan Lorencin</p>
 			<hr />
 			<br />
-			<SectionTitleLineWithButton :icon="mdiClipboardText" main title="Prijava zadatka (Poslodavci)"></SectionTitleLineWithButton>
-			<p>Ova prijavnica je namijenjena <u>privatnim i javnim organizacijama</u> koje žele provoditi studentsku praksu u suradnji s Fakultetom informatike u Puli. Na temelju ovog upitnika odredit će se idealni studenti za provođenje prakse u Vašem poduzeću.</p>
+			<SectionTitleLineWithButton :icon="mdiClipboardText" main title="Prijava zadatka (Poslodavac/Mentor)"></SectionTitleLineWithButton>
+			<p>Ova prijavnica je namijenjena <u>privatnim i javnim organizacijama</u> koje žele provoditi studentsku praksu u suradnji s <a href="https://fipu.unipu.hr/" target="_blank" class="text-fipu_blue">Fakultetom informatike u Puli</a>. Na temelju ovog upitnika odredit će se idealni studenti za provođenje prakse u Vašem poduzeću.</p>
 			<br />
 
 			<p>Studentima je ovo izborni kolegij i oni koji su prijavljeni, motivirani su i spremni za rad!</p>
 			<br />
-			<p><b>Važna napomena:</b> Pojedina organizacija može prijaviti i više zadataka. Molimo da za svaki zadatak zasebno popunite prijavnicu (isti link) te zatražite broj studenata koji može na njemu raditi (npr. može biti 2 zadataka, na prvom 3 studenta, na drugom 4).</p>
+			<p><b>Važna napomena:</b> Pojedina organizacija može prijaviti i više zadataka. Molimo da za svaki zadatak zasebno popunite prijavnicu (ovaj link) te navedete broj studenata koji može na njemu raditi (npr. može biti 2 zadataka, na prvom 3 studenta, na drugom 4).</p>
 			<br />
-			<p>Ako ste u dogovoru sa studentom, molimo da navedete njegovo ime i prezime u polju "Preferencije pri odabiru studenta".</p>
+			<p>(<b>Model B</b>) Ako ste već udogovoru sa studentom, ili je student već odradio praksu kod Vas, molimo da navedete njegovo ime i prezime u polju "Preferencije pri odabiru studenta" te detaljno opišete zadatak.</p>
 			<br />
 			<p>Za sve dodatne informacije slobodno kontaktirajte voditelja stručne prakse:</p>
 
@@ -217,7 +217,7 @@ watch(
 							<div class="ml-3 grow">
 								<p class="mb-2 font-bold dark:text-white">doc. dr. sc. Ivan Lorencin</p>
 								<p class="text-neutral-500 dark:text-neutral-200">ivan.lorencin@unipu.hr</p>
-								<p class="text-neutral-500 dark:text-neutral-200">+385 98 30 56 73</p>
+								<p class="text-neutral-500 dark:text-neutral-200">+385 98 96 12 042</p>
 							</div>
 						</div>
 					</div>
@@ -266,7 +266,7 @@ watch(
 
 					<FormField label="Broj studenata*" horizontal>
 						<FormField addons>
-							<FormControl v-model="form.broj_studenata" type="number" :icon-left="mdiAccountGroup" :error="getFirstErrorForField(v$, 'broj_studenata')" :min="1" placeholder="Maksimalni broj studenata" help="Koliko studenata možete primiti u rješavanju ovog zadatka? Studenti mogu raditi odvojeno ili u timu. Ako imate više zadataka, molimo da popunite formu za svaki zadatak posebno." expanded />
+							<FormControl v-model="form.broj_studenata" type="number" :icon-left="mdiAccountGroup" :error="getFirstErrorForField(v$, 'broj_studenata')" :min="1" placeholder="Maksimalni broj studenata" help="Koliko studenata možete primiti u rješavanju ovog zadatka? Studenti mogu raditi odvojeno ili u timu. Ako imate više zadataka, molimo da popunite formu za svaki zadatak zasebno." expanded />
 						</FormField>
 					</FormField>
 
@@ -286,7 +286,7 @@ watch(
 								:error="getFirstErrorForField(v$, 'trajanje_sati')"
 								:icon-left="mdiClockTimeFiveOutline"
 								placeholder="Preporuka je 90 - 150 radnih sati"
-								help="Preporučeno trajanje studentske prakse je između 90 i 150 radnih sati. U dogovoru sa studentom može se kasnije taj angažman produljiti. Dogovor kako će se izvršiti ti sati je između vas i studenta (npr. koncentrirano u 2-3 tjedna ili par puta tjedno kroz dulje vrijeme).
+								help="Preporučeno trajanje studentske prakse je između 90 i 150 radnih sati. U dogovoru sa studentom može se kasnije taj angažman produljiti. Dogovor kako će se izvršiti ti sati je između Vas i studenta (npr. koncentrirano u 2-3 tjedna ili par puta tjedno kroz dulje vrijeme).
 "
 								expanded />
 						</FormField>
