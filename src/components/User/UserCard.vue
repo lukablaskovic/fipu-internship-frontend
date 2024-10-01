@@ -1,12 +1,12 @@
 <script setup>
-import { computed, ref } from "vue";
-import { mainStore } from "@/main.js";
-import { mdiCheckDecagram, mdiSchool, mdiShieldAccount } from "@mdi/js";
-import BaseLevel from "@/components/Base/BaseLevel.vue";
 import UserAvatarCurrentUser from "@/components/User/UserAvatarCurrentUser.vue";
-import CardBox from "@/components/Cardbox/CardBox.vue";
+import { mdiCheckDecagram, mdiSchool, mdiShieldAccount } from "@mdi/js";
 import FormCheckRadio from "@/components/Form/FormCheckRadio.vue";
+import BaseLevel from "@/components/Base/BaseLevel.vue";
+import CardBox from "@/components/Cardbox/CardBox.vue";
 import PillTag from "@/components/PillTag/PillTag.vue";
+import { mainStore } from "@/main.js";
+import { computed, ref } from "vue";
 
 import moment from "@/moment-setup";
 
@@ -18,11 +18,8 @@ const userSwitchVal = ref(false);
 <template>
 	<CardBox>
 		<BaseLevel type="justify-around lg:justify-center">
-			<UserAvatarCurrentUser class="lg:mx-12 h-64 w-64" />
+			<UserAvatarCurrentUser class="h-64 w-64 lg:mx-12" />
 			<div class="space-y-3 text-center md:text-left lg:mx-12">
-				<div class="flex justify-center md:block">
-					<FormCheckRadio v-model="userSwitchVal" name="notifications-switch" type="switch" label="Slack obavijesti" :input-value="true" />
-				</div>
 				<h1 class="text-2xl">
 					Hej,
 					<b>{{ mainStore.currentUser.username || mainStore.currentUser.ime }}</b

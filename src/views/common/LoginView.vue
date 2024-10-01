@@ -21,6 +21,11 @@
 					Poslodavac ste ili mentor te želite prijaviti novi zadatak za praksu? To možete učiniti
 					<a class="hover-underline-animation cursor-pointer text-fipu_text_blue hover:text-fipu_blue" @click="router.push('/poslodavci/novi-zadatak')"> ovdje</a>.
 				</h2>
+
+				<h2 class="text-center md:text-sm lg:text-sm 2xl:mb-4 2xl:text-base">
+					Prije nego se prijavite, pročitajte kratke
+					<a class="hover-underline-animation cursor-pointer text-fipu_text_blue hover:text-fipu_blue" @click="router.push('/upute')">upute</a> kako izvodimo praksu na FIPU.
+				</h2>
 			</CardBox>
 		</div>
 		<SnackBar />

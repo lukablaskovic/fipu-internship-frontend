@@ -37,11 +37,13 @@ const finished_internships = ref(0);
 const waiting_for_allocation = ref(0);
 const waiting_for_evaluation = ref(0);
 const a_finished_internships = ref(0);
+const a_ongoing_internships = ref(0);
 
 //B
 const b_waiting_for_assignment_approval = ref(0);
 const b_waiting_for_direct_assignment = ref(0);
 const b_finished_internships = ref(0);
+const b_ongoing_internships = ref(0);
 
 let events = ref([]);
 let eventsFetchError = ref(false);
@@ -59,11 +61,13 @@ onMounted(async () => {
 		waiting_for_allocation.value = adminStore.dashboard_data.waiting_for_allocation;
 		waiting_for_evaluation.value = adminStore.dashboard_data.waiting_for_evaluation;
 		a_finished_internships.value = adminStore.dashboard_data.a_finished_internships;
+		a_ongoing_internships.value = adminStore.dashboard_data.a_ongoing_internships;
 
 		//B
 		b_waiting_for_assignment_approval.value = adminStore.dashboard_data.b_waiting_for_assignment_approval;
 		b_waiting_for_direct_assignment.value = adminStore.dashboard_data.b_waiting_for_direct_assignment;
 		b_finished_internships.value = adminStore.dashboard_data.b_finished_internships;
+		b_ongoing_internships.value = adminStore.dashboard_data.b_ongoing_internships;
 
 		let fetchedEvents = await adminStore.getEvents();
 
@@ -182,6 +186,9 @@ const toggleDateType = () => {
 					<CardBoxWidget v-if="adminStore.studentsFetched" color="text-emerald-500" class="rounded-lg" :icon="mdiAccountSchoolOutline" :number="a_finished_internships" label="Uspješno odrađenih praksi (A)" />
 					<SkeletonLoader v-else></SkeletonLoader>
 
+					<CardBoxWidget v-if="adminStore.studentsFetched" color="text-amber-500" class="rounded-lg" :icon="mdiAccountMultiple" :number="a_ongoing_internships" label="Ukupno aktivnih procesa (A)" />
+					<SkeletonLoader v-else></SkeletonLoader>
+
 					<CardBoxWidget v-if="adminStore.studentsFetched" color="text-amber-500" class="rounded-lg" :icon="mdiProgressClock" :number="waiting_for_allocation" label="Čeka na alokaciju" />
 					<SkeletonLoader v-else></SkeletonLoader>
 
@@ -195,6 +202,9 @@ const toggleDateType = () => {
 
 				<div class="mb-6 grid grid-cols-1 gap-6 lg:grid-cols-3">
 					<CardBoxWidget v-if="adminStore.studentsFetched" color="text-emerald-500" class="rounded-lg" :icon="mdiAccountSchoolOutline" :number="b_finished_internships" label="Uspješno odrađenih praksi (B)" />
+					<SkeletonLoader v-else></SkeletonLoader>
+
+					<CardBoxWidget v-if="adminStore.studentsFetched" color="text-amber-500" class="rounded-lg" :icon="mdiAccountMultiple" :number="b_ongoing_internships" label="Ukupno aktivnih procesa (B)" />
 					<SkeletonLoader v-else></SkeletonLoader>
 
 					<CardBoxWidget v-if="adminStore.studentsFetched" color="text-amber-500" class="rounded-lg" :icon="mdiProgressClock" :number="b_waiting_for_assignment_approval" label="Čeka na odobrenje zadatka" />

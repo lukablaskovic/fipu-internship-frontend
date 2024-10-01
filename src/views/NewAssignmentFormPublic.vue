@@ -1,5 +1,5 @@
 <script setup>
-import { mdiBallot, mdiEmail, mdiClipboardText, mdiLaptop, mdiDomain, mdiMapMarker, mdiClipboardTextClockOutline, mdiAccountGroup, mdiSchool, mdiTextLong, mdiXml, mdiThumbsUpDown, mdiClockTimeFiveOutline, mdiNoteTextOutline } from "@mdi/js";
+import { mdiBallot, mdiNewBox, mdiEmail, mdiClipboardText, mdiLaptop, mdiDomain, mdiMapMarker, mdiClipboardTextClockOutline, mdiAccountGroup, mdiSchool, mdiTextLong, mdiXml, mdiThumbsUpDown, mdiClockTimeFiveOutline, mdiNoteTextOutline } from "@mdi/js";
 import { ref, reactive, onMounted, watch, computed } from "vue";
 import SectionMain from "@/components/Section/SectionMain.vue";
 
@@ -191,7 +191,7 @@ watch(
 			<p><b>Voditelj:</b> doc. dr. sc. Ivan Lorencin</p>
 			<hr />
 			<br />
-			<SectionTitleLineWithButton :icon="mdiClipboardText" main title="Prijava zadatka (Poslodavac/Mentor)"></SectionTitleLineWithButton>
+			<SectionTitleLineWithButton :icon="mdiNewBox" main title="Prijava zadatka (Poslodavac/Mentor)"></SectionTitleLineWithButton>
 			<p>Ova prijavnica je namijenjena <u>privatnim i javnim organizacijama</u> koje žele provoditi studentsku praksu u suradnji s <a href="https://fipu.unipu.hr/" target="_blank" class="text-fipu_blue">Fakultetom informatike u Puli</a>. Na temelju ovog upitnika odredit će se idealni studenti za provođenje prakse u Vašem poduzeću.</p>
 			<br />
 

@@ -18,6 +18,9 @@ interface DashboardData {
 
 	a_finished_internships: number;
 	b_finished_internships: number;
+
+	a_ongoing_internships: number;
+	b_ongoing_internships: number;
 }
 
 interface BPMNDiagram {
@@ -75,6 +78,9 @@ export const useAdminStore = defineStore("admin", {
 
 			a_finished_internships: 0,
 			b_finished_internships: 0,
+
+			a_ongoing_internships: 0,
+			b_ongoing_internships: 0,
 		} as DashboardData,
 		//dashboard_data_filters
 		selectedEvents: [] as any[], // Assuming events are not yet typed
@@ -193,6 +199,9 @@ export const useAdminStore = defineStore("admin", {
 
 					a_finished_internships: 0,
 					b_finished_internships: 0,
+
+					a_ongoing_internships: 0,
+					b_ongoing_internships: 0,
 				};
 
 				const taskToDashboardMapping: Record<string, keyof DashboardData> = {
@@ -250,6 +259,9 @@ export const useAdminStore = defineStore("admin", {
 
 				let model_a_instances = model_a?.instances || [];
 				let model_b_instances = model_b?.instances || [];
+
+				this.dashboard_data.a_ongoing_internships = model_a_instances.length - this.dashboard_data.a_finished_internships;
+				this.dashboard_data.b_ongoing_internships = model_b_instances.length - this.dashboard_data.b_finished_internships;
 
 				let model_all_instances = model_a_instances.concat(model_b_instances);
 

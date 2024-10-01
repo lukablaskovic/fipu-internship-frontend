@@ -53,6 +53,16 @@ const routes = [
 	},
 	{
 		meta: {
+			title: "Upute",
+			requiresAuth: false,
+			requiresAdmin: false,
+		},
+		path: "/upute",
+		name: "upute",
+		component: () => import("@/views/common/UputeView.vue"),
+	},
+	{
+		meta: {
 			title: "Poslodavac",
 			requiresAuth: true,
 			requiresAdmin: true,
