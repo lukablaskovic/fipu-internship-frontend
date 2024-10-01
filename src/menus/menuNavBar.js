@@ -13,6 +13,8 @@ export default [
 				{
 					icon: mdiLogout,
 					label: "Odjava",
+					isDesktopNoLabel: false,
+					isLogout: true,
 				},
 			],
 		},

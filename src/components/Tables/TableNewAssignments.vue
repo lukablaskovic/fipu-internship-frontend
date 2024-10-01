@@ -158,6 +158,7 @@ const cancelTaskAction = () => {
 				<th>Preferirane tehnologije</th>
 				<th>Trajanje (sati)</th>
 				<th>Lokacija</th>
+				<th>Max. mjesta</th>
 				<th />
 				<th />
 				<th />
@@ -186,6 +187,10 @@ const cancelTaskAction = () => {
 				</td>
 				<td data-label="Lokacija">
 					{{ assignment["lokacija"] }}
+				</td>
+
+				<td data-label="Max. Broj studenata">
+					{{ assignment["broj_studenata"] }}
 				</td>
 
 				<td class="whitespace-nowrap before:hidden lg:w-1">

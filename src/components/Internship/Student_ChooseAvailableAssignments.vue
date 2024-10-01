@@ -1,7 +1,7 @@
 <script setup>
+import { mdiClipboardCheckOutline, mdiNumeric, mdiClipboardTextOutline, mdiLaptop } from "@mdi/js";
 import SectionTitleLineWithButton from "@/components/Section/SectionTitleLineWithButton.vue";
 import TableAvailableAssignments from "@/components/Tables/TableAvailableAssignments.vue";
-import { mdiClipboardCheckOutline, mdiClipboardTextOutline, mdiLaptop } from "@mdi/js";
 import LayoutAuthenticated from "@/layouts/LayoutAuthenticated.vue";
 import { mainStore, studentStore, snackBarStore } from "@/main.js";
 import CardBoxModal from "@/components/Cardbox/CardBoxModal.vue";
@@ -106,7 +106,7 @@ const handleDragEnd = () => {
 			</CardBox>
 			<hr />
 			<br />
-			<SectionTitleLineWithButton ref="vas_odabir" :icon="mdiClipboardCheckOutline" main title="Vaš odabir" />
+			<SectionTitleLineWithButton ref="vas_odabir" :icon="mdiNumeric" main title="Vaš odabir" />
 			<p v-if="checkedAssignments.length === 3" class="mb-4">Zadatke možete rasporediti po vašim preferencijama.</p>
 
 			<draggable v-model="assignmentsForDrag" :disabled="!isDraggableEnabled" item-key="id" class="list-group flex w-full space-x-2" @start="handleDragStart" @end="handleDragEnd">
@@ -114,8 +114,8 @@ const handleDragEnd = () => {
 					<div class="flex-1">
 						<div class="draggable-item aspect-h-1 aspect-w-1 relative flex items-center justify-center border-2 bg-gray-50" :class="{ grab: isAssignment(element) && isDraggableEnabled, grabbing: vueDraggableDragging && isAssignment(element) && isDraggableEnabled }">
 							<transition name="image-fade">
-								<img v-if="isAssignment(element)" class="rounded-full p-22" :src="getCompanyLogo(element)" />
-								<img v-else class="p-22" :src="getDefaultImage(index)" alt="Default Task" />
+								<img v-if="isAssignment(element)" class="rounded-full sm:p-22" :src="getCompanyLogo(element)" />
+								<img v-else class="sm:p-22" :src="getDefaultImage(index)" alt="Default Task" />
 							</transition>
 							<div v-if="isAssignment(element)" class="absolute inset-0 flex items-center justify-center bg-black bg-opacity-50 text-sm font-bold text-white opacity-0 transition-opacity hover:opacity-100">ID: {{ element.id_zadatak }}</div>
 						</div>

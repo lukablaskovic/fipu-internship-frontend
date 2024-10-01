@@ -1,5 +1,5 @@
 <script setup>
-import { mdiClipboardCheckOutline, mdiProgressClock, mdiLaptop, mdiNumeric1Circle, mdiNumeric2CircleOutline, mdiNumeric3CircleOutline, mdiEmail } from "@mdi/js";
+import { mdiClipboardCheckOutline, mdiProgressClock, mdiLaptop, mdiNumeric, mdiNumeric1Circle, mdiNumeric2CircleOutline, mdiNumeric3CircleOutline, mdiEmail } from "@mdi/js";
 import { ref, computed, onMounted } from "vue";
 
 import LayoutAuthenticated from "@/layouts/LayoutAuthenticated.vue";
@@ -79,7 +79,7 @@ function openModal(assignmentDetails) {
 			<SectionTitleLineWithButton :icon="mdiProgressClock" main title="Alokacija zadatka u tijeku"></SectionTitleLineWithButton>
 			<div class="flex flex-wrap text-base">Zadatak vam još nije dodijeljen. Ako čekate više od 10 dana, javite se voditelju prakse.</div>
 			<br />
-			<SectionTitleLineWithButton :icon="mdiClipboardCheckOutline" main title="Vaš odabir"></SectionTitleLineWithButton>
+			<SectionTitleLineWithButton :icon="mdiNumeric" main title="Vaš odabir"></SectionTitleLineWithButton>
 
 			<div class="mb-6 grid grid-cols-1 gap-6 lg:grid-cols-3">
 				<CardBoxWidget :class="!prviOdabirDetails ? 'cursor-wait' : 'cursor-pointer'" color="text-fipu_blue" hoverable :logo="PrviPoslodavacLogo" :number="null" :text="prviOdabir" label="1. odabir" @click="openModal(prviOdabirDetails)" />
