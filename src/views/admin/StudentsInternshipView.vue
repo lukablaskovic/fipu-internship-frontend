@@ -160,7 +160,9 @@ onMounted(loadDataForStudent);
 				<SectionTitleLineWithButton :icon="mdiAccountMultiple" title="Studenti u procesu prakse" button-enabled main @click="bpmn_help_modal = true"> </SectionTitleLineWithButton>
 				<div class="flex flex-row">
 					<div class="mb-4"><PillTag class="cursor-pointer" :left="false" :icon="adminStore.filterFinishedInstances ? mdiAccountGroup : mdiAccountMultiple" :color="adminStore.filterFinishedInstances ? 'info' : 'success'" :label="adminStore.filterFinishedInstances ? 'Sve instance' : 'Samo aktivne'" @click="toggleActiveEventsFilter" /></div>
+					<div class="mb-4"><PillTag class="cursor-pointer" :icon="adminStore.filterModelState === 'A' ? mdiAlphaACircle : adminStore.filterModelState === 'B' ? mdiAlphaBCircle : mdiAlphaABCircleOutline" :color="adminStore.filterModelState === 'A' ? 'danger' : adminStore.filterModelState === 'B' ? 'success' : 'info'" :label="adminStore.filterModelState === 'A' ? 'Model A' : adminStore.filterModelState === 'B' ? 'Model B' : 'Modeli AB'" @click="toggleModelEventsFilter" /></div>
 				</div>
+
 				<CardBox has-table>
 					<TableStudents @show-student-diagram="handleProcessDiagram" />
 				</CardBox>

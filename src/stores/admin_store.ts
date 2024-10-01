@@ -33,7 +33,9 @@ interface StudentProcessData {
 	pending: any[];
 	pending_task_info?: any;
 	state: string;
-	model: {};
+	model: {
+		model_path: string;
+	};
 }
 
 interface Student {
@@ -70,6 +72,7 @@ export const useAdminStore = defineStore("admin", {
 			waiting_for_evaluation: 0,
 			b_waiting_for_assignment_approval: 0,
 			b_waiting_for_direct_assignment: 0,
+
 			a_finished_internships: 0,
 			b_finished_internships: 0,
 		} as DashboardData,
@@ -187,6 +190,9 @@ export const useAdminStore = defineStore("admin", {
 					waiting_for_evaluation: 0,
 					b_waiting_for_assignment_approval: 0,
 					b_waiting_for_direct_assignment: 0,
+
+					a_finished_internships: 0,
+					b_finished_internships: 0,
 				};
 
 				const taskToDashboardMapping: Record<string, keyof DashboardData> = {
@@ -211,7 +217,6 @@ export const useAdminStore = defineStore("admin", {
 						this.dashboard_data[taskToDashboardMapping[pendingTask]]++;
 					} else if (student.process_instance_data.state === "finished") {
 						this.dashboard_data.finished_internships++;
-
 						if (student.process_instance_data.model.model_path === `${mainStore.bpmn_process_name_A}.bpmn`) {
 							this.dashboard_data.a_finished_internships++;
 						} else if (student.process_instance_data.model.model_path === `${mainStore.bpmn_process_name_B}.bpmn`) {

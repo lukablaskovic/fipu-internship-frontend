@@ -388,7 +388,7 @@ class ActivityEventMappings {
 			activity_id: "predavanje_dnevnika_student",
 			icon: mdiNotebook,
 			type: "success",
-			message: "Predao dnevnik prakse",
+			message: "Dnevnik predan",
 		},
 		{
 			activity_id: "spremanje_dnevnika",
@@ -405,8 +405,8 @@ class ActivityEventMappings {
 		{
 			activity_id: "end_event_student",
 			icon: mdiRayEnd,
-			type: "success",
-			message: "Student ocjenjen",
+			type: "info",
+			message: "Proces završen",
 		},
 		//model B
 		{

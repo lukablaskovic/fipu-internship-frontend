@@ -1,5 +1,5 @@
 <script setup>
-import { mdiAlphaACircle, mdiNoteAlert, mdiClipboardCheck, mdiAccountTie, mdiAlphaBCircleOutline, mdiAccountMultiple, mdiAccountSchoolOutline, mdiProgressClock, mdiViewDashboard, mdiCommentProcessing, mdiMonitorAccount, mdiAccountCancel, mdiAlphaSBox, mdiClockTimeEight, mdiCalendarClock, mdiAccountGroup, mdiOfficeBuilding } from "@mdi/js";
+import { mdiAlphaACircle, mdiAbTesting, mdiNoteAlert, mdiClipboardCheck, mdiAccountTie, mdiAlphaBCircleOutline, mdiAccountMultiple, mdiAccountSchoolOutline, mdiProgressClock, mdiViewDashboard, mdiCommentProcessing, mdiMonitorAccount, mdiAccountCancel, mdiAlphaSBox, mdiClockTimeEight, mdiCalendarClock, mdiAccountGroup, mdiOfficeBuilding } from "@mdi/js";
 import { adminStore, mainStore, snackBarStore } from "@/main.js";
 import { layoutStore } from "@/main";
 
@@ -215,7 +215,7 @@ const toggleDateType = () => {
 						<div class="mb-4"><PillTag class="cursor-pointer" :left="false" :icon="adminStore.filterActiveInstances ? mdiAccountGroup : mdiAccountMultiple" :color="adminStore.filterActiveInstances ? 'info' : 'success'" :label="adminStore.filterActiveInstances ? 'Sve instance' : 'Samo aktivne'" @click="toggleActiveEventsFilter" /></div>
 					</div>
 					<div class="flex flex-row">
-						<div class="mb-4"><PillTag class="cursor-pointer" :icon="adminStore.filterModelState === 'A' ? mdiAlphaACircle : adminStore.filterModelState === 'B' ? mdiAlphaBCircle : mdiAlphaABCircleOutline" :color="adminStore.filterModelState === 'A' ? 'danger' : adminStore.filterModelState === 'B' ? 'success' : 'info'" :label="adminStore.filterModelState === 'A' ? 'Model A' : adminStore.filterModelState === 'B' ? 'Model B' : 'Modeli AB'" @click="toggleModelEventsFilter" /></div>
+						<div class="mb-4"><PillTag class="cursor-pointer" :icon="adminStore.filterModelState === 'A' ? mdiAlphaACircle : adminStore.filterModelState === 'B' ? mdiAlphaBCircleOutline : mdiAbTesting" :color="adminStore.filterModelState === 'A' ? 'danger' : adminStore.filterModelState === 'B' ? 'success' : 'info'" :label="adminStore.filterModelState === 'A' ? 'Model A' : adminStore.filterModelState === 'B' ? 'Model B' : 'Modeli AB'" @click="toggleModelEventsFilter" /></div>
 					</div>
 					<div class="flex flex-row">
 						<div class="mb-4">
