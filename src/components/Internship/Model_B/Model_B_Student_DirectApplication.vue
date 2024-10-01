@@ -89,6 +89,8 @@ const directApplication = async () => {
 			<br />
 			<SectionTitleLineWithButton :icon="mdiClipboardText" main title="Direktna prijava na zadatak"></SectionTitleLineWithButton>
 			<div class="flex flex-wrap text-base">Voditelj je odobrio zadatak koji ste prijavili u dogovoru s poslodavcem. Kako biste nastavili, morate se direktno prijaviti ispod. Ako ste već odradili praksu, molimo da u napomeni navedete da jeste i u kojem razdoblju.</div>
+			<div class="mt-2 flex flex-wrap text-base">Kliknite ispod za pregled detalja zadatka koji vam je odobren.</div>
+
 			<br />
 
 			<div class="mb-6 grid grid-cols-1">

@@ -371,7 +371,6 @@ Napomena: Da biste prijavili preferencije, morate biti prijavljeni u aplikaciji!
       <bpmn:outgoing>Flow_0k988op</bpmn:outgoing>
     </bpmn:sendTask>
     <bpmn:userTask id="ispunjavanje_prijavnice_student" name="Ispunjavanje prijavnice">
-      <bpmn:documentation>VAŽNO: Prijavnica se popunjava nakon (!) što nastavnik odobri kontakt određenom poduzeću i nakon što student s tim poduzećem dogovori praksu. Popunjenu prijavnicu šaljemo poduzeću na odobrenje i potpis.</bpmn:documentation>
       <bpmn:extensionElements>
         <camunda:formData>
           <camunda:formField id="student_broj_mobitela" type="string" />
@@ -525,8 +524,6 @@ Napomena: Da biste prijavili preferencije, morate biti prijavljeni u aplikaciji!
       <bpmn:outgoing>Flow_03i13r1</bpmn:outgoing>
     </bpmn:parallelGateway>
     <bpmn:userTask id="predavanje_dnevnika_student" name="Predavanje dnevnika prakse">
-      <bpmn:documentation>Template za dnevnik dostupan je na http://bit.ly/fipu-praksa-template
-Dnevnik je potrebno predati prije prijave ispitnoga roka.</bpmn:documentation>
       <bpmn:extensionElements>
         <camunda:formData>
           <camunda:formField id="nastavak_radnog_odnosa" label="Označi ako nastavljaš i dalje raditi u tvrtci ili ćeš ubrzo početi raditi honorarno" type="boolean" />

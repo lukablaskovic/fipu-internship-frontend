@@ -130,6 +130,7 @@ async function onSubmit() {
 	if (!fixedUserData.ime_prezime || fixedUserData.ime_prezime === "" || !fixedUserData.email || fixedUserData.email === "") {
 		snackBarStore.pushMessage("Greška! Molimo pokušajte ponovo.", "danger");
 		isLoading.value = false;
+		await Utils.wait(1);
 		router.go();
 		return;
 	}
@@ -140,10 +141,10 @@ async function onSubmit() {
 		return;
 	}
 
-	isLoading.value = false;
 	const response = await mainStore.createInternshipInstance(selectedProcess.value, form.godina_studija, form.jmbag);
 	if (response) {
 		snackBarStore.pushMessage("Uspješno ste započeli proces prakse!", "success");
+		isLoading.value = false;
 		await Utils.wait(1);
 		router.push("/moja-praksa");
 	}

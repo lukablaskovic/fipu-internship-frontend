@@ -32,8 +32,10 @@ const Layout = computed(() => {
 			<p><b>Voditelj:</b> {{ mainStore.voditelj_prakse }}</p>
 			<hr />
 			<br />
-			<SectionTitleLineWithButton :icon="mdiProgressClock" main title="Odobrenje u tijeku"></SectionTitleLineWithButton>
-			<div class="flex flex-wrap text-base">Zadatak vam još nije odobren.</div>
+			<SectionTitleLineWithButton :icon="mdiProgressClock" main title="Postupak odobrenja je u tijeku"></SectionTitleLineWithButton>
+			<div class="flex flex-wrap text-base">Zadatak vam još nije odobren. Ako čekate dugo, kontaktirajte voditelja prakse.</div>
+			<hr class="mb-2" />
+			<div class="flex flex-wrap text-base">Ukoliko nemate dogovor s profesorom i/ili poslodavcem, moguće je da ste odabrali neodgovarajući proces prakse. Molimo da prekinete ovaj proces i odaberete redovni proces A.</div>
 			<br />
 		</SectionMain>
 	</component>

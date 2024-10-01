@@ -105,14 +105,14 @@ const pagesList = computed(() => {
 				<td data-label="Prijavnica ispunjena">
 					<div class="flex items-center">
 						<TableCheckboxCell readonly :value="allocation['popunjena_prijavnica']" />
-						<a v-if="allocation['popunjena_prijavnica'] && mainStore.userAdmin" class="ml-8 cursor-pointer text-sm underline hover:text-fipu_light_blue" @click="adminStore.openPDFModal(allocation, 'Potvrda', 'source_url_for_potvrda')"> Generirana potvrda📜</a>
+						<a v-if="allocation['popunjena_prijavnica'] && mainStore.userAdmin" class="ml-8 cursor-pointer text-sm underline hover:text-fipu_light_blue" @click="adminStore.openPDF(allocation, 'Potvrda', 'source_url_for_potvrda')"> Generirana potvrda</a>
 					</div>
 				</td>
 				<td data-label="Dnevnik prakse predan">
 					<div class="flex items-center">
 						<TableCheckboxCell readonly :value="allocation[(allocation, 'predan_dnevnik_prakse')]" />
-						<p v-if="allocation['predan_dnevnik_prakse'] && mainStore.userAdmin" class="ml-8 cursor-pointer text-sm underline hover:text-fipu_light_blue" @click="fetchPDF('potvrda', getVariableByIdAlokacija(allocation['id_alokacija'], 'id_dnevnik_prakse'))">Otvori potvrdu📃</p>
-						<p v-if="allocation['predan_dnevnik_prakse'] && mainStore.userAdmin" class="ml-8 cursor-pointer text-sm underline hover:text-fipu_light_blue" @click="fetchPDF('dnevnik', getVariableByIdAlokacija(allocation['id_alokacija'], 'id_dnevnik_prakse'))">Otvori dnevnik📓</p>
+						<p v-if="allocation['predan_dnevnik_prakse'] && mainStore.userAdmin" class="ml-8 cursor-pointer text-sm underline hover:text-fipu_light_blue" @click="fetchPDF('potvrda', getVariableByIdAlokacija(allocation['id_alokacija'], 'id_dnevnik_prakse'))">Otvori potvrdu</p>
+						<p v-if="allocation['predan_dnevnik_prakse'] && mainStore.userAdmin" class="ml-8 cursor-pointer text-sm underline hover:text-fipu_light_blue" @click="fetchPDF('dnevnik', getVariableByIdAlokacija(allocation['id_alokacija'], 'id_dnevnik_prakse'))">Otvori dnevnik</p>
 					</div>
 				</td>
 			</tr>

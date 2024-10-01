@@ -13,6 +13,11 @@ interface DashboardData {
 	ongoing_internships: number;
 	waiting_for_allocation: number;
 	waiting_for_evaluation: number;
+	b_waiting_for_assignment_approval: number;
+	b_waiting_for_direct_assignment: number;
+
+	a_finished_internships: number;
+	b_finished_internships: number;
 }
 
 interface BPMNDiagram {
@@ -28,6 +33,7 @@ interface StudentProcessData {
 	pending: any[];
 	pending_task_info?: any;
 	state: string;
+	model: {};
 }
 
 interface Student {
@@ -55,20 +61,27 @@ export const useAdminStore = defineStore("admin", {
 		studentsFetched: false,
 		newAssignments: [] as any[], // Assuming assignments are not yet typed
 
+		//dashboard_data
 		dashboard_data: {
 			waiting_for_mark: 0,
 			finished_internships: 0,
 			ongoing_internships: 0,
 			waiting_for_allocation: 0,
 			waiting_for_evaluation: 0,
+			b_waiting_for_assignment_approval: 0,
+			b_waiting_for_direct_assignment: 0,
+			a_finished_internships: 0,
+			b_finished_internships: 0,
 		} as DashboardData,
-
+		//dashboard_data_filters
 		selectedEvents: [] as any[], // Assuming events are not yet typed
 		events: [] as Event[], // Typed array of Event
 		relativeToNowTimestmap: true,
 		filterActiveInstances: true,
 		filterFinishedInstances: true,
 		availableAssignmentsFilter: true,
+
+		filterModelA: "AB",
 
 		bpmn_diagram: {
 			clicked_task_id: null,
@@ -101,7 +114,7 @@ export const useAdminStore = defineStore("admin", {
 				return null;
 			}
 		},
-		openPDFModal(allocation: any, type: string) {
+		openPDF(allocation: any, type: string) {
 			const student = this.students.find((stud) => {
 				return stud.process_instance_data.variables.id_alokacija === allocation.id_alokacija;
 			});
@@ -109,7 +122,9 @@ export const useAdminStore = defineStore("admin", {
 			if (type === "Potvrda") {
 				this.modalTitle = "Potvrda o praksi (nepotpisano)";
 				if (student) {
+					console.log("student", student);
 					this.pdfSource = student.process_instance_data.variables.pdf_attachment_url;
+					window.open(this.pdfSource, "_blank");
 				} else {
 					console.error("Student not found");
 					return;
@@ -117,7 +132,7 @@ export const useAdminStore = defineStore("admin", {
 			} else if (type === "Dnevnik") {
 				this.modalTitle = "Dnevnik prakse";
 			} else {
-				console.error("Invalid type passed to openPDFModal");
+				console.error("Invalid type passed to openPDF");
 				return;
 			}
 			this.pdfModalActive = true;
@@ -167,14 +182,19 @@ export const useAdminStore = defineStore("admin", {
 					waiting_for_mark: 0,
 					finished_internships: 0,
 					ongoing_internships: 0,
+
 					waiting_for_allocation: 0,
 					waiting_for_evaluation: 0,
+					b_waiting_for_assignment_approval: 0,
+					b_waiting_for_direct_assignment: 0,
 				};
 
 				const taskToDashboardMapping: Record<string, keyof DashboardData> = {
 					alociranje_profesor: "waiting_for_allocation",
 					evaluacija_poslodavac: "waiting_for_evaluation",
 					upis_ocjene: "waiting_for_mark",
+					model_b_odobrenje_zadatka: "b_waiting_for_assignment_approval",
+					model_b_direktna_prijava_student: "b_waiting_for_direct_assignment",
 				};
 
 				const promises = students.map(async (student: Student) => {
@@ -186,9 +206,17 @@ export const useAdminStore = defineStore("admin", {
 					student.process_instance_data.pending_task_info = await this.getTaskInfo(student.process_instance_id, pendingTask);
 
 					if (taskToDashboardMapping[pendingTask]) {
+						console.log("student.process_instance_data", student.process_instance_data);
+
 						this.dashboard_data[taskToDashboardMapping[pendingTask]]++;
 					} else if (student.process_instance_data.state === "finished") {
 						this.dashboard_data.finished_internships++;
+
+						if (student.process_instance_data.model.model_path === `${mainStore.bpmn_process_name_A}.bpmn`) {
+							this.dashboard_data.a_finished_internships++;
+						} else if (student.process_instance_data.model.model_path === `${mainStore.bpmn_process_name_B}.bpmn`) {
+							this.dashboard_data.b_finished_internships++;
+						}
 					}
 				});
 
@@ -196,7 +224,7 @@ export const useAdminStore = defineStore("admin", {
 
 				this.students = students;
 			} catch (error) {
-				console.log("Error:", error);
+				console.log("[admin_store].getStudents(): ", error);
 			} finally {
 				this.studentsFetched = true;
 			}
@@ -206,28 +234,30 @@ export const useAdminStore = defineStore("admin", {
 				const response = await Admin.getPreferencesDetailed(id_alokacija);
 				return response;
 			} catch (error) {
-				console.log("Error:", error);
+				console.log("[admin_store.getPreferencesDetailed(): ", error);
 			}
 		},
 
 		async searchModels() {
 			try {
 				const response = await Model.search();
-				console.log("Model.search();", response);
+
 				const model_a = response.results.find((result: any) => result.model_path === `${mainStore.bpmn_process_name_A}.bpmn`);
 				const model_b = response.results.find((result: any) => result.model_path === `${mainStore.bpmn_process_name_B}.bpmn`);
-				let model_a_instances = model_a.instances;
-				let model_b_instances = model_b.instances;
+
+				let model_a_instances = model_a?.instances || [];
+				let model_b_instances = model_b?.instances || [];
 
 				let model_all_instances = model_a_instances.concat(model_b_instances);
 
-				if (model_a && model_b && model_all_instances) {
-					this.dashboard_data.ongoing_internships = model_all_instances.instances.length - this.dashboard_data.finished_internships;
+				// Safeguard: check if there are combined instances and calculate ongoing internships
+				if (model_a && model_b && model_all_instances.length) {
+					this.dashboard_data.ongoing_internships = model_all_instances.length - this.dashboard_data.finished_internships;
 				}
 
 				return response.results;
 			} catch (error) {
-				console.log("Error:", error);
+				console.log("[admin_store].searchModels(): ", error);
 			}
 		},
 		async getEvents() {
@@ -249,7 +279,7 @@ export const useAdminStore = defineStore("admin", {
 					return this.events;
 				}
 			} catch (error) {
-				console.log("Error:", error);
+				console.log("[admin_store].getEvents(): ", error);
 			}
 		},
 
@@ -258,7 +288,7 @@ export const useAdminStore = defineStore("admin", {
 				const response = await Admin.handleTask(id_zadatak, action);
 				return response;
 			} catch (error) {
-				console.log("Error:", error);
+				console.log("[admin_store].handleTask(): ", error);
 			}
 		},
 		async handleNewInstance(instance_id: string, current_task: string, post_data: any) {
@@ -266,7 +296,7 @@ export const useAdminStore = defineStore("admin", {
 				const response = await ProcessInstance.handleNewInstance(instance_id, current_task, post_data);
 				return response;
 			} catch (error) {
-				console.log("Error:", error);
+				console.log("[admin_store].handleNewInstance: ", error);
 			}
 		},
 		async sendAnAdditionalEmail(postData: any, to: string, template: string) {
@@ -274,7 +304,7 @@ export const useAdminStore = defineStore("admin", {
 				const response = await SendGrid.sendEmail(postData, to, template);
 				return response;
 			} catch (error) {
-				console.log("Error:", error);
+				console.log("[admin_store].sendAnAdditionalEmail(): ", error);
 			}
 		},
 	},

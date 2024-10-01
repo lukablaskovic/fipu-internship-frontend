@@ -44,7 +44,7 @@ const routes = [
 	{
 		meta: {
 			title: "Poslodavci",
-			requiresAuth: true,
+			requiresAuth: false,
 			requiresAdmin: false,
 		},
 		path: "/poslodavci",

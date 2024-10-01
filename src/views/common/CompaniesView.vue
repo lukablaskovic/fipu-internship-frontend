@@ -7,6 +7,7 @@ import { computed, ref } from "vue";
 
 import SectionTitleLineWithButton from "@/components/Section/SectionTitleLineWithButton.vue";
 import LayoutAuthenticated from "@/layouts/LayoutAuthenticated.vue";
+import LayoutGuest from "@/layouts/LayoutGuest.vue";
 
 import CardBoxComponentEmpty from "@/components/Cardbox/CardBoxComponentEmpty.vue";
 import TableNewCompanies from "@/components/Tables/TableNewCompanies.vue";
@@ -65,5 +66,31 @@ const addNewAssignmentLink = ref(`${VITE_FRONTEND_URL}/poslodavci/novi-zadatak`)
 				</CardBox>
 			</SectionMain>
 		</LayoutAuthenticated>
+
+		<LayoutGuest v-else>
+			<SectionMain>
+				<SectionTitleLineWithButton class="mt-4" :icon="mdiDomain" title="Svi poslodavci" main> </SectionTitleLineWithButton>
+				<p class="mb-4">U tablici se nalaze poduzeća koja su sklopila ugovor za provođenje studentske prakse u suradnji s Fakultetom informatike u Puli.</p>
+				<div class="mb-4">
+					<p class="mb-2 text-sm md:text-base">Ukoliko ne možete naći zadatak koji vam se sviđa, javite se poslodavcu, predstavite se i zamolite ih da ispune zadatak putem poveznice ispod.</p>
+					<FormField class="md:w-1/2" label="Forma za prijavu novog zadatka">
+						<FormControl v-model="addNewAssignmentLink" :icon-left="mdiClipboardCheck" :icon-right="mdiContentCopy" name="addNewAssignmentLink" readonly copyable />
+					</FormField>
+
+					<p class="flex flex-wrap items-center text-sm md:text-base">
+						Nakon što poslodavac ispuni zadatak, prijavite ga u
+						<span class="inline-flex cursor-pointer items-center whitespace-normal text-fipu_blue md:ml-1" @click="router.push('/moja-praksa')">
+							<BaseIcon :path="mdiLaptop" class="flex-none align-middle" :size="18"></BaseIcon>
+
+							Moja praksa
+						</span>
+					</p>
+				</div>
+
+				<CardBox has-table>
+					<TableCompanies />
+				</CardBox>
+			</SectionMain>
+		</LayoutGuest>
 	</div>
 </template>

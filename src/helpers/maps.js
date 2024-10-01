@@ -238,7 +238,7 @@ class UserTaskMappings {
 		{
 			order: 2,
 			model_type: "B",
-			_id: "direktna_prijava_student",
+			_id: "model_b_direktna_prijava_student",
 			name: "Student se mora prijaviti",
 			form_title: "Direktna prijava studenta",
 			snackbar_msg: "",
@@ -258,7 +258,7 @@ class UserTaskMappings {
 	}
 }
 
-import { mdiRayStartArrow, mdiProgressClock, mdiCheck, mdiThumbsUpDownOutline, mdiNoteCheck, mdiAccountTie, mdiNotebook, mdiFileDocumentPlus, mdiRayEnd, mdiContentSaveOutline, mdiApi, mdiEmailArrowRight, mdiCertificate, mdiCancel } from "@mdi/js";
+import { mdiRayStartArrow, mdiClipboardCheck, mdiNumeric, mdiHandshake, mdiProgressClock, mdiCheck, mdiThumbsUpDownOutline, mdiNoteCheck, mdiAccountTie, mdiNotebook, mdiFileDocumentPlus, mdiRayEnd, mdiContentSaveOutline, mdiApi, mdiEmailArrowRight, mdiCertificate, mdiCancel } from "@mdi/js";
 
 import { endpoints } from "@/config";
 
@@ -268,11 +268,11 @@ class ActivityEventMappings {
 			activity_id: "start_event_student",
 			icon: mdiRayStartArrow,
 			type: "info",
-			message: "Pokrenut proces prakse",
+			message: "Pokrenut proces",
 		},
 		{
 			activity_id: "odabiranje_zadatka_student",
-			icon: mdiThumbsUpDownOutline,
+			icon: mdiNumeric,
 			type: "success",
 			message: "Prijavljene preferencije",
 		},
@@ -286,7 +286,7 @@ class ActivityEventMappings {
 			activity_id: "alociranje_profesor",
 			icon: mdiNoteCheck,
 			type: "success",
-			message: "Alokacija ažurirana",
+			message: "Profesor alocirao",
 		},
 		{
 			activity_id: "odabir_prihvacen",
@@ -411,31 +411,25 @@ class ActivityEventMappings {
 		//model B
 		{
 			activity_id: "model_b_dogovor_profesor",
-			icon: mdiThumbsUpDownOutline,
-			type: "success",
-			message: "Student potvrđuje dogovor",
+			icon: mdiProgressClock,
+			type: "danger",
+			message: "Čeka odobrenje",
 		},
 		{
 			activity_id: "model_b_odobrenje_zadatka",
-			icon: mdiThumbsUpDownOutline,
+			icon: mdiClipboardCheck,
 			type: "success",
-			message: "Zadatak odobren (B)",
+			message: "Zadatak odobren",
 		},
 		{
-			activity_id: "end_event_zadatak_neodobren",
-			icon: mdiRayEnd,
-			type: "danger",
-			message: "Zadatak odbijen (B)",
-		},
-		{
-			activity_id: "direktna_prijava_student",
-			icon: mdiRayEnd,
+			activity_id: "model_b_direktna_prijava_student",
+			icon: mdiNoteCheck,
 			type: "info",
-			message: "Student se mora prijaviti (B)",
+			message: "Student se prijavio",
 		},
 	];
 
-	static skipEvents = ["spremanje_alokacija", "uzimanje_podataka_o_poslodavcu_student", "spremanje_zahtjeva_profesor_ponistio", "obavjestavanje_poslodavca_nakon_alokacije", "obavjestavanje_studenta_nakon_alokacije", "obavjestavanje_studenta_nakon_ponistavanja_email", "student_prihvacen", "obavjestavanje_studenta_nakon_prihvacanja_email", "azuriranje_podataka_profesor", "slanje_potvrde_student_email", "slanje_potvrde_mentor_email", "spremanje_dnevnika"];
+	static skipEvents = ["spremanje_alokacija", "odabir_prihvacen", "uzimanje_podataka_o_poslodavcu_student", "spremanje_zahtjeva_profesor_ponistio", "obavjestavanje_poslodavca_nakon_alokacije", "obavjestavanje_studenta_nakon_alokacije", "obavjestavanje_studenta_nakon_ponistavanja_email", "student_prihvacen", "obavjestavanje_studenta_nakon_prihvacanja_email", "azuriranje_podataka_profesor", "slanje_potvrde_student_email", "slanje_potvrde_mentor_email", "spremanje_dnevnika"];
 
 	static isGatewayEvent(activityId) {
 		return activityId.startsWith("Gateway_");

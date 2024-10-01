@@ -1,5 +1,5 @@
 <script setup>
-import { mdiAccountMultiple, mdiAccountSchoolOutline, mdiProgressClock, mdiViewDashboard, mdiCommentProcessing, mdiMonitorAccount, mdiAccountCancel, mdiAlphaSBox, mdiClockTimeEight, mdiCalendarClock, mdiAccountGroup } from "@mdi/js";
+import { mdiAlphaACircle, mdiClipboardCheck, mdiAccountTie, mdiAlphaBCircleOutline, mdiAccountMultiple, mdiAccountSchoolOutline, mdiProgressClock, mdiViewDashboard, mdiCommentProcessing, mdiMonitorAccount, mdiAccountCancel, mdiAlphaSBox, mdiClockTimeEight, mdiCalendarClock, mdiAccountGroup, mdiOfficeBuilding } from "@mdi/js";
 import { adminStore, mainStore, snackBarStore } from "@/main.js";
 import { layoutStore } from "@/main";
 
@@ -30,10 +30,18 @@ import Utils from "@/helpers/utils";
 const router = useRouter();
 
 const ongoing_internships = ref(0);
-const waiting_for_allocation = ref(0);
-const waiting_for_evaluation = ref(0);
 const waiting_for_mark = ref(0);
 const finished_internships = ref(0);
+
+//A
+const waiting_for_allocation = ref(0);
+const waiting_for_evaluation = ref(0);
+const a_finished_internships = ref(0);
+
+//B
+const b_waiting_for_assignment_approval = ref(0);
+const b_waiting_for_direct_assignment = ref(0);
+const b_finished_internships = ref(0);
 
 let events = ref([]);
 let eventsFetchError = ref(false);
@@ -44,10 +52,18 @@ onMounted(async () => {
 		await adminStore.searchModels();
 
 		ongoing_internships.value = adminStore.dashboard_data.ongoing_internships;
-		waiting_for_allocation.value = adminStore.dashboard_data.waiting_for_allocation;
-		waiting_for_evaluation.value = adminStore.dashboard_data.waiting_for_evaluation;
 		waiting_for_mark.value = adminStore.dashboard_data.waiting_for_mark;
 		finished_internships.value = adminStore.dashboard_data.finished_internships;
+
+		//A
+		waiting_for_allocation.value = adminStore.dashboard_data.waiting_for_allocation;
+		waiting_for_evaluation.value = adminStore.dashboard_data.waiting_for_evaluation;
+		a_finished_internships.value = adminStore.dashboard_data.a_finished_internships;
+
+		//B
+		b_waiting_for_assignment_approval.value = adminStore.dashboard_data.b_waiting_for_assignment_approval;
+		b_waiting_for_direct_assignment.value = adminStore.dashboard_data.b_waiting_for_direct_assignment;
+		b_finished_internships.value = adminStore.dashboard_data.b_finished_internships;
 
 		let fetchedEvents = await adminStore.getEvents();
 
@@ -66,15 +82,36 @@ const toggleActiveEventsFilter = () => {
 	adminStore.filterActiveInstances = !adminStore.filterActiveInstances;
 };
 
+const toggleModelEventsFilter = () => {
+	// Cycle through the states A -> B -> AB -> A...
+	if (adminStore.filterModelState === "A") {
+		adminStore.filterModelState = "B";
+	} else if (adminStore.filterModelState === "B") {
+		adminStore.filterModelState = "AB";
+	} else {
+		adminStore.filterModelState = "A";
+	}
+};
+
 const filteredEvents = computed(() => {
+	let filtered = events.value;
+
+	// Filter active instances if needed
 	if (!adminStore.filterActiveInstances) {
 		const endedInstances = events.value.filter((event) => event.activity_id === "end_event_student").map((event) => event.instance_id);
-
-		const filtered = events.value.filter((event) => !endedInstances.includes(event.instance_id));
-
-		return filtered;
+		filtered = filtered.filter((event) => !endedInstances.includes(event.instance_id));
 	}
-	return events.value;
+
+	// Model filtering based on the current state
+	if (adminStore.filterModelState === "A") {
+		filtered = filtered.filter((event) => event.model_name === mainStore.bpmn_process_name_A + ".bpmn");
+	} else if (adminStore.filterModelState === "B") {
+		filtered = filtered.filter((event) => event.model_name === mainStore.bpmn_process_name_B + ".bpmn");
+	} else if (adminStore.filterModelState === "AB") {
+		// Do nothing, include both models
+	}
+
+	return filtered;
 });
 
 watch(filteredEvents, () => {
@@ -114,33 +151,6 @@ const pagesList = computed(() => {
 const toggleDateType = () => {
 	adminStore.relativeToNowTimestmap = !adminStore.relativeToNowTimestmap;
 };
-
-// CHART
-
-const isLg = computed(() => layoutStore.isLg);
-const isMd = computed(() => layoutStore.isMd);
-
-watch([isLg, isMd], () => {
-	fillChartData();
-});
-
-const chartData = ref(null);
-
-const fillChartData = () => {
-	let points = 4;
-
-	if (isLg.value) {
-		points = 9;
-	} else if (isMd.value) {
-		points = 6;
-	}
-
-	chartData.value = chartConfig.sampleChartData(12);
-};
-
-onMounted(() => {
-	fillChartData();
-});
 </script>
 
 <template>
@@ -148,25 +158,49 @@ onMounted(() => {
 		<LayoutAuthenticated v-if="mainStore.userAuthenticated">
 			<SectionMain>
 				<SectionTitleLineWithButton :icon="mdiViewDashboard" title="Nadzorna ploča" main> </SectionTitleLineWithButton>
-				<div class="mb-6 grid grid-cols-1 gap-6 lg:grid-cols-3">
-					<CardBoxWidget v-if="adminStore.studentsFetched" color="text-fipu_blue" class="rounded-lg" :icon="mdiAccountSchoolOutline" :number="finished_internships" label="Uspješno odrađenih praksi" />
-					<SkeletonLoader v-else></SkeletonLoader>
-
-					<CardBoxWidget v-if="adminStore.studentsFetched" color="text-fipu_blue" class="rounded-lg" :icon="mdiAccountMultiple" :number="ongoing_internships" label="Trenutno aktivnih procesa" />
-					<SkeletonLoader v-else></SkeletonLoader>
-					<CardBoxWidget v-if="adminStore.studentsFetched" color="text-fipu_blue" class="rounded-lg" :icon="mdiProgressClock" :number="waiting_for_allocation" label="Čeka na alokaciju" />
-
-					<SkeletonLoader v-else></SkeletonLoader>
-				</div>
+				<p class="mb-4"><b>Statistika | općenito</b></p>
 
 				<div class="mb-6 grid grid-cols-1 gap-6 lg:grid-cols-3">
-					<CardBoxWidget v-if="adminStore.studentsFetched" color="text-fipu_blue" class="rounded-lg" :icon="mdiMonitorAccount" :number="waiting_for_evaluation" label="U procesu evaluacije" />
+					<CardBoxWidget v-if="adminStore.studentsFetched" color="text-emerald-500" class="rounded-lg" :icon="mdiAccountSchoolOutline" :number="finished_internships" label="Uspješno odrađenih praksi (A + B)" />
 					<SkeletonLoader v-else></SkeletonLoader>
 
-					<CardBoxWidget v-if="adminStore.studentsFetched" color="text-fipu_blue" class="rounded-lg" :icon="mdiAccountCancel" :number="0" label="Odustali od prakse" />
+					<CardBoxWidget v-if="adminStore.studentsFetched" color="text-amber-500" class="rounded-lg" :icon="mdiAccountMultiple" :number="ongoing_internships" label="Ukupno aktivnih procesa (A + B)" />
+					<SkeletonLoader v-else></SkeletonLoader>
+
+					<CardBoxWidget v-if="adminStore.studentsFetched" color="text-rose-600" class="rounded-lg" :icon="mdiAccountCancel" :number="0" label="Odustali od prakse" />
 					<SkeletonLoader v-else></SkeletonLoader>
 
 					<CardBoxWidget v-if="adminStore.studentsFetched" color="text-fipu_blue" class="rounded-lg" :icon="mdiAlphaSBox" :number="waiting_for_mark" label="Čeka na upis ocjene" />
+					<SkeletonLoader v-else></SkeletonLoader>
+				</div>
+
+				<p class="mb-4">
+					<b>Statistika | Model prakse <PillTag color="danger" label="A" /></b>
+				</p>
+
+				<div class="mb-6 grid grid-cols-1 gap-6 lg:grid-cols-3">
+					<CardBoxWidget v-if="adminStore.studentsFetched" color="text-emerald-500" class="rounded-lg" :icon="mdiAccountSchoolOutline" :number="a_finished_internships" label="Uspješno odrađenih praksi (A)" />
+					<SkeletonLoader v-else></SkeletonLoader>
+
+					<CardBoxWidget v-if="adminStore.studentsFetched" color="text-amber-500" class="rounded-lg" :icon="mdiProgressClock" :number="waiting_for_allocation" label="Čeka na alokaciju" />
+					<SkeletonLoader v-else></SkeletonLoader>
+
+					<CardBoxWidget v-if="adminStore.studentsFetched" color="text-amber-500" class="rounded-lg" :icon="mdiAccountTie" :number="waiting_for_evaluation" label="Evaluacija poslodavca u tijeku" />
+					<SkeletonLoader v-else></SkeletonLoader>
+				</div>
+
+				<p class="mb-4">
+					<b>Statistika | Model prakse <PillTag color="success" label="B" /></b>
+				</p>
+
+				<div class="mb-6 grid grid-cols-1 gap-6 lg:grid-cols-3">
+					<CardBoxWidget v-if="adminStore.studentsFetched" color="text-emerald-500" class="rounded-lg" :icon="mdiAccountSchoolOutline" :number="b_finished_internships" label="Uspješno odrađenih praksi (B)" />
+					<SkeletonLoader v-else></SkeletonLoader>
+
+					<CardBoxWidget v-if="adminStore.studentsFetched" color="text-amber-500" class="rounded-lg" :icon="mdiProgressClock" :number="b_waiting_for_assignment_approval" label="Čeka na odobrenje zadatka" />
+					<SkeletonLoader v-else></SkeletonLoader>
+
+					<CardBoxWidget v-if="adminStore.studentsFetched" color="text-emerald-500" class="rounded-lg" :icon="mdiClipboardCheck" :number="b_waiting_for_direct_assignment" label="Nisu se još prijavili" />
 					<SkeletonLoader v-else></SkeletonLoader>
 				</div>
 
@@ -176,13 +210,17 @@ onMounted(() => {
 					<div class="mb-4">
 						<PillTagFilter class="cursor-pointer" trend-type="filter" :trend="'Događaji'" :options="latestEvents" :left="true" />
 					</div>
+
+					<div class="flex flex-row">
+						<div class="mb-4"><PillTag class="cursor-pointer" :left="false" :icon="adminStore.filterActiveInstances ? mdiAccountGroup : mdiAccountMultiple" :color="adminStore.filterActiveInstances ? 'info' : 'success'" :label="adminStore.filterActiveInstances ? 'Sve instance' : 'Samo aktivne'" @click="toggleActiveEventsFilter" /></div>
+					</div>
+					<div class="flex flex-row">
+						<div class="mb-4"><PillTag class="cursor-pointer" :icon="adminStore.filterModelState === 'A' ? mdiAlphaACircle : adminStore.filterModelState === 'B' ? mdiAlphaBCircle : mdiAlphaABCircleOutline" :color="adminStore.filterModelState === 'A' ? 'danger' : adminStore.filterModelState === 'B' ? 'success' : 'info'" :label="adminStore.filterModelState === 'A' ? 'Model A' : adminStore.filterModelState === 'B' ? 'Model B' : 'Modeli AB'" @click="toggleModelEventsFilter" /></div>
+					</div>
 					<div class="flex flex-row">
 						<div class="mb-4">
 							<PillTag class="cursor-pointer" :left="false" :icon="adminStore.relativeToNowTimestmap ? mdiClockTimeEight : mdiCalendarClock" :color="adminStore.relativeToNowTimestmap ? 'info' : 'success'" :label="adminStore.relativeToNowTimestmap ? 'Relativno vrijeme' : 'Datum'" @click="toggleDateType" />
 						</div>
-					</div>
-					<div class="flex flex-row">
-						<div class="mb-4"><PillTag class="cursor-pointer" :left="false" :icon="adminStore.filterActiveInstances ? mdiAccountGroup : mdiAccountMultiple" :color="adminStore.filterActiveInstances ? 'info' : 'success'" :label="adminStore.filterActiveInstances ? 'Sve instance' : 'Samo aktivne'" @click="toggleActiveEventsFilter" /></div>
 					</div>
 				</div>
 				<div v-if="!eventsFetchError && !Utils.isArrayEmpty(events)" class="mb-6 grid grid-cols-1 gap-6 lg:grid-cols-2">
@@ -196,6 +234,7 @@ onMounted(() => {
 							:jmbag="event.student_JMBAG == undefined ? 'Greška u dohvatu podataka - JMBAG' : event.student_JMBAG"
 							:email="event.student_email == undefined ? 'Greška u dohvatu podataka - email' : event.student_email"
 							class="cursor-pointer rounded-lg"
+							:model="event.model_name"
 							@click="router.push(`/studenti/${event.instance_id}`)" />
 					</div>
 					<div class="flex flex-col">
@@ -207,6 +246,7 @@ onMounted(() => {
 							:type="event.activity_id"
 							:jmbag="event.student_JMBAG == undefined ? 'Greška u dohvatu podataka - JMBAG' : event.student_JMBAG"
 							:email="event.student_email == undefined ? 'Greška u dohvatu podataka - email' : event.student_email"
+							:model="event.model_name"
 							class="cursor-pointer rounded-lg"
 							@click="router.push(`/studenti/${event.instance_id}`)" />
 					</div>
@@ -232,13 +272,6 @@ onMounted(() => {
 						<small>Stranica {{ currentPageHuman }} od {{ numPages }}</small>
 					</BaseLevel>
 				</div>
-				<!--
-				<SectionTitleLineWithButton class="mt-4" :icon="mdiChartBar" title="Pregled Trendova" main @click="eventsOptionsActive = true"> </SectionTitleLineWithButton>
-				<p>Trenutno je hardkodirano 🙂</p>
-				<div v-if="chartData" class="md:col-span-3">
-					<LineChart :data="chartData" />
-				</div>
-        -->
 			</SectionMain>
 		</LayoutAuthenticated>
 	</div>

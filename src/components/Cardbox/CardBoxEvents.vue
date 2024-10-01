@@ -5,6 +5,7 @@ import PillTag from "@/components/PillTag/PillTag.vue";
 import IconRounded from "@/components/IconRounded.vue";
 import { ActivityEventMappings } from "@/helpers/maps";
 import { mdiCreditCardOutline } from "@mdi/js";
+import { mainStore } from "@/main.js";
 import { computed } from "vue";
 
 const props = defineProps({
@@ -25,6 +26,10 @@ const props = defineProps({
 		required: true,
 	},
 	email: {
+		type: String,
+		required: true,
+	},
+	model: {
 		type: String,
 		required: true,
 	},
@@ -61,7 +66,7 @@ const icon = computed(() => {
 						<em>Email: {{ email }}</em>
 					</p>
 					<p class="text-gray-500 dark:text-slate-400">
-						<em>Model: {{ model }}</em>
+						<em>Model: <PillTag :color="model === mainStore.bpmn_process_name_A + '.bpmn' ? 'danger' : 'success'" :label="model === mainStore.bpmn_process_name_A + '.bpmn' ? 'A' : 'B'" /></em>
 					</p>
 				</div>
 			</BaseLevel>

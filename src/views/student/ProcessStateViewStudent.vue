@@ -136,7 +136,8 @@ onMounted(async () => {
 		<LayoutAuthenticated v-if="userAuthenticated">
 			<SectionMain>
 				<SectionTitleLineWithButton class="mt-4" :icon="mdiListStatus" title="Stanje procesa" main> </SectionTitleLineWithButton>
-				<p class="mb-4">Ispod možete vidjeti BPMN graf koji prikazuje aktualno stanje vašeg procesa prakse.</p>
+				<p class="mb-4">Ispod možete vidjeti BPMN graf koji prikazuje <b> aktualno stanje</b> vašeg procesa prakse.</p>
+				<p class="mb-4">Ako se graf ne iscrtava, ili se ne prikazuje napredak u boji, pokušajte refreshati :)</p>
 
 				<CardBox v-if="adminStore.studentsFetched && !adminStore.students.length">
 					<CardBoxComponentEmpty />

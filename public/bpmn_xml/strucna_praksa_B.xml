@@ -7,14 +7,14 @@
     <bpmn:laneSet id="LaneSet_00d2bp4">
       <bpmn:lane id="poslodavac_lane" name="Poslodavac">
         <bpmn:extensionElements />
-        <bpmn:flowNodeRef>Activity_1ii4mir</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>model_b_dogovor_poslodavac</bpmn:flowNodeRef>
       </bpmn:lane>
       <bpmn:lane id="student_lane" name="Student">
         <bpmn:flowNodeRef>predavanje_dnevnika_student</bpmn:flowNodeRef>
         <bpmn:flowNodeRef>end_event_student</bpmn:flowNodeRef>
         <bpmn:flowNodeRef>start_event_student</bpmn:flowNodeRef>
         <bpmn:flowNodeRef>ispunjavanje_prijavnice_student</bpmn:flowNodeRef>
-        <bpmn:flowNodeRef>direktna_prijava_student</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>model_b_direktna_prijava_student</bpmn:flowNodeRef>
         <bpmn:flowNodeRef>Gateway_1865qr0</bpmn:flowNodeRef>
       </bpmn:lane>
       <bpmn:lane id="profesor_lane" name="Profesor">
@@ -29,8 +29,8 @@
         <bpmn:flowNodeRef>obavjestavanje_studenta_nakon_alokacije</bpmn:flowNodeRef>
         <bpmn:flowNodeRef>uzimanje_podataka_o_poslodavcu_student</bpmn:flowNodeRef>
         <bpmn:flowNodeRef>spremanje_zahtjeva_prihvacanje</bpmn:flowNodeRef>
-        <bpmn:flowNodeRef>model_b_odobrenje_zadatka</bpmn:flowNodeRef>
         <bpmn:flowNodeRef>model_b_dogovor_profesor</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>model_b_odobrenje_zadatka</bpmn:flowNodeRef>
       </bpmn:lane>
     </bpmn:laneSet>
     <bpmn:userTask id="predavanje_dnevnika_student" name="Predavanje dnevnika prakse">
@@ -246,9 +246,9 @@ https://www.isvu.hr/nastavnickiportal/hr/prijava</bpmn:documentation>
     </bpmn:parallelGateway>
     <bpmn:sequenceFlow id="Flow_1msjihr" sourceRef="model_b_odobrenje_zadatka" targetRef="uzimanje_podataka_o_poslodavcu_student" />
     <bpmn:sequenceFlow id="Flow_1d9cw65" sourceRef="spremanje_zahtjeva_prihvacanje" targetRef="obavjestavanje_studenta_nakon_alokacije" />
-    <bpmn:sequenceFlow id="Flow_0jgnrnc" sourceRef="uzimanje_podataka_o_poslodavcu_student" targetRef="direktna_prijava_student" />
+    <bpmn:sequenceFlow id="Flow_0jgnrnc" sourceRef="uzimanje_podataka_o_poslodavcu_student" targetRef="model_b_direktna_prijava_student" />
     <bpmn:sequenceFlow id="Flow_0q8jyt1" sourceRef="model_b_dogovor_profesor" targetRef="model_b_odobrenje_zadatka" />
-    <bpmn:userTask id="direktna_prijava_student" name="Direktna prijava na zadatak">
+    <bpmn:userTask id="model_b_direktna_prijava_student" name="Direktna prijava na zadatak">
       <bpmn:documentation>Student se mora prijaviti na zadatak koji mu je odobren.</bpmn:documentation>
       <bpmn:extensionElements>
         <camunda:formData>
@@ -272,7 +272,7 @@ https://www.isvu.hr/nastavnickiportal/hr/prijava</bpmn:documentation>
       <bpmn:incoming>Flow_0jgnrnc</bpmn:incoming>
       <bpmn:outgoing>Flow_0gjgrzo</bpmn:outgoing>
     </bpmn:userTask>
-    <bpmn:sequenceFlow id="Flow_0gjgrzo" sourceRef="direktna_prijava_student" targetRef="spremanje_zahtjeva_prihvacanje" />
+    <bpmn:sequenceFlow id="Flow_0gjgrzo" sourceRef="model_b_direktna_prijava_student" targetRef="spremanje_zahtjeva_prihvacanje" />
     <bpmn:sequenceFlow id="Flow_13ar6jz" sourceRef="obavjestavanje_studenta_nakon_alokacije" targetRef="ispunjavanje_prijavnice_student" />
     <bpmn:sendTask id="obavjestavanje_studenta_nakon_alokacije" name="Obavještavanje studenta nakon alociranja (email)">
       <bpmn:extensionElements>
@@ -340,6 +340,23 @@ https://www.isvu.hr/nastavnickiportal/hr/prijava</bpmn:documentation>
       <bpmn:incoming>Flow_0gjgrzo</bpmn:incoming>
       <bpmn:outgoing>Flow_1d9cw65</bpmn:outgoing>
     </bpmn:serviceTask>
+    <bpmn:manualTask id="model_b_dogovor_profesor" name="Dogovor s profesorom">
+      <bpmn:documentation>Studentu je u dogovoru s voditeljom prakse priznat zadatak za izvođenje prakse ili je praksu već obavio i rezultate prezentirao nastavniku.</bpmn:documentation>
+      <bpmn:incoming>Flow_04xr50r</bpmn:incoming>
+      <bpmn:outgoing>Flow_0q8jyt1</bpmn:outgoing>
+    </bpmn:manualTask>
+    <bpmn:manualTask id="model_b_dogovor_poslodavac" name="Dogovor s poslodavcem">
+      <bpmn:documentation>Studentu je u dogovoru s voditeljom prakse priznat zadatak za izvođenje prakse ili je praksu već obavio i rezultate prezentirao nastavniku.</bpmn:documentation>
+      <bpmn:incoming>Flow_121jstx</bpmn:incoming>
+    </bpmn:manualTask>
+    <bpmn:parallelGateway id="Gateway_1865qr0">
+      <bpmn:incoming>Flow_1tjtkv4</bpmn:incoming>
+      <bpmn:outgoing>Flow_04xr50r</bpmn:outgoing>
+      <bpmn:outgoing>Flow_121jstx</bpmn:outgoing>
+    </bpmn:parallelGateway>
+    <bpmn:sequenceFlow id="Flow_1tjtkv4" sourceRef="start_event_student" targetRef="Gateway_1865qr0" />
+    <bpmn:sequenceFlow id="Flow_04xr50r" sourceRef="Gateway_1865qr0" targetRef="model_b_dogovor_profesor" />
+    <bpmn:sequenceFlow id="Flow_121jstx" sourceRef="Gateway_1865qr0" targetRef="model_b_dogovor_poslodavac" />
     <bpmn:userTask id="model_b_odobrenje_zadatka" name="Odobrenje prijavljenog zadatka">
       <bpmn:documentation>Jeste li odobrili zadatak namijenjen ovom studentu?
 Prijavljene zadatke možete pregledati u tabu Zadaci.</bpmn:documentation>
@@ -352,23 +369,6 @@ Prijavljene zadatke možete pregledati u tabu Zadaci.</bpmn:documentation>
       <bpmn:incoming>Flow_0q8jyt1</bpmn:incoming>
       <bpmn:outgoing>Flow_1msjihr</bpmn:outgoing>
     </bpmn:userTask>
-    <bpmn:manualTask id="model_b_dogovor_profesor" name="Dogovor s profesorom">
-      <bpmn:documentation>Studentu je u dogovoru s voditeljom prakse priznat zadatak za izvođenje prakse ili je praksu već obavio i rezultate prezentirao nastavniku.</bpmn:documentation>
-      <bpmn:incoming>Flow_04xr50r</bpmn:incoming>
-      <bpmn:outgoing>Flow_0q8jyt1</bpmn:outgoing>
-    </bpmn:manualTask>
-    <bpmn:manualTask id="Activity_1ii4mir" name="Dogovor s poslodavcem">
-      <bpmn:documentation>Studentu je u dogovoru s voditeljom prakse priznat zadatak za izvođenje prakse ili je praksu već obavio i rezultate prezentirao nastavniku.</bpmn:documentation>
-      <bpmn:incoming>Flow_121jstx</bpmn:incoming>
-    </bpmn:manualTask>
-    <bpmn:parallelGateway id="Gateway_1865qr0">
-      <bpmn:incoming>Flow_1tjtkv4</bpmn:incoming>
-      <bpmn:outgoing>Flow_04xr50r</bpmn:outgoing>
-      <bpmn:outgoing>Flow_121jstx</bpmn:outgoing>
-    </bpmn:parallelGateway>
-    <bpmn:sequenceFlow id="Flow_1tjtkv4" sourceRef="start_event_student" targetRef="Gateway_1865qr0" />
-    <bpmn:sequenceFlow id="Flow_04xr50r" sourceRef="Gateway_1865qr0" targetRef="model_b_dogovor_profesor" />
-    <bpmn:sequenceFlow id="Flow_121jstx" sourceRef="Gateway_1865qr0" targetRef="Activity_1ii4mir" />
   </bpmn:process>
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
     <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="Collaboration_0ojchsi">
@@ -433,35 +433,35 @@ Prijavljene zadatke možete pregledati u tabu Zadaci.</bpmn:documentation>
       <bpmndi:BPMNShape id="Gateway_1p6bnhj_di" bpmnElement="Gateway_0q2wy8q">
         <dc:Bounds x="1995" y="465" width="50" height="50" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_11cml9m_di" bpmnElement="direktna_prijava_student">
+      <bpmndi:BPMNShape id="Activity_11cml9m_di" bpmnElement="model_b_direktna_prijava_student">
         <dc:Bounds x="1130" y="310" width="100" height="80" />
         <bpmndi:BPMNLabel />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="BPMNShape_0kpu7yu" bpmnElement="uzimanje_podataka_o_poslodavcu_student">
-        <dc:Bounds x="950" y="510" width="100" height="80" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="BPMNShape_138e5fa" bpmnElement="obavjestavanje_studenta_nakon_alokacije">
         <dc:Bounds x="1270" y="560" width="100" height="80" />
         <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_0kpu7yu" bpmnElement="uzimanje_podataka_o_poslodavcu_student">
+        <dc:Bounds x="950" y="510" width="100" height="80" />
+      </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="BPMNShape_1oya13s" bpmnElement="spremanje_zahtjeva_prihvacanje">
         <dc:Bounds x="1130" y="510" width="100" height="80" />
-        <bpmndi:BPMNLabel />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_1d4nyrm_di" bpmnElement="model_b_odobrenje_zadatka">
-        <dc:Bounds x="600" y="510" width="100" height="80" />
         <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="BPMNShape_1bfmhrq" bpmnElement="model_b_dogovor_profesor">
         <dc:Bounds x="390" y="510" width="100" height="80" />
         <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="BPMNShape_1ny1xop" bpmnElement="Activity_1ii4mir">
+      <bpmndi:BPMNShape id="BPMNShape_1ny1xop" bpmnElement="model_b_dogovor_poslodavac">
         <dc:Bounds x="390" y="110" width="100" height="80" />
         <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Gateway_1w1yza0_di" bpmnElement="Gateway_1865qr0">
         <dc:Bounds x="335" y="325" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1d4nyrm_di" bpmnElement="model_b_odobrenje_zadatka">
+        <dc:Bounds x="680" y="510" width="100" height="80" />
+        <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge id="Flow_1l8y47v_di" bpmnElement="Flow_1l8y47v">
         <di:waypoint x="1480" y="390" />
@@ -507,7 +507,7 @@ Prijavljene zadatke možete pregledati u tabu Zadaci.</bpmn:documentation>
         <di:waypoint x="2350" y="358" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_1msjihr_di" bpmnElement="Flow_1msjihr">
-        <di:waypoint x="700" y="550" />
+        <di:waypoint x="780" y="550" />
         <di:waypoint x="950" y="550" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_1d9cw65_di" bpmnElement="Flow_1d9cw65">
@@ -522,7 +522,7 @@ Prijavljene zadatke možete pregledati u tabu Zadaci.</bpmn:documentation>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_0q8jyt1_di" bpmnElement="Flow_0q8jyt1">
         <di:waypoint x="490" y="550" />
-        <di:waypoint x="600" y="550" />
+        <di:waypoint x="680" y="550" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_0gjgrzo_di" bpmnElement="Flow_0gjgrzo">
         <di:waypoint x="1180" y="390" />
