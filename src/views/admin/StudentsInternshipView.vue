@@ -212,22 +212,22 @@ onMounted(loadDataForStudent);
 				<CardBoxModal v-if="bpmn_help_modal" v-model="bpmn_help_modal" :title="'BPMN Graf - Legenda'" button-label="Povratak">
 					<div class="mb-4 flex items-center space-x-4">
 						<img :src="BPMN_blue" alt="Description 1" class="h-32 w-32 object-contain" />
-						<p class="text-sm"><b>Plava boja</b> - pending task. Zahtjeva akciju studenta ili poslodavca.</p>
+						<p class="text-sm"><b>Plava boja</b> - <i> pending task</i>. Zahtjeva akciju studenta ili poslodavca.</p>
 					</div>
 
 					<div class="mb-4 flex items-center space-x-4">
 						<img :src="BPMN_green" alt="Description 2" class="h-32 w-32 object-contain" />
-						<p class="text-sm"><b>Zelena boja</b> - finished task. Uspješno procesirani kroz BPMN engine.</p>
+						<p class="text-sm"><b>Zelena boja</b> - <i>finished task</i>. Uspješno procesirani kroz BPMN engine.</p>
 					</div>
 
 					<div class="mb-4 flex items-center space-x-4">
 						<img :src="BPMN_red" alt="Description 3" class="h-32 w-32 object-contain" />
-						<p class="text-sm"><b>Crvena boja</b> - pending task. Zahtjeva akciju voditelja prakse.</p>
+						<p class="text-sm"><b>Crvena boja</b> - <i>pending task</i>. Zahtjeva akciju voditelja prakse.</p>
 					</div>
 
 					<div class="mb-4 flex items-center space-x-4">
 						<img :src="BPMN_msg_event" alt="Description 3" class="h-32 w-32 object-contain" />
-						<p class="text-sm"><b>Send task</b> - Gotove/Prošle 'send taskove' je moguće ponovno pozvati.</p>
+						<p class="text-sm"><b>Send task</b> - Prošle <i>message taskove</i> je moguće ponovno pozvati.</p>
 					</div>
 
 					<hr />

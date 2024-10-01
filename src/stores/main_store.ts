@@ -12,7 +12,7 @@ export interface Assignment {
 
 export const useMainStore = defineStore("main", {
 	state: () => ({
-		praksa_version: "v1.0.0",
+		praksa_version: "1.0.0-beta.1",
 		academicYear: "2024/2025",
 		voditelj_prakse: "doc. dr. sc. Ivan Lorencin",
 
@@ -251,7 +251,7 @@ export const useMainStore = defineStore("main", {
 	},
 	persist: {
 		storage: localStorage,
-		omit: ["assignments", "checkedAssignments", "admin_emails", "currentUser.avatar"],
+		omit: ["assignments", "checkedAssignments", "admin_emails", "currentUser.avatar", "praksa_version"],
 		debug: true,
 	},
 });

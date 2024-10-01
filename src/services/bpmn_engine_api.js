@@ -62,6 +62,9 @@ const ProcessInstance = {
 
 	async getTaskInfo(id, task) {
 		try {
+			if (task === undefined) {
+				return;
+			}
 			let result = await AxiosWrapper.get(`/instance/${id}/task/${task}`);
 			return result;
 		} catch (error) {

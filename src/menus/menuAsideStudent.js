@@ -1,4 +1,4 @@
-import { mdiLaptop, mdiDomain, mdiListStatus } from "@mdi/js";
+import { mdiLaptop, mdiDomain, mdiChartTimeline } from "@mdi/js";
 
 export default [
 	{
@@ -8,7 +8,7 @@ export default [
 	},
 	{
 		to: "/stanje-procesa",
-		icon: mdiListStatus,
+		icon: mdiChartTimeline,
 		label: "Stanje procesa",
 	},
 	{

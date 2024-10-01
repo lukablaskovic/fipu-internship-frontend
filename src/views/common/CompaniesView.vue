@@ -47,6 +47,7 @@ const addNewAssignmentLink = ref(`${VITE_FRONTEND_URL}/poslodavci/novi-zadatak`)
 				<p class="mb-4">U tablici se nalaze poduzeća koja su sklopila ugovor za provođenje studentske prakse u suradnji s Fakultetom informatike u Puli.</p>
 				<div v-if="!userAdmin" class="mb-4">
 					<p class="mb-2 text-sm md:text-base">Ukoliko ne možete naći zadatak koji vam se sviđa, javite se poslodavcu, predstavite se i zamolite ih da ispune zadatak putem poveznice ispod.</p>
+					<p class="mb-4 text-sm md:text-base">Novoprijavljeni zadaci bit će dostupni jednom kad ih voditelj odobri.</p>
 					<FormField class="md:w-1/2" label="Forma za prijavu novog zadatka">
 						<FormControl v-model="addNewAssignmentLink" :icon-left="mdiClipboardCheck" :icon-right="mdiContentCopy" name="addNewAssignmentLink" readonly copyable />
 					</FormField>
@@ -73,6 +74,8 @@ const addNewAssignmentLink = ref(`${VITE_FRONTEND_URL}/poslodavci/novi-zadatak`)
 				<p class="mb-4">U tablici se nalaze poduzeća koja su sklopila ugovor za provođenje studentske prakse u suradnji s Fakultetom informatike u Puli.</p>
 				<div class="mb-4">
 					<p class="mb-2 text-sm md:text-base">Ukoliko ne možete naći zadatak koji vam se sviđa, javite se poslodavcu, predstavite se i zamolite ih da ispune zadatak putem poveznice ispod.</p>
+					<p class="mb-4 text-sm md:text-base">Novoprijavljeni zadaci bit će dostupni jednom kad ih voditelj odobri.</p>
+
 					<FormField class="md:w-1/2" label="Forma za prijavu novog zadatka">
 						<FormControl v-model="addNewAssignmentLink" :icon-left="mdiClipboardCheck" :icon-right="mdiContentCopy" name="addNewAssignmentLink" readonly copyable />
 					</FormField>

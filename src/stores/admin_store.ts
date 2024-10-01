@@ -162,6 +162,7 @@ export const useAdminStore = defineStore("admin", {
 		async getProcessInstanceData(student: Student) {
 			try {
 				const response = await ProcessInstance.get(student.process_instance_id);
+
 				return response;
 			} catch (error) {
 				console.log("Error:", error);
@@ -172,7 +173,7 @@ export const useAdminStore = defineStore("admin", {
 				const response = await ProcessInstance.getTaskInfo(it, task);
 				return response;
 			} catch (error) {
-				console.log("Error:", error);
+				console.log("[admin_store].getTaskInfo: ", error);
 			}
 		},
 		async getStudents() {

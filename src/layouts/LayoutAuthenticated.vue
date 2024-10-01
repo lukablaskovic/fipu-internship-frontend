@@ -1,5 +1,5 @@
 <script setup>
-import { mdiForwardburger, mdiBackburger, mdiMenu, mdiMagnify, mdiLaptop, mdiEmail, mdiAccountMultiple, mdiClipboardCheck, mdiDomain, mdiClipboardText } from "@mdi/js";
+import { mdiForwardburger, mdiChartTimeline, mdiInformation, mdiBackburger, mdiMenu, mdiMagnify, mdiLaptop, mdiEmail, mdiAccountMultiple, mdiClipboardCheck, mdiDomain, mdiClipboardText } from "@mdi/js";
 import { mainStore, styleStore } from "@/main.js";
 import { ref, onMounted, computed } from "vue";
 
@@ -10,13 +10,13 @@ import menuAsideStudent from "@/menus/menuAsideStudent.js";
 import menuNavBar from "@/menus/menuNavBar.js";
 
 import NavBarItemPlain from "@/components/Navbar/NavBarItemPlain.vue";
+import CardBoxModal from "@/components/Cardbox/CardBoxModal.vue";
 import FormControl from "@/components/Form/FormControl.vue";
+import BaseDivider from "@/components/Base/BaseDivider.vue";
+import IconTextLink from "@/components/IconTextLink.vue";
 import BaseIcon from "@/components/Base/BaseIcon.vue";
 import NavBar from "@/components/Navbar/NavBar.vue";
 import FooterBar from "@/components/FooterBar.vue";
-
-import CardBoxModal from "@/components/Cardbox/CardBoxModal.vue";
-import BaseDivider from "@/components/Base/BaseDivider.vue";
 
 import { layoutStore } from "@/main.js";
 
@@ -90,27 +90,29 @@ const menuClick = (event, item) => {
 				<BaseDivider></BaseDivider>
 				<div class="mb-2 text-xl">Prijava na praksu</div>
 
-				<ol class="ml-4 list-decimal">
+				<ol class="ml-8 list-disc">
+					<li>Studenti na početku biraju model prakse (A ili B) te se prijavljuju putem aplikacije <em>FIPU Praksa</em>.</li>
+					<li><b>Procesa A</b>: Studenti biraju 3 preferencije, odnosno zadataka koje bi željeli odraditi. Voditelj prakse vas može alocirati na jedan od tih zadataka ili vratiti na početni korak odabira preferencija.</li>
+					<li><b>Proces B</b>: Student unaprijed dogovara s poslodavcem i voditeljem prakse kako će istu izvoditi, nakon toga poslodavac prijavljuje zadatak, a student se prijavljuje direktno.</li>
 					<li>
-						Studenti se prijavljuju na praksu putem aplikacije
-						<em>FIPU Praksa</em> u kojem prvo odabiru 3 zadatka koja bi željeli raditi.
+						Detaljan opis svakog od procesa možete pronaći na
+						<div class="inline-flex">na <IconTextLink :to="'/upute'" :icon="mdiInformation" :text="'Upute'" @click="mainStore.activateHelpModal(false)"></IconTextLink>.</div>
 					</li>
-					<li>Nakon što vas se alocira na jedan od prijavljenih zadataka, morate kontaktirati mentora. Predstavite se i recite da ste dobili zadatak. Poslodavac može zatražiti intervju ili provesti selekciju.</li>
-					<li>Profesor može i odbiti zadatke koje ste odabrali te vas vratiti na početni korak odabira preferencija, ili vas može alocirati na neko 4. poduzeće ukoliko smatra da je to potrebno.</li>
 				</ol>
 				<BaseDivider></BaseDivider>
 				<div class="mb-2 text-xl">Izvođenje prakse</div>
-				<ol class="ml-4 list-decimal">
+				<ol class="ml-8 list-decimal">
 					<li>Potrebno je s mentorom dogovoriti datum počekta izvođenja prakse. Kada sve finalno dogovorite s mentorom popunite Prijavnicu putem aplikacije <b>prije početka izvođenja prakse</b>.</li>
 					<li>
-						<div class="flex flex-wrap text-base">Niste dobili email? Javite se profesoru ili voditelju prakse.</div>
+						<div class="flex flex-wrap text-base">Niste dobili email? Javite se voditelju prakse putem Google Chata.</div>
 					</li>
 					<li>Nakon ispunjavanja prijavnice, na mail ćete vi i mentor dobiti praznu Potvrdu. Mora ju ispuniti <b>mentor</b> i to po završetku odrađenog posla.</li>
-					<li>Uživajte u izvođenju prakse 🙂 Have fun i učite! Nemojte zaboraviti svakodnevno voditi Dnevnik!</li>
+					<li>Uživajte u procesu učenja! 🙂 Ovaj kolegij pruža vam priliku da sami oblikujete svoje iskustvo, obogatite ga novim i zanimljivim znanjima te stvorite vrijedne kontakte s poduzećima. Potencijal je velik, iskoristite ga!</li>
 				</ol>
 				<BaseDivider></BaseDivider>
+
 				<div class="mb-2 text-xl">Završetak prakse i prijava ispita</div>
-				<ol class="ml-4 list-decimal">
+				<ol class="ml-8 list-decimal">
 					<li>Nakon što završite sa stručnom praksu potrebno je predati Dnevnik, također putem aplikacije.</li>
 					<li>
 						Za kraj, potrebno je prijaviti ispit preko Studomata. Na ispit
@@ -119,9 +121,9 @@ const menuClick = (event, item) => {
 				</ol>
 				<BaseDivider></BaseDivider>
 				<div class="mb-2 text-xl">Aplikacija <em>FIPU praksa</em></div>
-				<ol class="ml-4 list-decimal">
+				<ol class="ml-8 list-decimal">
 					<li>
-						Sve radnje (uključujući komunikaciju) vezane uz praksu obavljaju se isključivo putem aplikacije
+						Sve radnje (izuzev komunikacije) vezane uz praksu obavljaju se isključivo putem aplikacije
 						<em>FIPU praksa</em>.
 					</li>
 					<li>
@@ -134,15 +136,18 @@ const menuClick = (event, item) => {
 							&nbsp;se ažurira automatski.
 						</div>
 					</li>
-					<li>Putem iste poveznice predajete dnevnik prakse, dok prijavnicu dobivate na vaš email.</li>
 					<li>
-						<div class="flex flex-wrap text-base">Komunikaciju s profesorom vršite putem...</div>
+						BPMN graf koji predstavlja stanje vaše prakse možete vidjeti
+						<div class="inline-flex">na <IconTextLink :to="'/stanje-procesa'" :icon="mdiChartTimeline" :text="'Stanje procesa'" @click="mainStore.activateHelpModal(false)"></IconTextLink>.</div>
+					</li>
+					<li>
+						<div class="flex flex-wrap text-base">Komunikaciju s voditeljem prakse vodite putem Google Chata</div>
 					</li>
 				</ol>
 				<BaseDivider></BaseDivider>
-				<p><b>Napomena!</b> Aplikacija <em>FIPU Praksa</em> u aktivnom je razvoju od 2023. godine u sklopu istraživačkog laboratorija FIPU Laba za potrebe pojednostavljenja i automatizacije procesa izvođenja studentske prakse, za studente, voditelja te poslodavce.</p>
-				<p class="mt-2">Aplikacija je razvijena eksperimentalnim BPMN model-based development-om i integracijom mikroservisa te je, kao i svaki drugi programski proizvod, podložna bugovima🐞!</p>
-				<p class="mt-2">Stoga vas molimo da sve bugove koje pronađete prijavite otvaranjem novog Github issue-a, <a class="hover-underline-animation cursor-pointer text-fipu_text_blue" target="_blank" href="https://github.com/lukablaskovic/fipu-internship-frontend/issues">ovdje!</a></p>
+				<p><b>Final thought:</b> Aplikacija <em>FIPU Praksa</em> u aktivnom je razvoju od 2023. godine u sklopu istraživačkog laboratorija FIPU Laba za potrebe pojednostavljenja i automatizacije procesa izvođenja studentske prakse, za studente, voditelja te poslodavce.</p>
+				<p class="mt-2">Ova aplikacija bazira se na eksperimentalnom razvoju baziranom na procesima koji su definirani BPMN nomenklaturom i Python <i>enginom</i> koji pogoni aplikaciju u pozadini. Kao i svaki drugi proizvod, i ovaj je podložan bugovima 🐞!</p>
+				<p class="mt-2">Stoga vas molimo da sve bugove koje pronađete prijavite otvaranjem novog Github <i> issuea</i>, <a class="hover-underline-animation cursor-pointer text-fipu_text_blue" target="_blank" href="https://github.com/lukablaskovic/fipu-internship-frontend/issues">ovdje!</a></p>
 				<p class="mt-2">Hvala! 🙂</p>
 			</CardBoxModal>
 
@@ -153,30 +158,21 @@ const menuClick = (event, item) => {
 				<BaseDivider></BaseDivider>
 				<div class="mb-2 text-xl">Prijava na praksu</div>
 
-				<ol class="ml-4 list-decimal">
+				<ol class="ml-8 list-disc">
+					<li>Studenti na početku biraju model prakse (A ili B) te se prijavljuju putem aplikacije <em>FIPU Praksa</em>.</li>
+					<li><b>Procesa A</b>: Studenti biraju 3 preferencije, odnosno zadataka koje bi željeli odraditi. Voditelj prakse vas može alocirati na jedan od tih zadataka ili vratiti na početni korak odabira preferencija.</li>
+					<li><b>Proces B</b>: Student unaprijed dogovara s poslodavcem i voditeljem prakse kako će istu izvoditi, nakon toga poslodavac prijavljuje zadatak, a student se prijavljuje direktno.</li>
 					<li>
-						Studenti se prijavljuju na praksu putem aplikacije
-						<em>FIPU Praksa</em> u kojem prvo odabiru 3 zadatka koja bi željeli raditi.
+						Detaljan opis svakog od procesa možete pronaći na
+						<div class="inline-flex">na <IconTextLink :to="'/upute'" :icon="mdiInformation" :text="'Upute'" @click="mainStore.activateHelpModal(false)"></IconTextLink>.</div>
 					</li>
-					<li>
-						<div class="flex flex-wrap text-base">
-							Studente možete alocirati putem
-							<span class="inline-flex cursor-pointer items-center whitespace-normal text-fipu_blue" @click="router.push('/studenti') && mainStore.activateHelpModal(false)">
-								<BaseIcon :path="mdiAccountMultiple" class="flex-none align-middle" :size="18"></BaseIcon>
-								Studenti </span
-							>.
-						</div>
-					</li>
-					<li>Nakon odabira studenta, odaberite "Alociranje studenta na zadatak" na BPMN grafu. Nakon toga odaberite zadatak i potvrdite.</li>
-
-					<li>Možete i odbiti preferencije nakon čega se studenta vraća na početni korak.</li>
 				</ol>
 				<BaseDivider></BaseDivider>
 				<div class="mb-2 text-xl">Dashboard</div>
 				<ol class="ml-4 list-decimal">
-					<li>Dashboard se trenutno sastoji od 2 dijela - <b>Nadzorna ploča</b>, gdje možete vidjeti općenite numeričke podatke o izvođenju prakse, te <b>Najnoviji događaji</b>, gdje se nalaze event logovi iz BPMN engine-a</li>
-					<li>Možete stisnuti na pojedini event log, što će vas odnijeti na studenti/:id gdje je id jednak instanci tog procesa prakse za tog studenta</li>
-					<li>Tražilicu možete otvoriti pritiskom <b>CTRL + k</b>. Običnim upisivanjem možete brzo prelaziti kroz stranice aplikacije, a prefiksima (ispisani su u uputama tražilice) mogu se tražiti određene stavke, poput studenata po JMBAGU, emailu, ili poduzeća.</li>
+					<li>Dashboard se trenutno sastoji od 2 dijela - <b>Nadzorna ploča</b>, gdje možete pronaći statistike o procesima prakse te <b>Najnoviji događaji</b>, gdje se prikazuju event logovi iz BPMN <i> enginea</i>.</li>
+					<li>Možete stisnuti na pojedini <i> event log</i>, što će vas odnijeti na <i> studenti/:id</i> gdje je ID jednak instanci procesa prakse za tog studenta.</li>
+					<li>Tražilicu možete otvoriti pritiskom kombinacije tipki <b>CTRL/OPT + k</b>. Običnim pretraživanjem možete brzo prolaziti kroz stranice aplikacije, a unosom prefiksa (navedeni su u uputama tražilice) mogu se tražiti određene stavke, poput studenata po JMBAGU, emailu, poduzeća itd.</li>
 				</ol>
 
 				<BaseDivider></BaseDivider>
@@ -187,13 +183,13 @@ const menuClick = (event, item) => {
 							Alokacije možete provjeriti u
 							<span class="inline-flex cursor-pointer items-center whitespace-normal text-fipu_blue" @click="router.push('/alokacije') && mainStore.activateHelpModal(false)">
 								<BaseIcon :path="mdiClipboardCheck" class="flex-none align-middle" :size="18"></BaseIcon>
-								Alokacije </span
-							>.
+								Alokacije
+							</span>
 						</div>
 					</li>
 					<li>Postoji nekoliko stanja alokacija: <em>student_prihvaćen</em>, <em>student_odbijen</em>, <em>evaluacija_u_tijeku</em>, <em>student_odustao</em>, <em>profesor_ponistio</em>.</li>
-					<li>U alokaciji se za sada prikazuju: <em>student_prihvaćen</em>, <em>evaluacija_u_tijeku</em> <em>te student_odbijen</em>.</li>
-					<li>Možete za svakog studenta pregledati dnevnik prakse te poslanu prijavnicu.</li>
+					<li>Trenutno, u ovom prikazu moguće je vidjeti: <em>student_prihvaćen</em>, <em>evaluacija_u_tijeku</em> <em>te student_odbijen</em>.</li>
+					<li>Dodatno, možete za svakog studenta pronaći generiranu prijavnicu, popunjenu prijavnicu te dnevnik prakse.</li>
 				</ol>
 				<BaseDivider></BaseDivider>
 				<div class="mb-2 text-xl">Poslodavci</div>
@@ -207,16 +203,16 @@ const menuClick = (event, item) => {
 							>.
 						</div>
 					</li>
-					<li>Poslodavci su podijeljeni u 2 tablice: <b>Novi Poslodavci</b> i <b>Svi Poslodavci</b>. Tablica Novi Poslodavci će prikazivati nove retke nakon što novo poduzeće (koje još nije partner) prijavi zadatak.</li>
-					<li>Tada je potrebno ručno unijeti podatke o poduzeću</li>
-					<li>Podatke o poslodavcu je moguće i direktno ažurirati Baserowu.</li>
+					<li>Poslodavci su podijeljeni u 2 tablice: <b>Novi Poslodavci</b> i <b>Svi Poslodavci</b>. U tablici <b>Novi Poslodavci</b> se prikazuju novi retci nakon što novo poduzeće (koje još nije partner) prijavi zadatak.</li>
+					<li>Tada je potrebno ručno unijeti podatke o poduzeću te realizirati Ugovor o praksi s poduzećem.</li>
+					<li>Podatke o poslodavcu je moguće i direktno ažurirati u <a href="https://baserow.unipu.hr/" target="_blank" class="text-fipu_blue">Baserow</a> bazi podataka</li>
 				</ol>
 				<BaseDivider></BaseDivider>
 				<div class="mb-2 text-xl">Dostupni Zadaci</div>
 				<ol class="ml-4 list-decimal">
 					<li>
 						<div class="flex flex-wrap text-base">
-							Novo-prijavljene zadatke možete pronaći u
+							Novoprijavljene zadatke možete pronaći u
 							<span class="inline-flex cursor-pointer items-center whitespace-normal text-fipu_blue" @click="router.push('/dostupni-zadaci') && mainStore.activateHelpModal(false)">
 								<BaseIcon :path="mdiClipboardText" class="flex-none align-middle" :size="18"></BaseIcon>
 								Dostupni zadaci </span
@@ -224,13 +220,14 @@ const menuClick = (event, item) => {
 						</div>
 					</li>
 					<li>Tu možete vidjeti podjelu na <b>Novi Zadaci</b>, <b>Aktivni Zadaci</b> te <b>Odbijeni Zadaci</b>.</li>
-					<li>Zadatak novog partnera je moguće odobriti i prije ažuriranja podataka novog poduzeća.</li>
-					<li>Na ovoj stranici također možete pronaći javni link koji se proslijeđuje poslodavcima za prijavu novog zadatka.</li>
+					<li>Zadatak novog partnera je moguće odobriti i prije nadopune podataka o tom poduzeću.</li>
+					<li>Na ovoj stranici također možete pronaći javnu poveznicu koja se proslijeđuje poslodavcima za prijavu novog zadatka.</li>
+					<li>Podatke o zadacima je moguće i direktno ažurirati u <a href="https://baserow.unipu.hr/" target="_blank" class="text-fipu_blue">Baserow</a> bazi podataka</li>
 				</ol>
 				<BaseDivider></BaseDivider>
-				<p><b>Važno!</b> Aplikacija <em>Fipu Praksa</em> razvijena je 2023. godine u sklopu istraživačkog laboratorija FIPU-lab za potrebe pojednostavljenja i automatizacije procesa izvođenja studentske prakse, za studente, voditelja te poslodavce.</p>
-				<p class="mt-2">Aplikacija je razvijena eksperimentalnim BPMN model-based development-om i integracijom mikroservisa te je, kao i svaki drugi programski proizvod, podložna bugovima🐞!</p>
-				<p class="mt-2">Stoga vas molimo da sve bugove koje pronađete prijavite otvaranjem novog Github issue-a, <a class="hover-underline-animation cursor-pointer text-fipu_text_blue" target="_blank" href="https://github.com/lukablaskovic/fipu-internship-frontend/issues">ovdje!</a></p>
+				<p><b>Final thought:</b> Aplikacija <em>FIPU Praksa</em> u aktivnom je razvoju od 2023. godine u sklopu istraživačkog laboratorija FIPU Laba za potrebe pojednostavljenja i automatizacije procesa izvođenja studentske prakse, za studente, voditelja te poslodavce.</p>
+				<p class="mt-2">Ova aplikacija bazira se na eksperimentalnom razvoju baziranom na procesima koji su definirani BPMN nomenklaturom i Python <i>enginom</i> koji pogoni aplikaciju u pozadini. Kao i svaki drugi proizvod, i ovaj je podložan bugovima 🐞!</p>
+				<p class="mt-2">Stoga vas molimo da sve bugove koje pronađete prijavite otvaranjem novog Github <i> issuea</i>, <a class="hover-underline-animation cursor-pointer text-fipu_text_blue" target="_blank" href="https://github.com/lukablaskovic/fipu-internship-frontend/issues">ovdje!</a></p>
 				<p class="mt-2">Hvala! 🙂</p>
 			</CardBoxModal>
 

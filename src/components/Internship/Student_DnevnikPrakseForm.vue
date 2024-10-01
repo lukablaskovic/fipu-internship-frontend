@@ -110,11 +110,11 @@ async function submit_diary_form() {
 			<p>Dnevnik prakse je potrebno predati prije prijave ispitnog roka.</p>
 			<br />
 			<p>
-				📓Template za dnevnik prakse možete preuzeti
+				📓 Predložak za dnevnik prakse možete preuzeti
 				<a href="https://bit.ly/fipu-praksa-template" target="_blank" class="cursor-pointer text-fipu_blue">ovdje</a>.
 			</p>
 			<p>
-				📃Praznu potvrdu o obavljenoj praksi možete preuzeti
+				📃 Praznu potvrdu o obavljenoj praksi možete preuzeti
 				<a :href="studentData.variables.pdf_attachment_url" target="_blank" class="cursor-pointer text-fipu_blue">ovdje</a>.
 			</p>
 			<br />

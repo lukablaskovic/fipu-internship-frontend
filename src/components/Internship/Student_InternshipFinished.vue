@@ -1,13 +1,13 @@
 <script setup>
-import { ref, computed, onMounted } from "vue";
 import { mdiLaptop, mdiCheckDecagram, mdiClipboardCheck } from "@mdi/js";
+import { ref, computed, onMounted } from "vue";
 
 import LayoutAuthenticated from "@/layouts/LayoutAuthenticated.vue";
 import LayoutGuest from "@/layouts/LayoutGuest.vue";
 
-import SectionMain from "@/components/Section/SectionMain.vue";
 import SectionTitleLineWithButton from "@/components/Section/SectionTitleLineWithButton.vue";
 import CardboxAllocation from "@/components/Cardbox/CardBoxAllocation.vue";
+import SectionMain from "@/components/Section/SectionMain.vue";
 
 import { mainStore, studentStore, adminStore } from "@/main.js";
 
@@ -58,30 +58,23 @@ const Layout = computed(() => {
 			<br />
 			<SectionTitleLineWithButton :icon="mdiCheckDecagram" main title="Praksa gotova!"></SectionTitleLineWithButton>
 			<p>Vaš proces prakse je završio. Profesor je potvrdio unos ocjene u Studomat.</p>
+			<br />
+			<p>Nadamo se da vam je kolegij bio od koristi i da ste puno toga naučili! Sretno u daljnjem studiranju! 🎓</p>
 
-			<p>Nadamo se da vam je kolegij bio od koristi i da ste puno toga naučili! 😀</p>
-
-			<hr />
 			<br />
 			<p>
-				📃Potvrdu o obavljenoj praksi možete preuzeti
-				<a target="_blank" class="text-fipu_blue cursor-pointer" @click="fetchPDF('potvrda', student.variables.id_dnevnik_prakse)">ovdje</a>.
+				📃 Potvrdu o obavljenoj praksi možete preuzeti
+				<a target="_blank" class="cursor-pointer text-fipu_blue" @click="fetchPDF('potvrda', student.variables.id_dnevnik_prakse)">ovdje</a>.
 			</p>
 			<p>
-				📓Dnevnik prakse možete preuzeti
-				<a target="_blank" class="text-fipu_blue cursor-pointer" @click="fetchPDF('dnevnik', student.variables.id_dnevnik_prakse)">ovdje</a>.
+				📓 Dnevnik prakse možete preuzeti
+				<a target="_blank" class="cursor-pointer text-fipu_blue" @click="fetchPDF('dnevnik', student.variables.id_dnevnik_prakse)">ovdje</a>.
 			</p>
+			<br />
+			<hr />
 			<br />
 			<SectionTitleLineWithButton :icon="mdiClipboardCheck" main title="Odrađeni zadatak"></SectionTitleLineWithButton>
 			<CardboxAllocation v-if="allocated_assignment != null" :data="allocated_assignment"></CardboxAllocation>
-
-			<br />
-
-			<hr />
-
-			<br />
-
-			<hr />
 		</SectionMain>
 	</component>
 </template>

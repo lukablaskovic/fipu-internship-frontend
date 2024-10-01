@@ -145,6 +145,7 @@ onMounted(async () => {
 				<li>Nakon što ispunite Prijavnicu, mentor kojeg ste naveli i vi dobivate na e-mail praznu “Potvrdu o obavljenoj praksi“, <strong>Vaš mentor ju mora ispuniti nakon što završite s praksom</strong>.</li>
 				<ul class="ml-8 list-disc">
 					<li>Uživajte u izvođenju prakse :) Have fun i učite! 🚀 Ali, nemojte zaboraviti svakodnevno voditi dnevnik!</li>
+					<li>Ovaj kolegij pruža vam priliku da sami oblikujete svoje iskustvo, obogatite ga novim i zanimljivim znanjima te stvorite vrijedne kontakte s poduzećima. Potencijal je velik, iskoristite ga!</li>
 				</ul>
 				<li>Kada ste završili s praksom, zatražite od mentora da ispuni ”Potvrdu o obavljenoj praksi” te ju predajte, zajedno s dnevnikom prakse u aplikaciji na istoj poveznici. Morate navesti i datum ispitnog roka.</li>
 				<li>Prijavite ispitni rok na Studomatu, ocjena se unosi automatski, jednom kad voditelj pregleda vaš Dnevnik, ne morate dolaziti na ispit.</li>
@@ -189,6 +190,7 @@ onMounted(async () => {
 				<li>Nakon što ispunite Prijavnicu, mentor kojeg ste naveli i vi dobivate na e-mail praznu “Potvrdu o obavljenoj praksi“, <strong>Vaš mentor ju mora ispuniti nakon što završite s praksom</strong>.</li>
 				<ul class="ml-8 list-disc">
 					<li>Uživajte u izvođenju prakse :) Have fun i učite! 🚀 Ali, nemojte zaboraviti svakodnevno voditi dnevnik!</li>
+					<li>Ovaj kolegij pruža vam priliku da sami oblikujete svoje iskustvo, obogatite ga novim i zanimljivim znanjima te stvorite vrijedne kontakte s poduzećima. Potencijal je velik, iskoristite ga!</li>
 				</ul>
 				<li>Kada ste završili s praksom, zatražite od mentora da ispuni ”Potvrdu o obavljenoj praksi” te ju predajte, zajedno s dnevnikom prakse u aplikaciji na istoj poveznici. Morate navesti i datum ispitnog roka.</li>
 				<li>Prijavite ispitni rok na Studomatu, ocjena se unosi automatski, jednom kad voditelj pregleda vaš Dnevnik, ne morate dolaziti na ispit.</li>

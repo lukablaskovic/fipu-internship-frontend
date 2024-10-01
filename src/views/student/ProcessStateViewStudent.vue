@@ -1,6 +1,6 @@
 <script setup>
 import SectionMain from "@/components/Section/SectionMain.vue";
-import { mdiListStatus } from "@mdi/js";
+import { mdiChartTimeline } from "@mdi/js";
 import { mdiAccount } from "@mdi/js";
 import { ref, onMounted } from "vue";
 import { computed } from "vue";
@@ -135,7 +135,7 @@ onMounted(async () => {
 	<div>
 		<LayoutAuthenticated v-if="userAuthenticated">
 			<SectionMain>
-				<SectionTitleLineWithButton class="mt-4" :icon="mdiListStatus" title="Stanje procesa" main> </SectionTitleLineWithButton>
+				<SectionTitleLineWithButton class="mt-4" :icon="mdiChartTimeline" title="Stanje procesa" main> </SectionTitleLineWithButton>
 				<p class="mb-4">Ispod možete vidjeti BPMN graf koji prikazuje <b> aktualno stanje</b> vašeg procesa prakse.</p>
 				<p class="mb-4">Ako se graf ne iscrtava, ili se ne prikazuje napredak u boji, pokušajte refreshati :)</p>
 

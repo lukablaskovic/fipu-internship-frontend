@@ -62,11 +62,11 @@ const Layout = computed(() => {
 			<div class="flex flex-wrap text-base">Ako čekate više od 7 dana, molimo vas da se obratite voditelju prakse.</div>
 			<br />
 			<p>
-				📃Potvrdu o obavljenoj praksi možete preuzeti
+				📃 Potvrdu o obavljenoj praksi možete preuzeti
 				<a target="_blank" class="cursor-pointer text-fipu_blue" @click="fetchPDF('potvrda', student.variables.id_dnevnik_prakse)">ovdje</a>.
 			</p>
 			<p>
-				📓Dnevnik prakse možete preuzeti
+				📓 Dnevnik prakse možete preuzeti
 				<a target="_blank" class="cursor-pointer text-fipu_blue" @click="fetchPDF('dnevnik', student.variables.id_dnevnik_prakse)">ovdje</a>.
 			</p>
 			<hr />

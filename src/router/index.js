@@ -42,8 +42,8 @@ router.beforeEach((to, from, next) => {
 		return next("/moja-praksa");
 	}
 
-	// If user is trying to access login page but is already authenticated
-	if (to.path === "/prijava" && userAuthenticated) {
+	// If user is trying to access login or odabir-procesa pages but is already authenticated
+	if ((to.path === "/prijava" || to.path === "/odabir-procesa") && userAuthenticated) {
 		// Send admins to the dashboard, others to "moja-praksa"
 		return next(userAdmin ? "/dashboard" : "/moja-praksa");
 	}
