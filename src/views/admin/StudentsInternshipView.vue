@@ -1,5 +1,5 @@
 <script setup>
-import { mdiAccountMultiple, mdiAccount, mdiAccountGroup } from "@mdi/js";
+import { mdiAccountMultiple, mdiAccount, mdiAccountGroup, mdiAbTesting, mdiAlphaACircle, mdiAlphaBCircleOutline } from "@mdi/js";
 import { useRouter, useRoute } from "vue-router";
 import { ref, onMounted, watch } from "vue";
 import { nextTick } from "vue";
@@ -119,6 +119,17 @@ const toggleActiveEventsFilter = () => {
 	adminStore.filterFinishedInstances = !adminStore.filterFinishedInstances;
 };
 
+const toggleBetweenModelsFilter = () => {
+	// Cycle through the states A -> B -> AB -> A...
+	if (adminStore.filterModelState === "A") {
+		adminStore.filterModelState = "B";
+	} else if (adminStore.filterModelState === "B") {
+		adminStore.filterModelState = "AB";
+	} else {
+		adminStore.filterModelState = "A";
+	}
+};
+
 async function sendAnAdditionalEmail() {
 	let { postData, template, to } = getPostDataForSendEmail();
 
@@ -160,7 +171,7 @@ onMounted(loadDataForStudent);
 				<SectionTitleLineWithButton :icon="mdiAccountMultiple" title="Studenti u procesu prakse" button-enabled main @click="bpmn_help_modal = true"> </SectionTitleLineWithButton>
 				<div class="flex flex-row">
 					<div class="mb-4"><PillTag class="cursor-pointer" :left="false" :icon="adminStore.filterFinishedInstances ? mdiAccountGroup : mdiAccountMultiple" :color="adminStore.filterFinishedInstances ? 'info' : 'success'" :label="adminStore.filterFinishedInstances ? 'Sve instance' : 'Samo aktivne'" @click="toggleActiveEventsFilter" /></div>
-					<div class="mb-4"><PillTag class="cursor-pointer" :icon="adminStore.filterModelState === 'A' ? mdiAlphaACircle : adminStore.filterModelState === 'B' ? mdiAlphaBCircle : mdiAlphaABCircleOutline" :color="adminStore.filterModelState === 'A' ? 'danger' : adminStore.filterModelState === 'B' ? 'success' : 'info'" :label="adminStore.filterModelState === 'A' ? 'Model A' : adminStore.filterModelState === 'B' ? 'Model B' : 'Modeli AB'" @click="toggleModelEventsFilter" /></div>
+					<div class="mb-4"><PillTag class="cursor-pointer" :icon="adminStore.filterModelState === 'A' ? mdiAlphaACircle : adminStore.filterModelState === 'B' ? mdiAlphaBCircleOutline : mdiAbTesting" :color="adminStore.filterModelState === 'A' ? 'danger' : adminStore.filterModelState === 'B' ? 'success' : 'info'" :label="adminStore.filterModelState === 'A' ? 'Model A' : adminStore.filterModelState === 'B' ? 'Model B' : 'Modeli AB'" @click="toggleBetweenModelsFilter" /></div>
 				</div>
 
 				<CardBox has-table>
