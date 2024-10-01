@@ -103,11 +103,7 @@ const Student = {
 			const formData = new FormData();
 			formData.append("file", fileData);
 
-			let result = await AxiosWrapper.post(`/upload/pdf-dnevnik/${id_dnevnik_prakse}`, formData, {
-				headers: {
-					"Content-Type": "multipart/form-data",
-				},
-			});
+			let result = await AxiosWrapper.post(`/upload/pdf-dnevnik/${id_dnevnik_prakse}`, formData);
 			return result;
 		} catch (error) {
 			console.log("Error:", error);
@@ -120,11 +116,8 @@ const Student = {
 			const formData = new FormData();
 			formData.append("file", fileData);
 
-			let result = await AxiosWrapper.post(`/upload/pdf-ispunjena-potvrda/${id_dnevnik_prakse}`, formData, {
-				headers: {
-					"Content-Type": "multipart/form-data",
-				},
-			});
+			let result = await AxiosWrapper.post(`/upload/pdf-ispunjena-potvrda/${id_dnevnik_prakse}`, formData);
+
 			return result;
 		} catch (error) {
 			console.log("Error:", error);

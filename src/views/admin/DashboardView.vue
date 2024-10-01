@@ -1,5 +1,5 @@
 <script setup>
-import { mdiAlphaACircle, mdiClipboardCheck, mdiAccountTie, mdiAlphaBCircleOutline, mdiAccountMultiple, mdiAccountSchoolOutline, mdiProgressClock, mdiViewDashboard, mdiCommentProcessing, mdiMonitorAccount, mdiAccountCancel, mdiAlphaSBox, mdiClockTimeEight, mdiCalendarClock, mdiAccountGroup, mdiOfficeBuilding } from "@mdi/js";
+import { mdiAlphaACircle, mdiNoteAlert, mdiClipboardCheck, mdiAccountTie, mdiAlphaBCircleOutline, mdiAccountMultiple, mdiAccountSchoolOutline, mdiProgressClock, mdiViewDashboard, mdiCommentProcessing, mdiMonitorAccount, mdiAccountCancel, mdiAlphaSBox, mdiClockTimeEight, mdiCalendarClock, mdiAccountGroup, mdiOfficeBuilding } from "@mdi/js";
 import { adminStore, mainStore, snackBarStore } from "@/main.js";
 import { layoutStore } from "@/main";
 
@@ -200,7 +200,7 @@ const toggleDateType = () => {
 					<CardBoxWidget v-if="adminStore.studentsFetched" color="text-amber-500" class="rounded-lg" :icon="mdiProgressClock" :number="b_waiting_for_assignment_approval" label="Čeka na odobrenje zadatka" />
 					<SkeletonLoader v-else></SkeletonLoader>
 
-					<CardBoxWidget v-if="adminStore.studentsFetched" color="text-emerald-500" class="rounded-lg" :icon="mdiClipboardCheck" :number="b_waiting_for_direct_assignment" label="Nisu se još prijavili" />
+					<CardBoxWidget v-if="adminStore.studentsFetched" color="text-rose-600" class="rounded-lg" :icon="mdiNoteAlert" :number="b_waiting_for_direct_assignment" label="Nije se još prijavilo" />
 					<SkeletonLoader v-else></SkeletonLoader>
 				</div>
 

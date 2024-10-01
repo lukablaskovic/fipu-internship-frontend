@@ -4,9 +4,6 @@ import axios from "axios";
 function createAxiosInstance(API_URL) {
 	const AxiosInstance = axios.create({
 		baseURL: API_URL,
-		headers: {
-			"Content-Type": "application/json",
-		},
 		timeout: 10000,
 	});
 

@@ -141,7 +141,7 @@ export const useStudentStore = defineStore("student", {
 
 				return combinedResponses;
 			} catch (error) {
-				console.log("Error:", error);
+				console.log("[student_store].submitDiaryForm error: ", error);
 			}
 		},
 
@@ -151,7 +151,7 @@ export const useStudentStore = defineStore("student", {
 				this.student_process_instance_data = response;
 				return response;
 			} catch (error) {
-				console.log("Error:", error);
+				console.log("[student_store].getInstanceInfo error:", error);
 			}
 		},
 
