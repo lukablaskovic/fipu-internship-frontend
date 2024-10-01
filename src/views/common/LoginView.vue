@@ -9,8 +9,8 @@
 				<h2 class="mb-4 mt-6 text-center text-2xl font-bold text-fipu_gray md:text-center lg:text-3xl xl:mb-6 2xl:text-4xl">Dobrodošli na <span class="text-fipu_blue">FIPU Praksu</span></h2>
 
 				<h2 class="mx-auto mb-2 mt-6 max-w-3xl text-center sm:mt-0 md:text-sm lg:text-sm 2xl:mb-10 2xl:text-base">
-					Molimo prijavite se kako biste pregledali stanje vaše prakse ili prijavili zadatke. Ako želite samo pregledati dostupne zadatke i poduzeća, molimo nastavite kao gost
-					<a class="hover-underline-animation cursor-pointer text-fipu_text_blue hover:text-fipu_blue" @click="router.push('/moja-praksa')"> ovdje</a>.
+					Molimo prijavite se kako biste pregledali stanje vaše prakse ili prijavili zadatke. Ako želite samo pregledati dostupne zadatke i poduzeća, možete nastaviti kao
+					<a class="hover-underline-animation cursor-pointer text-fipu_text_blue hover:text-fipu_blue" @click="router.push('/moja-praksa')"> gost</a>.
 				</h2>
 
 				<div class="mx-auto my-6 flex justify-center sm:my-4">

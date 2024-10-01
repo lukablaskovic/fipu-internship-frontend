@@ -26,7 +26,7 @@ router.beforeEach((to, from, next) => {
 		return next("/prijava");
 	}
 
-	if (to.path === "/moja-praksa" && mainStore.userAdmin) {
+	if ((to.path === "/moja-praksa" || to.path === "/stanje-procesa") && mainStore.userAdmin) {
 		console.log("b");
 		return next("/dashboard");
 	}
