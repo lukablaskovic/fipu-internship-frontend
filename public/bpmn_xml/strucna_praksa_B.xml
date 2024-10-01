@@ -266,6 +266,7 @@ https://www.isvu.hr/nastavnickiportal/hr/prijava</bpmn:documentation>
         <camunda:inputOutput>
           <camunda:outputParameter name="poslodavac_email" />
           <camunda:outputParameter name="poslodavac_naziv" />
+          <camunda:outputParameter name="opis_zadatka" />
         </camunda:inputOutput>
       </bpmn:extensionElements>
       <bpmn:incoming>Flow_1msjihr</bpmn:incoming>

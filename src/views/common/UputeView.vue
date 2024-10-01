@@ -84,7 +84,7 @@ onMounted(async () => {
 				<li>Najkasniji datum završetka - <b> 15. rujna 2025.</b></li>
 			</ul>
 			<br />
-			<p>Za sve dodatne informacije kontaktirajte voditelja stručne prakse na FIPU:</p>
+			<p>Za sve dodatne informacije kontaktirajte voditelja stručne prakse na FIPU.</p>
 			<br />
 
 			<div class="w-full shrink-0 grow-0 basis-auto lg:w-7/12">

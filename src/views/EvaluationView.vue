@@ -44,6 +44,7 @@ onMounted(async () => {
 	assignment.value = assignemntDetails.value.data.results[0];
 
 	pendingTaskInfo.value = await adminStore.getTaskInfo(process_instance_id.value, instanceInfo.value.pending[0]);
+
 	studentInfo.value = {
 		student_ime: instanceInfo.value.variables["student_ime"],
 		student_prezime: instanceInfo.value.variables["student_prezime"],
@@ -82,7 +83,7 @@ const updateDisabledCondition = (allFilled) => {
 			</SectionTitleLineWithButton>
 
 			<div v-if="instanceInfo != null && instanceInfo.pending[0] == 'evaluacija_poslodavac'">
-				<div class="mb-4">
+				<div class="mb-4" v-if="studentInfo">
 					<h1 class="text-lg font-bold sm:text-2xl">{{ studentInfo.student_ime }} {{ studentInfo.student_prezime }}</h1>
 					<h3 class="text-base font-bold">
 						{{ studentInfo.student_email }}

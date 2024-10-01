@@ -202,7 +202,7 @@ onMounted(loadDataForStudent);
 
 				<CardBoxModal v-if="modal_send_task" v-model="modal_send_task" :title="'Ponovno slanje emaila'" has-cancel button-label="Pošalji" @confirm="sendAnAdditionalEmail()">
 					<p class="">E-mail je već poslan koristeći kroz BPMN engine, no možete ga poslati ponovo pritiskom na 'Pošalji'</p>
-					<p class="mb-2">Dodatno, možete unijeti e-mail te poslati na novu adresu. Ako želite poslati na adresu pohranjenu u engine-u, ostavite prazno.</p>
+					<p class="mb-2">Dodatno, možete unijeti e-mail te poslati na novu adresu. Ako želite poslati na adresu pohranjenu u <i>logovima enginea</i>, ostavite prazno.</p>
 
 					<FormField label="Novi E-mail">
 						<FormControl v-model="newEmail" :icon-left="mdiAccount" name="email" autocomplete="email" />

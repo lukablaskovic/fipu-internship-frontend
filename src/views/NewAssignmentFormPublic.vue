@@ -200,6 +200,10 @@ watch(
 			<p><b>Važna napomena:</b> Pojedina organizacija može prijaviti i više zadataka. Molimo da za svaki zadatak zasebno popunite prijavnicu (ovaj link) te navedete broj studenata koji može na njemu raditi (npr. može biti 2 zadataka, na prvom 3 studenta, na drugom 4).</p>
 			<br />
 			<p>(<b>Model B</b>) Ako ste već udogovoru sa studentom, ili je student već odradio praksu kod Vas, molimo da navedete njegovo ime i prezime u polju "Preferencije pri odabiru studenta" te detaljno opišete zadatak.</p>
+
+			<br />
+			<p><b>Niste sigurni što su Modeli A i B?</b> <router-link class="text-fipu_blue" to="/upute">Proučite kako izvodimo praksu na FIPU</router-link></p>
+
 			<br />
 			<p>Za sve dodatne informacije slobodno kontaktirajte voditelja stručne prakse:</p>
 

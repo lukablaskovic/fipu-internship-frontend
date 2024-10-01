@@ -358,7 +358,7 @@ class ActivityEventMappings {
 			activity_id: "ispunjavanje_prijavnice_student",
 			icon: mdiFileDocumentPlus,
 			type: "success",
-			message: "Ispunio prijavnicu",
+			message: "Prijavnica ispunjena",
 		},
 		{
 			activity_id: "azuriranje_podataka_profesor",
@@ -382,7 +382,7 @@ class ActivityEventMappings {
 			activity_id: "slanje_potvrde_mentor_email",
 			icon: mdiEmailArrowRight,
 			type: "info",
-			message: "Mentoru potvrda",
+			message: "Mentoru poslana potvrda",
 		},
 		{
 			activity_id: "predavanje_dnevnika_student",

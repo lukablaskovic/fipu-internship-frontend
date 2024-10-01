@@ -35,7 +35,7 @@ const Layout = computed(() => {
 			<SectionTitleLineWithButton :icon="mdiProgressClock" main title="Postupak odobrenja je u tijeku"></SectionTitleLineWithButton>
 			<div class="flex flex-wrap text-base">Zadatak vam još nije odobren. Ako čekate dugo, kontaktirajte voditelja prakse.</div>
 			<hr class="mb-2" />
-			<div class="flex flex-wrap text-base">Ukoliko nemate dogovor s profesorom i/ili poslodavcem, moguće je da ste odabrali neodgovarajući proces prakse. Molimo da prekinete ovaj proces i odaberete redovni proces A.</div>
+			<div class="flex flex-wrap text-base">Ukoliko nemate dogovor s voditeljem prakse i poslodavcem, odabrali ste pogrešan proces prakse te u tom slučaju molimo da kontaktirate voditelja.</div>
 			<br />
 		</SectionMain>
 	</component>

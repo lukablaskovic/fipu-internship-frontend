@@ -4,12 +4,7 @@ const routes = [
 	{
 		path: "/",
 		name: "root",
-		redirect: () => {
-			if (mainStore.userAuthenticated) {
-				return mainStore.userAdmin ? "/dashboard" : "/moja-praksa";
-			}
-			return "/prijava";
-		},
+		component: () => import("@/components/Internship/Student_ChooseAvailableAssignments.vue"),
 	},
 	{
 		meta: {
