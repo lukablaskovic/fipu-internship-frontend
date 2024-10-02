@@ -16,7 +16,7 @@ export const useMainStore = defineStore("main", {
 		academicYear: "2024/2025",
 		voditelj_prakse: "doc. dr. sc. Ivan Lorencin",
 
-		admin_emails: ["lblaskovi@unipu.hr", "ntankov@unipu.hr", "ilorencin@unipu.hr"],
+		admin_emails: ["ntankov@unipu.hr", "ilorencin@unipu.hr"],
 
 		fipulab_web: "https://goreski.github.io/FIPULabWeb/",
 
