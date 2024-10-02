@@ -87,12 +87,9 @@ const callback = async (response) => {
 		return;
 	}
 
-	let login_response = await mainStore.handleLogin(decodedToken);
-	if (login_response.status === "success") snackBarStore.pushMessage("Uspješna prijava!", "success");
-	await Utils.wait(1);
-
 	if (isUnipuEmail(decodedToken.email)) {
 		let response = await mainStore.handleLogin(decodedToken);
+		console.log(response);
 		if (response.status === "success") snackBarStore.pushMessage("Uspješna prijava!", "success");
 		await Utils.wait(1);
 	} else {

@@ -324,5 +324,8 @@ export const useAdminStore = defineStore("admin", {
 			}
 		},
 	},
-	persist: true,
+	persist: {
+		storage: sessionStorage,
+		debug: true,
+	},
 });

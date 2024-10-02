@@ -49,5 +49,8 @@ export const useLayoutStore = defineStore("layout", {
 			this.isMd = window.innerWidth >= 768;
 		},
 	},
-	persist: true,
+	persist: {
+		storage: sessionStorage,
+		debug: true,
+	},
 });

@@ -1,5 +1,7 @@
 <template>
+	<!--
 	<LoadingOverlay :is-active="!allAvailableAssignments.length" title="Učitavanje..." description="Može potrajati nekoliko sekundi, molimo ne zatvarajte stranicu."> </LoadingOverlay>
+-->
 	<CardBoxModal v-if="isModalActive" v-model="isModalActive" button-label="Zatvori" button="fipu_blue" has-cancel:false @cancel="mainStore.activateLogoutModal(false)">
 		<CardboxAllocation :data="isModalActive"></CardboxAllocation>
 		<br />

@@ -53,8 +53,8 @@ export const useStyleStore = defineStore("style", {
 				return;
 			}
 
-			if (typeof localStorage !== "undefined") {
-				localStorage.setItem(styleKey, payload);
+			if (typeof sessionStorage !== "undefined") {
+				sessionStorage.setItem(styleKey, payload);
 			}
 
 			const style = styles[payload];
@@ -75,8 +75,8 @@ export const useStyleStore = defineStore("style", {
 
 			this.darkMode = payload !== null ? payload : !this.darkMode;
 
-			if (typeof localStorage !== "undefined") {
-				localStorage.setItem(darkModeKey, this.darkMode ? "1" : "0");
+			if (typeof sessionStorage !== "undefined") {
+				sessionStorage.setItem(darkModeKey, this.darkMode ? "1" : "0");
 			}
 
 			if (typeof document !== "undefined") {

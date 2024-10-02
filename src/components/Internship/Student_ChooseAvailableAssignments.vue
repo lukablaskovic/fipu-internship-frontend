@@ -97,7 +97,7 @@ const handleDragEnd = () => {
 			<p><b>Voditelj:</b> {{ mainStore.voditelj_prakse }}</p>
 			<hr />
 			<br />
-			<SectionTitleLineWithButton :icon="mdiClipboardTextOutline" main title="Dostupni zadaci za praksu" />
+			<SectionTitleLineWithButton :icon="mdiClipboardTextOutline" main title="Dostupni zadaci" />
 			<p>Pogledajte zanimljive slobodne zadatke te odaberite i rasporedite 3 najdraža, prema vašim preferencijama - (1. odabir | 2. odabir | 3. odabir).</p>
 			<p><b>Napomena:</b> Da biste prijavili preferencije, morate biti prijavljeni u aplikaciji!</p>
 			<br />

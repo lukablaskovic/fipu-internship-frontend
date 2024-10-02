@@ -12,7 +12,7 @@ export interface Assignment {
 
 export const useMainStore = defineStore("main", {
 	state: () => ({
-		praksa_version: "1.0.0-beta.1",
+		praksa_version: "1.0.0-beta.2",
 		academicYear: "2024/2025",
 		voditelj_prakse: "doc. dr. sc. Ivan Lorencin",
 
@@ -48,10 +48,12 @@ export const useMainStore = defineStore("main", {
 
 	getters: {
 		userAuthenticated(): boolean {
-			return Boolean(localStorage.getItem("token"));
+			const token = sessionStorage.getItem("token");
+			return token ? true : false;
 		},
 		userAdmin(state): boolean {
-			return !!this.currentUser.email && state.admin_emails.includes(state.currentUser.email);
+			console.log("ADMIN:", !!state.currentUser.email && state.admin_emails.includes(state.currentUser.email));
+			return !!state.currentUser.email && state.admin_emails.includes(state.currentUser.email);
 		},
 		userHasActiveInstance(state): boolean {
 			return !!state.currentUser.internship_process.id && state.currentUser.internship_process.pending_user_task !== "end_event_student";
@@ -65,8 +67,14 @@ export const useMainStore = defineStore("main", {
 		async fetchCurrentUser(): Promise<void> {
 			console.log("Fetching current user");
 			try {
-				const localStorageToken = JSON.parse(localStorage.getItem("token") || "{}");
-				const emailFromStorage = localStorageToken.email;
+				let sessionStorageToken;
+				try {
+					sessionStorageToken = JSON.parse(sessionStorage.getItem("token") || "{}");
+				} catch (error) {
+					console.error("Invalid token in sessionStorage:", error);
+					sessionStorageToken = {};
+				}
+				const emailFromStorage = sessionStorageToken.email;
 
 				const response = await Student.fetch(emailFromStorage);
 				const data = response.data.results[0];
@@ -95,7 +103,7 @@ export const useMainStore = defineStore("main", {
 			const { iss, sub, hd, email, nbf, name, picture, iat, jti } = decodedToken;
 			const storageToken = { iss, sub, hd, email, nbf, name, picture, iat, jti };
 
-			localStorage.setItem("token", JSON.stringify(storageToken));
+			sessionStorage.setItem("token", JSON.stringify(storageToken));
 
 			try {
 				const student_data = {
@@ -151,7 +159,7 @@ export const useMainStore = defineStore("main", {
 		logout() {
 			this.currentUser.reset();
 			this.logoutModalActive = false;
-			localStorage.clear();
+			sessionStorage.clear();
 			router.go(0); // Refresh the page
 		},
 
@@ -249,7 +257,7 @@ export const useMainStore = defineStore("main", {
 		},
 	},
 	persist: {
-		storage: localStorage,
+		storage: sessionStorage,
 		omit: ["assignments", "checkedAssignments", "admin_emails", "currentUser.avatar", "praksa_version"],
 		debug: true,
 	},
