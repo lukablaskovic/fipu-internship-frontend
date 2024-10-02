@@ -91,14 +91,12 @@ const callback = async (response) => {
 	if (login_response.status === "success") snackBarStore.pushMessage("Uspješna prijava!", "success");
 	await Utils.wait(1);
 
-	/* uncomment later
 	if (isUnipuEmail(decodedToken.email)) {
 		let response = await mainStore.handleLogin(decodedToken);
 		if (response.status === "success") snackBarStore.pushMessage("Uspješna prijava!", "success");
 		await Utils.wait(1);
 	} else {
 		snackBarStore.pushMessage("Molimo koristite UNIPU e-mail za prijavu", "warning");
-  }
-  */
+	}
 };
 </script>
