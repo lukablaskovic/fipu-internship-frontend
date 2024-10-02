@@ -22,7 +22,7 @@ router.beforeEach((to, from, next) => {
 
 	const requiresAuth = to.matched.some((record) => record.meta.requiresAuth);
 	const requiresAdmin = to.matched.some((record) => record.meta.requiresAdmin);
-	console.log("to", to, "from", from, "next", next);
+	//console.log("to", to, "from", from, "next", next);
 
 	// Handle redirection from root path
 	if (to.path === "/") {
@@ -41,7 +41,6 @@ router.beforeEach((to, from, next) => {
 	// Admin user trying to access student routes
 	let restrictedAdminRoutes = ["/moja-praksa", "/odabir-procesa", "/stanje-procesa"];
 	if (userAdmin && isTryingToAccess(to.path, restrictedAdminRoutes)) {
-		console.log("...");
 		return next("/dashboard");
 	}
 
@@ -56,7 +55,6 @@ router.beforeEach((to, from, next) => {
 	}
 
 	if (userAuthenticated && (to.path === "/prijava" || (to.path === "/odabir-procesa" && mainStore.userHasActiveInstance))) {
-		console.log("....");
 		return next(userAdmin ? "/dashboard" : "/moja-praksa");
 	}
 

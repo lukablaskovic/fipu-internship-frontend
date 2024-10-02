@@ -58,7 +58,6 @@ onMounted(() => {
 			formValues[key] = props.variables[key];
 		}
 	}
-	console.log("formValues", formValues);
 });
 
 const handleRowSelected = (assignmentId) => {
