@@ -1,14 +1,16 @@
 <script setup>
 import { computed, ref, onMounted, watch } from "vue";
 
+import { mdiEye, mdiCheckCircle, mdiCloseBox, mdiAccountMultiple } from "@mdi/js";
 import TableCheckboxCell from "@/components/Tables/TableCheckboxCell.vue";
 import CardBoxModal from "@/components/Cardbox/CardBoxModal.vue";
 import CardBoxAllocation from "../Cardbox/CardBoxAllocation.vue";
 import { mainStore, adminStore, snackBarStore } from "@/main.js";
-import { mdiEye, mdiCheckCircle, mdiCloseBox } from "@mdi/js";
 import BaseButtons from "@/components/Base/BaseButtons.vue";
 import BaseButton from "@/components/Base/BaseButton.vue";
+import IconTextLink from "@/components/IconTextLink.vue";
 import BaseLevel from "@/components/Base/BaseLevel.vue";
+import BaseIcon from "@/components/Base/BaseIcon.vue";
 import { useRoute } from "vue-router";
 
 import Utils from "@/helpers/utils.js";
@@ -138,6 +140,13 @@ const cancelTaskAction = () => {
 	</CardBoxModal>
 
 	<CardBoxModal v-model="confirmationModal.isActive" title="Potvrda akcije" :button-label="confirmationModal.action === 'accept' ? 'Prihvati' : 'Odbij'" has-cancel @cancel="cancelTaskAction" @confirm="confirmTaskAction">
+		<p class="mb-2">
+			<span class="flex flex-wrap text-base">
+				<b> Upozorenje!</b> Ako odobravate/odbijate ovaj zadatak za određenog studenta koji radi praksu po Modelu B, to morate <span class="ml-1 inline-flex">učiniti kroz <IconTextLink :to="'/studenti'" :icon="mdiAccountMultiple" :text="'Studenti'"></IconTextLink>.</span>
+			</span>
+		</p>
+		<p class="mb-8">Ako odobravate/odbijate zadatak koji je poslodavac prijavio općenito (za sve studente koji biraju po Modelu A), to možete učiniti ovdje ili direktno u Baserow bazi podataka.</p>
+
 		<div v-if="confirmationModal.action === 'accept'" class="mb-4">
 			Jeste li sigurni da želite prihvatiti zadatak -
 			<b>{{ confirmationModal.assignment["id_zadatak"] }}</b> ?

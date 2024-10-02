@@ -60,11 +60,11 @@ interface Event {
 
 export const useAdminStore = defineStore("admin", {
 	state: () => ({
-		students: [] as Student[], // Typed array of Student
-		selectedStudent: null as Student | null, // Nullable Student
-		companies: [] as any[], // Assuming companies are not yet typed
+		students: [] as Student[],
+		selectedStudent: null as Student | null,
+		companies: [] as any[],
 		studentsFetched: false,
-		newAssignments: [] as any[], // Assuming assignments are not yet typed
+		newAssignments: [] as any[],
 
 		//dashboard_data
 		dashboard_data: {

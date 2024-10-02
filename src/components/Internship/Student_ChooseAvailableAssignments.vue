@@ -1,7 +1,7 @@
 <script setup>
-import { mdiClipboardCheckOutline, mdiNumeric, mdiClipboardTextOutline, mdiLaptop } from "@mdi/js";
 import SectionTitleLineWithButton from "@/components/Section/SectionTitleLineWithButton.vue";
 import TableAvailableAssignments from "@/components/Tables/TableAvailableAssignments.vue";
+import { mdiNumeric, mdiClipboardTextOutline, mdiLaptop } from "@mdi/js";
 import LayoutAuthenticated from "@/layouts/LayoutAuthenticated.vue";
 import { mainStore, studentStore, snackBarStore } from "@/main.js";
 import CardBoxModal from "@/components/Cardbox/CardBoxModal.vue";
@@ -60,6 +60,11 @@ const getDefaultImage = (index) => {
 const fadeOutAnimation = () => {
 	isFadedOut.value = true;
 };
+
+function handlePerPageChange(option) {
+	perPage.value = option.value;
+	currentPage.value = 0;
+}
 
 const isDraggableEnabled = computed(() => checkedAssignments.value.length === 3);
 const isEmptySlot = (element) => element.id?.startsWith("empty");

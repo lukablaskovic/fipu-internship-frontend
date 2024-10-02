@@ -12,11 +12,11 @@ export interface Assignment {
 
 export const useMainStore = defineStore("main", {
 	state: () => ({
-		praksa_version: "1.0.0-beta.2",
+		praksa_version: "1.0.1-beta.3",
 		academicYear: "2024/2025",
 		voditelj_prakse: "doc. dr. sc. Ivan Lorencin",
 
-		admin_emails: ["ntankov@unipu.hr", "ilorencin@unipu.hr"],
+		admin_emails: ["ntankov@unipu.hr", "ilorencin@unipu.hr", "lblaskovi@unipu.hr"],
 
 		fipulab_web: "https://goreski.github.io/FIPULabWeb/",
 
@@ -38,6 +38,7 @@ export const useMainStore = defineStore("main", {
 		helpModalActive: false,
 
 		isFieldFocusRegistered: false,
+		table_items_per_page: 10,
 
 		// from guest store
 		assignments: [] as Assignment[],
@@ -52,7 +53,6 @@ export const useMainStore = defineStore("main", {
 			return token ? true : false;
 		},
 		userAdmin(state): boolean {
-			console.log("ADMIN:", !!state.currentUser.email && state.admin_emails.includes(state.currentUser.email));
 			return !!state.currentUser.email && state.admin_emails.includes(state.currentUser.email);
 		},
 		userHasActiveInstance(state): boolean {
@@ -258,7 +258,7 @@ export const useMainStore = defineStore("main", {
 	},
 	persist: {
 		storage: sessionStorage,
-		omit: ["assignments", "checkedAssignments", "admin_emails", "currentUser.avatar", "praksa_version"],
+		omit: ["assignments", "checkedAssignments", "praksa_version"],
 		debug: true,
 	},
 });

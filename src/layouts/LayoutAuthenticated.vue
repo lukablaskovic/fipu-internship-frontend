@@ -92,10 +92,10 @@ const menuClick = (event, item) => {
 
 				<ol class="ml-8 list-disc">
 					<li>Studenti na početku biraju model prakse (A ili B) te se prijavljuju putem aplikacije <em>FIPU Praksa</em>.</li>
-					<li><b>Procesa A</b>: Studenti biraju 3 preferencije, odnosno zadataka koje bi željeli odraditi. Voditelj prakse vas može alocirati na jedan od tih zadataka ili vratiti na početni korak odabira preferencija.</li>
+					<li><b>Proces A</b>: Studenti biraju 3 preferencije, odnosno zadataka koje bi željeli odraditi. Voditelj prakse vas može alocirati na jedan od tih zadataka ili vratiti na početni korak odabira preferencija.</li>
 					<li><b>Proces B</b>: Student unaprijed dogovara s poslodavcem i voditeljem prakse kako će istu izvoditi, nakon toga poslodavac prijavljuje zadatak, a student se prijavljuje direktno.</li>
 					<li>
-						Detaljan opis svakog od procesa možete pronaći na
+						Detaljan opis svakog od procesa možete pronaći
 						<div class="inline-flex">na <IconTextLink :to="'/upute'" :icon="mdiInformation" :text="'Upute'" @click="mainStore.activateHelpModal(false)"></IconTextLink>.</div>
 					</li>
 				</ol>
@@ -148,7 +148,7 @@ const menuClick = (event, item) => {
 				<p><b>Final thought:</b> Aplikacija <em>FIPU Praksa</em> u aktivnom je razvoju od 2023. godine u sklopu istraživačkog laboratorija FIPU Laba za potrebe pojednostavljenja i automatizacije procesa izvođenja studentske prakse, za studente, voditelja te poslodavce.</p>
 				<p class="mt-2">Ova aplikacija bazira se na eksperimentalnom razvoju baziranom na procesima koji su definirani BPMN nomenklaturom i Python <i>enginom</i> koji pogoni aplikaciju u pozadini. Kao i svaki drugi proizvod, i ovaj je podložan bugovima 🐞!</p>
 				<p class="mt-2">Stoga vas molimo da sve bugove koje pronađete prijavite otvaranjem novog Github <i> issuea</i>, <a class="hover-underline-animation cursor-pointer text-fipu_text_blue" target="_blank" href="https://github.com/lukablaskovic/fipu-internship-frontend/issues">ovdje!</a></p>
-				<p class="mt-2">Hvala! 🙂</p>
+				<p class="mt-2">Hvala! 😁</p>
 			</CardBoxModal>
 
 			<CardBoxModal v-else v-model="helpModalActive" has-cancel :has-confirm="false" title="ℹ️ Upute za korištenje aplikacije" button-label="Povratak" @cancel="mainStore.activateHelpModal(false)">
@@ -160,10 +160,10 @@ const menuClick = (event, item) => {
 
 				<ol class="ml-8 list-disc">
 					<li>Studenti na početku biraju model prakse (A ili B) te se prijavljuju putem aplikacije <em>FIPU Praksa</em>.</li>
-					<li><b>Procesa A</b>: Studenti biraju 3 preferencije, odnosno zadataka koje bi željeli odraditi. Voditelj prakse vas može alocirati na jedan od tih zadataka ili vratiti na početni korak odabira preferencija.</li>
-					<li><b>Proces B</b>: Student unaprijed dogovara s poslodavcem i voditeljem prakse kako će istu izvoditi, nakon toga poslodavac prijavljuje zadatak, a student se prijavljuje direktno.</li>
+					<li><b>Proces A</b>: Studenti biraju 3 preferencije, odnosno zadataka koje bi željeli odraditi. Voditelj prakse alocira studenta na jedan od zadataka ili ga vraća na početni korak odabira preferencija.</li>
+					<li><b>Proces B</b>: Student unaprijed dogovara s poslodavcem i voditeljem prakse kako će istu izvoditi, nakon toga poslodavac prijavljuje zadatak, voditelj ga odobrava, a student se prijavljuje direktno.</li>
 					<li>
-						Detaljan opis svakog od procesa možete pronaći na
+						Detaljan opis svakog od procesa možete pronaći
 						<div class="inline-flex">na <IconTextLink :to="'/upute'" :icon="mdiInformation" :text="'Upute'" @click="mainStore.activateHelpModal(false)"></IconTextLink>.</div>
 					</li>
 				</ol>
@@ -183,8 +183,8 @@ const menuClick = (event, item) => {
 							Alokacije možete provjeriti u
 							<span class="inline-flex cursor-pointer items-center whitespace-normal text-fipu_blue" @click="router.push('/alokacije') && mainStore.activateHelpModal(false)">
 								<BaseIcon :path="mdiClipboardCheck" class="flex-none align-middle" :size="18"></BaseIcon>
-								Alokacije
-							</span>
+								Alokacije </span
+							>.
 						</div>
 					</li>
 					<li>Postoji nekoliko stanja alokacija: <em>student_prihvaćen</em>, <em>student_odbijen</em>, <em>evaluacija_u_tijeku</em>, <em>student_odustao</em>, <em>profesor_ponistio</em>.</li>
@@ -220,7 +220,7 @@ const menuClick = (event, item) => {
 						</div>
 					</li>
 					<li>Tu možete vidjeti podjelu na <b>Novi Zadaci</b>, <b>Aktivni Zadaci</b> te <b>Odbijeni Zadaci</b>.</li>
-					<li>Zadatak novog partnera je moguće odobriti i prije nadopune podataka o tom poduzeću.</li>
+					<li>Zadatak novog partnera je moguće odobriti i prije dopunjavanja podataka o tom poduzeću (ali nije preporuka).</li>
 					<li>Na ovoj stranici također možete pronaći javnu poveznicu koja se proslijeđuje poslodavcima za prijavu novog zadatka.</li>
 					<li>Podatke o zadacima je moguće i direktno ažurirati u <a href="https://baserow.unipu.hr/" target="_blank" class="text-fipu_blue">Baserow</a> bazi podataka</li>
 				</ol>
@@ -228,7 +228,7 @@ const menuClick = (event, item) => {
 				<p><b>Final thought:</b> Aplikacija <em>FIPU Praksa</em> u aktivnom je razvoju od 2023. godine u sklopu istraživačkog laboratorija FIPU Laba za potrebe pojednostavljenja i automatizacije procesa izvođenja studentske prakse, za studente, voditelja te poslodavce.</p>
 				<p class="mt-2">Ova aplikacija bazira se na eksperimentalnom razvoju baziranom na procesima koji su definirani BPMN nomenklaturom i Python <i>enginom</i> koji pogoni aplikaciju u pozadini. Kao i svaki drugi proizvod, i ovaj je podložan bugovima 🐞!</p>
 				<p class="mt-2">Stoga vas molimo da sve bugove koje pronađete prijavite otvaranjem novog Github <i> issuea</i>, <a class="hover-underline-animation cursor-pointer text-fipu_text_blue" target="_blank" href="https://github.com/lukablaskovic/fipu-internship-frontend/issues">ovdje!</a></p>
-				<p class="mt-2">Hvala! 🙂</p>
+				<p class="mt-2">Hvala! 😁</p>
 			</CardBoxModal>
 
 			<AsideMenu :menu="menuAside" @menu-click="menuClick" />

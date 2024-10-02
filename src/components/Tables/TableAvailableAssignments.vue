@@ -1,7 +1,6 @@
 <template>
-	<!--
 	<LoadingOverlay :is-active="!allAvailableAssignments.length" title="Učitavanje..." description="Može potrajati nekoliko sekundi, molimo ne zatvarajte stranicu."> </LoadingOverlay>
--->
+
 	<CardBoxModal v-if="isModalActive" v-model="isModalActive" button-label="Zatvori" button="fipu_blue" has-cancel:false @cancel="mainStore.activateLogoutModal(false)">
 		<CardboxAllocation :data="isModalActive"></CardboxAllocation>
 		<br />
@@ -78,6 +77,7 @@
 	<div class="border-t border-gray-100 p-3 dark:border-slate-800 lg:px-6">
 		<BaseLevel>
 			<BaseButtons>
+				<ButtonMenu :options="tableButtonMenuOptions" :icon="mdiMenuDown" small left @update:modelValue="handlePerPageChange" />
 				<BaseButton v-for="page in pagesList" :key="page" :active="page === currentPage" :label="page + 1" :color="page === currentPage ? 'lightDark' : 'whiteDark'" small @click="currentPage = page" />
 			</BaseButtons>
 			<small>Stranica {{ currentPageHuman }} od {{ numPages }}</small>
@@ -90,14 +90,16 @@ import { computed, ref, onMounted, watch } from "vue";
 
 import CardboxAllocation from "@/components/Cardbox/CardBoxAllocation.vue";
 import TableCheckboxCell from "@/components/Tables/TableCheckboxCell.vue";
+import { tableButtonMenuOptions } from "@/tableButtonMenuOptions.js";
 import CardBoxModal from "@/components/Cardbox/CardBoxModal.vue";
+import ButtonMenu from "@/components/Premium/ButtonMenu.vue";
 import LoadingOverlay from "@/components/LoadingOverlay.vue";
 import BaseButtons from "@/components/Base/BaseButtons.vue";
 import BaseButton from "@/components/Base/BaseButton.vue";
 import UserAvatar from "@/components/User/UserAvatar.vue";
 import BaseLevel from "@/components/Base/BaseLevel.vue";
 import { mainStore, adminStore } from "@/main.js";
-import { mdiEye } from "@mdi/js";
+import { mdiEye, mdiMenuDown } from "@mdi/js";
 
 import { useRoute } from "vue-router";
 
@@ -105,9 +107,15 @@ defineProps({
 	checkable: Boolean,
 });
 
-const perPage = ref(5);
+const perPage = ref(10);
+
+function handlePerPageChange(option) {
+	perPage.value = option.value;
+	currentPage.value = 0;
+}
+
 const currentPage = ref(0);
-const searchQuery = ref(""); // New search query
+const searchQuery = ref("");
 
 // Combine filtering and pagination logic
 const filteredAssignments = computed(() => {

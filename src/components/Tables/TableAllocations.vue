@@ -2,13 +2,16 @@
 import { computed, ref, onMounted } from "vue";
 
 import TableCheckboxCell from "@/components/Tables/TableCheckboxCell.vue";
+import { tableButtonMenuOptions } from "@/tableButtonMenuOptions.js";
 import { mainStore, studentStore, adminStore } from "@/main.js";
+import ButtonMenu from "@/components/Premium/ButtonMenu.vue";
 import BaseButtons from "@/components/Base/BaseButtons.vue";
 import BaseButton from "@/components/Base/BaseButton.vue";
 import BaseLevel from "@/components/Base/BaseLevel.vue";
 import LoadingOverlay from "../LoadingOverlay.vue";
 import { StudentMappings } from "@/helpers/maps";
 import PillTag from "../PillTag/PillTag.vue";
+import { mdiMenuDown } from "@mdi/js";
 
 defineProps({
 	checkable: Boolean,
@@ -50,8 +53,13 @@ async function fetchPDF(type, search) {
 	window.open(url, "_blank");
 }
 
-const perPage = ref(5);
+const perPage = ref(10);
 const currentPage = ref(0);
+
+function handlePerPageChange(option) {
+	perPage.value = option.value;
+	currentPage.value = 0;
+}
 const allocationsPaginated = computed(() => filteredAllocations.value.slice(perPage.value * currentPage.value, perPage.value * (currentPage.value + 1)));
 
 const numPages = computed(() => Math.ceil(allocations.value.length / perPage.value));
@@ -122,6 +130,8 @@ const pagesList = computed(() => {
 	<div class="border-t border-gray-100 p-3 dark:border-slate-800 lg:px-6">
 		<BaseLevel>
 			<BaseButtons>
+				<ButtonMenu :options="tableButtonMenuOptions" :icon="mdiMenuDown" small left @update:modelValue="handlePerPageChange" />
+
 				<BaseButton v-for="page in pagesList" :key="page" :active="page === currentPage" :label="page + 1" :color="page === currentPage ? 'lightDark' : 'whiteDark'" small @click="currentPage = page" />
 			</BaseButtons>
 			<small>Stranica {{ currentPageHuman }} od {{ numPages }}</small>

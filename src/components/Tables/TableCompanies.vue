@@ -2,20 +2,22 @@
 import { computed, ref, onMounted, watch } from "vue";
 
 import TableCheckboxCell from "@/components/Tables/TableCheckboxCell.vue";
+import { tableButtonMenuOptions } from "@/tableButtonMenuOptions.js";
+import ButtonMenu from "@/components/Premium/ButtonMenu.vue";
 import BaseButtons from "@/components/Base/BaseButtons.vue";
 import BaseButton from "@/components/Base/BaseButton.vue";
 import UserAvatar from "@/components/User/UserAvatar.vue";
 import BaseLevel from "@/components/Base/BaseLevel.vue";
 import LoadingOverlay from "../LoadingOverlay.vue";
+import { mdiWeb, mdiMenuDown } from "@mdi/js";
 import { useRoute } from "vue-router";
 import { mainStore } from "@/main.js";
-import { mdiWeb } from "@mdi/js";
 
 defineProps({
 	checkable: Boolean,
 });
 
-const perPage = ref(5);
+const perPage = ref(10);
 const currentPage = ref(0);
 
 const filteredCompanies = computed(() => {
@@ -65,6 +67,11 @@ function getAssignmentPage(naziv) {
 	const index = allCompanies.value.findIndex((assignment) => assignment["naziv"] === naziv);
 	if (index === -1) return 0;
 	return Math.floor(index / perPage.value);
+}
+
+function handlePerPageChange(option) {
+	perPage.value = option.value;
+	currentPage.value = 0;
 }
 
 watch(() => route.params.naziv, loadData, {
@@ -178,9 +185,12 @@ const goToCompanyWeb = (url) => {
 	<div class="border-t border-gray-100 p-3 dark:border-slate-800 lg:px-6">
 		<BaseLevel>
 			<BaseButtons>
+				<ButtonMenu :options="tableButtonMenuOptions" :icon="mdiMenuDown" small left @update:modelValue="handlePerPageChange" />
+
 				<BaseButton v-for="page in pagesList" :key="page" :active="page === currentPage" :label="page + 1" :color="page === currentPage ? 'lightDark' : 'whiteDark'" small @click="currentPage = page" />
 			</BaseButtons>
-			<small>Stranica {{ currentPageHuman }} od {{ numPages }}</small>
+
+			<small class=""> Stranica {{ currentPageHuman }} od {{ numPages }}</small>
 		</BaseLevel>
 	</div>
 </template>

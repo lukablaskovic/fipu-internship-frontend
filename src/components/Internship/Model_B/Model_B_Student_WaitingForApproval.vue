@@ -1,6 +1,7 @@
 <script setup>
-import { mdiClipboardCheckOutline, mdiProgressClock, mdiLaptop, mdiNumeric1Circle, mdiNumeric2CircleOutline, mdiNumeric3CircleOutline, mdiEmail } from "@mdi/js";
-import { ref, computed, onMounted } from "vue";
+import { mdiProgressClock, mdiLaptop, mdiNewBox } from "@mdi/js";
+import IconTextLink from "@/components/IconTextLink.vue";
+import { computed, onMounted } from "vue";
 
 import LayoutAuthenticated from "@/layouts/LayoutAuthenticated.vue";
 import LayoutGuest from "@/layouts/LayoutGuest.vue";
@@ -33,8 +34,11 @@ const Layout = computed(() => {
 			<hr />
 			<br />
 			<SectionTitleLineWithButton :icon="mdiProgressClock" main title="Postupak odobrenja je u tijeku"></SectionTitleLineWithButton>
-			<div class="flex flex-wrap text-base">Zadatak vam još nije odobren. Ako čekate dugo, kontaktirajte voditelja prakse.</div>
-			<hr class="mb-2" />
+			<div class="flex flex-wrap text-base">Voditelj vam još nije odobrio zadatak. Ako čekate dugo (nekoliko dana), molimo da kontaktirate voditelja stručne prakse.</div>
+			<span class="flex flex-wrap text-base">
+				Ako vam poslodavac još nije prijavio zadatak, javite im se da to što prije to učine na <span class="inline-flex"> <IconTextLink :to="'/poslodavci/novi-zadatak'" :icon="mdiNewBox" :text="'Prijava zadatka'"></IconTextLink>.</span>
+			</span>
+			<hr class="mb-4" />
 			<div class="flex flex-wrap text-base">Ukoliko nemate dogovor s voditeljem prakse i poslodavcem, odabrali ste pogrešan proces prakse te u tom slučaju molimo da kontaktirate voditelja.</div>
 			<br />
 		</SectionMain>

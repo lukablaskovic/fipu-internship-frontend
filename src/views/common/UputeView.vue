@@ -71,14 +71,16 @@ onMounted(async () => {
 
 			<p>Studentima je ovo izborni kolegij i oni koji su prijavljeni, motivirani su i spremni za rad!</p>
 			<br />
-			<p>Kako bismo stvarili učinili jednostavnijima, proces izvođenja prakse odlučili smo automatizirati kroz novu aplikaciju <a href="https://fipu-praksa.unipu.hr/" class="text-fipu_blue" target="_blank">FIPU Praksa</a>. Ova aplikacija rezultat je istraživačkog rada te suradnja između studenata i profesora na Fakultetu informatike u Puli. Temelji se na eksperimentalnom razvoju baziranom na procesnim modelima (BPMN).</p>
+			<p>Kako bismo stvarili učinili jednostavnijima, proces izvođenja prakse odlučili smo automatizirati kroz novu aplikaciju <a href="https://fipu-praksa.unipu.hr/" class="text-fipu_blue" target="_blank">FIPU Praksa</a>. Ova aplikacija rezultat je istraživačkog rada te suradnje između studenata i profesora na Fakultetu informatike u Puli. Temelji se na eksperimentalnom razvoju baziranom na procesnim modelima (BPMN).</p>
 
 			<SectionTitleLineWithButton :icon="mdiChatQuestionOutline" title="Komunikacija"></SectionTitleLineWithButton>
 
-			<p>Imate pitanja vezana uz izvođenje prakse, sva komunikacija odvija se na <a href="https://chat.google.com/" target="_blank" class="text-fipu_blue">Google Chat</a> kanalu: <b>FIPU 2024/25 Stručna praksa</b></p>
+			<p>Studenti, imate pitanja vezana uz izvođenje prakse, sva komunikacija odvija se na <a href="https://chat.google.com/" target="_blank" class="text-fipu_blue">Google Chat</a> kanalu: <b>FIPU 2024/25 Stručna praksa</b></p>
+
+			<p class="mt-1">Poslodavci i mentori, za sve upite kontaktirajte voditelja stručne prakse.</p>
 
 			<SectionTitleLineWithButton :icon="mdiCalendarRange" title="Važni datumi"></SectionTitleLineWithButton>
-			<p>Za studente koji su upisali Stručnu praksu na preddiplomskom ili diplomskom studiju:</p>
+			<p>Za studente koji su upisali Stručnu praksu na prijediplomskom ili diplomskom studiju:</p>
 			<ul class="ml-8 list-disc">
 				<li>Najraniji datum početka izvođenja stručne prakse - <b> 14. listopad 2024.</b></li>
 				<li>Najkasniji datum završetka - <b> 15. rujna 2025.</b></li>
@@ -107,16 +109,13 @@ onMounted(async () => {
 			</div>
 
 			<hr class="mb-4" />
-
-			<p>Postoje dva načina obavljanja prakse (<b>Model A</b>) ako tražite poslodavca, (<b>Model B</b>) ako već imate ugovorenu tvrtku kod koje obavljate praktični rad.</p>
-			<br />
-			<p>Studenti moraju prilikom prve prijave u aplikaciji odabrati model prakse koji će izvoditi.</p>
+			<p>Postoje dva pristupa za obavljanje prakse: (<b>Model A</b>) ukoliko ste u potrazi za poslodavcem, i (<b>Model B</b>) ako već imate dogovorenu tvrtku kod koje ćete obavljati praktični dio. Studenti moraju prilikom prve prijave u aplikaciji odabrati model prakse koji će izvoditi.</p>
 			<br />
 			<SectionTitleLineWithButton :icon="mdiAlphaACircle" main title="Model A"> </SectionTitleLineWithButton>
 			<h2 class="my-2 text-xl font-bold underline">Student nema ugovorenu tvrtku</h2>
 
 			<ol class="mb-6 ml-8 flex list-decimal flex-col space-y-4">
-				<li>Prijava u aplikaciji FIPU Praksa. Potrebno se prijaviti UNIPU računom i odabrati izvođenje prakse po <b> Modelu A</b> (bez ugovorene tvrtke).</li>
+				<li>Prijava u aplikaciju FIPU Praksa. Potrebno se prijaviti UNIPU računom i odabrati izvođenje prakse po <b> Modelu A</b> (bez ugovorene tvrtke).</li>
 				<li>
 					Pogledati dostupne zadatke
 					<div class="inline-flex">na <IconTextLink :to="'/moja-praksa'" :icon="mdiLaptop" :text="'Moja praksa'"></IconTextLink>.</div>
@@ -131,7 +130,7 @@ onMounted(async () => {
 					</ul>
 				</li>
 				<li>Molimo vas da pričekate dodjelu zadatka od strane voditelja. Voditelj će vam dodijeliti jedan od odabranih zadataka ili će zatražiti da odaberete nove preferencije. Ukoliko ne dobijete odgovor u roku od 10 dana, preporučujemo da kontaktirate voditelja. O konačnom izboru bit ćete obaviješteni putem e-maila.</li>
-				<li>Jednom kad ste alocirani na zadatak, vi i poslodavac ćete biti obaviješteni putem e-maila. Kontaktirajte mentora sa zadatka na koji ste alocirani i recite da ste dobili zadatak za obavljanje studentske prakse, po potrebi obaviti intervju ili selekciju, ako to poslodavac traži.</li>
+				<li>Jednom kad ste alocirani na zadatak, vi i poslodavac bit ćete obaviješteni putem e-maila. Kontaktirajte mentora sa zadatka na koji ste alocirani i recite da ste dobili zadatak za obavljanje studentske prakse, po potrebi obavite intervju ili drugi oblik selekcije, ako to poslodavac traži.</li>
 				<li>Jednom kad poslodavac donese odluku, istu <b></b> mora evidentirati putem poveznice na e-mailu koji dobiva. Ako poslodavac ne može pronaći e-mail, molimo da kontaktirate voditelja prakse.</li>
 				<li>
 					Dogovorite s poslodavcem detalje uključujući period izvršavanja prakse.
@@ -145,7 +144,7 @@ onMounted(async () => {
 				<li>Nakon što ispunite Prijavnicu, mentor kojeg ste naveli i vi dobivate na e-mail praznu “Potvrdu o obavljenoj praksi“, <strong>Vaš mentor ju mora ispuniti nakon što završite s praksom</strong>.</li>
 				<ul class="ml-8 list-disc">
 					<li>Uživajte u izvođenju prakse :) Have fun i učite! 🚀 Ali, nemojte zaboraviti svakodnevno voditi dnevnik!</li>
-					<li>Ovaj kolegij pruža vam priliku da sami oblikujete svoje iskustvo, obogatite ga novim i zanimljivim znanjima te stvorite vrijedne kontakte s poduzećima. Potencijal je velik, iskoristite ga!</li>
+					<li>Ovaj kolegij pruža vam priliku da sami oblikujete svoje iskustvo, obogatite ga novim i zanimljivim znanjima te steknete vrijedne kontakte i poznanstva iz industrije. Potencijal je velik, iskoristite ga!</li>
 				</ul>
 				<li>Kada ste završili s praksom, zatražite od mentora da ispuni ”Potvrdu o obavljenoj praksi” te ju predajte, zajedno s dnevnikom prakse u aplikaciji na istoj poveznici. Morate navesti i datum ispitnog roka.</li>
 				<li>Prijavite ispitni rok na Studomatu, ocjena se unosi automatski, jednom kad voditelj pregleda vaš Dnevnik, ne morate dolaziti na ispit.</li>
@@ -180,7 +179,7 @@ onMounted(async () => {
 					</li>
 				</ul>
 				<li>
-					Nakon što voditelj prakse odobri zadatak, direktno se prijavite na njega kroz aplikaciju
+					<b>Nakon što voditelj prakse odobri zadatak</b>, direktno se prijavite na njega kroz aplikaciju
 					<div class="inline-flex">na <IconTextLink :to="'/moja-praksa'" :icon="mdiLaptop" :text="'Moja praksa'"></IconTextLink></div>
 				</li>
 				<li>
@@ -190,7 +189,7 @@ onMounted(async () => {
 				<li>Nakon što ispunite Prijavnicu, mentor kojeg ste naveli i vi dobivate na e-mail praznu “Potvrdu o obavljenoj praksi“, <strong>Vaš mentor ju mora ispuniti nakon što završite s praksom</strong>.</li>
 				<ul class="ml-8 list-disc">
 					<li>Uživajte u izvođenju prakse :) Have fun i učite! 🚀 Ali, nemojte zaboraviti svakodnevno voditi dnevnik!</li>
-					<li>Ovaj kolegij pruža vam priliku da sami oblikujete svoje iskustvo, obogatite ga novim i zanimljivim znanjima te stvorite vrijedne kontakte s poduzećima. Potencijal je velik, iskoristite ga!</li>
+					<li>Ovaj kolegij pruža vam priliku da sami oblikujete svoje iskustvo, obogatite ga novim i zanimljivim znanjima te steknete vrijedne kontakte i poznanstva iz industrije. Potencijal je velik, iskoristite ga!</li>
 				</ul>
 				<li>Kada ste završili s praksom, zatražite od mentora da ispuni ”Potvrdu o obavljenoj praksi” te ju predajte, zajedno s dnevnikom prakse u aplikaciji na istoj poveznici. Morate navesti i datum ispitnog roka.</li>
 				<li>Prijavite ispitni rok na Studomatu, ocjena se unosi automatski, jednom kad voditelj pregleda vaš Dnevnik, ne morate dolaziti na ispit.</li>

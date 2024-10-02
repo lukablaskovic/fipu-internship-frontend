@@ -1,16 +1,19 @@
 <script setup>
 import { computed, ref, onMounted } from "vue";
 
+import { tableButtonMenuOptions } from "@/tableButtonMenuOptions.js";
 import { StudentMappings, UserTaskMappings } from "@/helpers/maps";
+import ButtonMenu from "@/components/Premium/ButtonMenu.vue";
 import BaseButtons from "@/components/Base/BaseButtons.vue";
 import BaseButton from "@/components/Base/BaseButton.vue";
 import UserAvatar from "@/components/User/UserAvatar.vue";
 import BaseLevel from "@/components/Base/BaseLevel.vue";
 import PillTag from "@/components/PillTag/PillTag.vue";
 import LoadingOverlay from "../LoadingOverlay.vue";
+import { mdiEye, mdiMenuDown } from "@mdi/js";
 import { adminStore } from "@/main.js";
 import { useRoute } from "vue-router";
-import { mdiEye } from "@mdi/js";
+
 const route = useRoute();
 
 defineProps({
@@ -52,8 +55,13 @@ function updateCurrentPageForSelectedStudent(selectedStudent) {
 	}
 }
 
-const perPage = ref(5);
+const perPage = ref(10);
 const currentPage = ref(0);
+
+function handlePerPageChange(option) {
+	perPage.value = option.value;
+	currentPage.value = 0;
+}
 
 const studentsPaginated = computed(() => {
 	let filteredStudents = students.value;
@@ -168,6 +176,8 @@ function getProgressValue(student) {
 	<div class="border-t border-gray-100 p-3 dark:border-slate-800 lg:px-6">
 		<BaseLevel>
 			<BaseButtons>
+				<ButtonMenu :options="tableButtonMenuOptions" :icon="mdiMenuDown" small left @update:modelValue="handlePerPageChange" />
+
 				<BaseButton v-for="page in pagesList" :key="page" :active="page === currentPage" :label="page + 1" :color="page === currentPage ? 'lightDark' : 'whiteDark'" small @click="currentPage = page" />
 			</BaseButtons>
 			<small>Stranica {{ currentPageHuman }} od {{ numPages }}</small>
