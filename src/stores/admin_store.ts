@@ -215,6 +215,7 @@ export const useAdminStore = defineStore("admin", {
 
 				const promises = students.map(async (student: Student) => {
 					const data = await this.getProcessInstanceData(student);
+					console.log("student.process_instance_data", data);
 					student.process_instance_data = data;
 
 					const pendingTask = student.process_instance_data.pending[0];
@@ -257,6 +258,9 @@ export const useAdminStore = defineStore("admin", {
 
 				const model_a = response.results.find((result: any) => result.model_path === `${mainStore.bpmn_process_name_A}.bpmn`);
 				const model_b = response.results.find((result: any) => result.model_path === `${mainStore.bpmn_process_name_B}.bpmn`);
+
+				console.log("model_a", model_a);
+				console.log("model_b", model_b);
 
 				let model_a_instances = model_a?.instances || [];
 				let model_b_instances = model_b?.instances || [];
