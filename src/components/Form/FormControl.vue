@@ -178,8 +178,7 @@ if (props.ctrlKFocus) {
 				<span v-if="buttonLabel" :class="{ 'ml-1': buttonIcon }">{{ buttonLabel }}</span>
 			</button>
 
-			<!-- Input Field -->
-			<input v-else :id="id" ref="inputEl" v-model="computedValue" :name="name" :autocomplete="autocomplete" :required="required" :readonly="readonly" :placeholder="placeholder" :type="computedType" :min="min" :max="max" :class="[inputElClass, computedType == 'date' ? 'dark:input' : '']" :disabled="disabled" />
+			<input v-else :id="id" ref="inputEl" v-model="computedValue" :name="name" :autocomplete="autocomplete" :required="required" :readonly="readonly" :placeholder="placeholder" :type="computedType" :min="min" :max="max" :class="[inputElClass, 'truncate-input']" :disabled="disabled" />
 
 			<!-- Icons and Tip Tags -->
 			<FormControlIcon v-if="computedIconLeft" :icon="computedIconLeft" :h="controlIconH" :text-color="textColor" />
@@ -197,5 +196,11 @@ if (props.ctrlKFocus) {
 }
 .input {
 	color-scheme: dark;
+}
+.truncate-input {
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	padding-right: 2rem;
 }
 </style>

@@ -72,10 +72,12 @@ window.onresize = () => layoutStore.responsiveLayoutControl();
 /* App style */
 styleStore.setStyle(localStorage[styleKey] ?? "basic");
 
-/* Dark mode */
+/* temporary disabled dark mode */
+/* Dark mode
 if ((!localStorage[darkModeKey] && window.matchMedia("(prefers-color-scheme: dark)").matches) || localStorage[darkModeKey] === "1") {
 	styleStore.setDarkMode(true);
 }
+*/
 
 /* Default title tag */
 const defaultDocumentTitle = "FIPU Praksa";

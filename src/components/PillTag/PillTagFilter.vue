@@ -150,7 +150,6 @@ const setDefaultFilters = () => {
 	selectedOptions.value = defaultEvents;
 
 	adminStore.selectedEvents = defaultEvents;
-	snackBarStore.pushMessage("Događaj-Filteri resetirani!", "success");
 };
 
 const toggleSelection = (option) => {

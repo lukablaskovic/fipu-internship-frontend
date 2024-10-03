@@ -10,6 +10,7 @@ import UserAvatar from "@/components/User/UserAvatar.vue";
 import BaseLevel from "@/components/Base/BaseLevel.vue";
 import LoadingOverlay from "../LoadingOverlay.vue";
 import { mdiWeb, mdiMenuDown } from "@mdi/js";
+
 import { useRoute } from "vue-router";
 import { mainStore } from "@/main.js";
 
@@ -124,7 +125,8 @@ const goToCompanyWeb = (url) => {
 				<td data-label="Naziv">
 					{{ company["naziv"] }}
 				</td>
-				<td data-label="Web mjesto">
+
+				<td data-label="Web" class="max-w-xs whitespace-normal break-all">
 					<a class="underline" :href="company['web']" target="_blank">{{ company["web"] }}</a>
 				</td>
 
@@ -154,7 +156,7 @@ const goToCompanyWeb = (url) => {
 				<td data-label="Naziv">
 					{{ company["naziv"] }}
 				</td>
-				<td data-label="Web mjesto">
+				<td data-label="Web" class="max-w-xs whitespace-normal break-all">
 					<a class="underline" :href="company['web']" target="_blank">{{ company["web"] }}</a>
 				</td>
 				<td data-label="Direktor">
@@ -182,7 +184,7 @@ const goToCompanyWeb = (url) => {
 		</tbody>
 	</table>
 
-	<div class="border-t border-gray-100 p-3 dark:border-slate-800 lg:px-6">
+	<div class="mb-12 border-t border-gray-100 p-3 dark:border-slate-800 lg:px-6">
 		<BaseLevel>
 			<BaseButtons>
 				<ButtonMenu :options="tableButtonMenuOptions" :icon="mdiMenuDown" small left @update:modelValue="handlePerPageChange" />

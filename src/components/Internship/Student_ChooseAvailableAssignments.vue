@@ -111,7 +111,7 @@ const handleDragEnd = () => {
 			</CardBox>
 			<hr />
 			<br />
-			<SectionTitleLineWithButton ref="vas_odabir" :icon="mdiNumeric" main title="Vaš odabir" />
+			<SectionTitleLineWithButton ref="vas_odabir" :icon="mdiNumeric" main title="Vaš odabir" class="mt-22" />
 			<p v-if="checkedAssignments.length === 3" class="mb-4">Zadatke možete rasporediti po vašim preferencijama.</p>
 
 			<draggable v-model="assignmentsForDrag" :disabled="!isDraggableEnabled" item-key="id" class="list-group flex w-full space-x-2" @start="handleDragStart" @end="handleDragEnd">

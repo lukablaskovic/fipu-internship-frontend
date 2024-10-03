@@ -12,3 +12,7 @@
 		@apply scrollbar-thin scrollbar-track-slate-100 scrollbar-thumb-slate-400 scrollbar-track-rounded-full scrollbar-thumb-rounded-full hover:scrollbar-thumb-slate-500 dark:scrollbar-track-slate-800 dark:scrollbar-thumb-slate-600;
 	}
 }
+
+td[data-label]::before {
+	white-space: nowrap;
+}
