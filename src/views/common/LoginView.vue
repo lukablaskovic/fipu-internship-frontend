@@ -2,7 +2,7 @@
 	<div class="flex min-h-screen w-full flex-col items-center justify-start bg-gray-50 transition-all duration-300 sm:min-h-screen sm:justify-center sm:bg-opacity-70 sm:bg-[url('/background-blue.jpg')] sm:bg-cover sm:bg-center">
 		<!-- Mobile only heading -->
 		<div class="mt-12 block bg-gray-50 p-2 text-left sm:hidden">
-			<h2 data-aos="zoom-in" class="text-7xl font-bold text-fipu_gray">Dobrodošli na</h2>
+			<h2 data-aos="zoom-in" class="mb-4 text-7xl font-bold text-fipu_gray">Dobrodošli na</h2>
 			<h1 data-aos="zoom-in" data-aos-delay="500" class="text-6xl font-bold text-fipu_blue">FIPU Praksu</h1>
 		</div>
 
@@ -34,7 +34,7 @@
 							<a class="hover-underline-animation cursor-pointer text-fipu_text_blue hover:text-fipu_blue" @click="router.push('/poslodavci/novi-zadatak')"> ovdje. </a>
 						</p>
 
-						<p class="mb-12 p-2 text-left text-base text-gray-600 sm:mb-0 sm:p-0 sm:text-center sm:text-base lg:text-lg">
+						<p class="mb-4 p-2 text-left text-base text-gray-600 sm:mb-0 sm:p-0 sm:text-center sm:text-base lg:text-lg">
 							Prije nego se prijavite, pročitajte
 							<a class="hover-underline-animation cursor-pointer text-fipu_text_blue hover:text-fipu_blue" @click="router.push('/upute')"> upute </a>
 							kako izvodimo praksu na FIPU.

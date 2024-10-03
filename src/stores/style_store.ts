@@ -92,5 +92,5 @@ export const useStyleStore = defineStore("style", {
 		},
 	},
 
-	persist: true,
+	persist: false,
 });

@@ -17,7 +17,7 @@ import { useStyleStore } from "@/stores/style_store.ts";
 import { useAdminStore } from "@/stores/admin_store.ts";
 import { useMainStore } from "@/stores/main_store.ts";
 
-import { darkModeKey, styleKey } from "@/config.js";
+import { styleKey } from "@/config.js";
 
 import NotificationBar from "@/components/Notification/NotificationBar.vue";
 import piniaPluginPersistedstate from "pinia-plugin-persistedstate";
