@@ -1,31 +1,52 @@
 <template>
-	<div class="flex h-full min-h-screen w-full items-center justify-center bg-[url('/background-blue.jpg')] bg-cover bg-center transition-all duration-300">
-		<div class="flex flex-col items-center justify-center overflow-hidden transition-all duration-300">
-			<CardBox vertical-centered class="rounded-none px-6 py-12 transition-all duration-300 sm:mx-8 sm:rounded-2xl sm:p-12 lg:mx-96" is-form>
-				<a href="https://fipu.unipu.hr/" target="_blank" class="mx-auto w-max">
-					<img :src="fipu_unipu" alt="Fakultet informatike u Puli - logotip" class="mb-3 object-contain transition-all duration-300 sm:h-32 2xl:mb-6" />
-				</a>
+	<div class="flex min-h-screen w-full flex-col items-center justify-start bg-gray-50 transition-all duration-300 sm:min-h-screen sm:justify-center sm:bg-opacity-70 sm:bg-[url('/background-blue.jpg')] sm:bg-cover sm:bg-center">
+		<!-- Mobile only heading -->
+		<div class="mt-12 block bg-gray-50 p-2 text-left sm:hidden">
+			<h2 data-aos="zoom-in" class="text-7xl font-bold text-fipu_gray">Dobrodošli na</h2>
+			<h1 data-aos="zoom-in" data-aos-delay="500" class="text-6xl font-bold text-fipu_blue">FIPU Praksu</h1>
+		</div>
 
-				<h2 class="mb-4 mt-6 text-center text-2xl font-bold text-fipu_gray md:text-center lg:text-3xl xl:mb-6 2xl:text-4xl">Dobrodošli na <span class="text-fipu_blue">FIPU Praksu</span></h2>
+		<div class="mt-8 flex w-full flex-1 flex-col items-center justify-center transition-all duration-300 sm:mt-0 sm:flex-none">
+			<CardBox vertical-centered class="mx-0 flex h-full w-full flex-1 flex-col px-0 pb-8 pt-8 transition-all duration-300 sm:mx-6 sm:h-auto sm:w-auto sm:flex-none sm:rounded-2xl sm:p-10 md:px-12 lg:mx-60 lg:p-12" is-form>
+				<div class="flex flex-1 flex-col justify-between">
+					<div>
+						<!-- Logo, shown only on larger screens -->
+						<a href="https://fipu.unipu.hr/" target="_blank" class="mx-auto hidden w-max sm:block">
+							<img :src="fipu_unipu" alt="Fakultet informatike u Puli - logotip" class="mb-4 h-24 object-contain transition-all duration-300 sm:h-28 lg:h-32" />
+						</a>
 
-				<h2 class="mx-auto mb-2 mt-6 max-w-3xl text-center sm:mt-0 md:text-sm lg:text-sm 2xl:mb-10 2xl:text-base">
-					Molimo prijavite se kako biste pregledali stanje vaše prakse ili prijavili zadatke. Ako želite samo pregledati dostupne zadatke i poduzeća, možete nastaviti kao
-					<a class="hover-underline-animation cursor-pointer text-fipu_text_blue hover:text-fipu_blue" @click="router.push('/moja-praksa')"> gost</a>.
-				</h2>
+						<!-- Hide heading on mobile -->
+						<div data-aos="zoom-in" data-aos-delay="200" class="hidden sm:block">
+							<h2 class="mb-4 mt-4 text-center text-2xl font-bold text-fipu_gray sm:text-2xl lg:text-4xl">Dobrodošli na <span class="text-fipu_blue">FIPU Praksu</span></h2>
+						</div>
+						<!-- Content paragraphs -->
+						<p class="mx-auto mb-8 max-w-md p-2 text-left text-base text-gray-600 sm:mb-5 sm:max-w-2xl sm:p-0 sm:text-center sm:text-base lg:text-lg">
+							Molimo prijavite se kako biste pregledali stanje vaše prakse ili prijavili zadatke. Ako želite samo pregledati dostupne zadatke i poduzeća, možete nastaviti kao
+							<a class="hover-underline-animation cursor-pointer text-fipu_text_blue hover:text-fipu_blue" @click="router.push('/moja-praksa')"> gost. </a>
+						</p>
 
-				<div class="mx-auto my-6 flex justify-center sm:my-4">
-					<GoogleLogin :callback="callback" />
+						<div class="my-6 flex w-full justify-center sm:my-6">
+							<GoogleLogin :callback="callback" />
+						</div>
+
+						<p class="mb-0 p-2 text-left text-base text-gray-600 sm:mb-3 sm:p-0 sm:text-center sm:text-base lg:text-lg">
+							Poslodavac ste ili mentor te želite prijaviti novi zadatak za praksu? To možete učiniti
+							<a class="hover-underline-animation cursor-pointer text-fipu_text_blue hover:text-fipu_blue" @click="router.push('/poslodavci/novi-zadatak')"> ovdje. </a>
+						</p>
+
+						<p class="mb-12 p-2 text-left text-base text-gray-600 sm:mb-0 sm:p-0 sm:text-center sm:text-base lg:text-lg">
+							Prije nego se prijavite, pročitajte
+							<a class="hover-underline-animation cursor-pointer text-fipu_text_blue hover:text-fipu_blue" @click="router.push('/upute')"> upute </a>
+							kako izvodimo praksu na FIPU.
+						</p>
+					</div>
+					<!-- Logo at the bottom, centered on mobile -->
+					<div class="flex justify-center sm:hidden">
+						<a href="https://fipu.unipu.hr/" target="_blank" class="w-max">
+							<img :src="fipu_unipu" alt="Fakultet informatike u Puli - logotip" class="h-15 object-contain p-2" />
+						</a>
+					</div>
 				</div>
-
-				<h2 class="mb-2 text-center md:text-sm lg:text-sm 2xl:mb-4 2xl:text-base">
-					Poslodavac ste ili mentor te želite prijaviti novi zadatak za praksu? To možete učiniti
-					<a class="hover-underline-animation cursor-pointer text-fipu_text_blue hover:text-fipu_blue" @click="router.push('/poslodavci/novi-zadatak')"> ovdje</a>.
-				</h2>
-
-				<h2 class="text-center md:text-sm lg:text-sm 2xl:mb-4 2xl:text-base">
-					Prije nego se prijavite, pročitajte
-					<a class="hover-underline-animation cursor-pointer text-fipu_text_blue hover:text-fipu_blue" @click="router.push('/upute')">upute</a> kako izvodimo praksu na FIPU.
-				</h2>
 			</CardBox>
 		</div>
 		<SnackBar />
@@ -41,6 +62,7 @@ body {
 .fast-animation {
 	animation-duration: 0.5s;
 }
+
 .hover-underline-animation {
 	position: relative;
 }
@@ -67,17 +89,20 @@ body {
 <script setup>
 import SnackBar from "@/components/Premium/SnackBar.vue";
 import CardBox from "@/components/Cardbox/CardBox.vue";
+import { decodeCredential } from "vue3-google-login";
 import { isUnipuEmail } from "@/helpers/validators";
 import { mainStore, snackBarStore } from "@/main";
-import { useRouter } from "vue-router";
-
-//Public images
 import fipu_unipu from "/fipu_unipu.png";
+import { useRouter } from "vue-router";
+import Utils from "@/helpers/utils";
+import { onMounted } from "vue";
+import AOS from "aos";
+
+onMounted(() => {
+	AOS.init();
+});
 
 const router = useRouter();
-
-import { decodeCredential } from "vue3-google-login";
-import Utils from "@/helpers/utils";
 
 const callback = async (response) => {
 	const decodedToken = decodeCredential(response.credential);
@@ -86,10 +111,8 @@ const callback = async (response) => {
 		snackBarStore.pushMessage("Prijava nije uspjela! Molimo kontaktirajte voditelja prakse.", "error");
 		return;
 	}
-	console.log("decodedToken", decodedToken);
 	if (isUnipuEmail(decodedToken.email) || decodedToken.email === "lukablaskovic2000@gmail.com") {
 		let response = await mainStore.handleLogin(decodedToken);
-		console.log(response);
 		if (response.status === "success") snackBarStore.pushMessage("Uspješna prijava!", "success");
 		await Utils.wait(1);
 	} else {
