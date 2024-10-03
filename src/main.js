@@ -71,7 +71,8 @@ layoutStore.responsiveLayoutControl();
 window.onresize = () => layoutStore.responsiveLayoutControl();
 
 /* App style */
-styleStore.setStyle(localStorage[styleKey] ?? "basic");
+//styleStore.setStyle(localStorage[styleKey] ?? "basic");
+styleStore.setStyle("basic");
 
 /* temporary disabled dark mode */
 /* Dark mode
