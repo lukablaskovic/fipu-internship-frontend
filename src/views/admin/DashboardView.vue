@@ -1,5 +1,5 @@
 <script setup>
-import { mdiAlphaACircle, mdiAbTesting, mdiNoteAlert, mdiClipboardCheck, mdiAccountTie, mdiAlphaBCircleOutline, mdiAccountMultiple, mdiAccountSchoolOutline, mdiProgressClock, mdiViewDashboard, mdiCommentProcessing, mdiMonitorAccount, mdiAccountCancel, mdiAlphaSBox, mdiClockTimeEight, mdiCalendarClock, mdiAccountGroup, mdiOfficeBuilding } from "@mdi/js";
+import { mdiAlphaACircle, mdiAbTesting, mdiNoteAlert, mdiClipboardCheck, mdiAccountTie, mdiAlphaBCircleOutline, mdiAccountMultiple, mdiAccountSchoolOutline, mdiProgressClock, mdiViewDashboard, mdiCardSearch, mdiMonitorAccount, mdiAccountCancel, mdiAlphaSBox, mdiClockTimeEight, mdiCalendarClock, mdiAccountGroup, mdiOfficeBuilding } from "@mdi/js";
 import { adminStore, mainStore, snackBarStore } from "@/main.js";
 import { layoutStore } from "@/main";
 
@@ -75,7 +75,7 @@ onMounted(async () => {
 			eventsFetchError.value = true;
 			snackBarStore.pushMessage("Nakon više ponovljenih pokušaja, nije moguće dohvatiti evente.", "danger");
 		} else {
-			events.value = fetchedEvents.filter((event) => !ActivityEventMappings.shouldSkipEvent(event.activity_id)).reverse();
+			events.value = fetchedEvents.filter((event) => !ActivityEventMappings.shouldSkipEvent(event.activity_id)).sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
 		}
 	} catch (error) {
 		console.error("Dashboard rendering error:", error);
@@ -214,7 +214,7 @@ const toggleDateType = () => {
 					<SkeletonLoader v-else></SkeletonLoader>
 				</div>
 
-				<SectionTitleLineWithButton :icon="mdiCommentProcessing" title="Najnoviji događaji" main @click="eventsOptionsActive = true"> </SectionTitleLineWithButton>
+				<SectionTitleLineWithButton :icon="mdiCardSearch" title="Najnoviji događaji" main @click="eventsOptionsActive = true"> </SectionTitleLineWithButton>
 
 				<div v-if="!eventsFetchError" class="flex flex-wrap md:flex-row">
 					<div class="mb-4">
