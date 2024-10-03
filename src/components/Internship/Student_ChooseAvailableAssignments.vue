@@ -17,6 +17,12 @@ import { ref, computed, onMounted } from "vue";
 import Utils from "@/helpers/utils.js";
 import draggable from "vuedraggable";
 
+import AOS from "aos";
+
+onMounted(() => {
+	AOS.init();
+});
+
 const Layout = computed(() => (mainStore.userAuthenticated ? LayoutAuthenticated : LayoutGuest));
 
 const checkedAssignments = computed(() => mainStore.checkedAssignments);
@@ -119,7 +125,7 @@ const handleDragEnd = () => {
 					<div class="flex-1">
 						<div class="draggable-item aspect-h-1 aspect-w-1 relative flex items-center justify-center border-2 bg-gray-50" :class="{ grab: isAssignment(element) && isDraggableEnabled, grabbing: vueDraggableDragging && isAssignment(element) && isDraggableEnabled }">
 							<transition name="image-fade">
-								<img v-if="isAssignment(element)" class="rounded-full sm:p-22" :src="getCompanyLogo(element)" />
+								<img data-aos="zoom-out" v-if="isAssignment(element)" class="rounded-full sm:p-22" :src="getCompanyLogo(element)" />
 								<img v-else class="sm:p-22" :src="getDefaultImage(index)" alt="Default Task" />
 							</transition>
 							<div v-if="isAssignment(element)" class="absolute inset-0 flex items-center justify-center bg-black bg-opacity-50 text-sm font-bold text-white opacity-0 transition-opacity hover:opacity-100">ID: {{ element.id_zadatak }}</div>
