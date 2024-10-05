@@ -73,6 +73,7 @@ window.addEventListener("keydown", (e) => {
 				'2xl:3/12 modal-scrollable fipu_vertical_scrollbar z-50 max-h-modal w-11/12 rounded shadow-lg md:w-3/5 lg:w-2/5 xl:w-6/12': !large && !isLogout,
 				'modal-scrollable fipu_vertical_scrollbar z-50 max-h-modal w-full rounded shadow-lg md:w-4/5 lg:w-3/5 xl:w-3/5': large && !isLogout,
 				'2xl:3/12 modal-scrollable fipu_vertical_scrollbar z-50 max-h-modal w-11/12 rounded shadow-lg md:w-3/5 lg:w-1/5 xl:w-4/12': isLogout,
+				'mobile-fullscreen': !isLogout,
 			}"
 			is-modal>
 			<CardBoxComponentTitle :title="title"> </CardBoxComponentTitle>
@@ -91,5 +92,23 @@ window.addEventListener("keydown", (e) => {
 .modal-scrollable {
 	max-height: 90vh;
 	overflow-y: auto;
+}
+
+/* Fullscreen modal on mobile */
+@media (max-width: 640px) {
+	.mobile-fullscreen {
+		width: 100vw;
+		height: 100vh;
+		max-height: 100vh;
+		top: 0;
+		left: 0;
+		right: 0;
+		bottom: 0;
+		position: fixed;
+		margin: 0;
+		border-radius: 0;
+		overflow-y: auto;
+		padding: 1rem;
+	}
 }
 </style>
