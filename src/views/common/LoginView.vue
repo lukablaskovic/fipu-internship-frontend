@@ -116,7 +116,10 @@ const callback = async (response) => {
 	}
 	if (isUnipuEmail(decodedToken.email) || decodedToken.email === "lukablaskovic2000@gmail.com") {
 		let response = await mainStore.handleLogin(decodedToken);
-		if (response.status === "success") snackBarStore.pushMessage("Uspješna prijava!", "success");
+		let ime = decodedToken.given_name || "";
+		let prezime = decodedToken.family_name || "";
+
+		if (response.status === "success") snackBarStore.pushMessage(`Dobrodošli, ${ime} ${prezime}!`, "success");
 		await Utils.wait(1);
 	} else {
 		snackBarStore.pushMessage("Molimo koristite UNIPU e-mail za prijavu", "warning");

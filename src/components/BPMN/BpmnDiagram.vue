@@ -205,7 +205,7 @@ function applyCustomStyling(highlightColor, highlightElementId, viewer) {
 			}
 		}
 	}
-
+	// must be tested
 	// Animate the highlighting in order
 	directPath.forEach((element, index) => {
 		setTimeout(
@@ -214,6 +214,14 @@ function applyCustomStyling(highlightColor, highlightElementId, viewer) {
 					applyHighlight(element, "highlight-previous");
 				} else {
 					applyHighlight(element, "highlight");
+				}
+
+				// If the element is a Gateway, apply highlights to all outgoing connections
+				if (element.type === "bpmn:ParallelGateway" || element.type === "bpmn:ExclusiveGateway") {
+					const outgoing = element.outgoing || [];
+					outgoing.forEach((connection) => {
+						applyHighlight(connection.target, "highlight-previous");
+					});
 				}
 			},
 			0.025 * 1000 * index,
