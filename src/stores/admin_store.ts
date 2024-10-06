@@ -86,8 +86,9 @@ export const useAdminStore = defineStore("admin", {
 		selectedEvents: [] as any[], // Assuming events are not yet typed
 		events: [] as Event[], // Typed array of Event
 		relativeToNowTimestmap: true,
-		filterActiveInstances: true,
-		filterFinishedInstances: true,
+		filterActiveInstances: false,
+
+		filterFinishedInstances: false,
 		availableAssignmentsFilter: true,
 
 		filterModelA: "AB",

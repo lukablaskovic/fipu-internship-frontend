@@ -222,7 +222,7 @@ const toggleDateType = () => {
 					</div>
 
 					<div class="flex flex-row">
-						<div class="mb-4"><PillTag class="cursor-pointer" :left="false" :icon="adminStore.filterActiveInstances ? mdiAccountGroup : mdiAccountMultiple" :color="adminStore.filterActiveInstances ? 'info' : 'success'" :label="adminStore.filterActiveInstances ? 'Sve instance' : 'Samo aktivne'" @click="toggleActiveEventsFilter" /></div>
+						<div class="mb-4"><PillTag class="cursor-pointer" :left="false" :icon="adminStore.filterActiveInstances ? mdiAccountGroup : mdiAccountMultiple" :color="adminStore.filterActiveInstances ? 'info' : 'success'" :label="adminStore.filterActiveInstances ? 'Sve instance' : 'Aktivne instance'" @click="toggleActiveEventsFilter" /></div>
 					</div>
 					<div class="flex flex-row">
 						<div class="mb-4"><PillTag class="cursor-pointer" :icon="adminStore.filterModelState === 'A' ? mdiAlphaACircle : adminStore.filterModelState === 'B' ? mdiAlphaBCircleOutline : mdiAbTesting" :color="adminStore.filterModelState === 'A' ? 'danger' : adminStore.filterModelState === 'B' ? 'success' : 'info'" :label="adminStore.filterModelState === 'A' ? 'Model A' : adminStore.filterModelState === 'B' ? 'Model B' : 'Modeli AB'" @click="toggleModelEventsFilter" /></div>

@@ -12,7 +12,7 @@ export interface Assignment {
 
 export const useMainStore = defineStore("main", {
 	state: () => ({
-		praksa_version: "1.0.0-beta.5",
+		praksa_version: "1.0.0-beta.6",
 		academicYear: "2024/2025",
 		voditelj_prakse: "doc. dr. sc. Ivan Lorencin",
 
@@ -65,7 +65,6 @@ export const useMainStore = defineStore("main", {
 
 	actions: {
 		async fetchCurrentUser(): Promise<void> {
-			console.log("Fetching current user");
 			try {
 				let sessionStorageToken;
 				try {
@@ -258,7 +257,7 @@ export const useMainStore = defineStore("main", {
 	},
 	persist: {
 		storage: sessionStorage,
-		omit: ["assignments", "checkedAssignments", "praksa_version"],
+		omit: ["assignments", "checkedAssignments"],
 		debug: true,
 	},
 });

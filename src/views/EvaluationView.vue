@@ -101,7 +101,7 @@ const updateDisabledCondition = (allFilled) => {
 
 				<p class="mb-4">Molimo da nakon što evaluirate studenta (bilo to kroz intervju, tehnički ispit ili pak bez procesa selekcije) potvrdite prihvaćate li studenta za obavljanje prakse u Vašem poduzeću.</p>
 
-				<FormDynamic v-if="pendingTaskInfo != null" v-model="formDynamicValues" class="mb-4" :form-fields="pendingTaskInfo.form_fields" :variables="instanceInfo.variables" :documentation="pendingTaskInfo.documentation" @all-fields-filled="updateDisabledCondition" />
+				<FormDynamic v-if="pendingTaskInfo != null" v-model="formDynamicValues" class="mb-4 rounded-md p-1" :form-fields="pendingTaskInfo.form_fields" :variables="instanceInfo.variables" :documentation="pendingTaskInfo.documentation" @all-fields-filled="updateDisabledCondition" />
 
 				<BaseButton v-if="formDynamicValues['kandidat_odobren']" class="mb-4" label="Potvrdi" :loading="isLoading" color="fipu_blue" @disabled="disabledCondition" @click="handleNewInstance()" />
 			</div>

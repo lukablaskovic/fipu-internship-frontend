@@ -4,7 +4,7 @@ import BaseButtons from "@/components/Base/BaseButtons.vue";
 import BaseButton from "@/components/Base/BaseButton.vue";
 import OverlayLayer from "@/components/OverlayLayer.vue";
 import CardBox from "@/components/Cardbox/CardBox.vue";
-import { computed, onMounted } from "vue";
+import { computed, watch } from "vue";
 
 const props = defineProps({
 	title: {
@@ -49,6 +49,14 @@ const value = computed({
 	set: (value) => emit("update:modelValue", value),
 });
 
+watch(value, (newValue) => {
+	if (newValue) {
+		document.body.style.overflow = "hidden";
+	} else {
+		document.body.style.overflow = "";
+	}
+});
+
 const confirmCancel = (mode) => {
 	value.value = false;
 	emit(mode);
@@ -76,14 +84,16 @@ window.addEventListener("keydown", (e) => {
 				'mobile-fullscreen': !isLogout,
 			}"
 			is-modal>
-			<CardBoxComponentTitle :title="title"> </CardBoxComponentTitle>
+			<div class="modal-content">
+				<CardBoxComponentTitle :title="title"></CardBoxComponentTitle>
 
-			<slot v-if="modelValue != null" :assignment="modelValue"></slot>
+				<slot v-if="modelValue != null" :assignment="modelValue"></slot>
 
-			<BaseButtons class="justify-center">
-				<BaseButton v-if="hasConfirm" :label="buttonLabel" :color="button" :disabled="disabledCondition" @click="confirm" />
-				<BaseButton v-if="hasCancel" label="Natrag" :color="button" outline @click="cancel" />
-			</BaseButtons>
+				<BaseButtons class="justify-center">
+					<BaseButton v-if="hasConfirm" :label="buttonLabel" :color="button" :disabled="disabledCondition" @click="confirm" />
+					<BaseButton v-if="hasCancel" label="Natrag" :color="button" outline @click="cancel" />
+				</BaseButtons>
+			</div>
 		</CardBox>
 	</OverlayLayer>
 </template>
@@ -102,13 +112,19 @@ window.addEventListener("keydown", (e) => {
 		max-height: 100vh;
 		top: 0;
 		left: 0;
-		right: 0;
-		bottom: 0;
 		position: fixed;
 		margin: 0;
 		border-radius: 0;
 		overflow-y: auto;
-		padding: 1rem;
+	}
+
+	/* Center the content inside the modal */
+	.modal-content {
+		display: flex;
+		flex-direction: column;
+		justify-content: center;
+		align-items: center;
+		min-height: 100%;
 	}
 }
 </style>

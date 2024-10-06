@@ -93,7 +93,6 @@ const rules = {
 	student_email: {
 		required: helpers.withMessage("Polje je obavezno", required),
 		email: helpers.withMessage("Molimo unesite ispravnu e-mail adresu", email),
-		isUnipuEmail: helpers.withMessage("E-mail mora biti UNIPU adresa", isUnipuEmail),
 	},
 	mentor_ime: {
 		required: helpers.withMessage("Polje je obavezno", required),
@@ -116,13 +115,6 @@ const rules = {
 	},
 	pocetak_prakse: {
 		required: helpers.withMessage("Polje je obavezno", required),
-
-		dateMustBeAfterCurrentDate: helpers.withMessage("Datum početka ne može biti u prošlosti", (value) => {
-			const currentDate = new Date();
-			const selectedDate = new Date(value);
-
-			return !(selectedDate <= currentDate);
-		}),
 
 		dateMustBeBeforeKrajPrakse: helpers.withMessage("Datum početka ne može biti nakon datuma završetka", (value) => {
 			const krajPrakseDate = new Date(form.kraj_prakse);

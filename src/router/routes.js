@@ -175,8 +175,8 @@ const routes = [
 		component: () => import("@/views/NewAssignmentFormPublic.vue"),
 	},
 	{
-		path: "/error",
-		name: "ErrorView",
+		path: "/:pathMatch(.*)*", // Vue 3 wildcard route
+		name: "ne postoji",
 		component: () => import("@/views/common/ErrorView.vue"),
 	},
 ];

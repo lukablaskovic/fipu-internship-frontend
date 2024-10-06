@@ -106,7 +106,7 @@ async function submit_diary_form() {
 			<br />
 			<SectionTitleLineWithButton :icon="mdiNotebook" main title="Dnevnik prakse"></SectionTitleLineWithButton>
 			<p><b>Nakon što se završili praksu</b> i ispunili sve vaše obaveze, predajete dnevnik prakse skupa s ispunjenom potvrdom o obavljenoj praksi.</p>
-			<p>Potvrdu ispunjava vaš mentor, vi predajete PDF sken ispunjene potvrde.</p>
+			<p>Potvrdu ispunjava vaš mentor, vi predajete PDF sken (ili digitalno potpisani PDF) ispunjene potvrde.</p>
 			<p>Dnevnik prakse je potrebno predati prije prijave ispitnog roka.</p>
 			<br />
 			<p>
@@ -129,7 +129,7 @@ async function submit_diary_form() {
 					</FormField>
 
 					<FormField
-						label="PDF sken ispunjene potvrde o obavljenoj praksi"
+						label="PDF ispunjene potvrde o obavljenoj praksi"
 						help="obavezno PDF format
 "
 						horizontal>

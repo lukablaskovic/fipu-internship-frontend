@@ -4,13 +4,9 @@
 
 		<div class="sm:flex sm:justify-between sm:gap-4">
 			<div>
-				<h1 class="text-lg font-bold sm:text-2xl">
+				<h1 class="text-xl font-bold sm:text-2xl">
 					{{ props.data.id_zadatak }}
 				</h1>
-				<h3 class="text-lg font-bold sm:text-xl">
-					{{ truncatedDescription }}
-				</h3>
-
 				<p class="mt-1 text-xs font-medium text-gray-600 dark:text-gray-200">
 					{{ props.data["Poslodavac"][0]["value"] }}:
 					{{ props.data.poslodavac_email }}
@@ -23,7 +19,7 @@
 		</div>
 
 		<div>
-			<p class="text-sm text-gray-500 dark:text-gray-300">
+			<p class="mt-4 text-sm text-gray-500 dark:text-gray-300 sm:mt-0">
 				{{ props.data.opis_zadatka }}
 			</p>
 		</div>

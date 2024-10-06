@@ -79,12 +79,12 @@ async function handleProcessDiagram() {
 }
 
 const route = useRoute();
+
 // Load data based on process_instance_id from the route
 async function loadDataForStudent() {
 	const id = route.params.process_instance_id;
 	if (id) {
 		const student = { process_instance_id: id };
-
 		process_instance_data.value = await adminStore.getProcessInstanceData(student);
 	}
 }
@@ -130,8 +130,16 @@ const toggleBetweenModelsFilter = () => {
 	}
 };
 
+let email_postData = ref(null);
+let email_template = ref(null);
+let email_to = ref(null);
+
 async function sendAnAdditionalEmail() {
-	let { postData, template, to } = getPostDataForSendEmail();
+	//let { postData, template, to } = getPostDataForSendEmail();
+
+	let postData = email_postData.value;
+	let template = email_template.value;
+	let to = email_to.value;
 
 	if (newEmail.value) {
 		to = newEmail.value;
@@ -139,13 +147,24 @@ async function sendAnAdditionalEmail() {
 
 	if (postData && template && to) {
 		await adminStore.sendAnAdditionalEmail(postData, to, template);
-		snackBarStore.pushMessage("Email je uspješno poslan!", "success");
+		snackBarStore.pushMessage("Dodatni email uspješno poslan!", "success");
 		modal_send_task.value = false;
 	}
 }
 
 watch(() => route.params.process_instance_id, loadDataForStudent, {
 	immediate: true,
+});
+
+watch(modal_send_task, (newValue) => {
+	let { postData, template, to } = getPostDataForSendEmail();
+	email_postData.value = postData;
+	email_template.value = template;
+	email_to.value = to;
+
+	if (newValue) {
+		newEmail.value = to;
+	}
 });
 
 onMounted(async () => {
@@ -170,7 +189,7 @@ onMounted(loadDataForStudent);
 			<SectionMain>
 				<SectionTitleLineWithButton :icon="mdiAccountMultiple" title="Studenti u procesu prakse" button-enabled main @click="bpmn_help_modal = true"> </SectionTitleLineWithButton>
 				<div class="flex flex-row">
-					<div class="mb-4"><PillTag class="cursor-pointer" :left="false" :icon="adminStore.filterFinishedInstances ? mdiAccountGroup : mdiAccountMultiple" :color="adminStore.filterFinishedInstances ? 'info' : 'success'" :label="adminStore.filterFinishedInstances ? 'Sve instance' : 'Samo aktivne'" @click="toggleActiveEventsFilter" /></div>
+					<div class="mb-4"><PillTag class="cursor-pointer" :left="false" :icon="adminStore.filterFinishedInstances ? mdiAccountGroup : mdiAccountMultiple" :color="adminStore.filterFinishedInstances ? 'info' : 'success'" :label="adminStore.filterFinishedInstances ? 'Sve instance' : 'Aktivne instance'" @click="toggleActiveEventsFilter" /></div>
 					<div class="mb-4"><PillTag class="cursor-pointer" :icon="adminStore.filterModelState === 'A' ? mdiAlphaACircle : adminStore.filterModelState === 'B' ? mdiAlphaBCircleOutline : mdiAbTesting" :color="adminStore.filterModelState === 'A' ? 'danger' : adminStore.filterModelState === 'B' ? 'success' : 'info'" :label="adminStore.filterModelState === 'A' ? 'Model A' : adminStore.filterModelState === 'B' ? 'Model B' : 'Modeli AB'" @click="toggleBetweenModelsFilter" /></div>
 				</div>
 
@@ -201,8 +220,8 @@ onMounted(loadDataForStudent);
 				</CardBoxModal>
 
 				<CardBoxModal v-if="modal_send_task" v-model="modal_send_task" :title="'Ponovno slanje emaila'" has-cancel button-label="Pošalji" @confirm="sendAnAdditionalEmail()">
-					<p class="">E-mail je već poslan koristeći kroz BPMN engine, no možete ga poslati ponovo pritiskom na 'Pošalji'</p>
-					<p class="mb-2">Dodatno, možete unijeti e-mail te poslati na novu adresu. Ako želite poslati na adresu pohranjenu u <i>logovima enginea</i>, ostavite prazno.</p>
+					<p class="">E-mail je već poslan putem BPMN enginea, ali ga možete ponovo poslati klikom na gumb 'Pošalji'.</p>
+					<p class="mb-2">Ispod je prikazan e-mail koji je pohranjen u BPMN engineu, no možete unijeti novi e-mail u polje ispod i poslati ga, u tom slučaju, e-mail u engineu neće biti izmijenjen.</p>
 
 					<FormField label="Novi E-mail">
 						<FormControl v-model="newEmail" :icon-left="mdiAccount" name="email" autocomplete="email" />

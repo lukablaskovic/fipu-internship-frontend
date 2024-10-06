@@ -92,33 +92,6 @@ function getPostDataForSendEmail() {
 	};
 }
 
-const toggleActiveEventsFilter = () => {
-	adminStore.filterFinishedInstances = !adminStore.filterFinishedInstances;
-};
-
-async function sendAnAdditionalEmail() {
-	let { postData, template, to } = getPostDataForSendEmail();
-
-	if (newEmail.value) {
-		to = newEmail.value;
-	}
-
-	if (postData && template && to) {
-		await adminStore.sendAnAdditionalEmail(postData, to, template);
-		snackBarStore.pushMessage("Email je uspješno poslan!", "success");
-		modal_send_task.value = false;
-	}
-}
-
-async function handleNewInstance() {
-	adminStore.handleNewInstance(process_instance_data.value.id, process_instance_data.value.pending[0], formDynamicValues.value);
-	if (UserTaskMappings.getTaskProperty(process_instance_data.value.pending[0], "snackbar_msg")) {
-		snackBarStore.pushMessage(UserTaskMappings.getTaskProperty(process_instance_data.value.pending[0], "snackbar_msg"), UserTaskMappings.getTaskProperty(process_instance_data.value.pending[0], "snackbar_color"));
-	}
-	await Utils.wait(2);
-	location.reload();
-}
-
 const process_instance_id = ref(null);
 const bpmn_model = ref(null);
 
