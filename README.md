@@ -49,8 +49,6 @@ For Companies:
 3. [**PDF Connector Service**](https://github.com/lukablaskovic/internship-application-services/tree/main/pdf-connector-service): Generates internship certificates based on application form data.
    These services are located in the Internship Application Services directory [(internship-application-services)](https://github.com/lukablaskovic/internship-application-services).
 
-Additional services like [**fipu-internship-gateway-api**](https://github.com/lukablaskovic/fipu-internship-gateway-api) are utilized for user authentication, messaging system management, and more.
-
 ### Usage :rocket:
 
 Detailed guides for administrators, students, and companies on how to navigate and utilize the platform can be found in the Usage Guide.
