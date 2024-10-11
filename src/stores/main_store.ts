@@ -18,7 +18,7 @@ export const useMainStore = defineStore("main", {
 
 		admin_emails: ["ntankov@unipu.hr", "ilorencin@unipu.hr", "lblaskovi@unipu.hr"],
 
-		fipulab_web: "https://goreski.github.io/FIPULabWeb/",
+		fipulab_web: "https://web.fipulab.unipu.hr/",
 
 		// Debugger
 		depth: 5,
