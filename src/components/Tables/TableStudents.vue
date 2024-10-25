@@ -82,16 +82,31 @@ const studentsPaginated = computed(() => {
 	return filteredStudents.slice(perPage.value * currentPage.value, perPage.value * (currentPage.value + 1));
 });
 
-const numPages = computed(() => Math.ceil(studentsPaginated.value.length / perPage.value));
+const numPages = computed(() => {
+	// Use `filteredStudents` length instead of `studentsPaginated`
+	const filteredStudents = students.value.filter((student) => {
+		// Apply all filters here again, similar to above
+		let match = true;
+		if (!adminStore.filterFinishedInstances) {
+			match = match && UserTaskMappings.getTaskProperty(student["process_instance_data"]["pending"][0], "name", student["process_instance_data"]["state"]) !== "Student ocjenjen";
+		}
+		if (adminStore.filterModelState === "A") {
+			match = match && student.Model_prakse.value === "A";
+		} else if (adminStore.filterModelState === "B") {
+			match = match && student.Model_prakse.value === "B";
+		} else if (adminStore.filterModelState === "AB") {
+			match = match && (student.Model_prakse.value === "A" || student.Model_prakse.value === "B");
+		}
+		return match;
+	});
+
+	return Math.ceil(filteredStudents.length / perPage.value);
+});
 
 const currentPageHuman = computed(() => currentPage.value + 1);
 
 const pagesList = computed(() => {
-	const pagesList = [];
-	for (let i = 0; i < numPages.value; i++) {
-		pagesList.push(i);
-	}
-	return pagesList;
+	return Array.from({ length: numPages.value }, (_, i) => i);
 });
 
 function getProgressValue(student) {

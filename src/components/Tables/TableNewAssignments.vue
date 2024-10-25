@@ -140,13 +140,14 @@ const cancelTaskAction = () => {
 	</CardBoxModal>
 
 	<CardBoxModal v-model="confirmationModal.isActive" title="Potvrda akcije" :button-label="confirmationModal.action === 'accept' ? 'Prihvati' : 'Odbij'" has-cancel @cancel="cancelTaskAction" @confirm="confirmTaskAction">
-		<p class="mb-2">
+		<!--
+    <p class="mb-2">
 			<span class="flex flex-wrap text-base">
 				<b> Upozorenje!</b> Ako odobravate/odbijate ovaj zadatak za određenog studenta koji radi praksu po Modelu B, to morate <span class="ml-1 inline-flex">učiniti kroz <IconTextLink :to="'/studenti'" :icon="mdiAccountMultiple" :text="'Studenti'"></IconTextLink>.</span>
 			</span>
 		</p>
 		<p class="mb-8">Ako odobravate/odbijate zadatak koji je poslodavac prijavio općenito (za sve studente koji biraju po Modelu A), to možete učiniti ovdje ili direktno u Baserow bazi podataka.</p>
-
+-->
 		<div v-if="confirmationModal.action === 'accept'" class="mb-4">
 			Jeste li sigurni da želite prihvatiti zadatak -
 			<b>{{ confirmationModal.assignment["id_zadatak"] }}</b> ?

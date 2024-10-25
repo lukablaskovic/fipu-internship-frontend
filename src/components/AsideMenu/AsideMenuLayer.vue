@@ -1,7 +1,22 @@
+<template>
+	<aside id="aside" :class="[zIndex, 'fixed top-0 flex h-screen overflow-hidden transition-position lg:py-2 lg:pl-2', isCompact ? 'sm:w-20' : 'sm:w-64']">
+		<div :class="styleStore.asideStyle" class="flex flex-1 flex-col overflow-hidden dark:bg-slate-900 lg:rounded-2xl">
+			<div :class="styleStore.asideBrandStyle" class="flex w-full shrink-0 flex-row items-center dark:bg-slate-900">
+				<slot />
+			</div>
+			<div class="fipu_vertical_scrollbar flex-1 overflow-y-auto overflow-x-hidden">
+				<AsideMenuList :menu="menu" :is-compact="isCompact" :active-secondary-menu-key="activeSecondaryMenuKey" @menu-click="menuClick" />
+			</div>
+			<slot name="footer" />
+		</div>
+	</aside>
+</template>
+
 <script setup>
-import { mainStore, styleStore } from "@/main.js";
 import AsideMenuList from "@/components/AsideMenu/AsideMenuList.vue";
+import { mainStore, styleStore } from "@/main.js";
 import { useRouter } from "vue-router";
+import { ref } from "vue"; // Import ref for reactive properties
 
 const router = useRouter();
 defineProps({
@@ -17,7 +32,10 @@ defineProps({
 		type: String,
 		default: "z-50",
 	},
-	isCompact: Boolean,
+	isCompact: {
+		type: Boolean,
+		default: false, // Add default for isCompact
+	},
 });
 
 const emit = defineEmits(["menu-click"]);
@@ -36,17 +54,4 @@ const menuClick = (event, item) => {
 };
 </script>
 
-<template>
-	<aside id="aside" :class="zIndex" class="lg:py-2 lg:pl-2 flex fixed top-0 h-screen transition-position overflow-hidden">
-		<div :class="styleStore.asideStyle" class="lg:rounded-2xl flex-1 flex flex-col overflow-hidden dark:bg-slate-900">
-			<div :class="styleStore.asideBrandStyle" class="flex flex-row w-full shrink-0 items-center dark:bg-slate-900">
-				<slot />
-			</div>
-			<div class="flex-1 overflow-y-auto fipu_vertical_scrollbar overflow-x-hidden">
-				<AsideMenuList :menu="menu" :is-compact="isCompact" :active-secondary-menu-key="activeSecondaryMenuKey" @menu-click="menuClick" />
-			</div>
-
-			<slot name="footer" />
-		</div>
-	</aside>
-</template>
+<style scoped></style>

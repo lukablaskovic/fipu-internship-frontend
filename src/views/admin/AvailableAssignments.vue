@@ -37,7 +37,7 @@ const addNewAssignmentLink = ref(`${VITE_FRONTEND_URL}/poslodavci/novi-zadatak`)
 				<p class="mb-4">U tablici ispod se nalaze novo-prijavljeni zadaci koje je potrebno proučiti te odobriti kako bi ih studenti mogli prijaviti, ili odbiti ukoliko ne zadovoljavaju definirane zahtjeve.</p>
 
 				<span class="mb-2 flex flex-wrap text-base">
-					<b> Upozorenje!</b> &nbsp; Ako odobravate/odbijate zadatke za određenog studenta koji radi praksu po Modelu B, to morate <span class="ml-1 inline-flex"> učiniti kroz <IconTextLink :to="'/studenti'" :icon="mdiAccountMultiple" :text="'Studenti'"></IconTextLink>.</span>
+					<!--	<b> Upozorenje!</b> &nbsp; Ako odobravate/odbijate zadatke za određenog studenta koji radi praksu po Modelu B, to morate <span class="ml-1 inline-flex"> učiniti kroz <IconTextLink :to="'/studenti'" :icon="mdiAccountMultiple" :text="'Studenti'"></IconTextLink>.</span>-->
 				</span>
 
 				<CardBox has-table>

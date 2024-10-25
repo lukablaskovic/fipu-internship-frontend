@@ -188,6 +188,10 @@ onMounted(async () => {
 	mainStore.resetAssignments();
 });
 
+onMounted(async () => {
+	mainStore.allCompanies = await mainStore.fetchCompanies();
+});
+
 const getCompanyLogo = (assignment) => {
 	return mainStore.allCompanies.find((c) => c.naziv === assignment?.Poslodavac?.[0]?.value)?.logo?.[0]?.url ?? "No-Logo.png";
 };
