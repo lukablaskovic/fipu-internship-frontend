@@ -12,7 +12,7 @@ const mainstore = ref(mainStore);
 	<footer class="px-6 py-2" :class="containerMaxW">
 		<BaseLevel>
 			<div class="text-center md:text-left">
-				<b>&copy;{{ year }}, <a href="https://fipu.unipu.hr/fipu" target="_blank">Fakultet informatike u Puli</a></b>
+				<b>&copy;{{ year }} - <a href="https://fipu.unipu.hr/fipu" target="_blank">Fakultet informatike u Puli</a></b>
 				<slot />
 			</div>
 			<div class="md:py-2">

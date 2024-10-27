@@ -109,7 +109,9 @@ const handleDragEnd = () => {
 			<hr />
 			<br />
 			<SectionTitleLineWithButton :icon="mdiClipboardTextOutline" main title="Dostupni zadaci" />
-			<p>Pogledajte zanimljive slobodne zadatke te odaberite i rasporedite 3 najdraža, prema vašim preferencijama - (1. odabir | 2. odabir | 3. odabir).</p>
+			<p>Pogledajte zanimljive slobodne zadatke te odaberite i rasporedite 3 najdraža, prema vašim preferencijama - (1. odabir | 2. odabir | 3. odabir) gdje 1. odabir predstavlja zadatak koji najviše želite raditi.</p>
+			<p>Molimo da <b>ne prijavljujete</b> zadatke gdje su poslodavci naveli ime i prezime studenta u <b>Preferencijama za studenta</b></p>
+			<br />
 			<p><b>Napomena:</b> Da biste prijavili preferencije, morate biti prijavljeni u aplikaciji!</p>
 			<br />
 			<CardBox has-table>

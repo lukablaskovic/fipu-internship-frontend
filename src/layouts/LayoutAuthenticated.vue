@@ -145,7 +145,7 @@ const menuClick = (event, item) => {
 					</li>
 				</ol>
 				<BaseDivider></BaseDivider>
-				<p><b>Final thought:</b> Aplikacija <em>FIPU Praksa</em> u aktivnom je razvoju od 2023. godine u sklopu istraživačkog laboratorija FIPU Laba za potrebe pojednostavljenja i automatizacije procesa izvođenja studentske prakse, za studente, voditelja te poslodavce.</p>
+				<p><b>Final thought:</b> Aplikacija <em>FIPU Praksa</em> u aktivnom je razvoju od 2023. godine u sklopu istraživačkog laboratorija FIPUlaba za potrebe pojednostavljenja i automatizacije procesa izvođenja studentske prakse, za studente, voditelja te poslodavce.</p>
 				<p class="mt-2">Ova aplikacija bazira se na eksperimentalnom razvoju baziranom na procesima koji su definirani BPMN nomenklaturom i Python <i>enginom</i> koji pogoni aplikaciju u pozadini. Kao i svaki drugi proizvod, i ovaj je podložan bugovima 🐞!</p>
 				<p class="mt-2">Stoga vas molimo da sve bugove koje pronađete prijavite otvaranjem novog Github <i> issuea</i>, <a class="hover-underline-animation cursor-pointer text-fipu_text_blue" target="_blank" href="https://github.com/lukablaskovic/fipu-internship-frontend/issues">ovdje!</a></p>
 				<p class="mt-2">Hvala! 😁</p>
@@ -225,7 +225,7 @@ const menuClick = (event, item) => {
 					<li>Podatke o zadacima je moguće i direktno ažurirati u <a href="https://baserow.unipu.hr/" target="_blank" class="text-fipu_blue">Baserow</a> bazi podataka</li>
 				</ol>
 				<BaseDivider></BaseDivider>
-				<p><b>Final thought:</b> Aplikacija <em>FIPU Praksa</em> u aktivnom je razvoju od 2023. godine u sklopu istraživačkog laboratorija FIPU Laba za potrebe pojednostavljenja i automatizacije procesa izvođenja studentske prakse, za studente, voditelja te poslodavce.</p>
+				<p><b>Final thought:</b> Aplikacija <em>FIPU Praksa</em> u aktivnom je razvoju od 2023. godine u sklopu istraživačkog laboratorija FIPU za potrebe pojednostavljenja i automatizacije procesa izvođenja studentske prakse, za studente, voditelja te poslodavce.</p>
 				<p class="mt-2">Ova aplikacija bazira se na eksperimentalnom razvoju baziranom na procesima koji su definirani BPMN nomenklaturom i Python <i>enginom</i> koji pogoni aplikaciju u pozadini. Kao i svaki drugi proizvod, i ovaj je podložan bugovima 🐞!</p>
 				<p class="mt-2">Stoga vas molimo da sve bugove koje pronađete prijavite otvaranjem novog Github <i> issuea</i>, <a class="hover-underline-animation cursor-pointer text-fipu_text_blue" target="_blank" href="https://github.com/lukablaskovic/fipu-internship-frontend/issues">ovdje!</a></p>
 				<p class="mt-2">Hvala! 😁</p>
@@ -238,7 +238,7 @@ const menuClick = (event, item) => {
 			<div class="mt-6">
 				<FooterBar
 					><br />
-					Made with <span style="color: #e25555">&#9829;</span> at <a :href="mainStore.fipulab_web" target="_blank" class="hover-underline-animation cursor-pointer text-fipu_text_blue hover:text-fipu_blue">FIPU Lab</a></FooterBar
+					Made with <span style="color: #e25555">&#9829;</span> at <a :href="mainStore.fipulab_web" target="_blank" class="hover-underline-animation cursor-pointer text-fipu_text_blue hover:text-fipu_blue">FIPUlab</a></FooterBar
 				>
 			</div>
 			<SnackBar />
@@ -247,20 +247,21 @@ const menuClick = (event, item) => {
 </template>
 <style>
 .hover-underline-animation {
-	position: relative;
+	display: inline-block;
+	z-index: 0;
+	overflow: visible;
 }
 
 .hover-underline-animation:after {
 	content: "";
-	position: absolute;
+	display: block;
 	width: 100%;
-	transform: scaleX(0);
 	height: 2px;
-	bottom: 0;
-	left: 0;
 	background-color: #9de0f7;
+	transform: scaleX(0);
 	transform-origin: bottom right;
 	transition: transform 0.25s ease-out;
+	z-index: -1;
 }
 
 .hover-underline-animation:hover:after {

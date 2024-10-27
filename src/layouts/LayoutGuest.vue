@@ -56,10 +56,35 @@ const menuClick = (event, item) => {
 			<div class="mt-6">
 				<FooterBar
 					><br />
-					Made with <span style="color: #e25555">&#9829;</span> at <a :href="mainStore.fipulab_web" target="_blank" class="hover-underline-animation cursor-pointer text-fipu_text_blue hover:text-fipu_blue">FIPU Lab</a></FooterBar
+					Made with <span style="color: #e25555">&#9829;</span> at <a :href="mainStore.fipulab_web" target="_blank" class="hover-underline-animation cursor-pointer text-fipu_text_blue hover:text-fipu_blue">FIPUlab</a></FooterBar
 				>
 			</div>
 			<SnackBar />
 		</div>
 	</div>
 </template>
+
+<style>
+.hover-underline-animation {
+	display: inline-block;
+	z-index: 0;
+	overflow: visible;
+}
+
+.hover-underline-animation:after {
+	content: "";
+	display: block;
+	width: 100%;
+	height: 2px;
+	background-color: #9de0f7;
+	transform: scaleX(0);
+	transform-origin: bottom right;
+	transition: transform 0.25s ease-out;
+	z-index: -1;
+}
+
+.hover-underline-animation:hover:after {
+	transform: scaleX(1);
+	transform-origin: bottom left;
+}
+</style>
