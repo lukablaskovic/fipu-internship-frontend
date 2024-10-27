@@ -68,3 +68,5 @@ For detailed information, refer to the LICENSE file.
 Note :bulb:
 While the FIPU Internship Frontend is specific and not intended for cloning, related repositories, particularly the Python BPMN engine and specific connector services, are developed with a more generic approach and might be adaptable for other uses or inspire similar projects.
 End Note: Remember to personalize the placeholder links with actual GitHub repository links. Furthermore, if there are additional sections like API documentation, development guide, or a roadmap, they can be added in the respective sections in the Readme. Let this serve as a foundation that can be built upon as the project evolves!
+
+Made with ❤️ at [FIPUlab](https://web.fipulab.unipu.hr/)
