@@ -169,7 +169,7 @@ onMounted(async () => {
 				<li>Prijavite poduzeće i zadatak, idealno to čini mentor iz poduzeća</li>
 				<ul class="ml-8 list-disc">
 					<li>
-						Zadatak prijavite na
+						Zadatak prijavite
 						<div class="inline-flex">na <IconTextLink :to="'/poslodavci/novi-zadatak'" :icon="mdiNewBox" :text="'Prijava zadatka'"></IconTextLink></div>
 					</li>
 					<li>Ako poduzeće nije do sada surađivalo sa Sveučilištem, potrebno je realizirati Ugovor o stručnoj praksi između Sveučilišta i Poduzeća. Javite se voditelju prakse za predložak ugovora.</li>
