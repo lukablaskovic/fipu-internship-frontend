@@ -1,5 +1,5 @@
 function croatianAlpha(value) {
-	return /^[A-Za-zčćšđžČĆŠĐŽ]+$/i.test(value);
+	return /^[A-Za-zčćšđžČĆŠĐŽ-]+$/i.test(value);
 }
 
 const containsAlpha = (value) => /[a-zA-Z]/.test(value);
