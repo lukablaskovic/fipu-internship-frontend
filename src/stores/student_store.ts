@@ -179,10 +179,10 @@ export const useStudentStore = defineStore("student", {
 			}
 		},
 
-		async getAssignmentDetails(assignment_id: number) {
+		async getAssignmentDetails(assignment_id: any) {
 			try {
 				const result = await Student.getAssignmentDetails({
-					search: assignment_id,
+					search: assignment_id[0],
 				});
 				return result;
 			} catch (error) {
