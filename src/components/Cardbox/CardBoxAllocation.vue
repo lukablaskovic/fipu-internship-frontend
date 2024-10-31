@@ -25,7 +25,9 @@
 		</div>
 
 		<div class="mt-4">
-			<p class="text-sm text-gray-500 dark:text-gray-300"><b>Potrebno imati:</b> {{ props.data.potrebno_imati }}</p>
+			<p class="text-sm text-gray-500 dark:text-gray-300"><b>Preferirane tehnologije:</b> {{ props.data.preferirane_tehnologije }}</p>
+
+			<p class="text-sm text-gray-500 dark:text-gray-300"><b>Potrebno imati:</b> {{ props.data.potrebno_imati ? props.data.potrebno_imati : "nije navedeno" }}</p>
 			<p class="text-sm text-gray-500 dark:text-gray-300">
 				<b>Preferencije za studenta:</b>
 				{{ props.data.preferencije_za_studenta }}

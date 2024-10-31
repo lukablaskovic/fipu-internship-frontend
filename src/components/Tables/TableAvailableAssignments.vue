@@ -47,9 +47,10 @@
 				<td data-label="Kontakt email">
 					{{ assignment["poslodavac_email"] }}
 				</td>
-				<td data-label="Preferirane tehnologije">
+				<td data-label="Preferirane tehnologije" class="max-w-[100px] truncate">
 					{{ assignment["preferirane_tehnologije"] }}
 				</td>
+
 				<td data-label="Trajanje (sati)">
 					{{ assignment["trajanje_sati"] }}
 				</td>
