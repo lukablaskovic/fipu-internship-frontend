@@ -181,9 +181,17 @@ export const useStudentStore = defineStore("student", {
 
 		async getAssignmentDetails(assignment_id: any) {
 			try {
+				const searchParam = Array.isArray(assignment_id) ? assignment_id[0] : typeof assignment_id === "string" ? assignment_id : null;
+
+				if (searchParam === null) {
+					console.log("Invalid assignment_id type.");
+					return null;
+				}
+
 				const result = await Student.getAssignmentDetails({
-					search: assignment_id[0],
+					search: searchParam,
 				});
+
 				return result;
 			} catch (error) {
 				console.log("Error:", error);
