@@ -203,7 +203,7 @@ async function submit_application_form() {
 					</FormField>
 
 					<FormField label="Vaš OIB" horizontal>
-						<FormControl v-model="form.student_OIB" :icon-left="mdiCardAccountDetailsOutline" type="number" :error="getFirstErrorForField(v$, 'student_OIB')" help="Za potrebe prijave osiguranja" placeholder="Unesite vaš OIB" />
+						<FormControl v-model="form.student_OIB" :icon-left="mdiCardAccountDetailsOutline" :error="getFirstErrorForField(v$, 'student_OIB')" help="Za potrebe prijave osiguranja" placeholder="Unesite vaš OIB" />
 					</FormField>
 
 					<BaseDivider />
