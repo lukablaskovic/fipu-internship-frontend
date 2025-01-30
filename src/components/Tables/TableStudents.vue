@@ -1,5 +1,6 @@
 <script setup>
 import { computed, ref, onMounted } from "vue";
+import { watch } from "vue";
 
 import { tableButtonMenuOptions } from "@/tableButtonMenuOptions.js";
 import { StudentMappings, UserTaskMappings } from "@/helpers/maps";
@@ -25,6 +26,15 @@ const selectedStudentInstanceID = ref(null);
 
 const studentsFetched = computed(() => adminStore.studentsFetched);
 const emit = defineEmits(["show-student-diagram"]);
+
+watch(selectedStudentInstanceID, (newVal) => {
+	if (newVal) {
+		const selectedStudent = students.value.find(student => student.process_instance_id === newVal);
+		if (selectedStudent) {
+			updateCurrentPageForSelectedStudent(selectedStudent);
+		}
+	}
+});
 
 function showDiagram(student) {
 	selectedStudentInstanceID.value = student["process_instance_id"];
