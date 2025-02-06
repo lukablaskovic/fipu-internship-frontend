@@ -27,6 +27,9 @@ module.exports = {
 				"3xl": "1600px",
 				ultrawide: "2560px",
 			},
+			maxWidth: {
+				"8xl": "90rem",
+			},
 			colors: {
 				fipu_blue: "#46bae0", //"#74d4f4",
 				fipu_gray: "#212529",

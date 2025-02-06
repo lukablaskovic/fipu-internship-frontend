@@ -15,7 +15,37 @@ import { mdiEye, mdiMenuDown } from "@mdi/js";
 import { adminStore } from "@/main.js";
 import { useRoute } from "vue-router";
 
+import { mdiSortAscending, mdiSortDescending } from "@mdi/js";
+import BaseIcon from "@/components/Base/BaseIcon.vue";
+
 const route = useRoute();
+
+const sortDirection = ref("asc");
+const sortColumn = ref("ime");
+
+function sortStudents() {
+	const sortedStudents = [...students.value];
+
+	sortedStudents.sort((a, b) => {
+		let valueA, valueB;
+
+		if (sortColumn.value === "progress") {
+			valueA = getProgressValue(a);
+			valueB = getProgressValue(b);
+		} else {
+			valueA = a[sortColumn.value].toLowerCase();
+			valueB = b[sortColumn.value].toLowerCase();
+		}
+
+		if (sortDirection.value === "asc") {
+			return valueA > valueB ? 1 : -1;
+		} else {
+			return valueA < valueB ? 1 : -1;
+		}
+	});
+
+	return sortedStudents;
+}
 
 defineProps({
 	checkable: Boolean,
@@ -29,7 +59,7 @@ const emit = defineEmits(["show-student-diagram"]);
 
 watch(selectedStudentInstanceID, (newVal) => {
 	if (newVal) {
-		const selectedStudent = students.value.find(student => student.process_instance_id === newVal);
+		const selectedStudent = students.value.find((student) => student.process_instance_id === newVal);
 		if (selectedStudent) {
 			updateCurrentPageForSelectedStudent(selectedStudent);
 		}
@@ -76,6 +106,7 @@ function handlePerPageChange(option) {
 const studentsPaginated = computed(() => {
 	let filteredStudents = students.value;
 
+	// Apply filters (same as before)
 	if (!adminStore.filterFinishedInstances) {
 		filteredStudents = filteredStudents.filter((student) => UserTaskMappings.getTaskProperty(student["process_instance_data"]["pending"][0], "name", student["process_instance_data"]["state"]) !== "Student ocjenjen");
 	}
@@ -88,7 +119,10 @@ const studentsPaginated = computed(() => {
 		filteredStudents = filteredStudents.filter((student) => student.Model_prakse.value === "A" || student.Model_prakse.value === "B");
 	}
 
-	// Paginate the filtered students
+	// Sort the students based on the selected column and direction
+	filteredStudents = sortStudents();
+
+	// Paginate the filtered and sorted students
 	return filteredStudents.slice(perPage.value * currentPage.value, perPage.value * (currentPage.value + 1));
 });
 
@@ -122,6 +156,14 @@ const pagesList = computed(() => {
 function getProgressValue(student) {
 	return UserTaskMappings.getTaskProperty(student["process_instance_data"]["pending"][0], "order", student["process_instance_data"]["state"]);
 }
+function toggleSortDirection(column) {
+	if (sortColumn.value === column) {
+		sortDirection.value = sortDirection.value === "asc" ? "desc" : "asc";
+	} else {
+		sortColumn.value = column;
+		sortDirection.value = "asc";
+	}
+}
 </script>
 
 <template>
@@ -132,12 +174,33 @@ function getProgressValue(student) {
 				<th />
 				<th>Model</th>
 				<th>JMBAG</th>
-				<th>Ime</th>
-				<th>Prezime</th>
+
+				<!-- Ime Column -->
+				<th @click="toggleSortDirection('ime')" class="cursor-pointer px-4 py-2 text-left">
+					<div class="flex items-center space-x-1">
+						<span>Ime</span>
+						<BaseIcon :path="sortColumn === 'ime' && sortDirection === 'asc' ? mdiSortAscending : mdiSortDescending" h="h-4" w="w-4" class="text-gray-600 hover:text-fipu_blue" />
+					</div>
+				</th>
+
+				<!-- Prezime Column -->
+				<th @click="toggleSortDirection('prezime')" class="cursor-pointer px-4 py-2 text-left">
+					<div class="flex items-center space-x-1">
+						<span>Prezime</span>
+						<BaseIcon :path="sortColumn === 'prezime' && sortDirection === 'asc' ? mdiSortAscending : mdiSortDescending" h="h-4" w="w-4" class="text-gray-600 hover:text-fipu_blue" />
+					</div>
+				</th>
+
 				<th>Email</th>
 				<th>Godina studija</th>
-				<th>Napredak</th>
-				<th>Trenutno stanje prakse</th>
+				<th @click="toggleSortDirection('progress')" class="cursor-pointer px-4 py-2 text-left">
+					<div class="flex items-center space-x-1">
+						<span>Napredak</span>
+						<BaseIcon :path="sortColumn === 'progress' && sortDirection === 'asc' ? mdiSortAscending : mdiSortDescending" h="h-4" w="w-4" class="text-gray-600 hover:text-fipu_blue" />
+					</div>
+				</th>
+
+				<th>Trenutno stanje</th>
 				<th />
 			</tr>
 		</thead>
@@ -147,30 +210,22 @@ function getProgressValue(student) {
 				v-for="student in studentsPaginated"
 				:key="student['process_instance_id']"
 				:class="{
-					'selected-row': selectedStudentInstanceID === student['process_instance_id'],
-				}">
+					'selected-row bg-blue-100 dark:bg-blue-900': selectedStudentInstanceID === student['process_instance_id'],
+				}"
+				@click="selectedStudentInstanceID = student['process_instance_id']">
 				<td class="border-b-0 before:hidden lg:w-6">
 					<UserAvatar :avatar="student['avatar']" class="mx-auto flex h-22 w-22 lg:h-12 lg:w-12" />
 				</td>
 				<td data-label="Model_prakse">
 					<PillTag :color="student.Model_prakse.value == 'A' ? 'danger' : 'success'" :label="student.Model_prakse.value" />
 				</td>
-				<td data-label="JMBAG">
-					{{ student["JMBAG"] }}
-				</td>
-				<td data-label="Ime">
-					{{ student["ime"] }}
-				</td>
-				<td data-label="Prezime">
-					{{ student["prezime"] }}
-				</td>
-				<td data-label="Email">
-					{{ student["email"] }}
-				</td>
+				<td data-label="JMBAG">{{ student["JMBAG"] }}</td>
+				<td data-label="Ime">{{ student["ime"] }}</td>
+				<td data-label="Prezime">{{ student["prezime"] }}</td>
+				<td data-label="Email">{{ student["email"] }}</td>
 				<td data-label="Godina studija">
 					{{ StudentMappings.getGodinaStudija(student["godina_studija"]["value"]) }}
 				</td>
-
 				<td data-label="Progress" class="lg:w-32">
 					<progress
 						class="flex w-2/5 self-center lg:w-full"
@@ -184,11 +239,9 @@ function getProgressValue(student) {
 						{{ getProgressValue(student) }}
 					</progress>
 				</td>
-
 				<td data-label="Stanje">
 					{{ UserTaskMappings.getTaskProperty(student["process_instance_data"]["pending"][0], "name", student["process_instance_data"]["state"]) }}
 				</td>
-
 				<td class="whitespace-nowrap before:hidden lg:w-1">
 					<BaseButtons type="justify-start lg:justify-end" no-wrap>
 						<BaseButton color="fipu_blue" :icon="mdiEye" small @click="showDiagram(student)" />

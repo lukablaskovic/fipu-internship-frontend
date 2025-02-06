@@ -132,7 +132,6 @@ export const useAdminStore = defineStore("admin", {
 			if (type === "Potvrda") {
 				this.modalTitle = "Potvrda o praksi (nepotpisano)";
 				if (student) {
-					console.log("student", student);
 					this.pdfSource = student.process_instance_data.variables.pdf_attachment_url;
 					window.open(this.pdfSource, "_blank");
 				} else {
@@ -258,9 +257,6 @@ export const useAdminStore = defineStore("admin", {
 
 				const model_a = response.results.find((result: any) => result.model_path === `${mainStore.bpmn_process_name_A}.bpmn`);
 				const model_b = response.results.find((result: any) => result.model_path === `${mainStore.bpmn_process_name_B}.bpmn`);
-
-				console.log("model_a", model_a);
-				console.log("model_b", model_b);
 
 				let model_a_instances = model_a?.instances || [];
 				let model_b_instances = model_b?.instances || [];
