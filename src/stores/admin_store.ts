@@ -216,7 +216,6 @@ export const useAdminStore = defineStore("admin", {
 
 				const promises = students.map(async (student: Student) => {
 					const data = await this.getProcessInstanceData(student);
-					console.log("student.process_instance_data", data);
 					student.process_instance_data = data;
 
 					const pendingTask = student.process_instance_data.pending[0];

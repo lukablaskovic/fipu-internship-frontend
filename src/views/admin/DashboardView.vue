@@ -162,7 +162,7 @@ const toggleDateType = () => {
 		<LayoutAuthenticated v-if="mainStore.userAuthenticated">
 			<SectionMain>
 				<SectionTitleLineWithButton :icon="mdiViewDashboard" title="Nadzorna ploča" main> </SectionTitleLineWithButton>
-				<p class="mb-4"><b>Statistika | općenito</b></p>
+				<p class="mb-4"><b>Statistika | Općenito</b></p>
 
 				<div class="mb-6 grid grid-cols-1 gap-6 lg:grid-cols-3">
 					<CardBoxWidget v-if="adminStore.studentsFetched" color="text-fipu_blue" class="rounded-lg" :icon="mdiAccountSchoolOutline" :number="finished_internships" label="Uspješno odrađenih praksi (A + B)" />
