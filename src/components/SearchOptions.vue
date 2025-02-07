@@ -2,15 +2,20 @@
 	<Combobox v-model="selectedValue">
 		<div class="relative">
 			<div class="relative w-full cursor-default overflow-hidden rounded-lg bg-white text-left shadow-md focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75 focus-visible:ring-offset-2 focus-visible:ring-offset-blue-300 dark:bg-gray-900 sm:text-sm">
-				<div v-if="hasValidPrefix" class="absolute inset-y-0 left-0 flex items-center pl-3">
-					<span class="rounded bg-fipu_blue px-2 py-1 text-sm text-white">{{ prefixLabel }}</span>
+				<!-- Prefix label positioned to the left -->
+				<div v-if="hasValidPrefix" class="absolute inset-y-0 left-0 flex items-center" ref="prefixContainer">
+					<span class="ml-2 rounded bg-fipu_blue px-2 py-1 text-sm text-white">{{ prefixLabel }}</span>
 				</div>
 
-				<ComboboxInput v-model="displayValue" :placeholder="`${osKey} + k za pretraživanje`" class="inputClass w-full border-none bg-gray-50 py-2 pr-10 text-sm leading-5 text-gray-900 focus:ring-0 dark:bg-gray-900 dark:text-gray-300 md:w-96" :class="{ 'pl-12': hasValidPrefix, 'pl-3': !hasValidPrefix }" autocomplete="off" @change="query = $event.target.value" style="overflow-x: auto" />
+				<!-- Combobox input field with dynamic padding to the left to accommodate the prefix label -->
+				<ComboboxInput v-model="displayValue" :placeholder="`${osKey} + k za pretraživanje`" class="inputClass ml-2 w-full border-none bg-gray-50 py-2 pr-10 text-sm leading-5 text-gray-900 focus:ring-0 dark:bg-gray-900 dark:text-gray-300 md:w-96" :style="[inputStyle]" autocomplete="off" @change="query = $event.target.value" style="overflow-x: auto" />
+
+				<!-- Search icon button -->
 				<ComboboxButton class="absolute inset-y-0 right-0 flex items-center pr-2" @click="showHelp">
 					<MdiMagnify class="h-5 w-5 text-gray-700 hover:text-fipu_blue" aria-hidden="true" />
 				</ComboboxButton>
 			</div>
+
 			<TransitionRoot leave="transition ease-in duration-100" leave-from="opacity-100" leave-to="opacity-0" @after-leave="query = ''">
 				<ComboboxOptions class="absolute mt-1 max-h-60 w-full overflow-auto rounded-md bg-gray-50 py-1 text-base text-gray-900 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none dark:bg-gray-900 dark:text-gray-300 sm:text-sm">
 					<div v-if="query === ''" class="relative cursor-default select-none px-4 py-2 text-sm text-gray-700 dark:text-gray-200 md:text-base">
@@ -18,7 +23,7 @@
 						<hr />
 						<br />
 						<p>ℹ️ Za brzo kretanje upišite naziv rute direktno.</p>
-						<p>ℹ️ Za pregled stavaka, prvo upišite odgovarajući prefix (boldano) te nakon toga pojam.</p>
+						<p>ℹ️ Za pregled stavaka, prvo upišite odgovarajući prefix, nakon toga pojam.</p>
 						<br />
 						<div v-for="helpItem in helpItems" :key="helpItem.prefix" class="group flex cursor-pointer gap-1 rounded px-2 py-1 hover:bg-fipu_blue hover:font-medium hover:text-white dark:hover:text-gray-900" @click="insertPrefix(helpItem.prefix)">
 							<div class="flex w-6 items-center justify-center rounded bg-fipu_blue px-0.5 font-bold text-gray-900 group-hover:bg-gray-50 group-hover:text-gray-700 dark:group-hover:bg-gray-900 dark:group-hover:text-gray-300">
@@ -146,38 +151,41 @@ const hasValidPrefix = computed(() => {
 });
 const currentPrefix = computed(() => (hasValidPrefix.value ? query.value.split(":")[0] + ":" : ""));
 const prefixLabel = computed(() => (hasValidPrefix.value ? prefixLabels[currentPrefix.value] : ""));
+
 const displayValue = computed(() => {
 	if (!selectedValue.value) {
 		return hasValidPrefix.value ? query.value.slice(currentPrefix.value.length) : query.value;
 	}
 	return selectedValue.value.name;
 });
+
+import { normalizeString, filterByEmail, filterStudentsByName, filterByJMBAG, filterByAssignmentId, filterByCompany } from "@/helpers/search-utils.js";
+
 const filteredResults = computed(() => {
-	const searchTerm = query.value
-		.slice(query.value.indexOf(":") + 1)
-		.toLowerCase()
-		.replace(/\s+/g, " ")
-		.trim();
-	if (!query.value) return [];
-	if (!query.value.includes(":")) return routes.filter((route) => route.includes(searchTerm));
+	const searchTerm = query.value ? normalizeString(query.value.slice(query.value.indexOf(":") + 1)) : "";
+	if (!query.value || !searchTerm) return [];
+
+	if (!query.value.includes(":")) {
+		return routes.filter((route) => route.includes(searchTerm));
+	}
 
 	const terms = searchTerm.split(" ");
-	if (query.value.startsWith("s:")) {
-		return adminStore.students.filter((student) => {
-			const ime = student.ime.toLowerCase();
-			const prezime = student.prezime.toLowerCase();
-			return terms.length > 1 ? ime.includes(terms[0]) && prezime.includes(terms[1]) : ime.includes(terms[0]) || prezime.includes(terms[0]);
-		});
-	} else if (query.value.startsWith("se:")) {
-		return adminStore.students.filter((student) => student.email.toLowerCase().replace(/\s+/g, "").includes(searchTerm));
-	} else if (query.value.startsWith("sj:")) {
-		return adminStore.students.filter((student) => student.JMBAG.toLowerCase().replace(/\s+/g, "").includes(searchTerm));
-	} else if (query.value.startsWith("p:")) {
-		return allCompanies.value.filter((company) => company.naziv.toLowerCase().includes(searchTerm));
-	} else if (query.value.startsWith("z:")) {
-		return allAssignments.value.filter((assignment) => assignment.id_zadatak.split(" - ").some((part) => part.toLowerCase().includes(searchTerm)));
+	const prefix = query.value.split(":")[0];
+
+	switch (prefix) {
+		case "s":
+			return filterStudentsByName(adminStore.students, terms);
+		case "se":
+			return filterByEmail(adminStore.students, searchTerm);
+		case "sj":
+			return filterByJMBAG(adminStore.students, searchTerm);
+		case "p":
+			return filterByCompany(allCompanies.value, searchTerm);
+		case "z":
+			return filterByAssignmentId(allAssignments.value, searchTerm);
+		default:
+			return [];
 	}
-	return [];
 });
 
 function insertPrefix(prefix) {
@@ -209,6 +217,18 @@ watch(selectedValue, (newValue) => {
 			router.push(`/dostupni-zadaci/${newValue.id_zadatak}`);
 		}
 	}
+});
+
+const prefixContainer = ref(null);
+const inputStyle = computed(() => {
+	let paddingLeft = "pl-3";
+	if (hasValidPrefix.value && prefixContainer.value) {
+		const prefixWidth = prefixContainer.value.offsetWidth;
+		paddingLeft = `${prefixWidth + 8}px`;
+	} else {
+		paddingLeft = "0";
+	}
+	return { paddingLeft };
 });
 
 onMounted(async () => {

@@ -8,7 +8,6 @@
 <script setup>
 import BaseIcon from "@/components/Base/BaseIcon.vue";
 import { router } from "@/router";
-import { defineProps } from "vue";
 
 defineProps({
 	icon: {
