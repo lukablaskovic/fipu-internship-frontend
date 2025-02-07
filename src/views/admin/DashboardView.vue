@@ -179,7 +179,7 @@ const toggleDateType = () => {
 				</div>
 
 				<p class="mb-4">
-					<b>Statistika | Model prakse <PillTag color="danger" label="A" /></b>
+					<b>Statistika | Model <PillTag color="danger" label="A" /></b>
 				</p>
 
 				<div class="mb-6 grid grid-cols-1 gap-6 lg:grid-cols-3">
@@ -197,7 +197,7 @@ const toggleDateType = () => {
 				</div>
 
 				<p class="mb-4">
-					<b>Statistika | Model prakse <PillTag color="success" label="B" /></b>
+					<b>Statistika | Model <PillTag color="success" label="B" /></b>
 				</p>
 
 				<div class="mb-6 grid grid-cols-1 gap-6 lg:grid-cols-3">

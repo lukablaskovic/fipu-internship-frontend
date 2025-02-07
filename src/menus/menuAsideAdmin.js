@@ -40,6 +40,10 @@ export default [
 				to: "/poslodavci/novi-zadatak",
 				label: "Forma za prijavu zadatka",
 			},
+			{
+				label: "Baserow baza",
+				externalURL: "https://baserow.unipu.hr/dashboard",
+			},
 		],
 	},
 ];

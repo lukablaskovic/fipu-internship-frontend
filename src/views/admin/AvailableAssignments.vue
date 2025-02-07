@@ -28,7 +28,7 @@ const addNewAssignmentLink = ref(`${VITE_FRONTEND_URL}/poslodavci/novi-zadatak`)
 	<div>
 		<LayoutAuthenticated v-if="mainStore.userAuthenticated">
 			<SectionMain>
-				<SectionTitleLineWithButton :icon="mdiClipboardPlusOutline" title="Novi zadaci (u razradi)" main> </SectionTitleLineWithButton>
+				<SectionTitleLineWithButton :icon="mdiClipboardPlusOutline" title="Novi zadaci (neodobreni)" main> </SectionTitleLineWithButton>
 
 				<FormField class="md:w-1/2" label="Forma za prijavu novog zadatka">
 					<FormControl v-model="addNewAssignmentLink" :icon-left="mdiClipboardCheck" :icon-right="mdiContentCopy" name="addNewAssignmentLink" readonly copyable />
