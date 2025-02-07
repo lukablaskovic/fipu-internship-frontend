@@ -126,8 +126,8 @@ const trendStyle = computed(() => {
 const selectedOptions = ref([]);
 
 const saveSelectedEvents = async () => {
+	console.log("saveSelectedEvents triggered!");
 	adminStore.selectedEvents = selectedOptions.value;
-
 	snackBarStore.pushMessage("Event-Filteri ažurirani!", "success");
 	await Utils.wait(0.5);
 	location.reload();
@@ -160,8 +160,6 @@ const toggleSelection = (option) => {
 		selectedOptions.value.splice(index, 1);
 	}
 };
-
-//snackBarStore.pushMessage("Event-Filteri resetirani!", "success");
 </script>
 
 <template>
@@ -174,17 +172,17 @@ const toggleSelection = (option) => {
 
 		<transition enter-active-class="transition duration-100 ease-out" enter-from-class="transform scale-95 opacity-0" enter-to-class="transform scale-100 opacity-100" leave-active-class="transition duration-75 ease-in" leave-from-class="transform scale-100 opacity-100" leave-to-class="transform scale-95 opacity-0">
 			<MenuItems :class="left ? 'left-0' : 'right-0'" class="fipu_vertical_scrollbar absolute z-50 mt-2 h-96 w-64 origin-top-right divide-y divide-gray-100 overflow-y-auto overflow-x-hidden rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 drop-shadow focus:outline-none dark:divide-gray-700 dark:bg-slate-950 md:w-96">
-				<div class="p-2">Odaberite događaje za koje želite da se prikazuju</div>
+				<div class="p-2 text-sm">Odaberite događaje koje želite prikazivati</div>
 				<div v-for="(optionsGroup, index) in options" :key="index" class="px-1 py-1">
 					<MenuItem v-for="option in optionsGroup" :key="option.id" v-slot="{ active }">
 						<button
 							:class="[
-								option.label === 'Spremi' ? 'hover:bg-emerald-600 hover:font-bold hover:text-slate-100 dark:hover:bg-emerald-500 dark:hover:text-gray-950' : active && option.label != 'Resetiraj' ? 'bg-gray-300 dark:bg-gray-900' : '',
+								option.label === 'Spremi' ? 'cursor-pointer hover:bg-emerald-600 hover:font-bold hover:text-slate-100 dark:hover:bg-emerald-500 dark:hover:text-gray-950' : active && option.label != 'Resetiraj' ? 'bg-gray-300 dark:bg-gray-900' : '',
 								selectedOptions.includes(option.label) ? 'bg-fipu_blue font-medium text-gray-950 hover:bg-fipu_light_blue hover:text-slate-800 dark:hover:bg-fipu_dark_blue dark:hover:text-gray-950' : '',
 								option.label === 'Resetiraj' ? 'hover:bg-rose-500 hover:font-bold hover:text-slate-100 dark:hover:bg-rose-600 dark:hover:text-slate-950' : '',
 								'group my-1 flex w-full items-center gap-2 rounded-md px-1 py-1 text-sm transition-all md:gap-3 md:px-2 md:py-2',
 							]"
-							:disabled="option.label === 'Spremi'"
+							:disabled="option.label === 'Spremi' && selectedOptions.length === adminStore.selectedEvents.length"
 							@click.prevent="option.label === 'Spremi' ? saveSelectedEvents() : option.label === 'Resetiraj' ? setDefaultFilters() : toggleSelection(option)">
 							<BaseIcon :path="option.icon" class="" />
 							<div class="flex grow items-center justify-start text-left">
