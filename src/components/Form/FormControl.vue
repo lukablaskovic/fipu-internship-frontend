@@ -182,7 +182,7 @@ if (props.ctrlKFocus) {
 
 			<!-- Icons and Tip Tags -->
 			<FormControlIcon v-if="computedIconLeft" :icon="computedIconLeft" :h="controlIconH" :text-color="textColor" />
-			<FormControlIcon v-if="computedIconRight || props.copyable" :icon="props.copyable ? mdiContentCopy : computedIconRight" :h="controlIconH" :text-color="textColor" :clickable="rightIconClickable || props.copyable" is-right @icon-click="props.copyable ? copyToClipboard() : openPasswordToggle()" />
+			<FormControlIcon v-if="computedIconRight || props.copyable" :icon="props.copyable ? mdiContentCopy : computedIconRight" :h="controlIconH" :text-color="textColor" :clickable="rightIconClickable || props.copyable" :class="{ 'cursor-pointer hover:text-fipu_blue': props.copyable }" is-right @icon-click="props.copyable ? copyToClipboard() : openPasswordToggle()" />
 			<TipTag v-if="tipLeft" :tip="tipLeft" left />
 			<TipTag v-if="tipRight" :tip="tipRight" right />
 		</div>
