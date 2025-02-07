@@ -169,7 +169,7 @@ const toggleDateType = () => {
 					<CardBoxWidget v-if="adminStore.studentsFetched" color="text-fipu_blue" class="rounded-lg" :icon="mdiAccountSchoolOutline" :number="finished_internships" label="Uspješno odrađenih praksi (A + B)" />
 					<SkeletonLoader v-else></SkeletonLoader>
 
-					<CardBoxWidget v-if="adminStore.studentsFetched" color="text-fipu_blue" class="rounded-lg" :icon="mdiAccountMultiple" :number="ongoing_internships" label="Ukupno aktivnih procesa (A + B)" />
+					<CardBoxWidget v-if="adminStore.studentsFetched" color="text-fipu_blue" class="cursor-pointer rounded-lg" :icon="mdiAccountMultiple" :number="ongoing_internships" label="Ukupno aktivnih procesa (A + B)" @click="router.push('/studenti?model=AB')" />
 					<SkeletonLoader v-else></SkeletonLoader>
 
 					<CardBoxWidget v-if="adminStore.studentsFetched" color="text-fipu_blue" class="rounded-lg" :icon="mdiAccountCancel" :number="0" label="Odustalo od prakse" />
@@ -187,7 +187,7 @@ const toggleDateType = () => {
 					<CardBoxWidget v-if="adminStore.studentsFetched" color="text-rose-600" class="rounded-lg" :icon="mdiAccountSchoolOutline" :number="a_finished_internships" label="Uspješno odrađenih praksi (A)" />
 					<SkeletonLoader v-else></SkeletonLoader>
 
-					<CardBoxWidget v-if="adminStore.studentsFetched" color="text-rose-600" class="rounded-lg" :icon="mdiAccountMultiple" :number="a_ongoing_internships" label="Ukupno aktivnih procesa (A)" />
+					<CardBoxWidget v-if="adminStore.studentsFetched" color="text-rose-600" class="cursor-pointer rounded-lg" :icon="mdiAccountMultiple" :number="a_ongoing_internships" label="Ukupno aktivnih procesa (A)" @click="router.push('/studenti?model=A')" />
 					<SkeletonLoader v-else></SkeletonLoader>
 
 					<CardBoxWidget v-if="adminStore.studentsFetched" color="text-rose-600" class="rounded-lg" :icon="mdiProgressClock" :number="waiting_for_allocation" label="Čeka na alokaciju" />
@@ -205,7 +205,7 @@ const toggleDateType = () => {
 					<CardBoxWidget v-if="adminStore.studentsFetched" color="text-emerald-500" class="rounded-lg" :icon="mdiAccountSchoolOutline" :number="b_finished_internships" label="Uspješno odrađenih praksi (B)" />
 					<SkeletonLoader v-else></SkeletonLoader>
 
-					<CardBoxWidget v-if="adminStore.studentsFetched" color="text-emerald-500" class="rounded-lg" :icon="mdiAccountMultiple" :number="b_ongoing_internships" label="Ukupno aktivnih procesa (B)" />
+					<CardBoxWidget v-if="adminStore.studentsFetched" color="text-emerald-500" class="cursor-pointer rounded-lg" :icon="mdiAccountMultiple" :number="b_ongoing_internships" label="Ukupno aktivnih procesa (B)" @click="router.push('/studenti?model=B')" />
 					<SkeletonLoader v-else></SkeletonLoader>
 
 					<CardBoxWidget v-if="adminStore.studentsFetched" color="text-emerald-500" class="rounded-lg" :icon="mdiProgressClock" :number="b_waiting_for_assignment_approval" label="Čeka na odobrenje zadatka" />

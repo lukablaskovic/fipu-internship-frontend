@@ -167,8 +167,16 @@ watch(modal_send_task, (newValue) => {
 	}
 });
 
+const setModelFilterFromQuery = () => {
+	const modelParam = route.query.model;
+	if (["A", "B", "AB"].includes(modelParam)) {
+		adminStore.filterModelState = modelParam;
+	}
+};
+
 onMounted(async () => {
 	await adminStore.getStudents();
+	setModelFilterFromQuery();
 });
 
 async function handleNewInstance() {
@@ -220,8 +228,8 @@ onMounted(loadDataForStudent);
 				</CardBoxModal>
 
 				<CardBoxModal v-if="modal_send_task" v-model="modal_send_task" :title="'Ponovno slanje emaila'" has-cancel button-label="Pošalji" @confirm="sendAnAdditionalEmail()">
-					<p class="">E-mail je već poslan putem BPMN enginea, ali ga možete ponovo poslati klikom na gumb 'Pošalji'.</p>
-					<p class="mb-2">Ispod je prikazan e-mail koji je pohranjen u BPMN engineu, no možete unijeti novi e-mail u polje ispod i poslati ga, u tom slučaju, e-mail u engineu neće biti izmijenjen.</p>
+					<p class="">E-mail je već poslan putem BPMN <i>enginea</i>, ali ga možete ponovo poslati klikom na gumb 'Pošalji'.</p>
+					<p class="mb-2">Ispod je prikazan e-mail koji je pohranjen u BPMN <i>engineu</i>, no možete unijeti novie-mail ispod i poslati ga ponovo. U tom slučaju, e-mail u <i>engineu</i> neće biti ažuriran.</p>
 
 					<FormField label="Novi E-mail">
 						<FormControl v-model="newEmail" :icon-left="mdiAccount" name="email" autocomplete="email" />

@@ -25,6 +25,10 @@ import CardBox from "@/components/Cardbox/CardBox.vue";
 import BaseIcon from "@/components/Base/BaseIcon.vue";
 import { StudentMappings } from "@/helpers/maps.js";
 
+import SectionBanner from "@/components/Section/SectionBanner.vue";
+
+import { mdiLaptop, mdiDatabase } from "@mdi/js";
+
 import moment from "@/moment-setup";
 
 const profileForm = reactive({
@@ -63,7 +67,6 @@ const profileForm = reactive({
 								<PillTagPlain v-if="mainStore.userAdmin" :reverse-dark="true" label="Admin" :icon="mdiAccountCircle" />
 								<PillTagPlain v-else :reverse-dark="true" label="Student" :icon="mdiAccountCircle" />
 								<PillTagPlain :reverse-dark="true" label="FIPU" :icon="mdiDomain" />
-								<PillTagPlain :reverse-dark="true" :label="moment.parseZone(mainStore.currentUser.created_at).format('D. MMMM YYYY.')" :icon="mdiCalendarAccount" />
 							</BaseButtons>
 						</div>
 					</div>
@@ -95,6 +98,15 @@ const profileForm = reactive({
 						</FormField>
 					</div>
 				</CardBox>
+
+				<div>
+					<SectionBanner v-if="mainStore.userAdmin" class="bg-gradient-to-tr from-blue-200 via-blue-400 to-gray-800">
+						<h1 class="mb-6 text-3xl text-white">Baserow baza podataka</h1>
+						<a href="https://baserow.unipu.hr/dashboard" target="_blank">
+							<BaseButton :icon="mdiDatabase" label="Baserow" rounded-full />
+						</a>
+					</SectionBanner>
+				</div>
 			</div>
 		</SectionMain>
 	</LayoutAuthenticated>
