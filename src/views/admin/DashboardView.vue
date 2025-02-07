@@ -162,6 +162,7 @@ const toggleDateType = () => {
 		<LayoutAuthenticated v-if="mainStore.userAuthenticated">
 			<SectionMain>
 				<SectionTitleLineWithButton :icon="mdiViewDashboard" title="Nadzorna ploča" main> </SectionTitleLineWithButton>
+				<p class="mb-4"><b>Akademska godina:</b> 2024/2025</p>
 				<p class="mb-4"><b>Statistika | Općenito</b></p>
 
 				<div class="mb-6 grid grid-cols-1 gap-6 lg:grid-cols-3">
