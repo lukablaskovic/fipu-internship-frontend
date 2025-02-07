@@ -7,6 +7,7 @@ function getMappedProperty(arr, key, keyValue, prop) {
 
 class StudentMappings {
 	static GodinaStudijaMappings = [
+		{ id: 0, label: "2. prijediplomski", dbLabel: "2_prijediplomski" },
 		{ id: 1, label: "3. prijediplomski", dbLabel: "3_prijediplomski" },
 		{ id: 2, label: "1. diplomski", dbLabel: "1_diplomski" },
 		{ id: 3, label: "2. diplomski", dbLabel: "2_diplomski" },

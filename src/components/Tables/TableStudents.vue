@@ -62,15 +62,29 @@ watch(selectedStudentInstanceID, (newVal) => {
 		const selectedStudent = students.value.find((student) => student.process_instance_id === newVal);
 
 		if (selectedStudent) {
-			const filteredStudents = studentsPaginated.value;
+			let sortedStudents = sortStudents(students.value);
 
-			const selectedIndex = filteredStudents.findIndex((student) => student.process_instance_id === newVal);
+			let filteredStudents = sortedStudents;
 
-			if (selectedIndex !== -1) {
-				currentPage.value = Math.floor(selectedIndex / perPage.value);
+			if (!adminStore.filterFinishedInstances) {
+				filteredStudents = filteredStudents.filter((student) => UserTaskMappings.getTaskProperty(student["process_instance_data"]["pending"][0], "name", student["process_instance_data"]["state"]) !== "Student ocjenjen");
 			}
 
-			updateCurrentPageForSelectedStudent(selectedStudent);
+			if (adminStore.filterModelState === "A") {
+				filteredStudents = filteredStudents.filter((student) => student.Model_prakse.value === "A");
+			} else if (adminStore.filterModelState === "B") {
+				filteredStudents = filteredStudents.filter((student) => student.Model_prakse.value === "B");
+			} else if (adminStore.filterModelState === "AB") {
+				filteredStudents = filteredStudents.filter((student) => student.Model_prakse.value === "A" || student.Model_prakse.value === "B");
+			}
+
+			const selectedIndexInFilteredAndSortedList = filteredStudents.findIndex((student) => student.process_instance_id === newVal);
+
+			if (selectedIndexInFilteredAndSortedList !== -1) {
+				const selectedPage = Math.floor(selectedIndexInFilteredAndSortedList / perPage.value);
+
+				currentPage.value = selectedPage;
+			}
 		}
 	}
 });
@@ -113,7 +127,6 @@ function handlePerPageChange(option) {
 }
 
 const studentsPaginated = computed(() => {
-	// Step 1: Apply filters
 	let filteredStudents = students.value;
 
 	if (!adminStore.filterFinishedInstances) {
@@ -128,17 +141,13 @@ const studentsPaginated = computed(() => {
 		filteredStudents = filteredStudents.filter((student) => student.Model_prakse.value === "A" || student.Model_prakse.value === "B");
 	}
 
-	// Step 2: Sort the students after filtering
 	filteredStudents = sortStudents(filteredStudents);
 
-	// Step 3: Paginate the filtered and sorted students
 	return filteredStudents.slice(perPage.value * currentPage.value, perPage.value * (currentPage.value + 1));
 });
 
 const numPages = computed(() => {
-	// Use `filteredStudents` length instead of `studentsPaginated`
 	const filteredStudents = students.value.filter((student) => {
-		// Apply all filters here again, similar to above
 		let match = true;
 		if (!adminStore.filterFinishedInstances) {
 			match = match && UserTaskMappings.getTaskProperty(student["process_instance_data"]["pending"][0], "name", student["process_instance_data"]["state"]) !== "Student ocjenjen";

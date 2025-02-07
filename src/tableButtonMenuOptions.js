@@ -13,9 +13,14 @@ export const tableButtonMenuOptions = [
 			value: 20,
 		},
 		{
-			id: 2,
+			id: 3,
 			label: "30 stavki po stranici",
 			value: 30,
+		},
+		{
+			id: 4,
+			label: "50 stavki po stranici",
+			value: 50,
 		},
 	],
 ];
