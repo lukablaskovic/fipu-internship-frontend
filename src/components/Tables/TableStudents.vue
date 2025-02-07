@@ -23,8 +23,8 @@ const route = useRoute();
 const sortDirection = ref("asc");
 const sortColumn = ref("ime");
 
-function sortStudents() {
-	const sortedStudents = [...students.value];
+function sortStudents(studentsList) {
+	const sortedStudents = [...studentsList];
 
 	sortedStudents.sort((a, b) => {
 		let valueA, valueB;
@@ -60,7 +60,16 @@ const emit = defineEmits(["show-student-diagram"]);
 watch(selectedStudentInstanceID, (newVal) => {
 	if (newVal) {
 		const selectedStudent = students.value.find((student) => student.process_instance_id === newVal);
+
 		if (selectedStudent) {
+			const filteredStudents = studentsPaginated.value;
+
+			const selectedIndex = filteredStudents.findIndex((student) => student.process_instance_id === newVal);
+
+			if (selectedIndex !== -1) {
+				currentPage.value = Math.floor(selectedIndex / perPage.value);
+			}
+
 			updateCurrentPageForSelectedStudent(selectedStudent);
 		}
 	}
@@ -104,9 +113,9 @@ function handlePerPageChange(option) {
 }
 
 const studentsPaginated = computed(() => {
+	// Step 1: Apply filters
 	let filteredStudents = students.value;
 
-	// Apply filters (same as before)
 	if (!adminStore.filterFinishedInstances) {
 		filteredStudents = filteredStudents.filter((student) => UserTaskMappings.getTaskProperty(student["process_instance_data"]["pending"][0], "name", student["process_instance_data"]["state"]) !== "Student ocjenjen");
 	}
@@ -119,10 +128,10 @@ const studentsPaginated = computed(() => {
 		filteredStudents = filteredStudents.filter((student) => student.Model_prakse.value === "A" || student.Model_prakse.value === "B");
 	}
 
-	// Sort the students based on the selected column and direction
-	filteredStudents = sortStudents();
+	// Step 2: Sort the students after filtering
+	filteredStudents = sortStudents(filteredStudents);
 
-	// Paginate the filtered and sorted students
+	// Step 3: Paginate the filtered and sorted students
 	return filteredStudents.slice(perPage.value * currentPage.value, perPage.value * (currentPage.value + 1));
 });
 
@@ -175,28 +184,27 @@ function toggleSortDirection(column) {
 				<th>Model</th>
 				<th>JMBAG</th>
 
-				<!-- Ime Column -->
-				<th @click="toggleSortDirection('ime')" class="cursor-pointer px-4 py-2 text-left">
+				<th class="cursor-pointer px-4 py-2 text-left">
 					<div class="flex items-center space-x-1">
 						<span>Ime</span>
-						<BaseIcon :path="sortColumn === 'ime' && sortDirection === 'asc' ? mdiSortAscending : mdiSortDescending" h="h-4" w="w-4" class="text-gray-600 hover:text-fipu_blue" />
+						<BaseIcon :path="sortColumn === 'ime' && sortDirection === 'asc' ? mdiSortAscending : mdiSortDescending" h="h-4" w="w-4" class="text-gray-600 hover:text-fipu_blue" @click="toggleSortDirection('ime')" />
 					</div>
 				</th>
 
-				<!-- Prezime Column -->
-				<th @click="toggleSortDirection('prezime')" class="cursor-pointer px-4 py-2 text-left">
+				<th class="cursor-pointer px-4 py-2 text-left">
 					<div class="flex items-center space-x-1">
 						<span>Prezime</span>
-						<BaseIcon :path="sortColumn === 'prezime' && sortDirection === 'asc' ? mdiSortAscending : mdiSortDescending" h="h-4" w="w-4" class="text-gray-600 hover:text-fipu_blue" />
+						<BaseIcon :path="sortColumn === 'prezime' && sortDirection === 'asc' ? mdiSortAscending : mdiSortDescending" h="h-4" w="w-4" class="text-gray-600 hover:text-fipu_blue" @click="toggleSortDirection('prezime')" />
 					</div>
 				</th>
 
 				<th>Email</th>
 				<th>Godina studija</th>
-				<th @click="toggleSortDirection('progress')" class="cursor-pointer px-4 py-2 text-left">
+
+				<th class="cursor-pointer px-4 py-2 text-left">
 					<div class="flex items-center space-x-1">
 						<span>Napredak</span>
-						<BaseIcon :path="sortColumn === 'progress' && sortDirection === 'asc' ? mdiSortAscending : mdiSortDescending" h="h-4" w="w-4" class="text-gray-600 hover:text-fipu_blue" />
+						<BaseIcon :path="sortColumn === 'progress' && sortDirection === 'asc' ? mdiSortAscending : mdiSortDescending" h="h-4" w="w-4" class="text-gray-600 hover:text-fipu_blue" @click="toggleSortDirection('progress')" />
 					</div>
 				</th>
 
@@ -211,8 +219,7 @@ function toggleSortDirection(column) {
 				:key="student['process_instance_id']"
 				:class="{
 					'selected-row bg-blue-100 dark:bg-blue-900': selectedStudentInstanceID === student['process_instance_id'],
-				}"
-				@click="selectedStudentInstanceID = student['process_instance_id']">
+				}">
 				<td class="border-b-0 before:hidden lg:w-6">
 					<UserAvatar :avatar="student['avatar']" class="mx-auto flex h-22 w-22 lg:h-12 lg:w-12" />
 				</td>
