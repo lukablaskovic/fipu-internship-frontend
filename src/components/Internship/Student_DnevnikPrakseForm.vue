@@ -51,7 +51,7 @@ const Layout = computed(() => {
 const form = reactive({
 	potvrda_attachment: null,
 	dnevnik_attachment: null,
-	nastavak_radnog_odnosa: null,
+	nastavak_radnog_odnosa: false,
 	prijavljen_rok: null,
 });
 
@@ -79,6 +79,13 @@ async function submit_diary_form() {
 		isLoading.value = false;
 		return;
 	}
+
+	if (form.potvrda_attachment == null || form.dnevnik_attachment == null || form.prijavljen_rok == null || form.nastavak_radnog_odnosa == null) {
+		snackBarStore.pushMessage("Molimo ispunite sva obavezna polja.", "error");
+		isLoading.value = false;
+		return;
+	}
+
 	await studentStore.submitDiaryForm(form);
 	if (UserTaskMappings.getTaskProperty(studentStore.student_process_instance_data.pending[0], "snackbar_msg")) {
 		snackBarStore.pushMessage(UserTaskMappings.getTaskProperty(studentStore.student_process_instance_data.pending[0], "snackbar_msg"), UserTaskMappings.getTaskProperty(studentStore.student_process_instance_data.pending[0], "snackbar_color"));
