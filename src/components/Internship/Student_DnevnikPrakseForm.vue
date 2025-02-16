@@ -1,5 +1,5 @@
 <script setup>
-import { mdiLaptop, mdiBallot, mdiNotebook, mdiClipboardCheck } from "@mdi/js";
+import { mdiLaptop, mdiBallot, mdiNotebook, mdiBriefcase } from "@mdi/js";
 import { ref, computed, onMounted, reactive } from "vue";
 
 import { getFirstErrorForField } from "@/helpers/validators";
@@ -98,13 +98,13 @@ async function submit_diary_form() {
 
 <template>
 	<component :is="Layout">
-		<SectionMain v-if="allocated_assignment != null">
+		<SectionMain v-if="allocated_assignment != null" class="relative">
 			<SectionTitleLineWithButton :icon="mdiLaptop" title="Moja Praksa" main> </SectionTitleLineWithButton>
 			<p><b>Akademska godina:</b> {{ mainStore.academicYear }}</p>
 			<p><b>Voditelj:</b> {{ mainStore.voditelj_prakse }}</p>
-			<hr />
-			<br />
-			<SectionTitleLineWithButton :icon="mdiClipboardCheck" main title="Izvođenje prakse u tijeku"></SectionTitleLineWithButton>
+			<img src="/illustrations/programming.svg" class="absolute right-0 top-0 mr-6 mt-4 hidden w-1/6 max-w-full md:block" />
+
+			<SectionTitleLineWithButton :icon="mdiBriefcase" main class="mt-24" title="Izvođenje prakse u tijeku"></SectionTitleLineWithButton>
 			<CardboxAllocation v-if="allocated_assignment != null" :data="allocated_assignment"></CardboxAllocation>
 
 			<br />
@@ -112,9 +112,9 @@ async function submit_diary_form() {
 
 			<br />
 			<SectionTitleLineWithButton :icon="mdiNotebook" main title="Dnevnik prakse"></SectionTitleLineWithButton>
-			<p><b>Nakon što se završili praksu</b> i ispunili sve vaše obaveze, predajete dnevnik prakse skupa s ispunjenom potvrdom o obavljenoj praksi.</p>
+			<p><b>Nakon što ste završili praksu i ispunili sve vaše obaveze</b>, predajete dnevnik prakse skupa s ispunjenom potvrdom o obavljenoj praksi.</p>
 			<p>Potvrdu ispunjava vaš mentor, vi predajete PDF sken (ili digitalno potpisani PDF) ispunjene potvrde.</p>
-			<p>Dnevnik prakse je potrebno predati prije prijave ispitnog roka.</p>
+			<p>Dnevnik prakse je potrebno predati <b>prije datuma ispitnog roka</b>.</p>
 			<br />
 			<p>
 				📓 Predložak za dnevnik prakse možete preuzeti

@@ -1,5 +1,5 @@
 <script setup>
-import { mdiAccountMultiple, mdiAccount, mdiAccountGroup, mdiAbTesting, mdiAlphaACircle, mdiAlphaBCircleOutline } from "@mdi/js";
+import { mdiAccountMultiple, mdiAccount, mdiProgressClock, mdiAccountGroup, mdiAbTesting, mdiAlphaACircle, mdiAlphaBCircleOutline } from "@mdi/js";
 import { useRouter, useRoute } from "vue-router";
 import { ref, onMounted, watch } from "vue";
 import { nextTick } from "vue";
@@ -130,6 +130,17 @@ const toggleBetweenModelsFilter = () => {
 	}
 };
 
+const toggleBetweenInternshipStages = () => {
+	console.log(adminStore.filterInternshipStage);
+	if (adminStore.filterInternshipStage === "ceka_alokaciju") {
+		adminStore.filterInternshipStage = "ceka_odobrenje";
+	} else if (adminStore.filterInternshipStage === "ceka_odobrenje") {
+		adminStore.filterInternshipStage = "all";
+	} else {
+		adminStore.filterInternshipStage = "ceka_alokaciju";
+	}
+};
+
 let email_postData = ref(null);
 let email_template = ref(null);
 let email_to = ref(null);
@@ -174,9 +185,17 @@ const setModelFilterFromQuery = () => {
 	}
 };
 
+const setStageFilterFromQuery = () => {
+	const stageParam = route.query.stage;
+	if (["ceka_alokaciju", "ceka_odobrenje"].includes(stageParam)) {
+		adminStore.filterInternshipStage = stageParam;
+	}
+};
+
 onMounted(async () => {
 	await adminStore.getStudents();
 	setModelFilterFromQuery();
+	setStageFilterFromQuery();
 });
 
 async function handleNewInstance() {
@@ -197,8 +216,31 @@ onMounted(loadDataForStudent);
 			<SectionMain>
 				<SectionTitleLineWithButton :icon="mdiAccountMultiple" title="Studenti u procesu prakse" button-enabled main @click="bpmn_help_modal = true"> </SectionTitleLineWithButton>
 				<div class="flex flex-row">
-					<div class="mb-4"><PillTag class="cursor-pointer" :left="false" :icon="adminStore.filterFinishedInstances ? mdiAccountGroup : mdiAccountMultiple" :color="adminStore.filterFinishedInstances ? 'info' : 'success'" :label="adminStore.filterFinishedInstances ? 'Sve instance' : 'Aktivne instance'" @click="toggleActiveEventsFilter" /></div>
-					<div class="mb-4"><PillTag class="cursor-pointer" :icon="adminStore.filterModelState === 'A' ? mdiAlphaACircle : adminStore.filterModelState === 'B' ? mdiAlphaBCircleOutline : mdiAbTesting" :color="adminStore.filterModelState === 'A' ? 'danger' : adminStore.filterModelState === 'B' ? 'success' : 'info'" :label="adminStore.filterModelState === 'A' ? 'Model A' : adminStore.filterModelState === 'B' ? 'Model B' : 'Modeli AB'" @click="toggleBetweenModelsFilter" /></div>
+					<div class="mb-4">
+						<PillTag
+							class="cursor-pointer"
+							:left="false"
+							:icon="adminStore.filterFinishedInstances ? mdiAccountGroup : mdiAccountMultiple"
+							:color="adminStore.filterFinishedInstances ? 'info' : 'success'"
+							:label="adminStore.filterFinishedInstances ? 'Sve instance' : 'Aktivne instance'"
+							@click="toggleActiveEventsFilter" />
+					</div>
+					<div class="mb-4">
+						<PillTag
+							class="cursor-pointer"
+							:icon="adminStore.filterModelState === 'A' ? mdiAlphaACircle : adminStore.filterModelState === 'B' ? mdiAlphaBCircleOutline : mdiAbTesting"
+							:color="adminStore.filterModelState === 'A' ? 'danger' : adminStore.filterModelState === 'B' ? 'success' : 'info'"
+							:label="adminStore.filterModelState === 'A' ? 'Model A' : adminStore.filterModelState === 'B' ? 'Model B' : 'Modeli AB'"
+							@click="toggleBetweenModelsFilter" />
+					</div>
+					<div class="mb-4">
+						<PillTag
+							class="cursor-pointer"
+							:icon="adminStore.filterInternshipStage === 'ceka_alokaciju' ? mdiProgressClock : adminStore.filterInternshipStage === 'ceka_odobrenje' ? mdiProgressClock : mdiProgressClock"
+							:color="adminStore.filterInternshipStage === 'ceka_alokaciju' ? 'danger' : adminStore.filterInternshipStage === 'ceka_odobrenje' ? 'success' : 'info'"
+							:label="adminStore.filterInternshipStage === 'ceka_alokaciju' ? 'Čeka alokaciju (A)' : adminStore.filterInternshipStage === 'ceka_odobrenje' ? 'Čeka odobrenje (B)' : 'Sve faze'"
+							@click="toggleBetweenInternshipStages" />
+					</div>
 				</div>
 
 				<CardBox has-table>
@@ -213,12 +255,25 @@ onMounted(loadDataForStudent);
 					<b>{{ adminStore.selectedStudent.ime }} {{ adminStore.selectedStudent.prezime }}</b>
 				</p>
 				<!-- Modal for the current task -->
-				<CardBoxModal v-if="modal_select_bpmn_task" v-model="modal_select_bpmn_task" :title="UserTaskMappings.getTaskProperty(process_instance_data.pending[0], 'form_title', process_instance_data['state'])" button-label="Potvrda" has-cancel :disabled-condition="disabledCondition" @confirm="handleNewInstance()">
+				<CardBoxModal
+					v-if="modal_select_bpmn_task"
+					v-model="modal_select_bpmn_task"
+					:title="UserTaskMappings.getTaskProperty(process_instance_data.pending[0], 'form_title', process_instance_data['state'])"
+					button-label="Potvrda"
+					has-cancel
+					:disabled-condition="disabledCondition"
+					@confirm="handleNewInstance()">
 					<p v-if="process_instance_data.pending[0] == 'odabiranje_zadatka_student' || process_instance_data.pending[0] == 'ispunjavanje_prijavnice_student' || process_instance_data.pending[0] == 'predavanje_dnevnika_student'" class="mb-4">
 						{{ UserTaskMappings.getTaskProperty(adminStore.bpmn_diagram.clicked_task_id, "bpmn_pending_info_msg", process_instance_data["state"]) }}
 					</p>
 
-					<FormDynamic v-else v-model="formDynamicValues" :form-fields="adminStore.selectedStudent.process_instance_data.pending_task_info.form_fields" :variables="adminStore.selectedStudent.process_instance_data.variables" :documentation="adminStore.selectedStudent.process_instance_data.pending_task_info.documentation" @all-fields-filled="updateDisabledCondition" />
+					<FormDynamic
+						v-else
+						v-model="formDynamicValues"
+						:form-fields="adminStore.selectedStudent.process_instance_data.pending_task_info.form_fields"
+						:variables="adminStore.selectedStudent.process_instance_data.variables"
+						:documentation="adminStore.selectedStudent.process_instance_data.pending_task_info.documentation"
+						@all-fields-filled="updateDisabledCondition" />
 				</CardBoxModal>
 
 				<!-- Modal for past tasks (without FormDynamic) -->

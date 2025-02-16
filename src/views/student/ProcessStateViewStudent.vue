@@ -97,7 +97,7 @@ const bpmn_model = ref(null);
 
 onMounted(async () => {
 	process_instance_id.value = mainStore.currentUser.internship_process.id; //ok
-	loadDataForStudent(process_instance_id.value);
+	await loadDataForStudent(process_instance_id.value);
 	let model = mainStore.currentUserProcessInstanceData.model.model_path.split(".")[0];
 
 	bpmn_model.value = await fetchXML(model);

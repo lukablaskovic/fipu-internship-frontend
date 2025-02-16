@@ -97,6 +97,7 @@ const goToCompanyWeb = (url) => {
 				<th />
 				<th>Naziv</th>
 				<th>Web mjesto</th>
+				<th>Adresa</th>
 				<th />
 			</tr>
 			<tr v-else>
@@ -128,6 +129,10 @@ const goToCompanyWeb = (url) => {
 
 				<td data-label="Web" class="max-w-xs whitespace-normal break-all">
 					<a class="underline" :href="company['web']" target="_blank">{{ company["web"] }}</a>
+				</td>
+
+				<td data-label="Adresa">
+					{{ company["adresa"] }}
 				</td>
 
 				<td class="whitespace-nowrap before:hidden lg:w-1">

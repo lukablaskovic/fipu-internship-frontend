@@ -202,7 +202,7 @@ watch(
 			<p>(<b>Model B</b>) Ako ste već udogovoru sa studentom, ili je student već odradio praksu kod Vas, molimo da navedete njegovo ime i prezime u polju "Preferencije pri odabiru studenta" te detaljno opišete zadatak.</p>
 
 			<br />
-			<p><b>Niste sigurni što su Modeli A i B?</b> <router-link class="text-fipu_blue" to="/upute">Proučite kako izvodimo praksu na FIPU</router-link></p>
+			<p><b>Niste sigurni što su Modeli A i B?</b> <router-link class="text-fipu_blue" to="/upute">Proučite kako izvodimo praksu na FIPU.</router-link></p>
 
 			<br />
 			<p>Za sve dodatne informacije slobodno kontaktirajte voditelja stručne prakse:</p>

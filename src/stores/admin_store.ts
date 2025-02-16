@@ -92,6 +92,7 @@ export const useAdminStore = defineStore("admin", {
 		availableAssignmentsFilter: true,
 
 		filterModelA: "AB",
+		filterInternshipStage: "all",
 
 		bpmn_diagram: {
 			clicked_task_id: null,

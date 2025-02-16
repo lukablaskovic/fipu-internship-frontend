@@ -73,14 +73,17 @@ function openModal(assignmentDetails) {
 
 <template>
 	<component :is="Layout">
-		<SectionMain>
+		<SectionMain class="relative">
 			<SectionTitleLineWithButton :icon="mdiLaptop" title="Moja Praksa" main> </SectionTitleLineWithButton>
 			<p><b>Akademska godina:</b> {{ mainStore.academicYear }}</p>
 			<p><b>Voditelj:</b> {{ mainStore.voditelj_prakse }}</p>
-			<hr />
+
 			<br />
+
+			<img src="/illustrations/waitng-illustration.svg" class="absolute right-0 top-0 mr-6 mt-4 w-1/6 max-w-full" />
+
 			<SectionTitleLineWithButton :icon="mdiProgressClock" main title="Alokacija zadatka u tijeku"></SectionTitleLineWithButton>
-			<div class="flex flex-wrap text-base">Zadatak vam još nije dodijeljen. Ako čekate više od 10 dana, javite se voditelju prakse.</div>
+			<div class="flex flex-wrap text-base">Zadatak vam još nije dodijeljen. Ako čekate više od 10 dana, javite se voditelju prakse preko maila ili Google Chata.</div>
 			<br />
 			<SectionTitleLineWithButton :icon="mdiNumeric" main title="Vaš odabir"></SectionTitleLineWithButton>
 

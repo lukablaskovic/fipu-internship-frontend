@@ -1,5 +1,24 @@
 <script setup>
-import { mdiAlphaACircle, mdiAbTesting, mdiNoteAlert, mdiClipboardCheck, mdiAccountTie, mdiAlphaBCircleOutline, mdiAccountMultiple, mdiAccountSchoolOutline, mdiProgressClock, mdiViewDashboard, mdiCardSearch, mdiMonitorAccount, mdiAccountCancel, mdiAlphaSBox, mdiClockTimeEight, mdiCalendarClock, mdiAccountGroup, mdiOfficeBuilding } from "@mdi/js";
+import {
+	mdiAlphaACircle,
+	mdiAbTesting,
+	mdiNoteAlert,
+	mdiClipboardCheck,
+	mdiAccountTie,
+	mdiAlphaBCircleOutline,
+	mdiAccountMultiple,
+	mdiAccountSchoolOutline,
+	mdiProgressClock,
+	mdiViewDashboard,
+	mdiCardSearch,
+	mdiMonitorAccount,
+	mdiAccountCancel,
+	mdiAlphaSBox,
+	mdiClockTimeEight,
+	mdiCalendarClock,
+	mdiAccountGroup,
+	mdiOfficeBuilding,
+} from "@mdi/js";
 import { adminStore, mainStore, snackBarStore } from "@/main.js";
 import { layoutStore } from "@/main";
 
@@ -169,7 +188,14 @@ const toggleDateType = () => {
 					<CardBoxWidget v-if="adminStore.studentsFetched" color="text-fipu_blue" class="rounded-lg" :icon="mdiAccountSchoolOutline" :number="finished_internships" label="Uspješno odrađenih praksi (A + B)" />
 					<SkeletonLoader v-else></SkeletonLoader>
 
-					<CardBoxWidget v-if="adminStore.studentsFetched" color="text-fipu_blue" class="cursor-pointer rounded-lg" :icon="mdiAccountMultiple" :number="ongoing_internships" label="Ukupno aktivnih procesa (A + B)" @click="router.push('/studenti?model=AB')" />
+					<CardBoxWidget
+						v-if="adminStore.studentsFetched"
+						color="text-fipu_blue"
+						class="cursor-pointer rounded-lg"
+						:icon="mdiAccountMultiple"
+						:number="ongoing_internships"
+						label="Ukupno aktivnih procesa (A + B)"
+						@click="router.push('/studenti?model=AB')" />
 					<SkeletonLoader v-else></SkeletonLoader>
 
 					<CardBoxWidget v-if="adminStore.studentsFetched" color="text-fipu_blue" class="rounded-lg" :icon="mdiAccountCancel" :number="0" label="Odustalo od prakse" />
@@ -187,10 +213,24 @@ const toggleDateType = () => {
 					<CardBoxWidget v-if="adminStore.studentsFetched" color="text-rose-600" class="rounded-lg" :icon="mdiAccountSchoolOutline" :number="a_finished_internships" label="Uspješno odrađenih praksi (A)" />
 					<SkeletonLoader v-else></SkeletonLoader>
 
-					<CardBoxWidget v-if="adminStore.studentsFetched" color="text-rose-600" class="cursor-pointer rounded-lg" :icon="mdiAccountMultiple" :number="a_ongoing_internships" label="Ukupno aktivnih procesa (A)" @click="router.push('/studenti?model=A')" />
+					<CardBoxWidget
+						v-if="adminStore.studentsFetched"
+						color="text-rose-600"
+						class="cursor-pointer rounded-lg"
+						:icon="mdiAccountMultiple"
+						:number="a_ongoing_internships"
+						label="Ukupno aktivnih procesa (A)"
+						@click="router.push('/studenti?model=A')" />
 					<SkeletonLoader v-else></SkeletonLoader>
 
-					<CardBoxWidget v-if="adminStore.studentsFetched" color="text-rose-600" class="rounded-lg" :icon="mdiProgressClock" :number="waiting_for_allocation" label="Čeka na alokaciju" />
+					<CardBoxWidget
+						v-if="adminStore.studentsFetched"
+						color="text-rose-600"
+						class="cursor-pointer rounded-lg"
+						:icon="mdiProgressClock"
+						:number="waiting_for_allocation"
+						label="Čeka na alokaciju"
+						@click="router.push('/studenti?stage=ceka_alokaciju')" />
 					<SkeletonLoader v-else></SkeletonLoader>
 
 					<CardBoxWidget v-if="adminStore.studentsFetched" color="text-rose-600" class="rounded-lg" :icon="mdiAccountTie" :number="waiting_for_evaluation" label="Evaluacija poslodavca u tijeku" />
@@ -205,10 +245,24 @@ const toggleDateType = () => {
 					<CardBoxWidget v-if="adminStore.studentsFetched" color="text-emerald-500" class="rounded-lg" :icon="mdiAccountSchoolOutline" :number="b_finished_internships" label="Uspješno odrađenih praksi (B)" />
 					<SkeletonLoader v-else></SkeletonLoader>
 
-					<CardBoxWidget v-if="adminStore.studentsFetched" color="text-emerald-500" class="cursor-pointer rounded-lg" :icon="mdiAccountMultiple" :number="b_ongoing_internships" label="Ukupno aktivnih procesa (B)" @click="router.push('/studenti?model=B')" />
+					<CardBoxWidget
+						v-if="adminStore.studentsFetched"
+						color="text-emerald-500"
+						class="cursor-pointer rounded-lg"
+						:icon="mdiAccountMultiple"
+						:number="b_ongoing_internships"
+						label="Ukupno aktivnih procesa (B)"
+						@click="router.push('/studenti?model=B')" />
 					<SkeletonLoader v-else></SkeletonLoader>
 
-					<CardBoxWidget v-if="adminStore.studentsFetched" color="text-emerald-500" class="rounded-lg" :icon="mdiProgressClock" :number="b_waiting_for_assignment_approval" label="Čeka na odobrenje zadatka" />
+					<CardBoxWidget
+						v-if="adminStore.studentsFetched"
+						color="text-emerald-500"
+						class="cursor-pointer rounded-lg"
+						:icon="mdiProgressClock"
+						:number="b_waiting_for_assignment_approval"
+						label="Čeka na odobrenje zadatka"
+						@click="router.push('/studenti?stage=ceka_odobrenje')" />
 					<SkeletonLoader v-else></SkeletonLoader>
 
 					<CardBoxWidget v-if="adminStore.studentsFetched" color="text-emerald-500" class="rounded-lg" :icon="mdiNoteAlert" :number="b_waiting_for_direct_assignment" label="Nije se još prijavilo" />
@@ -223,14 +277,35 @@ const toggleDateType = () => {
 					</div>
 
 					<div class="flex flex-row">
-						<div class="mb-4"><PillTag class="cursor-pointer" :left="false" :icon="adminStore.filterActiveInstances ? mdiAccountGroup : mdiAccountMultiple" :color="adminStore.filterActiveInstances ? 'info' : 'success'" :label="adminStore.filterActiveInstances ? 'Sve instance' : 'Aktivne instance'" @click="toggleActiveEventsFilter" /></div>
-					</div>
-					<div class="flex flex-row">
-						<div class="mb-4"><PillTag class="cursor-pointer" :icon="adminStore.filterModelState === 'A' ? mdiAlphaACircle : adminStore.filterModelState === 'B' ? mdiAlphaBCircleOutline : mdiAbTesting" :color="adminStore.filterModelState === 'A' ? 'danger' : adminStore.filterModelState === 'B' ? 'success' : 'info'" :label="adminStore.filterModelState === 'A' ? 'Model A' : adminStore.filterModelState === 'B' ? 'Model B' : 'Modeli AB'" @click="toggleModelEventsFilter" /></div>
+						<div class="mb-4">
+							<PillTag
+								class="cursor-pointer"
+								:left="false"
+								:icon="adminStore.filterActiveInstances ? mdiAccountGroup : mdiAccountMultiple"
+								:color="adminStore.filterActiveInstances ? 'info' : 'success'"
+								:label="adminStore.filterActiveInstances ? 'Sve instance' : 'Aktivne instance'"
+								@click="toggleActiveEventsFilter" />
+						</div>
 					</div>
 					<div class="flex flex-row">
 						<div class="mb-4">
-							<PillTag class="cursor-pointer" :left="false" :icon="adminStore.relativeToNowTimestmap ? mdiClockTimeEight : mdiCalendarClock" :color="adminStore.relativeToNowTimestmap ? 'info' : 'success'" :label="adminStore.relativeToNowTimestmap ? 'Relativno vrijeme' : 'Datum'" @click="toggleDateType" />
+							<PillTag
+								class="cursor-pointer"
+								:icon="adminStore.filterModelState === 'A' ? mdiAlphaACircle : adminStore.filterModelState === 'B' ? mdiAlphaBCircleOutline : mdiAbTesting"
+								:color="adminStore.filterModelState === 'A' ? 'danger' : adminStore.filterModelState === 'B' ? 'success' : 'info'"
+								:label="adminStore.filterModelState === 'A' ? 'Model A' : adminStore.filterModelState === 'B' ? 'Model B' : 'Modeli AB'"
+								@click="toggleModelEventsFilter" />
+						</div>
+					</div>
+					<div class="flex flex-row">
+						<div class="mb-4">
+							<PillTag
+								class="cursor-pointer"
+								:left="false"
+								:icon="adminStore.relativeToNowTimestmap ? mdiClockTimeEight : mdiCalendarClock"
+								:color="adminStore.relativeToNowTimestmap ? 'info' : 'success'"
+								:label="adminStore.relativeToNowTimestmap ? 'Relativno vrijeme' : 'Datum'"
+								@click="toggleDateType" />
 						</div>
 					</div>
 				</div>

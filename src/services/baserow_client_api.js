@@ -19,6 +19,7 @@ const Guest = {
 			let result = await AxiosWrapper.get("/Poslodavac", {
 				search: query,
 			});
+			console.log("result", result);
 			return result;
 		} catch (e) {
 			return null;

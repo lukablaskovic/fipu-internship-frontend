@@ -102,15 +102,18 @@ const handleDragEnd = () => {
 
 <template>
 	<component :is="Layout">
-		<SectionMain>
+		<SectionMain class="relative">
 			<SectionTitleLineWithButton :icon="mdiLaptop" title="Moja Praksa" main />
+
 			<p><b>Akademska godina:</b> {{ mainStore.academicYear }}</p>
 			<p><b>Voditelj:</b> {{ mainStore.voditelj_prakse }}</p>
-			<hr />
+
+			<img src="/illustrations/technologies.svg" class="absolute right-0 top-0 mr-6 mt-4 hidden w-1/5 max-w-full md:block" />
+
 			<br />
 			<SectionTitleLineWithButton :icon="mdiClipboardTextOutline" main title="Dostupni zadaci" />
-			<p>Pogledajte zanimljive slobodne zadatke te odaberite i rasporedite 3 najdraža, prema vašim preferencijama - (1. odabir | 2. odabir | 3. odabir) gdje 1. odabir predstavlja zadatak koji najviše želite raditi.</p>
-			<p>Molimo da <b>ne prijavljujete</b> zadatke gdje su poslodavci naveli ime i prezime studenta u <b>Preferencijama za studenta</b></p>
+			<p>Pogledajte zanimljive slobodne zadatke te odaberite i rasporedite 3 najdraža, prema vašim preferencijama: (1. odabir | 2. odabir | 3. odabir) gdje 1. odabir predstavlja zadatak koji najviše želite odraditi.</p>
+			<p>Molimo da <b>ne prijavljujete</b> zadatke gdje su poslodavci naveli ime i prezime studenta u <b>Preferencijama za studenta</b>.</p>
 			<br />
 			<p><b>Napomena:</b> Da biste prijavili preferencije, morate biti prijavljeni u aplikaciji!</p>
 			<br />
@@ -120,12 +123,15 @@ const handleDragEnd = () => {
 			<hr />
 			<br />
 			<SectionTitleLineWithButton ref="vas_odabir" :icon="mdiNumeric" main title="Vaš odabir" class="mt-22" />
+			<p v-if="checkedAssignments.length != 3" class="mb-4">Potrebno je odabrati minimalno 3 zadatka za prijavu preferencija.</p>
 			<p v-if="checkedAssignments.length === 3" class="mb-4">Zadatke možete rasporediti po vašim preferencijama.</p>
 
 			<draggable v-model="assignmentsForDrag" :disabled="!isDraggableEnabled" item-key="id" class="list-group flex w-full space-x-2" @start="handleDragStart" @end="handleDragEnd">
 				<template #item="{ element, index }">
 					<div class="flex-1">
-						<div class="draggable-item aspect-h-1 aspect-w-1 relative flex items-center justify-center border-2 bg-gray-50" :class="{ grab: isAssignment(element) && isDraggableEnabled, grabbing: vueDraggableDragging && isAssignment(element) && isDraggableEnabled }">
+						<div
+							class="draggable-item aspect-h-1 aspect-w-1 relative flex items-center justify-center border-2 bg-gray-50"
+							:class="{ grab: isAssignment(element) && isDraggableEnabled, grabbing: vueDraggableDragging && isAssignment(element) && isDraggableEnabled }">
 							<transition name="image-fade">
 								<img data-aos="zoom-out" v-if="isAssignment(element)" class="rounded-full sm:p-22" :src="getCompanyLogo(element)" />
 								<img v-else class="sm:p-22" :src="getDefaultImage(index)" alt="Default Task" />

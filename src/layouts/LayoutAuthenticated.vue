@@ -104,7 +104,7 @@ const menuClick = (event, item) => {
 				<ol class="ml-8 list-decimal">
 					<li>Potrebno je s mentorom dogovoriti datum počekta izvođenja prakse. Kada sve finalno dogovorite s mentorom popunite Prijavnicu putem aplikacije <b>prije početka izvođenja prakse</b>.</li>
 					<li>
-						<div class="flex flex-wrap text-base">Niste dobili email? Javite se voditelju prakse putem Google Chata.</div>
+						<div class="flex flex-wrap text-base">Niste dobili email? Javite se voditelju prakse putem maila ili Google Chata.</div>
 					</li>
 					<li>Nakon ispunjavanja prijavnice, na mail ćete vi i mentor dobiti praznu Potvrdu. Mora ju ispuniti <b>mentor</b> i to po završetku odrađenog posla.</li>
 					<li>Uživajte u procesu učenja! 🙂 Ovaj kolegij pruža vam priliku da sami oblikujete svoje iskustvo, obogatite ga novim i zanimljivim znanjima te stvorite vrijedne kontakte s poduzećima. Potencijal je velik, iskoristite ga!</li>

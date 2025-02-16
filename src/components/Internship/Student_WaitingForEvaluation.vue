@@ -36,11 +36,13 @@ const Layout = computed(() => {
 
 <template>
 	<component :is="Layout">
-		<SectionMain v-if="allocated_assignment != null">
+		<SectionMain v-if="allocated_assignment != null" class="relative">
 			<SectionTitleLineWithButton :icon="mdiLaptop" title="Moja Praksa" main> </SectionTitleLineWithButton>
 			<p><b>Akademska godina:</b> {{ mainStore.academicYear }}</p>
 			<p><b>Voditelj:</b> {{ mainStore.voditelj_prakse }}</p>
-			<hr />
+
+			<img src="/illustrations/guy_with_glasses.svg" class="absolute right-0 top-0 mr-6 mt-4 hidden w-1/6 max-w-full md:block" />
+
 			<br />
 			<SectionTitleLineWithButton :icon="mdiProgressClock" main title="U procesu evaluacije"></SectionTitleLineWithButton>
 			<p>
@@ -56,7 +58,7 @@ const Layout = computed(() => {
 			<p>Predstavite se i recite koji ste zadatak dobili u sklopu studentske prakse. Ukoliko se provodi selekcija, morat ćete istu obaviti u dogovoru s poslodavcem.</p>
 			<p>
 				Kada vas poslodavac prihvati, o tome ćete biti pravovremeno obaviješteni te morate dogovoriti datum početka prakse i ostale detalje.
-				<u>Nakon</u> što to obavite, ovdje ćete popuniti <b>Prijavnicu</b> prije početka izvođenja same prakse.
+				<u>Nakon</u> što to obavite, u aplikaciji ćete ispuniti <b>Prijavnicu</b> prije početka izvođenja same prakse.
 			</p>
 
 			<br />

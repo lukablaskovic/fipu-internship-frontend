@@ -1,7 +1,7 @@
 <script setup>
-import { computed } from "vue";
-import { colorsBgLight, colorsOutline } from "@/colors.js";
 import PillTagPlain from "@/components/PillTag/PillTagPlain.vue";
+import { colorsBgLight, colorsOutline } from "@/colors.js";
+import { computed } from "vue";
 
 const props = defineProps({
 	label: {
@@ -20,9 +20,9 @@ const props = defineProps({
 	outline: Boolean,
 });
 
-const componentClass = computed(() => [props.small ? "py-1 px-3" : "py-0.5 px-4 m-1", props.outline ? colorsOutline[props.color] : colorsBgLight[props.color]]);
+const componentClass = computed(() => [props.small ? "py-1 px-3" : "py-0.5 px-5 m-1", props.outline ? colorsOutline[props.color] : colorsBgLight[props.color]]);
 </script>
 
 <template>
-	<PillTagPlain class="border rounded-full" :class="componentClass" :icon="icon" :label="label" :small="small" />
+	<PillTagPlain class="rounded-full border" :class="componentClass" :icon="icon" :label="label" :small="small" />
 </template>

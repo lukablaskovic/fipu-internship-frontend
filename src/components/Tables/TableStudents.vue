@@ -62,14 +62,17 @@ watch(selectedStudentInstanceID, (newVal) => {
 		const selectedStudent = students.value.find((student) => student.process_instance_id === newVal);
 
 		if (selectedStudent) {
+			// Start with sorting the students
 			let sortedStudents = sortStudents(students.value);
 
 			let filteredStudents = sortedStudents;
 
+			// Apply the filter for finished instances
 			if (!adminStore.filterFinishedInstances) {
 				filteredStudents = filteredStudents.filter((student) => UserTaskMappings.getTaskProperty(student["process_instance_data"]["pending"][0], "name", student["process_instance_data"]["state"]) !== "Student ocjenjen");
 			}
 
+			// Apply the model state filter (A, B, AB)
 			if (adminStore.filterModelState === "A") {
 				filteredStudents = filteredStudents.filter((student) => student.Model_prakse.value === "A");
 			} else if (adminStore.filterModelState === "B") {
@@ -78,12 +81,29 @@ watch(selectedStudentInstanceID, (newVal) => {
 				filteredStudents = filteredStudents.filter((student) => student.Model_prakse.value === "A" || student.Model_prakse.value === "B");
 			}
 
-			const selectedIndexInFilteredAndSortedList = filteredStudents.findIndex((student) => student.process_instance_id === newVal);
+			// Apply internship stage filter (ensure valid stage)
+			if (adminStore.filterInternshipStage && adminStore.filterInternshipStage !== "all" && adminStore.filterInternshipStage !== "") {
+				if (adminStore.filterInternshipStage === "ceka_odobrenje") {
+					filteredStudents = filteredStudents.filter((student) => UserTaskMappings.getTaskProperty(student["process_instance_data"]["pending"][0], "name", student["process_instance_data"]["state"]) === "Čeka odobrenje zadatka");
+				} else if (adminStore.filterInternshipStage === "ceka_alokaciju") {
+					filteredStudents = filteredStudents.filter((student) => UserTaskMappings.getTaskProperty(student["process_instance_data"]["pending"][0], "name", student["process_instance_data"]["state"]) === "Čeka alokaciju profesora");
+				} else {
+					filteredStudents = filteredStudents.filter((student) => UserTaskMappings.getTaskProperty(student["process_instance_data"]["pending"][0], "name", student["process_instance_data"]["state"]) === adminStore.filterInternshipStage);
+				}
+			}
 
-			if (selectedIndexInFilteredAndSortedList !== -1) {
-				const selectedPage = Math.floor(selectedIndexInFilteredAndSortedList / perPage.value);
+			// Now that all filters are applied, let's check if the student exists in the filtered list
+			const selectedIndexInFilteredList = filteredStudents.findIndex((student) => student.process_instance_id === newVal);
 
+			if (selectedIndexInFilteredList !== -1) {
+				// Get the selected student’s page number
+				const selectedPage = Math.floor(selectedIndexInFilteredList / perPage.value);
+
+				// Update the current page to show the selected student
 				currentPage.value = selectedPage;
+			} else {
+				// Log if the student is not found in the filtered list
+				console.log("Selected student not found in the filtered list.");
 			}
 		}
 	}
@@ -141,6 +161,19 @@ const studentsPaginated = computed(() => {
 		filteredStudents = filteredStudents.filter((student) => student.Model_prakse.value === "A" || student.Model_prakse.value === "B");
 	}
 
+	// Adjusted internship stage filter logic with manual checks for specific values
+	if (adminStore.filterInternshipStage && adminStore.filterInternshipStage !== "all" && adminStore.filterInternshipStage !== "") {
+		// Manual checks for specific internship stages
+		if (adminStore.filterInternshipStage === "ceka_odobrenje") {
+			filteredStudents = filteredStudents.filter((student) => UserTaskMappings.getTaskProperty(student["process_instance_data"]["pending"][0], "name", student["process_instance_data"]["state"]) === "Čeka odobrenje zadatka");
+		} else if (adminStore.filterInternshipStage === "ceka_alokaciju") {
+			filteredStudents = filteredStudents.filter((student) => UserTaskMappings.getTaskProperty(student["process_instance_data"]["pending"][0], "name", student["process_instance_data"]["state"]) === "Čeka alokaciju profesora");
+		} else {
+			// Default case for other internship stages
+			filteredStudents = filteredStudents.filter((student) => UserTaskMappings.getTaskProperty(student["process_instance_data"]["pending"][0], "name", student["process_instance_data"]["state"]) === adminStore.filterInternshipStage);
+		}
+	}
+
 	filteredStudents = sortStudents(filteredStudents);
 
 	return filteredStudents.slice(perPage.value * currentPage.value, perPage.value * (currentPage.value + 1));
@@ -149,9 +182,11 @@ const studentsPaginated = computed(() => {
 const numPages = computed(() => {
 	const filteredStudents = students.value.filter((student) => {
 		let match = true;
+
 		if (!adminStore.filterFinishedInstances) {
 			match = match && UserTaskMappings.getTaskProperty(student["process_instance_data"]["pending"][0], "name", student["process_instance_data"]["state"]) !== "Student ocjenjen";
 		}
+
 		if (adminStore.filterModelState === "A") {
 			match = match && student.Model_prakse.value === "A";
 		} else if (adminStore.filterModelState === "B") {
@@ -159,6 +194,12 @@ const numPages = computed(() => {
 		} else if (adminStore.filterModelState === "AB") {
 			match = match && (student.Model_prakse.value === "A" || student.Model_prakse.value === "B");
 		}
+
+		// Adjusted internship stage filter logic
+		if (adminStore.filterInternshipStage && adminStore.filterInternshipStage !== "all" && adminStore.filterInternshipStage !== "") {
+			match = match && UserTaskMappings.getTaskProperty(student["process_instance_data"]["pending"][0], "name", student["process_instance_data"]["state"]) === adminStore.filterInternshipStage;
+		}
+
 		return match;
 	});
 

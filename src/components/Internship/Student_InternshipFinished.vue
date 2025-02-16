@@ -50,12 +50,13 @@ const Layout = computed(() => {
 
 <template>
 	<component :is="Layout">
-		<SectionMain v-if="allocated_assignment != null">
+		<SectionMain v-if="allocated_assignment != null" class="relative">
 			<SectionTitleLineWithButton :icon="mdiLaptop" title="Moja Praksa" main> </SectionTitleLineWithButton>
 			<p><b>Akademska godina:</b> {{ mainStore.academicYear }}</p>
 			<p><b>Voditelj:</b> {{ mainStore.voditelj_prakse }}</p>
-			<hr />
+
 			<br />
+			<img src="/illustrations/success_illustration.svg" class="absolute right-0 top-0 mr-6 mt-4 hidden w-1/12 max-w-full md:block" />
 			<SectionTitleLineWithButton :icon="mdiCheckDecagram" main title="Praksa gotova!"></SectionTitleLineWithButton>
 			<p>Vaš proces prakse je završio. Profesor je potvrdio unos ocjene u Studomat.</p>
 			<br />

@@ -1,8 +1,9 @@
 {
 	"plugins": ["prettier-plugin-tailwindcss", "prettier-plugin-sort-imports"],
 	"bracketSameLine": true,
-	"printWidth": 500,
+	"printWidth": 250,
 	"useTabs": true,
 	"vueIndentScriptAndStyle:": true,
-	"singleAttributePerLine:": false
+	"singleAttributePerLine:": true,
+	"arrowParens": "always"
 }

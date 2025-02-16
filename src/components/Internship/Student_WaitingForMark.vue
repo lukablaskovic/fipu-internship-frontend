@@ -51,14 +51,14 @@ const Layout = computed(() => {
 
 <template>
 	<component :is="Layout">
-		<SectionMain v-if="allocated_assignment != null">
+		<SectionMain v-if="allocated_assignment != null" class="relative">
 			<SectionTitleLineWithButton :icon="mdiLaptop" title="Moja Praksa" main> </SectionTitleLineWithButton>
 			<p><b>Akademska godina:</b> {{ mainStore.academicYear }}</p>
 			<p><b>Voditelj:</b>{{ mainStore.voditelj_prakse }}</p>
-			<hr />
 			<br />
-			<SectionTitleLineWithButton :icon="mdiAlphaSBox" main title="U postupku ocjenjivanja"></SectionTitleLineWithButton>
-			<p>Vaš proces prakse je završio. Nakon što vam profesor pregleda potvrdu i odobori dnevnik prakse, ocjena će vam biti unesena u Studomat.</p>
+			<img src="/illustrations/goal.svg" class="absolute right-0 top-0 mr-6 mt-4 hidden w-1/12 max-w-full md:block" />
+			<SectionTitleLineWithButton :icon="mdiAlphaSBox" main title="Ocjenjivanje u tijeku"></SectionTitleLineWithButton>
+			<p>Vaš proces prakse je završio. Nakon što vam profesor pregleda potvrdu i odobri dnevnik prakse, ocjena će vam biti unesena u Studomat.</p>
 			<div class="flex flex-wrap text-base">Ako čekate više od 7 dana, molimo vas da se obratite voditelju prakse.</div>
 			<br />
 			<p>
@@ -78,8 +78,6 @@ const Layout = computed(() => {
 			<hr />
 
 			<br />
-
-			<hr />
 		</SectionMain>
 	</component>
 </template>

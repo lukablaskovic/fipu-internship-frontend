@@ -167,11 +167,11 @@ async function submit_application_form() {
 
 <template>
 	<component :is="Layout">
-		<SectionMain v-if="allocated_assignment != null">
+		<SectionMain v-if="allocated_assignment != null" class="relative">
 			<SectionTitleLineWithButton :icon="mdiLaptop" title="Moja Praksa" main> </SectionTitleLineWithButton>
 			<p><b>Akademska godina:</b> {{ mainStore.academicYear }}</p>
 			<p><b>Voditelj:</b> {{ mainStore.voditelj_prakse }}</p>
-			<hr />
+			<img src="/illustrations/robot.svg" class="absolute right-0 top-0 mr-6 mt-4 hidden w-1/12 max-w-full md:block" />
 			<br />
 			<SectionTitleLineWithButton :icon="mdiClipboardCheck" main title="Alocirani zadatak"></SectionTitleLineWithButton>
 			<CardboxAllocation v-if="allocated_assignment != null" :data="allocated_assignment"></CardboxAllocation>
@@ -248,7 +248,13 @@ async function submit_application_form() {
 					<BaseDivider />
 
 					<FormField label="Potvrda" horizontal>
-						<FormCheckRadio v-model="form.kontakt_potvrda" name="sample-checkbox-two" :options="checkboxOptions" :error="getFirstErrorForField(v$, 'kontakt_potvrda')" label="Potvrđujem da sam kontaktirao poslodavca i dogovorio detalje koji su ovdje uneseni." is-column />
+						<FormCheckRadio
+							v-model="form.kontakt_potvrda"
+							name="sample-checkbox-two"
+							:options="checkboxOptions"
+							:error="getFirstErrorForField(v$, 'kontakt_potvrda')"
+							label="Potvrđujem da sam kontaktirao poslodavca i dogovorio detalje koji su ovdje uneseni."
+							is-column />
 					</FormField>
 					<BaseDivider />
 
