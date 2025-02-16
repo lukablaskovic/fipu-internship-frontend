@@ -93,6 +93,18 @@ const ProcessInstance = {
 			return null;
 		}
 	},
+
+	async removeInstance(instance_id) {
+		try {
+			let result = await AxiosWrapper.delete(`/instance/${instance_id}`);
+			console.log(`Successfuly removed instance with id: ${instance_id} from BPMN engine.`);
+			return result;
+		} catch (error) {
+			console.log("Error:", error);
+
+			return null;
+		}
+	},
 };
 
 export { ProcessInstance, Model };

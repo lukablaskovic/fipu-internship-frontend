@@ -4,6 +4,8 @@ import { watch } from "vue";
 
 import { tableButtonMenuOptions } from "@/tableButtonMenuOptions.js";
 import { StudentMappings, UserTaskMappings } from "@/helpers/maps";
+import CardBoxModal from "@/components/Cardbox/CardBoxModal.vue";
+import { mdiEye, mdiMenuDown, mdiCloseOutline } from "@mdi/js";
 import ButtonMenu from "@/components/Premium/ButtonMenu.vue";
 import BaseButtons from "@/components/Base/BaseButtons.vue";
 import BaseButton from "@/components/Base/BaseButton.vue";
@@ -11,7 +13,6 @@ import UserAvatar from "@/components/User/UserAvatar.vue";
 import BaseLevel from "@/components/Base/BaseLevel.vue";
 import PillTag from "@/components/PillTag/PillTag.vue";
 import LoadingOverlay from "../LoadingOverlay.vue";
-import { mdiEye, mdiMenuDown } from "@mdi/js";
 import { adminStore } from "@/main.js";
 import { useRoute } from "vue-router";
 
@@ -22,6 +23,7 @@ const route = useRoute();
 
 const sortDirection = ref("asc");
 const sortColumn = ref("ime");
+let instanceDeleteModalActive = ref(false);
 
 function sortStudents(studentsList) {
 	const sortedStudents = [...studentsList];
@@ -53,6 +55,7 @@ defineProps({
 
 const students = computed(() => adminStore.students);
 const selectedStudentInstanceID = ref(null);
+const selectedStudentInstanceIDForDelete = ref(null);
 
 const studentsFetched = computed(() => adminStore.studentsFetched);
 const emit = defineEmits(["show-student-diagram"]);
@@ -114,6 +117,14 @@ function showDiagram(student) {
 	adminStore.setSelectedStudent(student);
 
 	emit("show-student-diagram", student);
+}
+
+function deleteProcessInstance(student) {
+	selectedStudentInstanceIDForDelete.value = student["process_instance_id"];
+	adminStore.setSelectedStudentForDelete(student);
+
+	instanceDeleteModalActive.value = true;
+	console.log(adminStore.selectedStudentForDelete);
 }
 
 onMounted(async () => {
@@ -302,12 +313,28 @@ function toggleSortDirection(column) {
 				<td class="whitespace-nowrap before:hidden lg:w-1">
 					<BaseButtons type="justify-start lg:justify-end" no-wrap>
 						<BaseButton color="fipu_blue" :icon="mdiEye" small @click="showDiagram(student)" />
+						<BaseButton color="danger" :icon="mdiCloseOutline" small @click="deleteProcessInstance(student)" />
 					</BaseButtons>
 				</td>
 			</tr>
 		</tbody>
 	</table>
-
+	<div v-if="instanceDeleteModalActive">
+		<CardBoxModal v-model="instanceDeleteModalActive" title="Brisanje procesne instance" button="danger" has-cancel @confirm="adminStore.removeInstanceData()" button-label="Obriši">
+			<p>
+				<b>OPREZ!</b> Ova radnja će obrisati kompletnu procesnu instancu prakse za studenta: <b>{{ adminStore.selectedStudentForDelete.ime }} {{ adminStore.selectedStudentForDelete.prezime }}</b> uključujući sve podatke koje je student unio,
+				generirane prijavnice i dnevnik prakse. <b>Radnja je nepovratna.</b>
+			</p>
+			<br />
+			<p><b>ID procesne instance:</b> {{ adminStore.selectedStudentForDelete.process_instance_id }}</p>
+			<p><b>Baserow id_preferencije:</b> {{ adminStore.selectedStudentForDelete["process_instance_data"]["variables"]["id_preferencije"] }}</p>
+			<p><b>Baserow id_alokacija:</b> {{ adminStore.selectedStudentForDelete["process_instance_data"]["variables"]["id_alokacija"] }}</p>
+			<p><b>Baserow id_prijavnica:</b> {{ adminStore.selectedStudentForDelete["process_instance_data"]["variables"]["id_prijavnica"] }}</p>
+			<p><b>Baserow id_dnevnik_prakse:</b> {{ adminStore.selectedStudentForDelete["process_instance_data"]["variables"]["id_dnevnik_prakse"] }}</p>
+			<p class="mt-2">Jeste li sigurni da želite obrisati instancu i sve podatke?</p>
+			<br />
+		</CardBoxModal>
+	</div>
 	<div class="border-t border-gray-100 p-3 dark:border-slate-800 lg:px-6">
 		<BaseLevel>
 			<BaseButtons>

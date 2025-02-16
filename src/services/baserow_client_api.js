@@ -181,5 +181,29 @@ const Admin = {
 			return null;
 		}
 	},
+	async completeInstanceRemoval(data) {
+		try {
+			if (!data.process_instance_id) {
+				throw new Error('"process_instance_id" is required');
+			}
+
+			Object.keys(data).forEach((key) => {
+				if (key !== "process_instance_id" && (data[key] === undefined || data[key] === null)) {
+					delete data[key];
+				}
+			});
+
+			if (Object.keys(data).length === 0) {
+				throw new Error("No valid data to send");
+			}
+			console.log("data im sending:", data);
+			let result = await AxiosWrapper.delete("complete-deletion", data);
+			console.log("Baserow process instance complete deletion result:", result);
+			return result;
+		} catch (error) {
+			console.log("Error:", error);
+			return null;
+		}
+	},
 };
 export { Guest, Admin, Student };

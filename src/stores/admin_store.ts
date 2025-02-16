@@ -4,6 +4,7 @@ import { mainStore } from "@/main";
 import { Model, ProcessInstance } from "@/services/bpmn_engine_api";
 import { Admin, Student } from "@/services/baserow_client_api";
 import { SendGrid } from "@/services/sendgrid_client_api";
+import { snackBarStore } from "@/main";
 import Utils from "@/helpers/utils";
 
 // Define interfaces for state properties
@@ -58,10 +59,19 @@ interface Event {
 	student_email?: string;
 }
 
+interface InstanceRemovalData {
+	process_instance_id: string;
+	id_preferencije?: string;
+	id_alokacija?: string;
+	id_prijavnica?: string;
+	id_dnevnik_prakse?: string;
+}
+
 export const useAdminStore = defineStore("admin", {
 	state: () => ({
 		students: [] as Student[],
 		selectedStudent: null as Student | null,
+		selectedStudentForDelete: null as Student | null,
 		companies: [] as any[],
 		studentsFetched: false,
 		newAssignments: [] as any[],
@@ -160,6 +170,11 @@ export const useAdminStore = defineStore("admin", {
 		setSelectedStudent(student: Student | null) {
 			this.selectedStudent = student;
 		},
+
+		setSelectedStudentForDelete(student: Student | null) {
+			this.selectedStudentForDelete = student;
+		},
+
 		async getProcessInstanceData(student: Student) {
 			try {
 				const response = await ProcessInstance.get(student.process_instance_id);
@@ -322,6 +337,38 @@ export const useAdminStore = defineStore("admin", {
 				return response;
 			} catch (error) {
 				console.log("[admin_store].sendAnAdditionalEmail(): ", error);
+			}
+		},
+		async removeInstanceData() {
+			const data = {
+				process_instance_id: this.selectedStudentForDelete.process_instance_id,
+				id_alokacija: this.selectedStudentForDelete?.process_instance_data?.variables?.id_alokacija,
+				id_preferencije: this.selectedStudentForDelete?.process_instance_data?.variables?.id_preferencije,
+				id_prijavnica: this.selectedStudentForDelete?.process_instance_data?.variables?.id_prijavnica,
+				id_dnevnik_prakse: this.selectedStudentForDelete?.process_instance_data?.variables?.id_dnevnik_prakse,
+			} as InstanceRemovalData;
+
+			console.log("data:::", data);
+
+			try {
+				let process_instance_id = data.process_instance_id;
+
+				const response_engine = await ProcessInstance.removeInstance(process_instance_id);
+
+				let response_baserow = null;
+				if (process_instance_id || data.id_alokacija || data.id_preferencije || data.id_prijavnica || data.id_dnevnik_prakse) {
+					response_baserow = await Admin.completeInstanceRemoval(data);
+				}
+
+				if (response_engine && (response_baserow !== null || data.id_alokacija === undefined)) {
+					snackBarStore.pushMessage("Uspješno izbrisana instanca!", "success");
+					return true;
+				} else {
+					return false;
+				}
+			} catch (error) {
+				console.error("[admin_store].removeInstanceData(): ", error);
+				throw error; // Rethrow the error so it can be handled upstream
 			}
 		},
 	},

@@ -51,8 +51,11 @@ function createAxiosInstance(API_URL) {
 			const response = await AxiosInstance.patch(endpoint, data, { headers });
 			return response.data;
 		},
-		delete: async (endpoint, headers = {}) => {
-			const response = await AxiosInstance.delete(endpoint, { headers });
+		delete: async (endpoint, data = {}, headers = {}) => {
+			const response = await AxiosInstance.delete(endpoint, {
+				headers,
+				data,
+			});
 			return response.data;
 		},
 	};
