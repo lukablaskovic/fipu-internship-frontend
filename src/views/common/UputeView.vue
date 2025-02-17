@@ -1,5 +1,27 @@
 <script setup>
-import { mdiBallot, mdiCalendarRange, mdiChatQuestionOutline, mdiLogin, mdiAlphaACircle, mdiNewBox, mdiAlphaBCircle, mdiEmail, mdiInformation, mdiClipboardText, mdiLaptop, mdiDomain, mdiMapMarker, mdiClipboardTextClockOutline, mdiAccountGroup, mdiSchool, mdiTextLong, mdiXml, mdiThumbsUpDown, mdiClockTimeFiveOutline, mdiNoteTextOutline } from "@mdi/js";
+import {
+	mdiBallot,
+	mdiCalendarRange,
+	mdiChatQuestionOutline,
+	mdiLogin,
+	mdiAlphaACircle,
+	mdiNewBox,
+	mdiAlphaBCircle,
+	mdiEmail,
+	mdiInformation,
+	mdiClipboardText,
+	mdiLaptop,
+	mdiDomain,
+	mdiMapMarker,
+	mdiClipboardTextClockOutline,
+	mdiAccountGroup,
+	mdiSchool,
+	mdiTextLong,
+	mdiXml,
+	mdiThumbsUpDown,
+	mdiClockTimeFiveOutline,
+	mdiNoteTextOutline,
+} from "@mdi/js";
 import { ref, reactive, onMounted, watch, computed } from "vue";
 import SectionMain from "@/components/Section/SectionMain.vue";
 
@@ -66,12 +88,18 @@ onMounted(async () => {
 			<br />
 
 			<SectionTitleLineWithButton :icon="mdiInformation" main title="O praksi"></SectionTitleLineWithButton>
-			<p>Zahvaljujući izvrsnoj suradnji i kontinuiranom angažmanu, studentska praksa na <a href="https://fipu.unipu.hr/" target="_blank" class="text-fipu_blue"> Fakultetu informatike u Puli </a>već se dugi niz godina uspješno provodi. Ovaj oblik praktične nastave omogućava studentima stjecanje vrijednih iskustava i vještina izvan učionice, pružajući im priliku za primjenu stečenog znanja u stvarnim poslovnim situacijama.</p>
+			<p>
+				Zahvaljujući izvrsnoj suradnji i kontinuiranom angažmanu, studentska praksa na <a href="https://fipu.unipu.hr/" target="_blank" class="text-fipu_blue"> Fakultetu informatike u Puli </a>već se dugi niz godina uspješno provodi. Ovaj oblik
+				praktične nastave omogućava studentima stjecanje vrijednih iskustava i vještina izvan učionice, pružajući im priliku za primjenu stečenog znanja u stvarnim poslovnim situacijama.
+			</p>
 			<br />
 
 			<p>Studentima je ovo izborni kolegij i oni koji su prijavljeni, motivirani su i spremni za rad!</p>
 			<br />
-			<p>Kako bismo stvarili učinili jednostavnijima, proces izvođenja prakse odlučili smo automatizirati kroz novu aplikaciju <a href="https://fipu-praksa.unipu.hr/" class="text-fipu_blue" target="_blank">FIPU Praksa</a>. Ova aplikacija rezultat je istraživačkog rada te suradnje između studenata i profesora na Fakultetu informatike u Puli. Temelji se na eksperimentalnom razvoju baziranom na procesnim modelima (BPMN).</p>
+			<p>
+				Kako bismo stvarili učinili jednostavnijima, proces izvođenja prakse odlučili smo automatizirati kroz novu aplikaciju <a href="https://fipu-praksa.unipu.hr/" class="text-fipu_blue" target="_blank">FIPU Praksa</a>. Ova aplikacija rezultat je
+				istraživačkog rada te suradnje između studenata i profesora na Fakultetu informatike u Puli. Temelji se na eksperimentalnom razvoju baziranom na procesnim modelima (BPMN).
+			</p>
 
 			<SectionTitleLineWithButton :icon="mdiChatQuestionOutline" title="Komunikacija"></SectionTitleLineWithButton>
 
@@ -109,7 +137,10 @@ onMounted(async () => {
 			</div>
 
 			<hr class="mb-4" />
-			<p>Postoje dva pristupa za obavljanje prakse: (<b>Model A</b>) ukoliko ste u potrazi za poslodavcem, i (<b>Model B</b>) ako već imate dogovorenu tvrtku kod koje ćete obavljati praktični dio. Studenti moraju prilikom prve prijave u aplikaciji odabrati model prakse koji će izvoditi.</p>
+			<p>
+				Postoje dva pristupa za obavljanje prakse: (<b>Model A</b>) ukoliko ste u potrazi za poslodavcem, i (<b>Model B</b>) ako već imate dogovorenu tvrtku kod koje ćete obavljati praktični dio. Studenti moraju prilikom prve prijave u aplikaciji
+				odabrati model prakse koji će izvoditi.
+			</p>
 			<br />
 			<SectionTitleLineWithButton :icon="mdiAlphaACircle" main title="Model A"> </SectionTitleLineWithButton>
 			<h2 class="my-2 text-xl font-bold underline">Student nema ugovorenu tvrtku</h2>
@@ -129,8 +160,14 @@ onMounted(async () => {
 						</li>
 					</ul>
 				</li>
-				<li>Molimo vas da pričekate dodjelu zadatka od strane voditelja. Voditelj će vam dodijeliti jedan od odabranih zadataka ili će zatražiti da odaberete nove preferencije. Ukoliko ne dobijete odgovor u roku od 10 dana, preporučujemo da kontaktirate voditelja. O konačnom izboru bit ćete obaviješteni putem e-maila.</li>
-				<li>Jednom kad ste alocirani na zadatak, vi i poslodavac bit ćete obaviješteni putem e-maila. Kontaktirajte mentora sa zadatka na koji ste alocirani i recite da ste dobili zadatak za obavljanje studentske prakse, po potrebi obavite intervju ili drugi oblik selekcije, ako to poslodavac traži.</li>
+				<li>
+					Molimo vas da pričekate dodjelu zadatka od strane voditelja. Voditelj će vam dodijeliti jedan od odabranih zadataka ili će zatražiti da odaberete nove preferencije. Ukoliko ne dobijete odgovor u roku od 10 dana, preporučujemo da
+					kontaktirate voditelja. O konačnom izboru bit ćete obaviješteni putem e-maila.
+				</li>
+				<li>
+					Jednom kad ste alocirani na zadatak, vi i poslodavac bit ćete obaviješteni putem e-maila. Kontaktirajte mentora sa zadatka na koji ste alocirani i recite da ste dobili zadatak za obavljanje studentske prakse, po potrebi obavite intervju ili
+					drugi oblik selekcije, ako to poslodavac traži.
+				</li>
 				<li>Jednom kad poslodavac donese odluku, istu <b></b> mora evidentirati putem poveznice na e-mailu koji dobiva. Ako poslodavac ne može pronaći e-mail, molimo da kontaktirate voditelja prakse.</li>
 				<li>
 					Dogovorite s poslodavcem detalje uključujući period izvršavanja prakse.
@@ -159,17 +196,17 @@ onMounted(async () => {
 				<li>Odrađujete dogovor s voditeljem prakse i poduzećem. Model B prijavljujete u situacijama kada:</li>
 				<ul class="ml-8 list-disc">
 					<li>
-						<div class="">već radite u poduzeću</div>
+						<div class="">već radite u poduzeću ili</div>
 					</li>
-					<li>već ste odradili praksu u poduzeću</li>
-					<li>već imate dogovor s poduzećem</li>
+					<li>već ste odradili praksu u poduzeću ili</li>
+					<li>već imate nekakav dogovor s poduzećem</li>
 				</ul>
 				<li><b>Obavezno morate obavijestiti voditelja</b> prakse o dogovorenom načinu izvedbe.</li>
 				<li>Jednom kada to učinite, prijavite se u aplikaciju FIPU Praksa i odaberite izvođenje prakse po <b> Modelu B</b></li>
 				<li>Prijavite poduzeće i zadatak, idealno to čini mentor iz poduzeća</li>
 				<ul class="ml-8 list-disc">
 					<li>
-						Zadatak prijavite
+						Zadatak prijavljujete
 						<div class="inline-flex">na <IconTextLink :to="'/poslodavci/novi-zadatak'" :icon="mdiNewBox" :text="'Prijava zadatka'"></IconTextLink></div>
 					</li>
 					<li>Ako poduzeće nije do sada surađivalo sa Sveučilištem, potrebno je realizirati Ugovor o stručnoj praksi između Sveučilišta i Poduzeća. Javite se voditelju prakse za predložak ugovora.</li>

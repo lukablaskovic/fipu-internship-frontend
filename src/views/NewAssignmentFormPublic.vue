@@ -1,5 +1,21 @@
 <script setup>
-import { mdiBallot, mdiNewBox, mdiEmail, mdiClipboardText, mdiLaptop, mdiDomain, mdiMapMarker, mdiClipboardTextClockOutline, mdiAccountGroup, mdiSchool, mdiTextLong, mdiXml, mdiThumbsUpDown, mdiClockTimeFiveOutline, mdiNoteTextOutline } from "@mdi/js";
+import {
+	mdiBallot,
+	mdiNewBox,
+	mdiEmail,
+	mdiClipboardText,
+	mdiLaptop,
+	mdiDomain,
+	mdiMapMarker,
+	mdiClipboardTextClockOutline,
+	mdiAccountGroup,
+	mdiSchool,
+	mdiTextLong,
+	mdiXml,
+	mdiThumbsUpDown,
+	mdiClockTimeFiveOutline,
+	mdiNoteTextOutline,
+} from "@mdi/js";
 import { ref, reactive, onMounted, watch, computed } from "vue";
 import SectionMain from "@/components/Section/SectionMain.vue";
 
@@ -192,12 +208,18 @@ watch(
 			<hr />
 			<br />
 			<SectionTitleLineWithButton :icon="mdiNewBox" main title="Prijava zadatka"></SectionTitleLineWithButton>
-			<p>Ova prijavnica je namijenjena <u>privatnim i javnim organizacijama</u> koje žele provoditi studentsku praksu u suradnji s <a href="https://fipu.unipu.hr/" target="_blank" class="text-fipu_blue">Fakultetom informatike u Puli</a>. Na temelju ovog upitnika odredit će se idealni studenti za provođenje prakse u Vašem poduzeću.</p>
+			<p>
+				Ova prijavnica je namijenjena <u>privatnim i javnim organizacijama</u> koje žele provoditi studentsku praksu u suradnji s <a href="https://fipu.unipu.hr/" target="_blank" class="text-fipu_blue">Fakultetom informatike u Puli</a>. Na temelju
+				ovog upitnika odredit će se idealni studenti za provođenje prakse u Vašem poduzeću.
+			</p>
 			<br />
 
 			<p>Studentima je ovo izborni kolegij i oni koji su prijavljeni, motivirani su i spremni za rad!</p>
 			<br />
-			<p><b>Važna napomena:</b> Pojedina organizacija može prijaviti i više zadataka. Molimo da za svaki zadatak zasebno popunite prijavnicu (ovaj link) te navedete broj studenata koji može na njemu raditi (npr. može biti 2 zadataka, na prvom 3 studenta, na drugom 4).</p>
+			<p>
+				<b>Važna napomena:</b> Pojedina organizacija može prijaviti i više zadataka. <b>Molimo da za svaki zadatak zasebno popunite prijavnicu</b> (ovaj link) te navedete broj studenata koji može na njemu raditi (npr. može biti 2 zadataka, na prvom 3
+				studenta, na drugom 4).
+			</p>
 			<br />
 			<p>(<b>Model B</b>) Ako ste već udogovoru sa studentom, ili je student već odradio praksu kod Vas, molimo da navedete njegovo ime i prezime u polju "Preferencije pri odabiru studenta" te detaljno opišete zadatak.</p>
 
@@ -205,7 +227,7 @@ watch(
 			<p><b>Niste sigurni što su Modeli A i B?</b> <router-link class="text-fipu_blue" to="/upute">Proučite kako izvodimo praksu na FIPU.</router-link></p>
 
 			<br />
-			<p>Za sve dodatne informacije slobodno kontaktirajte voditelja stručne prakse:</p>
+			<p>Za sve dodatne informacije slobodno kontaktirajte voditelja stručne prakse.</p>
 
 			<br />
 
@@ -232,15 +254,34 @@ watch(
 					<CardBoxComponentTitle class="text-center" title="💼 Prijava projekta za studentsku praksu " />
 
 					<FormField label="Poduzeće partner*" horizontal>
-						<FormCombobox :disabled="form.Poslodavac_novi_naziv" v-model="form.Poslodavac" :important="triggered && form.Poslodavac == '' && form.Poslodavac_novi_naziv == ''" :list="mappedCompanies" labelName="label" emitName="label" help="Ako niste partner, unesite naziv poduzeća ispod." />
+						<FormCombobox
+							:disabled="form.Poslodavac_novi_naziv"
+							v-model="form.Poslodavac"
+							:important="triggered && form.Poslodavac == '' && form.Poslodavac_novi_naziv == ''"
+							:list="mappedCompanies"
+							labelName="label"
+							emitName="label"
+							help="Ako niste partner, unesite naziv poduzeća ispod." />
 					</FormField>
 
 					<FormField label="Naziv poduzeća*" horizontal>
-						<FormControl :disabled="form.Poslodavac != ''" v-model="form.Poslodavac_novi_naziv" :icon-left="mdiDomain" help="Ovdje unesite naziv poduzeća ako ste novi partner (nema vas u dropdown obrascu iznad)" :error="getFirstErrorForField(v$, 'Poslodavac_novi_naziv')" placeholder="Naziv poduzeća" />
+						<FormControl
+							:disabled="form.Poslodavac != ''"
+							v-model="form.Poslodavac_novi_naziv"
+							:icon-left="mdiDomain"
+							help="Ovdje unesite naziv poduzeća ako ste novi partner (nema vas u dropdown obrascu iznad)"
+							:error="getFirstErrorForField(v$, 'Poslodavac_novi_naziv')"
+							placeholder="Naziv poduzeća" />
 					</FormField>
 
 					<FormField label="Kontakt email*" horizontal>
-						<FormControl v-model="form.poslodavac_email" :icon-left="mdiEmail" type="email" :error="getFirstErrorForField(v$, 'poslodavac_email')" help="E-mail adresa pri kojoj će se student obratiti oko dogovora za izvođenje studentske prakse ili provedbu selekcije. Ne mora nužno biti budući mentor." placeholder="Vaš kontakt email" />
+						<FormControl
+							v-model="form.poslodavac_email"
+							:icon-left="mdiEmail"
+							type="email"
+							:error="getFirstErrorForField(v$, 'poslodavac_email')"
+							help="E-mail adresa pri kojoj će se student obratiti oko dogovora za izvođenje studentske prakse ili provedbu selekcije. Ne mora nužno biti budući mentor."
+							placeholder="Vaš kontakt email" />
 					</FormField>
 
 					<BaseDivider />
@@ -270,12 +311,26 @@ watch(
 
 					<FormField label="Broj studenata*" horizontal>
 						<FormField addons>
-							<FormControl v-model="form.broj_studenata" type="number" :icon-left="mdiAccountGroup" :error="getFirstErrorForField(v$, 'broj_studenata')" :min="1" placeholder="Maksimalni broj studenata" help="Koliko studenata možete primiti u rješavanju ovog zadatka? Studenti mogu raditi odvojeno ili u timu. Ako imate više zadataka, molimo da popunite formu za svaki zadatak zasebno." expanded />
+							<FormControl
+								v-model="form.broj_studenata"
+								type="number"
+								:icon-left="mdiAccountGroup"
+								:error="getFirstErrorForField(v$, 'broj_studenata')"
+								:min="1"
+								placeholder="Maksimalni broj studenata"
+								help="Koliko studenata možete primiti u rješavanju ovog zadatka? Studenti mogu raditi odvojeno ili u timu. Ako imate više zadataka, molimo da popunite formu za svaki zadatak zasebno."
+								expanded />
 						</FormField>
 					</FormField>
 
 					<FormField label="Preferencije pri odabiru studenta" horizontal>
-						<FormControl v-model="form.preferencije_za_studenta" type="textarea" :error="getFirstErrorForField(v$, 'preferencije_za_studenta')" placeholder="Poželjni kandidat posjeduje znanja iz... mora imati iskustva u..." :icon-left="mdiThumbsUpDown" help="U koliko smatrate važnim, opišite odlike poželjnog kandidata na praksi. Ako već imate dogovor sa studentom, navedite ovdje njegovo ime i prezime." />
+						<FormControl
+							v-model="form.preferencije_za_studenta"
+							type="textarea"
+							:error="getFirstErrorForField(v$, 'preferencije_za_studenta')"
+							placeholder="Poželjni kandidat posjeduje znanja iz... mora imati iskustva u..."
+							:icon-left="mdiThumbsUpDown"
+							help="U koliko smatrate važnim, opišite odlike poželjnog kandidata na praksi. Ako već imate dogovor sa studentom, navedite ovdje njegovo ime i prezime." />
 					</FormField>
 
 					<FormField label="Potrebna infrastruktura koju student mora posjedovati" horizontal>
@@ -301,10 +356,18 @@ watch(
 					</FormField>
 
 					<FormField label="Željeno okvirno vrijeme početka" horizontal>
-						<FormControl v-model="form.zeljeno_okvirno_vrijeme_pocetka" :icon-left="mdiClipboardTextClockOutline" :error="getFirstErrorForField(v$, 'zeljeno_okvirno_vrijeme_pocetka')" placeholder="npr. Veljača 2024." help="Praksa se mora obaviti najkasnije do 1. rujna sljedeće godine." />
+						<FormControl
+							v-model="form.zeljeno_okvirno_vrijeme_pocetka"
+							:icon-left="mdiClipboardTextClockOutline"
+							:error="getFirstErrorForField(v$, 'zeljeno_okvirno_vrijeme_pocetka')"
+							placeholder="npr. Veljača 2024."
+							help="Praksa se mora obaviti najkasnije do 1. rujna sljedeće godine." />
 					</FormField>
 
-					<FormField label="Angažman nastavnika s FIPU*" help="Po želji, nastavno osoblje FIPU-a može pomoći pri izvođenju prakse na način da oni dijelom (ili u potpunosti) mentoriraju studenta. Moguće je čak da student u našem laboratoriju obavlja praksu, te povremeno dolazi prezentirati učinjeno." horizontal>
+					<FormField
+						label="Angažman nastavnika s FIPU*"
+						help="Po želji, nastavno osoblje FIPU-a može pomoći pri izvođenju prakse na način da oni dijelom (ili u potpunosti) mentoriraju studenta. Moguće je čak da student u našem laboratoriju obavlja praksu, te povremeno dolazi prezentirati učinjeno."
+						horizontal>
 						<FormCheckRadioGroup v-model="form.angazman_selekcija" :error="getFirstErrorForField(v$, 'angazman_selekcija')" name="angazman_selection" type="radio" :options="angazmanSelect" component-class="check-radio-warning" />
 					</FormField>
 
@@ -325,7 +388,12 @@ watch(
 					</FormField>
 
 					<FormField v-if="form.selekcija === true" label="Proces selekcije" horizontal>
-						<FormControl v-model="form.proces_selekcije" :error="getFirstErrorForField(v$, 'proces_selekcije')" type="textarea" :disabled="form.selekcija === false" help="Molimo da opišete postupak selekcije, kako bi studenti znali što otprilike očekivati." />
+						<FormControl
+							v-model="form.proces_selekcije"
+							:error="getFirstErrorForField(v$, 'proces_selekcije')"
+							type="textarea"
+							:disabled="form.selekcija === false"
+							help="Molimo da opišete postupak selekcije, kako bi studenti znali što otprilike očekivati." />
 					</FormField>
 
 					<FormField horizontal grouped>
