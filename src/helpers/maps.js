@@ -259,7 +259,25 @@ class UserTaskMappings {
 	}
 }
 
-import { mdiRayStartArrow, mdiClipboardCheck, mdiNumeric, mdiHandshake, mdiProgressClock, mdiCheck, mdiThumbsUpDownOutline, mdiNoteCheck, mdiAccountTie, mdiNotebook, mdiFileDocumentPlus, mdiRayEnd, mdiContentSaveOutline, mdiApi, mdiEmailArrowRight, mdiCertificate, mdiCancel } from "@mdi/js";
+import {
+	mdiRayStartArrow,
+	mdiClipboardCheck,
+	mdiNumeric,
+	mdiHandshake,
+	mdiProgressClock,
+	mdiCheck,
+	mdiThumbsUpDownOutline,
+	mdiNoteCheck,
+	mdiAccountTie,
+	mdiNotebook,
+	mdiFileDocumentPlus,
+	mdiRayEnd,
+	mdiContentSaveOutline,
+	mdiApi,
+	mdiEmailArrowRight,
+	mdiCertificate,
+	mdiCancel,
+} from "@mdi/js";
 
 import { endpoints } from "@/config";
 
@@ -430,7 +448,21 @@ class ActivityEventMappings {
 		},
 	];
 
-	static skipEvents = ["spremanje_alokacija", "odabir_prihvacen", "uzimanje_podataka_o_poslodavcu_student", "spremanje_zahtjeva_profesor_ponistio", "obavjestavanje_poslodavca_nakon_alokacije", "obavjestavanje_studenta_nakon_alokacije", "obavjestavanje_studenta_nakon_ponistavanja_email", "student_prihvacen", "obavjestavanje_studenta_nakon_prihvacanja_email", "azuriranje_podataka_profesor", "slanje_potvrde_student_email", "slanje_potvrde_mentor_email", "spremanje_dnevnika"];
+	static skipEvents = [
+		"spremanje_alokacija",
+		"odabir_prihvacen",
+		"uzimanje_podataka_o_poslodavcu_student",
+		"spremanje_zahtjeva_profesor_ponistio",
+		"obavjestavanje_poslodavca_nakon_alokacije",
+		"obavjestavanje_studenta_nakon_alokacije",
+		"obavjestavanje_studenta_nakon_ponistavanja_email",
+		"student_prihvacen",
+		"obavjestavanje_studenta_nakon_prihvacanja_email",
+		"azuriranje_podataka_profesor",
+		"slanje_potvrde_student_email",
+		"slanje_potvrde_mentor_email",
+		"spremanje_dnevnika",
+	];
 
 	static isGatewayEvent(activityId) {
 		return activityId.startsWith("Gateway_");

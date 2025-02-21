@@ -234,6 +234,12 @@ function toggleSortDirection(column) {
 		sortDirection.value = "asc";
 	}
 }
+
+watch(studentsPaginated, (newList) => {
+	if (newList.length === 0 && numPages.value > 1) {
+		currentPage.value = 0;
+	}
+});
 </script>
 
 <template>

@@ -128,6 +128,18 @@ const toggleBetweenModelsFilter = () => {
 	} else {
 		adminStore.filterModelState = "A";
 	}
+
+	let newModel = adminStore.filterModelState;
+
+	const query = { ...route.query };
+
+	if (!newModel || newModel === "AB") {
+		delete query.model;
+	} else {
+		query.model = newModel;
+	}
+
+	router.replace({ query });
 };
 
 const toggleBetweenInternshipStages = () => {
@@ -139,6 +151,16 @@ const toggleBetweenInternshipStages = () => {
 	} else {
 		adminStore.filterInternshipStage = "ceka_alokaciju";
 	}
+	let newStage = adminStore.filterInternshipStage;
+	const query = { ...route.query };
+
+	if (!newStage || newStage === "all") {
+		delete query.stage;
+	} else {
+		query.stage = newStage;
+	}
+
+	router.replace({ query });
 };
 
 let email_postData = ref(null);
@@ -215,7 +237,7 @@ onMounted(loadDataForStudent);
 		<LayoutAuthenticated v-if="mainStore.userAuthenticated">
 			<SectionMain>
 				<SectionTitleLineWithButton :icon="mdiAccountMultiple" title="Studenti u procesu prakse" button-enabled main @click="bpmn_help_modal = true"> </SectionTitleLineWithButton>
-				<div class="flex flex-row">
+				<div class="flex flex-wrap">
 					<div class="mb-4">
 						<PillTag
 							class="cursor-pointer"
