@@ -264,7 +264,7 @@ watch(
 							help="Ako niste partner, unesite naziv organizacije ispod." />
 					</FormField>
 
-					<div class="mb-12">ili</div>
+					<div class="mb-4 sm:mb-12">ili</div>
 
 					<FormField label="Naziv organizacije*" horizontal>
 						<FormControl
