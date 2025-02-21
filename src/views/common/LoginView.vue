@@ -34,7 +34,7 @@
 					</div>
 					<!-- Content paragraphs -->
 
-					<p class="mx-auto mb-4 max-w-md p-2 py-8 text-center text-lg text-gray-600 sm:mb-5 sm:max-w-2xl sm:p-0 lg:text-lg">Molimo prijavite se kako biste pregledali stanje vaše prakse ili prijavili zadatke.</p>
+					<p class="mx-auto mb-4 max-w-md p-2 py-8 text-center text-lg text-gray-600 sm:mb-5 sm:max-w-2xl sm:p-0 lg:text-lg">Prijavite se kako biste pregledali stanje vaše prakse ili prijavili zadatke.</p>
 
 					<div class="mb-4 flex w-full justify-center sm:my-6">
 						<GoogleLogin :callback="callback" />
