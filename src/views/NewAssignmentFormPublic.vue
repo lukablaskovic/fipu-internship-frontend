@@ -253,7 +253,7 @@ watch(
 				<CardBox :icon="mdiBallot" class="mb-6 lg:col-span-2 lg:mb-0 xl:col-span-3" is-form @submit.prevent="onSubmit">
 					<CardBoxComponentTitle class="text-center" title="💼 Prijava projekta za studentsku praksu " />
 
-					<FormField label="Poduzeće partner*" horizontal>
+					<FormField label="Postojeći partner*" horizontal>
 						<FormCombobox
 							:disabled="form.Poslodavac_novi_naziv"
 							v-model="form.Poslodavac"
@@ -261,17 +261,19 @@ watch(
 							:list="mappedCompanies"
 							labelName="label"
 							emitName="label"
-							help="Ako niste partner, unesite naziv poduzeća ispod." />
+							help="Ako niste partner, unesite naziv organizacije ispod." />
 					</FormField>
 
-					<FormField label="Naziv poduzeća*" horizontal>
+					<div class="mb-12">ili</div>
+
+					<FormField label="Naziv organizacije*" horizontal>
 						<FormControl
 							:disabled="form.Poslodavac != ''"
 							v-model="form.Poslodavac_novi_naziv"
 							:icon-left="mdiDomain"
-							help="Ovdje unesite naziv poduzeća ako ste novi partner (nema vas u dropdown obrascu iznad)"
+							help="Ovdje unesite naziv organizacije ako ste novi partner (nema vas u dropdown obrascu iznad)"
 							:error="getFirstErrorForField(v$, 'Poslodavac_novi_naziv')"
-							placeholder="Naziv poduzeća" />
+							placeholder="Naziv organizacije" />
 					</FormField>
 
 					<FormField label="Kontakt email*" horizontal>
@@ -305,7 +307,7 @@ watch(
 							:error="getFirstErrorForField(v$, 'preferirane_tehnologije')"
 							:placeholder="`npr. PHP, Laravel, Python, Django, JavaScript, Vue.js, Unity, WordPress, TensorFlow...`"
 							:icon-left="mdiXml"
-							help="Što sve koristi vaša tvrtka ili na čemu će se temeljiti rad studenta? Navedite konkretne tehnologije.
+							help="Što sve koristi vaša organizacija ili na čemu će se temeljiti rad studenta? Navedite konkretne tehnologij/programske jezike, razvojne okvire...
 " />
 					</FormField>
 
@@ -328,7 +330,7 @@ watch(
 							v-model="form.preferencije_za_studenta"
 							type="textarea"
 							:error="getFirstErrorForField(v$, 'preferencije_za_studenta')"
-							placeholder="Poželjni kandidat posjeduje znanja iz... mora imati iskustva u..."
+							placeholder="Poželjni kandidat posjeduje znanja iz... mora imati iskustva u... (model A) ILI ime i prezime željenog studenta (model B)"
 							:icon-left="mdiThumbsUpDown"
 							help="U koliko smatrate važnim, opišite odlike poželjnog kandidata na praksi. Ako već imate dogovor sa studentom, navedite ovdje njegovo ime i prezime." />
 					</FormField>
@@ -360,8 +362,8 @@ watch(
 							v-model="form.zeljeno_okvirno_vrijeme_pocetka"
 							:icon-left="mdiClipboardTextClockOutline"
 							:error="getFirstErrorForField(v$, 'zeljeno_okvirno_vrijeme_pocetka')"
-							placeholder="npr. Veljača 2024."
-							help="Praksa se mora obaviti najkasnije do 1. rujna sljedeće godine." />
+							placeholder="npr. Svibanj 2025."
+							help="Praksa se mora obaviti najkasnije do 15. rujna 2025." />
 					</FormField>
 
 					<FormField

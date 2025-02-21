@@ -15,6 +15,10 @@
 					<SelectProcessButton button="B" :hoveredButton="hoveredButton" :selectedProcess="selectedProcess" :hoverTexts="hoverTexts.B" @click.prevent="selectProcess('B')" @mouseover="hoveredButton = 'B'" @mouseleave="hoveredButton = ''" />
 				</div>
 
+				<div class="mb-12 mt-4 flex flex-col justify-center space-y-4 px-6 sm:flex-row sm:space-x-4 sm:space-y-0">
+					<p>Niste sigurni što odabrati? Prije odabira <router-link class="text-fipu_blue" to="/upute">proučite kako izvodimo praksu na FIPU.</router-link></p>
+				</div>
+
 				<div class="mb-6 grid grid-cols-1 gap-6">
 					<CardBox :icon="mdiBallot" class="mb-6 lg:col-span-2 lg:mb-0 xl:col-span-3" is-form @submit.prevent="onSubmit">
 						<FormField label="Ime i prezime" horizontal>

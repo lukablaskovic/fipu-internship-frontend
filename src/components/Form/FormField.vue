@@ -1,7 +1,7 @@
 <script setup>
+import FormFieldHelp from "@/components/Premium/FormFieldHelp.vue";
 import { controlTextColor } from "@/colorsPremium.js";
 import { computed, useSlots } from "vue";
-import FormFieldHelp from "@/components/Premium/FormFieldHelp.vue";
 
 const props = defineProps({
 	label: {
@@ -92,14 +92,20 @@ const labelClass = computed(() => {
 
 	return base;
 });
+
+const formattedLabel = computed(() => {
+	if (!props.label) return "";
+	// Replace * with a red-colored span
+	return props.label.replace(/\*/g, '<span class="text-red-500">*</span>');
+});
 </script>
 
 <template>
 	<div class="grid grid-cols-1 last:mb-0" :class="upperWrapperClass">
-		<label v-if="label" class="block font-bold mb-2" :class="labelClass">{{ label }}</label>
+		<label v-if="label" class="mb-2 block font-bold" :class="labelClass" v-html="formattedLabel"></label>
 		<div :class="wrapperClass">
 			<slot />
 		</div>
-		<FormFieldHelp class="mt-1" :class="{ 'lg:col-start-2 lg:col-span-4 lg:-mt-5': horizontal }" :help="help" :error="error" :success="success" />
+		<FormFieldHelp class="mt-1" :class="{ 'lg:col-span-4 lg:col-start-2 lg:-mt-5': horizontal }" :help="help" :error="error" :success="success" />
 	</div>
 </template>

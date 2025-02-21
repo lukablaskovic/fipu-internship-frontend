@@ -168,7 +168,7 @@ onMounted(async () => {
 					Jednom kad ste alocirani na zadatak, vi i poslodavac bit ćete obaviješteni putem e-maila. Kontaktirajte mentora sa zadatka na koji ste alocirani i recite da ste dobili zadatak za obavljanje studentske prakse, po potrebi obavite intervju ili
 					drugi oblik selekcije, ako to poslodavac traži.
 				</li>
-				<li>Jednom kad poslodavac donese odluku, istu <b></b> mora evidentirati putem poveznice na e-mailu koji dobiva. Ako poslodavac ne može pronaći e-mail, molimo da kontaktirate voditelja prakse.</li>
+				<li>Jednom kad poslodavac donese odluku, isto <b></b> mora evidentirati putem poveznice na e-mailu koji dobiva. Ako poslodavac ne može pronaći e-mail, molimo da kontaktirate voditelja prakse.</li>
 				<li>
 					Dogovorite s poslodavcem detalje uključujući period izvršavanja prakse.
 					<ul class="ml-8 list-disc">
