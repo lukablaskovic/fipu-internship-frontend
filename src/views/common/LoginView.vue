@@ -41,7 +41,7 @@
 					</div>
 
 					<p class="mx-auto mb-4 max-w-md text-center text-lg font-light text-gray-600 sm:mb-5 sm:max-w-2xl sm:p-0 lg:text-lg">
-						Ako želite samo pregledati dostupne zadatke i poduzeća, možete nastaviti kao<a class="hover-underline-animation cursor-pointer text-fipu_text_blue hover:text-fipu_blue" @click="router.push('/moja-praksa')"> gost. </a>
+						Ako želite samo pregledati dostupne zadatke i poduzeća, možete nastaviti kao <a class="hover-underline-animation cursor-pointer text-fipu_text_blue hover:text-fipu_blue" @click="router.push('/moja-praksa')"> gost. </a>
 					</p>
 
 					<p class="mb-0 p-2 text-left text-center text-lg font-light text-gray-600 sm:mb-3 sm:p-0 lg:text-lg">
