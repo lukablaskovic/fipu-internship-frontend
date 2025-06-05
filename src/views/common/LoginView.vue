@@ -37,7 +37,7 @@
 					<p class="mx-auto mb-4 max-w-md p-2 py-8 text-center text-lg text-gray-600 sm:mb-5 sm:max-w-2xl sm:p-0 lg:text-lg">Prijavite se kako biste pregledali stanje vaše prakse ili prijavili zadatke.</p>
 
 					<div class="mb-4 flex w-full justify-center sm:my-6">
-						<GoogleLogin :callback="callback" />
+						<GoogleLogin :callback="loginCallback" />
 					</div>
 
 					<p class="mx-auto mb-4 max-w-md text-center text-lg font-light text-gray-600 sm:mb-5 sm:max-w-2xl sm:p-0 lg:text-lg">
@@ -59,6 +59,7 @@
 		</div>
 		<hr class="block w-full sm:hidden" />
 
+		<!-- Logo at the bottom, centered on mobile -->
 		<div class="flex justify-center sm:hidden">
 			<a href="https://fipu.unipu.hr/" target="_blank" class="w-max">
 				<img :src="fipu_unipu" alt="Fakultet informatike u Puli - logotip" class="h-24 object-contain p-2" />
@@ -161,22 +162,34 @@ const startBounce = () => {
 	}, 2000);
 };
 
-const callback = async (response) => {
-	const decodedToken = decodeCredential(response.credential);
+const loginCallback = async (response) => {
+	try {
+		const decodedToken = decodeCredential(response.credential);
 
-	if (!decodedToken) {
-		snackBarStore.pushMessage("Prijava nije uspjela! Molimo kontaktirajte voditelja prakse.", "error");
-		return;
-	}
-	if (isUnipuEmail(decodedToken.email) || decodedToken.email === "lukablaskovic2000@gmail.com") {
-		let response = await mainStore.handleLogin(decodedToken);
-		let ime = decodedToken.given_name || "";
-		let prezime = decodedToken.family_name || "";
+		if (!decodedToken) {
+			snackBarStore.pushMessage("Prijava nije uspjela! Molimo kontaktirajte voditelja prakse.", "error");
+			return;
+		}
+		if (isUnipuEmail(decodedToken.email) || decodedToken.email === "lukablaskovic2000@gmail.com") {
+			const result = await mainStore.handleLogin(decodedToken);
+			if (result.status === "success") {
+				const ime = decodedToken.given_name || "";
+				const prezime = decodedToken.family_name || "";
+				snackBarStore.pushMessage(`Dobrodošli, ${ime} ${prezime}!`, "success");
 
-		if (response.status === "success") snackBarStore.pushMessage(`Dobrodošli, ${ime} ${prezime}!`, "success");
-		await Utils.wait(1);
-	} else {
-		snackBarStore.pushMessage("Molimo koristite UNIPU e-mail za prijavu", "warning");
+				// Add a small delay to allow browser state to settle before reload
+				await new Promise((resolve) => setTimeout(resolve, 500));
+
+				window.location.href = router.currentRoute.value.fullPath;
+			} else {
+				snackBarStore.pushMessage("Prijava nije uspjela! Molimo pokušajte ponovno.", "error");
+			}
+		} else {
+			snackBarStore.pushMessage("Molimo koristite UNIPU e-mail za prijavu", "warning");
+		}
+	} catch (error) {
+		console.error("Login error:", error);
+		snackBarStore.pushMessage("Prijava nije uspjela! Molimo pokušajte ponovno.", "error");
 	}
 };
 </script>

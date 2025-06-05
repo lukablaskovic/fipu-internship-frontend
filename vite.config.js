@@ -26,6 +26,10 @@ export default defineConfig({
 		hmr: {
 			overlay: false,
 		},
+		headers: {
+			"Cross-Origin-Opener-Policy": "unsafe-none",
+			"Cross-Origin-Embedder-Policy": "unsafe-none",
+		},
 	},
 	build: {
 		rollupOptions: {

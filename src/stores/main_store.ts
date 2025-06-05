@@ -119,13 +119,13 @@ export const useMainStore = defineStore("main", {
 				if (response_student.data.count === 0) {
 					response = await Student.create(student_data);
 					await this.fetchCurrentUser();
-					router.push("/odabir-procesa");
+					await router.push("/odabir-procesa");
 				} else {
 					await this.fetchCurrentUser();
 
 					// If admin is logged in, redirect to dashboard
 					if (this.userAdmin) {
-						router.push("/dashboard");
+						await router.push("/dashboard");
 					}
 					// if student is logged in, check if they have an active process instance
 					else {
@@ -134,21 +134,22 @@ export const useMainStore = defineStore("main", {
 						if (processInstance) {
 							const pendingProcessTask = await studentStore.getPendingUserTask(processInstance);
 							if (this.userHasActiveInstance) {
-								router.push("/moja-praksa");
+								await router.push("/moja-praksa");
 							} else {
-								router.push("/odabir-procesa");
+								await router.push("/odabir-procesa");
 							}
 						}
 						// No active process instance, so redirect to odabir-procesa
 						else {
-							router.push("/odabir-procesa");
+							await router.push("/odabir-procesa");
 						}
 					}
 					response = response_student.data.results[0];
 				}
 				return { status: "success", data: response };
 			} catch (error) {
-				console.log("status:", error);
+				console.error("Login error:", error);
+				return { status: "error", error };
 			}
 		},
 
