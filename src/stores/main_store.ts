@@ -12,7 +12,7 @@ export interface Assignment {
 
 export const useMainStore = defineStore("main", {
 	state: () => ({
-		praksa_version: "v1.1.2",
+		praksa_version: "v1.2.0",
 		academicYear: "2024/2025",
 		voditelj_prakse: "doc. dr. sc. Ivan Lorencin",
 
@@ -88,10 +88,7 @@ export const useMainStore = defineStore("main", {
 					avatar: data.avatar,
 					baserow_id: data.id,
 					loggedAt: new Date(),
-					internship_process: {
-						id: data.process_instance_id,
-						pending_user_task: data.pending_user_task || null,
-					},
+					internship_process: { id: data.process_instance_id, pending_user_task: data.pending_user_task || null },
 					model_prakse: data.Model_prakse,
 				});
 			} catch (error) {
@@ -203,7 +200,7 @@ export const useMainStore = defineStore("main", {
 			this.error = null;
 			try {
 				const result = await Guest.fetchAvailableAssignments();
-				this.assignments = result.results;
+				this.assignments = result.data.results;
 				return this.assignments;
 			} catch (e: any) {
 				this.error = e.message;
@@ -228,10 +225,7 @@ export const useMainStore = defineStore("main", {
 		},
 
 		async submitNewInternshipProject(formData: any) {
-			const postData = {
-				...formData,
-				Poslodavac: [] as string[],
-			};
+			const postData = { ...formData, Poslodavac: [] as string[] };
 
 			if (formData.Poslodavac) {
 				postData.Poslodavac = [formData.Poslodavac];
@@ -255,9 +249,5 @@ export const useMainStore = defineStore("main", {
 			}
 		},
 	},
-	persist: {
-		storage: sessionStorage,
-		omit: ["assignments", "checkedAssignments"],
-		debug: true,
-	},
+	persist: { storage: sessionStorage, omit: ["assignments", "checkedAssignments"], debug: true },
 });

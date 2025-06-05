@@ -66,8 +66,8 @@ onMounted(async () => {
 			<SectionMain>
 				<SectionTitleLineWithButton class="mt-4" :icon="mdiChartTimeline" title="Stanje procesa" main> </SectionTitleLineWithButton>
 				<div class="hidden sm:block">
-					<p class="mb-4">Ispod možete vidjeti BPMN graf koji prikazuje <b> aktualno stanje</b> vašeg procesa prakse.</p>
-					<p class="mb-4">Ako se graf ne iscrtava, ili se ne prikazuje napredak u boji, pokušajte refreshati :)</p>
+					<p class="mb-4">Ispod možete vidjeti BPMN graf koji prikazuje aktualno stanje vašeg procesa prakse.</p>
+					<p>Pronašli ste pogrešku? Molimo da kontaktirate voditelja prakse.</p>
 					<CardBox v-if="adminStore.studentsFetched && !adminStore.students.length">
 						<CardBoxComponentEmpty />
 					</CardBox>

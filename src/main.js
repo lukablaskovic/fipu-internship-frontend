@@ -16,7 +16,6 @@ import { useLayoutStore } from "@/stores/layout_store.ts";
 import { useStyleStore } from "@/stores/style_store.ts";
 import { useAdminStore } from "@/stores/admin_store.ts";
 import { useMainStore } from "@/stores/main_store.ts";
-
 import { styleKey } from "@/config.js";
 
 import NotificationBar from "@/components/Notification/NotificationBar.vue";

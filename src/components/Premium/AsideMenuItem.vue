@@ -1,6 +1,5 @@
 <script setup>
 import AsideMenuList from "@/components/Premium/AsideMenuList.vue";
-import UpdateMark from "@/components/Premium/UpdateMark.vue";
 import { mdiMinus, mdiPlus, mdiChevronRight } from "@mdi/js";
 import BaseIcon from "@/components/Base/BaseIcon.vue";
 import { getButtonColor } from "@/colors.js";
@@ -75,19 +74,27 @@ const menuClick = (event) => {
 		isDropdownActive.value = !isDropdownActive.value;
 	}
 };
-
-const updateMarkPosition = computed(() => {
-	const base = "top-0.5 right-4";
-
-	return props.isCompact ? `${base} lg:right-6` : base;
-});
 </script>
 
 <template>
 	<li>
-		<component :is="item.to ? RouterLink : 'a'" v-slot="vSlot" :to="item.to ?? null" :href="item.href ?? null" :target="item.target ?? null" :exact-active-class="activeSecondaryMenuKey ? null : asideMenuItemActiveBgStyle" class="flex cursor-pointer" :class="componentClass" @click="menuClick">
-			<BaseIcon v-if="item.icon" :path="item.icon" class="flex-none transition-size" :class="[vSlot && vSlot.isExactActive ? asideMenuItemActiveStyle : asideMenuItemInactiveStyle, { relative: item.updateMark }]" :w="isCompact ? 'w-16 lg:w-20' : 'w-16'" :size="18">
-				<UpdateMark v-if="item.updateMark" :color="item.updateMark" :position="updateMarkPosition" />
+		<component
+			:is="item.to ? RouterLink : 'a'"
+			v-slot="vSlot"
+			:to="item.to ?? null"
+			:href="item.href ?? null"
+			:target="item.target ?? null"
+			:exact-active-class="activeSecondaryMenuKey ? null : asideMenuItemActiveBgStyle"
+			class="flex cursor-pointer"
+			:class="componentClass"
+			@click="menuClick">
+			<BaseIcon
+				v-if="item.icon"
+				:path="item.icon"
+				class="flex-none transition-size"
+				:class="[vSlot && vSlot.isExactActive ? asideMenuItemActiveStyle : asideMenuItemInactiveStyle, { relative: item.updateMark }]"
+				:w="isCompact ? 'w-16 lg:w-20' : 'w-16'"
+				:size="18">
 			</BaseIcon>
 			<span class="line-clamp-1 grow animate-fade-in text-ellipsis" :class="[{ 'lg:hidden': isCompact, 'pr-12': !hasSub }, vSlot && vSlot.isExactActive ? asideMenuItemActiveStyle : asideMenuItemInactiveStyle]">{{ item.label }}</span>
 			<BaseIcon v-if="hasSub" :path="subIcon" class="flex-none animate-fade-in-fast" :class="[{ 'lg:hidden': isCompact }, vSlot && vSlot.isExactActive ? asideMenuItemActiveStyle : asideMenuItemInactiveStyle]" w="w-12" />

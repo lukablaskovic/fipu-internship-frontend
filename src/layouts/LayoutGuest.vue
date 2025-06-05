@@ -4,7 +4,7 @@ import { useRouter } from "vue-router";
 import { styleStore } from "@/main.js";
 import { computed } from "vue";
 
-import menuAsideGuest from "@/menus/menuAsideGuest.js";
+import menuAsideGuest from "@/menus/menuAsideGuest";
 
 import BaseIcon from "@/components/Base/BaseIcon.vue";
 

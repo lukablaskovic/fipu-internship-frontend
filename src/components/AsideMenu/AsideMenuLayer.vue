@@ -16,7 +16,6 @@
 import AsideMenuList from "@/components/AsideMenu/AsideMenuList.vue";
 import { mainStore, styleStore } from "@/main.js";
 import { useRouter } from "vue-router";
-import { ref } from "vue"; // Import ref for reactive properties
 
 const router = useRouter();
 defineProps({
@@ -34,7 +33,7 @@ defineProps({
 	},
 	isCompact: {
 		type: Boolean,
-		default: false, // Add default for isCompact
+		default: false,
 	},
 });
 

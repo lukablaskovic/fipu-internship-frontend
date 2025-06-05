@@ -1,13 +1,13 @@
 <script setup>
 import AsideMenuList from "@/components/AsideMenu/AsideMenuList.vue";
-import UpdateMark from "@/components/Premium/UpdateMark.vue";
+
 import { mdiMinus, mdiPlus, mdiChevronRight } from "@mdi/js";
 import BaseIcon from "@/components/Base/BaseIcon.vue";
-import { adminStore, styleStore } from "@/main.js";
 import { getButtonColor } from "@/colors.js";
 import { ref, computed, watch } from "vue";
 import { RouterLink } from "vue-router";
 import { layoutStore } from "@/main.js";
+import { styleStore } from "@/main.js";
 
 const props = defineProps({
 	item: {
@@ -45,7 +45,7 @@ const isSecondaryMenuActive = computed(() => props.activeSecondaryMenuKey && pro
 const hasColor = computed(() => props.item && props.item.color);
 
 const componentClass = computed(() => {
-	const base = [props.isDropdownList ? "py-3 px-6 text-sm" : "py-3", hasColor.value ? getButtonColor(props.item.color, false, true) : `${styleStore.asideMenuItemStyle} dark:hover:bg-gray-700/50`];
+	const base = [props.isDropdownList ? "py-3 px-6 text-sm" : "py-3", hasColor.value ? getButtonColor(props.item.color, false, true) : `${styleStore.asideMenuItemStyle} dark:hover:bg-gray-700/75`];
 
 	if (!hasColor.value && (isDropdownActive.value || isSecondaryMenuActive.value)) {
 		base.push(asideMenuItemActiveBgStyle.value);
@@ -93,14 +93,26 @@ const menuClick = (event) => {
 			:to="item.to ?? null"
 			:href="item.href ?? null"
 			:target="item.target ?? null"
-			:exact-active-class="activeSecondaryMenuKey ? null : asideMenuItemActiveBgStyle"
-			class="flex cursor-pointer transition-all duration-150"
-			:class="[componentClass, isCompact ? 'justify-center' : 'justify-start', item.color == 'info' ? 'hover:bg-fipu_dark_blue' : 'hover:bg-gray-900/75']">
-			<BaseIcon v-if="item.icon" :path="item.icon" class="flex-none transition-all duration-300" :w="isCompact ? 'w-8 lg:w-16' : 'w-8'" :size="item.size ? item.size : 18" :class="[vSlot && vSlot.isExactActive ? asideMenuItemActiveStyle : asideMenuItemInactiveStyle, { relative: item.updateMark }, item.color == 'info' ? 'text-slate-800' : '']">
-				<UpdateMark v-if="item.updateMark && (adminStore.dashboard_data.waiting_for_allocation > 0 || adminStore.dashboard_data.b_waiting_for_assignment_approval > 0 || adminStore.dashboard_data.waiting_for_mark > 0)" :color="item.updateMark" :position="isCompact ? 'top-0 left-5 md:left-9' : 'top-0 left-5'" />
+			:active-class="asideMenuItemActiveBgStyle"
+			class="group flex cursor-pointer transition-all duration-150"
+			:class="[componentClass, isCompact ? 'justify-center' : 'justify-start', 'group hover:bg-fipu_blue']">
+			<BaseIcon
+				v-if="item.icon"
+				:path="item.icon"
+				class="flex-none transition-all duration-300 group-hover:text-white"
+				:w="isCompact ? 'w-8 lg:w-16' : 'w-8'"
+				:size="item.size ? item.size : 18"
+				:class="[vSlot && vSlot.isExactActive ? asideMenuItemActiveStyle : asideMenuItemInactiveStyle, { relative: item.updateMark }, item.color == 'info' ? 'text-slate-800' : '']">
 			</BaseIcon>
 
-			<span class="line-clamp-1 text-clip transition-all duration-300" :class="[{ '': isCompact, '': !hasSub }, vSlot && vSlot.isExactActive ? asideMenuItemActiveStyle : asideMenuItemInactiveStyle, isCompact ? (item.menu == undefined ? 'w-52 lg:w-0' : 'w-40 lg:w-0') : 'w-40', item.color == 'info' ? 'font-medium text-slate-900 hover:underline' : '']">
+			<span
+				class="line-clamp-1 text-clip transition-all duration-300"
+				:class="[
+					{ '': isCompact, '': !hasSub },
+					vSlot && vSlot.isExactActive ? asideMenuItemActiveStyle : asideMenuItemInactiveStyle,
+					isCompact ? (item.menu == undefined ? 'w-52 lg:w-0' : 'w-40 lg:w-0') : 'w-40',
+					item.color == 'info' ? 'font-medium text-slate-900 hover:underline' : '',
+				]">
 				{{ item.label }}
 			</span>
 

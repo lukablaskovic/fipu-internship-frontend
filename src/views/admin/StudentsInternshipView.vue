@@ -18,11 +18,11 @@ import TableStudents from "@/components/Tables/TableStudents.vue";
 import CardBoxModal from "@/components/Cardbox/CardBoxModal.vue";
 import SectionMain from "@/components/Section/SectionMain.vue";
 import FormDynamic from "@/components/Form/FormDynamic.vue";
-import BpmnDiagram from "@/components/BPMN/BpmnDiagram.vue";
 import FormControl from "@/components/Form/FormControl.vue";
+import BpmnDiagram from "@/components/BPMN/BpmnDiagram.vue";
 import FormField from "@/components/Form/FormField.vue";
-import CardBox from "@/components/Cardbox/CardBox.vue";
 import PillTag from "@/components/PillTag/PillTag.vue";
+import CardBox from "@/components/Cardbox/CardBox.vue";
 let bpmn_diagram_active = ref(false);
 
 import BPMN_red from "/BPMN/red_bpmn_professor_pending.png";
@@ -44,9 +44,7 @@ const formDynamicValues = ref({});
 
 async function fetchXML(model) {
 	try {
-		const response = await axios.get(`/bpmn_xml/${model}.xml`, {
-			responseType: "text",
-		});
+		const response = await axios.get(`/bpmn_xml/${model}.xml`, { responseType: "text" });
 
 		return response.data;
 	} catch (error) {
@@ -95,7 +93,6 @@ function getPostDataForSendEmail() {
 
 	if (!taskMapping) return { postData: null, template: null, to: null };
 
-	// Extract required fields from process_instance_data.variables
 	const postData = {};
 	for (let key in taskMapping.body) {
 		if (typeof taskMapping.body[key] === "function") {
@@ -105,14 +102,9 @@ function getPostDataForSendEmail() {
 		}
 	}
 
-	// Extract the 'to' value
 	const to = adminStore.selectedStudent.process_instance_data.variables[taskMapping.to] || "";
 
-	return {
-		postData,
-		template: taskMapping.template,
-		to,
-	};
+	return { postData, template: taskMapping.template, to };
 }
 
 const toggleActiveEventsFilter = () => {
@@ -168,8 +160,6 @@ let email_template = ref(null);
 let email_to = ref(null);
 
 async function sendAnAdditionalEmail() {
-	//let { postData, template, to } = getPostDataForSendEmail();
-
 	let postData = email_postData.value;
 	let template = email_template.value;
 	let to = email_to.value;
@@ -185,9 +175,7 @@ async function sendAnAdditionalEmail() {
 	}
 }
 
-watch(() => route.params.process_instance_id, loadDataForStudent, {
-	immediate: true,
-});
+watch(() => route.params.process_instance_id, loadDataForStudent, { immediate: true });
 
 watch(modal_send_task, (newValue) => {
 	let { postData, template, to } = getPostDataForSendEmail();
@@ -260,7 +248,7 @@ onMounted(loadDataForStudent);
 							class="cursor-pointer"
 							:icon="adminStore.filterInternshipStage === 'ceka_alokaciju' ? mdiProgressClock : adminStore.filterInternshipStage === 'ceka_odobrenje' ? mdiProgressClock : mdiProgressClock"
 							:color="adminStore.filterInternshipStage === 'ceka_alokaciju' ? 'danger' : adminStore.filterInternshipStage === 'ceka_odobrenje' ? 'success' : 'info'"
-							:label="adminStore.filterInternshipStage === 'ceka_alokaciju' ? 'Čeka alokaciju (A)' : adminStore.filterInternshipStage === 'ceka_odobrenje' ? 'Čeka odobrenje (B)' : 'Sve faze'"
+							:label="adminStore.filterInternshipStage === 'ceka_alokaciju' ? 'Čeka alokaciju (A)' : adminStore.filterInternshipStage === 'ceka_odobrenje' ? 'Čeka odobrenje (B)' : 'Sve faze procesa'"
 							@click="toggleBetweenInternshipStages" />
 					</div>
 				</div>

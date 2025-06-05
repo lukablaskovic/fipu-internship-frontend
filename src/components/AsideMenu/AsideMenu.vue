@@ -87,12 +87,20 @@ const expandCollapseItem = computed(() => ({
 </script>
 
 <template>
-	<AsideMenuLayer :menu="menu" :class="[layoutStore.isAsideMobileExpanded ? 'left-0' : '-left-60 lg:left-0', isPrimaryMenuCompact ? '' : '', { 'lg:hidden xl:flex': !layoutStore.isAsideLgActive }]" :is-compact="isPrimaryMenuCompact" :z-index="secondaryMenuItem ? 'z-40 md:z-50' : 'z-50'" :active-secondary-menu-key="secondaryMenuItem?.key" @menu-click="menuClickPrimaryMenu">
+	<AsideMenuLayer
+		:menu="menu"
+		:class="[layoutStore.isAsideMobileExpanded ? 'left-0' : '-left-60 lg:left-0', isPrimaryMenuCompact ? '' : '', { 'lg:hidden xl:flex': !layoutStore.isAsideLgActive }]"
+		:is-compact="isPrimaryMenuCompact"
+		:z-index="secondaryMenuItem ? 'z-40 md:z-50' : 'z-50'"
+		:active-secondary-menu-key="secondaryMenuItem?.key"
+		@menu-click="menuClickPrimaryMenu">
 		<router-link to="/">
 			<div class="flex flex-row items-center justify-center p-2 dark:bg-slate-900">
-				<img :src="FIPU_praksa_logo_transparent" class="max-h-14 object-contain" />
+				<img :src="FIPU_praksa_logo_transparent" alt="FIPU Praksa Logo" class="max-h-14 object-contain" />
 			</div>
 		</router-link>
+
+		<!--Expand strelica-->
 		<template #footer>
 			<ul class="hidden lg:block">
 				<AsideMenuItem :item="expandCollapseItem" :is-compact="isPrimaryMenuCompact" @menu-click="isPrimaryMenuCompact = !isPrimaryMenuCompact" />
@@ -100,7 +108,12 @@ const expandCollapseItem = computed(() => ({
 		</template>
 	</AsideMenuLayer>
 
-	<AsideMenuLayer v-if="secondaryMenuItem" :menu="secondaryMenuItem.menuSecondary" @menu-click="menuClickSecondaryMenu" :class="[isPrimaryMenuCompact ? 'lg:left-22' : 'md:left-60']" class="right-0 animate-fade-in-right-fast md:right-auto lg:animate-fade-in-left-fast">
+	<AsideMenuLayer
+		v-if="secondaryMenuItem"
+		:menu="secondaryMenuItem.menuSecondary"
+		@menu-click="menuClickSecondaryMenu"
+		:class="[isPrimaryMenuCompact ? 'lg:left-22' : 'md:left-60']"
+		class="right-0 animate-fade-in-right-fast md:right-auto lg:animate-fade-in-left-fast">
 		<BaseIcon v-if="secondaryMenuItem.icon" :path="secondaryMenuItem.icon" w="w-16" />
 		<div class="flex-1">
 			{{ secondaryMenuItem.label }}

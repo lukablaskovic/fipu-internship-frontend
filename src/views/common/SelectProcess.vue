@@ -154,7 +154,6 @@ async function onSubmit() {
 	}
 }
 
-// Data for bullet points for each button
 const hoverTexts = {
 	A: ["1️⃣ Pogledajte dostupne zadatke", "2️⃣ Prijavite se na 3 najdraža zadatka", "3️⃣ Pričekajte alokaciju"],
 	B: ["1️⃣ Model B ide u dogovoru s nastavnikom", "2️⃣ Praksa već dogovorena ili odrađena", "3️⃣ Prijava zadatka unaprijed"],

@@ -1,7 +1,9 @@
 import { fileURLToPath } from "url";
 import path from "path";
 
+import vueDevTools from "vite-plugin-vue-devtools";
 import vue from "@vitejs/plugin-vue";
+
 import { defineConfig } from "vite";
 
 const __filename = fileURLToPath(import.meta.url);
@@ -12,7 +14,7 @@ const __dirname = path.dirname(__filename);
 export default defineConfig({
 	//base: "/fipu/",
 	assetsInclude: "**/*.xml",
-	plugins: [vue()],
+	plugins: [vueDevTools(), vue()],
 	define: {
 		__VUE_PROD_HYDRATION_MISMATCH_DETAILS__: true,
 	},
@@ -21,6 +23,9 @@ export default defineConfig({
 	},
 	server: {
 		host: "0.0.0.0",
+		hmr: {
+			overlay: false,
+		},
 	},
 	build: {
 		rollupOptions: {

@@ -1,5 +1,5 @@
 <script setup>
-import { defineModel, ref, computed } from "vue";
+import { ref, computed } from "vue";
 
 const props = defineProps(["labelName", "emitName", "list", "l", "disabled", "important", "help"]);
 const model = defineModel();
@@ -8,18 +8,15 @@ function update(value) {
 	model.value = value;
 }
 const computedList = computed(() => {
-  // Return the list if it's empty
+
   if (props.list.length === 0) return props.list;
 
-  // Ensure that model.value is defined before proceeding
   const modelValue = model.value ? model.value.toLowerCase().replace(/\s+/g, '') : '';
 
-  // Check if the model's value exists in the list
   const itemExists = props.list.findIndex((item) =>
     item[props.labelName] && item[props.labelName] === model.value
   ) !== -1;
 
-  // If the item exists, return the full list, otherwise filter the list based on the model's value
   return itemExists
     ? props.list
     : props.list.filter((item) =>

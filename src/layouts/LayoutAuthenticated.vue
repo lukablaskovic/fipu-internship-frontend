@@ -4,9 +4,9 @@ import { mainStore, styleStore } from "@/main.js";
 import { ref, onMounted, computed } from "vue";
 
 import AsideMenu from "@/components/AsideMenu/AsideMenu.vue";
-import menuAsideAdmin from "@/menus/menuAsideAdmin.js";
+import menuAsideAdmin from "@/menus/menuAsideAdmin.ts";
 
-import menuAsideStudent from "@/menus/menuAsideStudent.js";
+import menuAsideStudent from "@/menus/menuAsideStudent";
 import menuNavBar from "@/menus/menuNavBar.js";
 
 import NavBarItemPlain from "@/components/Navbar/NavBarItemPlain.vue";
@@ -25,6 +25,7 @@ import SnackBar from "@/components/Premium/SnackBar.vue";
 const layoutAsidePadding = computed(() => (layoutStore.isAsideLgActive ? "lg:pl-22" : "xl:pl-22"));
 
 import { useRouter } from "vue-router";
+
 const router = useRouter();
 
 const logoutModalActive = computed(() => mainStore.logoutModalActive);
@@ -76,8 +77,8 @@ const menuClick = (event, item) => {
 				<NavBarItemPlain display="hidden lg:flex xl:hidden" @click.prevent="layoutStore.asideLgToggle()">
 					<BaseIcon :path="layoutStore.isAsideLgActive ? mdiBackburger : mdiMenu" size="24" />
 				</NavBarItemPlain>
-				<NavBarItemPlain use-margin v-if="mainStore.userAdmin">
-					<FormControl :icon="mdiMagnify" search-bar borderless />
+				<NavBarItemPlain v-if="mainStore.userAdmin">
+					<FormControl :icon="mdiMagnify" search-bar />
 				</NavBarItemPlain>
 			</NavBar>
 
@@ -86,7 +87,10 @@ const menuClick = (event, item) => {
 			<CardBoxModal v-if="!mainStore.userAdmin" v-model="helpModalActive" has-cancel :has-confirm="false" title="ℹ️ Upute za korištenje aplikacije" button-label="Povratak" @cancel="mainStore.activateHelpModal(false)">
 				<BaseDivider></BaseDivider>
 				<div class="mb-2 text-xl">O kolegiju</div>
-				<div>Cilj kolegija <b>Stručna praksa</b> je omogućiti studentima praktični rad u IT poduzećima na projektima oblikovanja i implementacije programske podrške; usvajanja stručnih kompetencija iz područja djelovanja organizacije u kojoj se praksa provodi te razvijanje osjećaja odgovornosti i timskoga rada unutar zadanoga radnoga okruženja.</div>
+				<div>
+					Cilj kolegija <b>Stručna praksa</b> je omogućiti studentima praktični rad u IT poduzećima na projektima oblikovanja i implementacije programske podrške; usvajanja stručnih kompetencija iz područja djelovanja organizacije u kojoj se praksa
+					provodi te razvijanje osjećaja odgovornosti i timskoga rada unutar zadanoga radnoga okruženja.
+				</div>
 				<BaseDivider></BaseDivider>
 				<div class="mb-2 text-xl">Prijava na praksu</div>
 
@@ -145,16 +149,27 @@ const menuClick = (event, item) => {
 					</li>
 				</ol>
 				<BaseDivider></BaseDivider>
-				<p><b>Final thought:</b> Aplikacija <em>FIPU Praksa</em> u aktivnom je razvoju od 2023. godine u sklopu istraživačkog laboratorija FIPUlaba za potrebe pojednostavljenja i automatizacije procesa izvođenja studentske prakse, za studente, voditelja te poslodavce.</p>
-				<p class="mt-2">Ova aplikacija bazira se na eksperimentalnom razvoju baziranom na procesima koji su definirani BPMN nomenklaturom i Python <i>enginom</i> koji pogoni aplikaciju u pozadini. Kao i svaki drugi proizvod, i ovaj je podložan bugovima 🐞!</p>
-				<p class="mt-2">Stoga vas molimo da sve bugove koje pronađete prijavite otvaranjem novog Github <i> issuea</i>, <a class="hover-underline-animation cursor-pointer text-fipu_text_blue" target="_blank" href="https://github.com/lukablaskovic/fipu-internship-frontend/issues">ovdje!</a></p>
+				<p>
+					<b>Final thought:</b> Aplikacija <em>FIPU Praksa</em> u aktivnom je razvoju od 2023. godine u sklopu istraživačkog laboratorija FIPUlaba za potrebe pojednostavljenja i automatizacije procesa izvođenja studentske prakse, za studente,
+					voditelja te poslodavce.
+				</p>
+				<p class="mt-2">
+					Ova aplikacija bazira se na eksperimentalnom razvoju baziranom na procesima koji su definirani BPMN nomenklaturom i Python <i>enginom</i> koji pogoni aplikaciju u pozadini. Kao i svaki drugi proizvod, i ovaj je podložan bugovima 🐞!
+				</p>
+				<p class="mt-2">
+					Stoga vas molimo da sve bugove koje pronađete prijavite otvaranjem novog Github <i> issuea</i>,
+					<a class="hover-underline-animation cursor-pointer text-fipu_text_blue" target="_blank" href="https://github.com/lukablaskovic/fipu-internship-frontend/issues">ovdje!</a>
+				</p>
 				<p class="mt-2">Hvala! 😁</p>
 			</CardBoxModal>
 
 			<CardBoxModal v-else v-model="helpModalActive" has-cancel :has-confirm="false" title="ℹ️ Upute za korištenje aplikacije" button-label="Povratak" @cancel="mainStore.activateHelpModal(false)">
 				<BaseDivider></BaseDivider>
 				<div class="mb-2 text-xl">O kolegiju</div>
-				<div>Cilj kolegija <b>Stručna praksa</b> je omogućiti studentima praktični rad u IT poduzećima na projektima oblikovanja i implementacije programske podrške; usvajanja stručnih kompetencija iz područja djelovanja organizacije u kojoj se praksa provodi te razvijanje osjećaja odgovornosti i timskoga rada unutar zadanoga radnoga okruženja.</div>
+				<div>
+					Cilj kolegija <b>Stručna praksa</b> je omogućiti studentima praktični rad u IT poduzećima na projektima oblikovanja i implementacije programske podrške; usvajanja stručnih kompetencija iz područja djelovanja organizacije u kojoj se praksa
+					provodi te razvijanje osjećaja odgovornosti i timskoga rada unutar zadanoga radnoga okruženja.
+				</div>
 				<BaseDivider></BaseDivider>
 				<div class="mb-2 text-xl">Prijava na praksu</div>
 
@@ -172,7 +187,10 @@ const menuClick = (event, item) => {
 				<ol class="ml-4 list-decimal">
 					<li>Dashboard se trenutno sastoji od 2 dijela - <b>Nadzorna ploča</b>, gdje možete pronaći statistike o procesima prakse te <b>Najnoviji događaji</b>, gdje se prikazuju event logovi iz BPMN <i> enginea</i>.</li>
 					<li>Možete stisnuti na pojedini <i> event log</i>, što će vas odnijeti na <i> studenti/:id</i> gdje je ID jednak instanci procesa prakse za tog studenta.</li>
-					<li>Tražilicu možete otvoriti pritiskom kombinacije tipki <b>CTRL/OPT + k</b>. Običnim pretraživanjem možete brzo prolaziti kroz stranice aplikacije, a unosom prefiksa (navedeni su u uputama tražilice) mogu se tražiti određene stavke, poput studenata po JMBAGU, emailu, poduzeća itd.</li>
+					<li>
+						Tražilicu možete otvoriti pritiskom kombinacije tipki <b>CTRL/OPT + k</b>. Običnim pretraživanjem možete brzo prolaziti kroz stranice aplikacije, a unosom prefiksa (navedeni su u uputama tražilice) mogu se tražiti određene stavke, poput
+						studenata po JMBAGU, emailu, poduzeća itd.
+					</li>
 				</ol>
 
 				<BaseDivider></BaseDivider>
@@ -225,9 +243,17 @@ const menuClick = (event, item) => {
 					<li>Podatke o zadacima je moguće i direktno ažurirati u <a href="https://baserow.unipu.hr/" target="_blank" class="text-fipu_blue">Baserow</a> bazi podataka</li>
 				</ol>
 				<BaseDivider></BaseDivider>
-				<p><b>Final thought:</b> Aplikacija <em>FIPU Praksa</em> u aktivnom je razvoju od 2023. godine u sklopu istraživačkog laboratorija FIPU za potrebe pojednostavljenja i automatizacije procesa izvođenja studentske prakse, za studente, voditelja te poslodavce.</p>
-				<p class="mt-2">Ova aplikacija bazira se na eksperimentalnom razvoju baziranom na procesima koji su definirani BPMN nomenklaturom i Python <i>enginom</i> koji pogoni aplikaciju u pozadini. Kao i svaki drugi proizvod, i ovaj je podložan bugovima 🐞!</p>
-				<p class="mt-2">Stoga vas molimo da sve bugove koje pronađete prijavite otvaranjem novog Github <i> issuea</i>, <a class="hover-underline-animation cursor-pointer text-fipu_text_blue" target="_blank" href="https://github.com/lukablaskovic/fipu-internship-frontend/issues">ovdje!</a></p>
+				<p>
+					<b>Final thought:</b> Aplikacija <em>FIPU Praksa</em> u aktivnom je razvoju od 2023. godine u sklopu istraživačkog laboratorija FIPU za potrebe pojednostavljenja i automatizacije procesa izvođenja studentske prakse, za studente, voditelja
+					te poslodavce.
+				</p>
+				<p class="mt-2">
+					Ova aplikacija bazira se na eksperimentalnom razvoju baziranom na procesima koji su definirani BPMN nomenklaturom i Python <i>enginom</i> koji pogoni aplikaciju u pozadini. Kao i svaki drugi proizvod, i ovaj je podložan bugovima 🐞!
+				</p>
+				<p class="mt-2">
+					Stoga vas molimo da sve bugove koje pronađete prijavite otvaranjem novog Github <i> issuea</i>,
+					<a class="hover-underline-animation cursor-pointer text-fipu_text_blue" target="_blank" href="https://github.com/lukablaskovic/fipu-internship-frontend/issues">ovdje!</a>
+				</p>
 				<p class="mt-2">Hvala! 😁</p>
 			</CardBoxModal>
 

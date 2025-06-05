@@ -1,63 +1,18 @@
 <script setup>
-import {
-	mdiBallot,
-	mdiCalendarRange,
-	mdiChatQuestionOutline,
-	mdiLogin,
-	mdiAlphaACircle,
-	mdiNewBox,
-	mdiAlphaBCircle,
-	mdiEmail,
-	mdiInformation,
-	mdiClipboardText,
-	mdiLaptop,
-	mdiDomain,
-	mdiMapMarker,
-	mdiClipboardTextClockOutline,
-	mdiAccountGroup,
-	mdiSchool,
-	mdiTextLong,
-	mdiXml,
-	mdiThumbsUpDown,
-	mdiClockTimeFiveOutline,
-	mdiNoteTextOutline,
-} from "@mdi/js";
-import { ref, reactive, onMounted, watch, computed } from "vue";
+import { mdiCalendarRange, mdiChatQuestionOutline, mdiAlphaACircle, mdiNewBox, mdiAlphaBCircle, mdiInformation, mdiLaptop, mdiDomain } from "@mdi/js";
 import SectionMain from "@/components/Section/SectionMain.vue";
+import { ref, onMounted } from "vue";
 
 import SectionTitleLineWithButton from "@/components/Section/SectionTitleLineWithButton.vue";
 
-import BaseButton from "@/components/Base/BaseButton.vue";
 import SnackBar from "@/components/Premium/SnackBar.vue";
 import FooterBar from "@/components/FooterBar.vue";
 
-import CardBox from "@/components/Cardbox/CardBox.vue";
-
-import CardBoxComponentTitle from "@/components/Cardbox/CardBoxComponentTitle.vue";
-import FormCheckRadioGroup from "@/components/Form/FormCheckRadioGroup.vue";
-import FormCombobox from "@/components/Form/FormCombobox.vue";
-import FormControl from "@/components/Form/FormControl.vue";
-import BaseDivider from "@/components/Base/BaseDivider.vue";
-import FormField from "@/components/Form/FormField.vue";
-
-import { required, email, helpers } from "@vuelidate/validators";
-import { getFirstErrorForField } from "@/helpers/validators";
-import { useVuelidate } from "@vuelidate/core";
-
 import IconTextLink from "@/components/IconTextLink.vue";
 
-import Utils from "@/helpers/utils";
-
-import { mainStore, snackBarStore } from "@/main.js";
+import { mainStore } from "@/main.js";
 
 import FIPU_praksa_logo_transparent from "/FIPU_praksa_logo_transparent.svg";
-
-import BaseIcon from "@/components/Base/BaseIcon.vue";
-
-import { router } from "@/router";
-
-const isLoading = ref(false);
-const triggered = ref(false);
 
 const allCompanies = ref([]);
 const mappedCompanies = ref([]);

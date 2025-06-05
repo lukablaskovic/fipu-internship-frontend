@@ -1,6 +1,14 @@
 import { mdiMonitor, mdiAccountMultiple, mdiSecurity, mdiDomain, mdiClipboardText, mdiClipboardCheck } from "@mdi/js";
 
-export default [
+interface MenuItem {
+	to?: string;
+	icon?: string;
+	label: string;
+	menu?: MenuItem[];
+	externalURL?: string;
+}
+
+const menuAsideAdmin: MenuItem[] = [
 	{
 		to: "/dashboard",
 		icon: mdiMonitor,
@@ -10,7 +18,6 @@ export default [
 		to: "/studenti",
 		icon: mdiAccountMultiple,
 		label: "Studenti",
-		updateMark: "danger",
 	},
 	{
 		to: "/alokacije",
@@ -47,3 +54,5 @@ export default [
 		],
 	},
 ];
+
+export default menuAsideAdmin;

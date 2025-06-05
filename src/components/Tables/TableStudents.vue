@@ -49,9 +49,7 @@ function sortStudents(studentsList) {
 	return sortedStudents;
 }
 
-defineProps({
-	checkable: Boolean,
-});
+defineProps({ checkable: Boolean });
 
 const students = computed(() => adminStore.students);
 const selectedStudentInstanceID = ref(null);
@@ -95,17 +93,13 @@ watch(selectedStudentInstanceID, (newVal) => {
 				}
 			}
 
-			// Now that all filters are applied, let's check if the student exists in the filtered list
 			const selectedIndexInFilteredList = filteredStudents.findIndex((student) => student.process_instance_id === newVal);
 
 			if (selectedIndexInFilteredList !== -1) {
-				// Get the selected student’s page number
 				const selectedPage = Math.floor(selectedIndexInFilteredList / perPage.value);
 
-				// Update the current page to show the selected student
 				currentPage.value = selectedPage;
 			} else {
-				// Log if the student is not found in the filtered list
 				console.log("Selected student not found in the filtered list.");
 			}
 		}
@@ -134,7 +128,7 @@ onMounted(async () => {
 		const selectedStudent = students.value.find((student) => student["process_instance_id"] === route.params.process_instance_id);
 		if (selectedStudent) {
 			adminStore.setSelectedStudent(selectedStudent);
-			emit("show-student-diagram", selectedStudent); // Trigger the diagram display immediately
+			emit("show-student-diagram", selectedStudent);
 		}
 	} else {
 		selectedStudentInstanceID.value = null;
@@ -281,12 +275,7 @@ watch(studentsPaginated, (newList) => {
 		</thead>
 
 		<tbody>
-			<tr
-				v-for="student in studentsPaginated"
-				:key="student['process_instance_id']"
-				:class="{
-					'selected-row bg-blue-100 dark:bg-blue-900': selectedStudentInstanceID === student['process_instance_id'],
-				}">
+			<tr v-for="student in studentsPaginated" :key="student['process_instance_id']" :class="{ 'selected-row bg-blue-100 dark:bg-blue-900': selectedStudentInstanceID === student['process_instance_id'] }">
 				<td class="border-b-0 before:hidden lg:w-6">
 					<UserAvatar :avatar="student['avatar']" class="mx-auto flex h-22 w-22 lg:h-12 lg:w-12" />
 				</td>
@@ -303,11 +292,7 @@ watch(studentsPaginated, (newList) => {
 				<td data-label="Progress" class="lg:w-32">
 					<progress
 						class="flex w-2/5 self-center lg:w-full"
-						:class="{
-							'progress-red': getProgressValue(student) <= 3,
-							'progress-yellow': getProgressValue(student) == 4,
-							'progress-green': getProgressValue(student) >= 5,
-						}"
+						:class="{ 'progress-red': getProgressValue(student) <= 3, 'progress-yellow': getProgressValue(student) == 4, 'progress-green': getProgressValue(student) >= 5 }"
 						max="7"
 						:value="getProgressValue(student)">
 						{{ getProgressValue(student) }}

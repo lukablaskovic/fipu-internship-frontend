@@ -89,7 +89,7 @@ window.addEventListener("keydown", (e) => {
 
 				<slot v-if="modelValue != null" :assignment="modelValue"></slot>
 
-				<BaseButtons class="justify-center">
+				<BaseButtons class="mt-4 justify-center">
 					<BaseButton v-if="hasConfirm" :label="buttonLabel" :color="button" :disabled="disabledCondition" @click="confirm" />
 					<BaseButton v-if="hasCancel" label="Natrag" :color="button" outline @click="cancel" />
 				</BaseButtons>

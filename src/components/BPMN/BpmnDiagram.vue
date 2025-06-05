@@ -45,7 +45,8 @@ onMounted(async () => {
 		applyCustomStyling(props.highlightColor, props.highlightElementId, viewer);
 		handleWindowResize(viewer);
 		window.addEventListener("resize", () => handleWindowResize(viewer));
-	} catch (err) {
+	} catch (error) {
+		console.error("Error importing BPMN diagram:", error);
 		return null;
 	}
 
@@ -118,7 +119,6 @@ function handleElementClick(event, emitFunction, viewer) {
 	}
 
 	if (element) {
-		// Fetch the path from the start to the current task
 		const elementRegistry = viewer.get("elementRegistry");
 		const startEvents = elementRegistry.filter((el) => el.type === "bpmn:StartEvent");
 		let pathToCurrent = [];

@@ -13,6 +13,7 @@ onUnmounted(() => {});
 
 <template>
 	<!--<GlobalStoreDebug />-->
+
 	<Tooltip />
 	<router-view :key="$route.fullPath"></router-view>
 </template>

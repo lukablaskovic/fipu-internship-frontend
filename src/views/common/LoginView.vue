@@ -44,12 +44,12 @@
 						Ako želite samo pregledati dostupne zadatke i poduzeća, možete nastaviti kao <a class="hover-underline-animation cursor-pointer text-fipu_text_blue hover:text-fipu_blue" @click="router.push('/moja-praksa')"> gost. </a>
 					</p>
 
-					<p class="mb-0 p-2 text-left text-center text-lg font-light text-gray-600 sm:mb-3 sm:p-0 lg:text-lg">
+					<p class="mb-0 p-2 text-center text-lg font-light text-gray-600 sm:mb-3 sm:p-0 lg:text-lg">
 						Poslodavac ste ili mentor te želite prijaviti novi zadatak za praksu? To možete učiniti
 						<a class="hover-underline-animation cursor-pointer text-fipu_text_blue hover:text-fipu_blue" @click="router.push('/poslodavci/novi-zadatak')"> ovdje. </a>
 					</p>
 
-					<p class="mb-0 p-2 text-left text-center text-lg font-medium text-gray-600 sm:mb-0 sm:p-0 lg:text-lg">
+					<p class="mb-0 p-2 text-center text-lg font-medium text-gray-600 sm:mb-0 sm:p-0 lg:text-lg">
 						Prije nego se prijavite, pročitajte
 						<a class="hover-underline-animation cursor-pointer text-fipu_text_blue hover:text-fipu_blue" @click="router.push('/upute')"> upute </a>
 						kako izvodimo praksu na FIPU.
@@ -59,7 +59,6 @@
 		</div>
 		<hr class="block w-full sm:hidden" />
 
-		<!-- Logo at the bottom, centered on mobile -->
 		<div class="flex justify-center sm:hidden">
 			<a href="https://fipu.unipu.hr/" target="_blank" class="w-max">
 				<img :src="fipu_unipu" alt="Fakultet informatike u Puli - logotip" class="h-24 object-contain p-2" />
@@ -137,7 +136,6 @@ body {
 <script setup>
 import SnackBar from "@/components/Premium/SnackBar.vue";
 import CardBox from "@/components/Cardbox/CardBox.vue";
-import FIPU_praksa_logo from "/FIPU_praksa_logo.svg";
 import { decodeCredential } from "vue3-google-login";
 import { isUnipuEmail } from "@/helpers/validators";
 import { mainStore, snackBarStore } from "@/main";

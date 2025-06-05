@@ -1,23 +1,33 @@
 <template>
 	<Combobox v-model="selectedValue">
 		<div class="relative">
-			<div class="relative w-full cursor-default overflow-hidden rounded-lg bg-white text-left shadow-md focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75 focus-visible:ring-offset-2 focus-visible:ring-offset-blue-300 dark:bg-gray-900 sm:text-sm">
-				<!-- Prefix label positioned to the left -->
+			<div class="relative w-full cursor-default overflow-hidden bg-white text-left sm:text-sm">
+				<!-- Prefix label -->
 				<div v-if="hasValidPrefix" class="absolute inset-y-0 left-0 flex items-center" ref="prefixContainer">
 					<span class="ml-2 rounded bg-fipu_blue px-2 py-1 text-sm text-white">{{ prefixLabel }}</span>
 				</div>
 
-				<!-- Combobox input field with dynamic padding to the left to accommodate the prefix label -->
-				<ComboboxInput v-model="displayValue" :placeholder="`${osKey} + k za pretraživanje`" class="inputClass ml-2 w-full border-none bg-gray-50 py-2 pr-10 text-sm leading-5 text-gray-900 focus:ring-0 dark:bg-gray-900 dark:text-gray-300 md:w-96" :style="[inputStyle]" autocomplete="off" @change="query = $event.target.value" style="overflow-x: auto" />
+				<!-- Combobox input -->
+				<ComboboxInput
+					v-model="displayValue"
+					aria-label="Pretraživanje"
+					:placeholder="`${osKey} + k za pretraživanje`"
+					class="inputClass ml-2 w-full pr-10 text-sm leading-5 text-gray-900 focus:ring-0 dark:text-gray-300 md:w-96"
+					:style="[inputStyle]"
+					autocomplete="off"
+					@change="handleInputChange"
+					@keydown="handleKeyDown"
+					style="overflow-x: auto; outline: none; border: none; background: transparent" />
 
-				<!-- Search icon button -->
+				<!-- Search icon -->
 				<ComboboxButton class="absolute inset-y-0 right-0 flex items-center pr-2" @click="showHelp">
 					<MdiMagnify class="h-5 w-5 text-gray-700 hover:text-fipu_blue" aria-hidden="true" />
 				</ComboboxButton>
 			</div>
 
 			<TransitionRoot leave="transition ease-in duration-100" leave-from="opacity-100" leave-to="opacity-0" @after-leave="query = ''">
-				<ComboboxOptions class="absolute mt-1 max-h-60 w-full overflow-auto rounded-md bg-gray-50 py-1 text-base text-gray-900 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none dark:bg-gray-900 dark:text-gray-300 sm:text-sm">
+				<ComboboxOptions
+					class="absolute mt-1 max-h-60 w-full overflow-auto rounded-md border bg-gray-50 py-1 text-base text-gray-900 shadow-lg ring-1 ring-black ring-opacity-5 empty:invisible focus:outline-none dark:bg-gray-900 dark:text-gray-300 sm:text-sm">
 					<div v-if="query === ''" class="relative cursor-default select-none px-4 py-2 text-sm text-gray-700 dark:text-gray-200 md:text-base">
 						<b>Kratke upute kako koristiti tražilicu</b>
 						<hr />
@@ -36,46 +46,12 @@
 					<div v-else-if="filteredResults.length === 0" class="relative cursor-default select-none px-4 py-2 text-gray-700 dark:text-gray-200">Nema rezultata.</div>
 					<!-- Results List -->
 					<ComboboxOption v-for="result in filteredResults" :key="result.id || result" v-slot="{ selected, active }" as="template" :value="result">
-						<li
-							tabindex="0"
-							class="relative cursor-pointer select-none py-2 pl-10 pr-4"
-							:class="{
-								'bg-fipu_blue text-white': active,
-								'text-gray-900 dark:text-gray-300': !active,
-							}">
+						<li tabindex="0" class="relative cursor-pointer select-none py-2 pl-10 pr-4" :class="{ 'bg-fipu_blue text-white': active, 'text-gray-900 dark:text-gray-300': !active }">
 							<!-- Icons -->
-							<MdiAccount
-								v-if="result.ime && result.prezime"
-								class="absolute left-3 h-5 w-5"
-								:class="{
-									'text-white': active,
-									'text-gray-900 dark:text-gray-300': !active,
-								}"
-								aria-hidden="true" />
-							<MdiPagePreviousOutline
-								v-else-if="routes.includes(result)"
-								class="absolute left-3 h-5 w-5"
-								:class="{
-									'text-white': active,
-									'text-gray-900 dark:text-gray-300': !active,
-								}"
-								aria-hidden="true" />
-							<MdiClipboardText
-								v-if="result.id_zadatak"
-								class="absolute left-3 h-5 w-5"
-								:class="{
-									'text-white': active,
-									'text-gray-900 dark:text-gray-300': !active,
-								}"
-								aria-hidden="true" />
-							<MdiDomain
-								v-if="result.naziv && !result.ime && !result.prezime"
-								class="absolute left-3 h-5 w-5"
-								:class="{
-									'text-white': active,
-									'text-gray-900 dark:text-gray-300': !active,
-								}"
-								aria-hidden="true" />
+							<MdiAccount v-if="result.ime && result.prezime" class="absolute left-3 h-5 w-5" :class="{ 'text-white': active, 'text-gray-900 dark:text-gray-300': !active }" aria-hidden="true" />
+							<MdiPagePreviousOutline v-else-if="routes.includes(result)" class="absolute left-3 h-5 w-5" :class="{ 'text-white': active, 'text-gray-900 dark:text-gray-300': !active }" aria-hidden="true" />
+							<MdiClipboardText v-if="result.id_zadatak" class="absolute left-3 h-5 w-5" :class="{ 'text-white': active, 'text-gray-900 dark:text-gray-300': !active }" aria-hidden="true" />
+							<MdiDomain v-if="result.naziv && !result.ime && !result.prezime" class="absolute left-3 h-5 w-5" :class="{ 'text-white': active, 'text-gray-900 dark:text-gray-300': !active }" aria-hidden="true" />
 							<!-- Result Content -->
 							<template v-if="typeof result === 'string' && routes.includes(result)">
 								<span class="block truncate capitalize" :class="{ 'font-medium': selected, 'font-normal': !selected }">
@@ -137,26 +113,44 @@ const helpItems = [
 	{ prefix: "z:", description: "pretraži zadatak po nazivu" },
 ];
 
-const prefixLabels = {
-	"s:": "Ime",
-	"sj:": "JMBAG",
-	"se:": "Email",
-	"p:": "Poduzeće",
-	"z:": "Zadatak",
-};
+const prefixLabels = { "s:": "Ime", "sj:": "JMBAG", "se:": "Email", "p:": "Poduzeće", "z:": "Zadatak" };
 
 const hasValidPrefix = computed(() => {
-	const prefix = query.value.split(":")[0] + ":";
-	return helpItems.some((item) => item.prefix === prefix) && query.value.includes(":");
+	const input = query.value;
+	const prefix = input.split(":")[0] + ":";
+	return helpItems.some((item) => item.prefix === prefix) && input.includes(":");
 });
-const currentPrefix = computed(() => (hasValidPrefix.value ? query.value.split(":")[0] + ":" : ""));
-const prefixLabel = computed(() => (hasValidPrefix.value ? prefixLabels[currentPrefix.value] : ""));
 
-const displayValue = computed(() => {
-	if (!selectedValue.value) {
-		return hasValidPrefix.value ? query.value.slice(currentPrefix.value.length) : query.value;
-	}
-	return selectedValue.value.name;
+const currentPrefix = computed(() => {
+	const input = query.value;
+	const prefix = input.split(":")[0] + ":";
+	return helpItems.some((item) => item.prefix === prefix) ? prefix : "";
+});
+
+const prefixLabel = computed(() => {
+	const prefix = currentPrefix.value;
+	return prefix ? prefixLabels[prefix] : "";
+});
+
+const lastPrefix = ref("");
+
+const displayValue = computed({
+	get: () => {
+		if (!selectedValue.value) {
+			if (hasValidPrefix.value) {
+				return query.value.slice(currentPrefix.value.length);
+			}
+			return query.value;
+		}
+		return selectedValue.value.name;
+	},
+	set: (value) => {
+		if (hasValidPrefix.value) {
+			query.value = currentPrefix.value + value;
+		} else {
+			query.value = value;
+		}
+	},
 });
 
 import { normalizeString, filterByEmail, filterStudentsByName, filterByJMBAG, filterByAssignmentId, filterByCompany } from "@/helpers/search-utils.js";
@@ -187,14 +181,6 @@ const filteredResults = computed(() => {
 			return [];
 	}
 });
-
-function insertPrefix(prefix) {
-	if (!query.value.startsWith(prefix)) {
-		query.value = prefix + query.value;
-	}
-	const searchInputElement = document.querySelector(".inputClass");
-	searchInputElement?.focus();
-}
 
 function showHelp() {
 	query.value = "";
@@ -230,6 +216,30 @@ const inputStyle = computed(() => {
 	}
 	return { paddingLeft };
 });
+
+function handleInputChange(event) {
+	const newValue = event.target.value;
+
+	const potentialPrefix = newValue.split(":")[0] + ":";
+	const hasNewPrefix = helpItems.some((item) => item.prefix === potentialPrefix) && newValue.includes(":");
+
+	if (hasNewPrefix) {
+		lastPrefix.value = potentialPrefix;
+		query.value = potentialPrefix;
+		event.target.value = "";
+	} else if (hasValidPrefix.value) {
+		query.value = currentPrefix.value + newValue;
+	} else {
+		query.value = newValue;
+	}
+}
+
+function handleKeyDown(event) {
+	if (hasValidPrefix.value && (event.key === "Backspace" || event.key === "Delete") && query.value === currentPrefix.value) {
+		query.value = "";
+		event.preventDefault();
+	}
+}
 
 onMounted(async () => {
 	const onKeydown = (event) => {

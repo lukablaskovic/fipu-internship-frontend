@@ -1,13 +1,13 @@
 <script setup>
 import { ref, onMounted } from "vue";
 
-import { mdiEye } from "@mdi/js";
 import CardBoxModal from "@/components/Cardbox/CardBoxModal.vue";
+import { mdiEye } from "@mdi/js";
 
+import CardboxAllocation from "@/components/Cardbox/CardBoxAllocation.vue";
+import LoadingOverlay from "@/components/LoadingOverlay.vue";
 import BaseButtons from "@/components/Base/BaseButtons.vue";
 import BaseButton from "@/components/Base/BaseButton.vue";
-import LoadingOverlay from "@/components/LoadingOverlay.vue";
-import CardboxAllocation from "@/components/Cardbox/CardBoxAllocation.vue";
 import { adminStore } from "@/main.js";
 
 defineProps({
@@ -33,6 +33,7 @@ const selectAssignment = (assignment) => {
 
 onMounted(async () => {
 	registeredPreferences.value = await adminStore.getPreferencesDetailed(adminStore.selectedStudent.process_instance_data.variables.id_preferencije);
+	registeredPreferences.value = registeredPreferences.value.data;
 	prviOdabir.value = registeredPreferences.value["Prvi_odabir"][0]["details"];
 	drugiOdabir.value = registeredPreferences.value["Drugi_odabir"][0]["details"];
 	treciOdabir.value = registeredPreferences.value["Treci_odabir"][0]["details"];
@@ -73,7 +74,7 @@ onMounted(async () => {
 				<td data-label="ID Zadatka">{{ assignment["id_zadatak"] }}</td>
 				<td data-label="Kontakt email">{{ assignment["poslodavac_email"] }}</td>
 				<td data-label="Lokacija">{{ assignment["lokacija"] }}</td>
-				<td class="before:hidden lg:w-1 whitespace-nowrap">
+				<td class="whitespace-nowrap before:hidden lg:w-1">
 					<BaseButtons type="justify-start lg:justify-end" no-wrap>
 						<BaseButton color="fipu_blue" :icon="mdiEye" small @click="isModalActive = assignment" />
 					</BaseButtons>

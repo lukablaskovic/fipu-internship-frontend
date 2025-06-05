@@ -42,8 +42,6 @@ async function fetchCompanyLogo(companyName) {
 onMounted(async () => {
 	let result = await studentStore.getInstanceInfo(mainStore.currentUser.internship_process.id);
 
-	//console.log("result", result);
-
 	prviOdabir.value = result.variables["Prvi_odabir"][0];
 	drugiOdabir.value = result.variables["Drugi_odabir"][0];
 	treciOdabir.value = result.variables["Treci_odabir"][0];

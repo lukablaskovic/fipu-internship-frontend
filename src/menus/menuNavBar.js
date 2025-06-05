@@ -32,14 +32,7 @@ export default [
 			externalURL: "https://github.com/lukablaskovic/fipu-internship-frontend/issues",
 			size: 22,
 		},
-		/*
-		{
-			icon: mdiThemeLightDark,
-			label: "Promjena teme",
-			isDesktopNoLabel: true,
-			isToggleLightDark: true,
-		},
-    */
+
 		{
 			icon: mdiLogout,
 			label: "Odjava",
@@ -67,14 +60,7 @@ export default [
 			externalURL: "https://github.com/lukablaskovic/fipu-internship-frontend/issues",
 			size: 22,
 		},
-		/*
-		{
-			icon: mdiThemeLightDark,
-			label: "Promjena teme",
-			isDesktopNoLabel: true,
-			isToggleLightDark: true,
-		},
-    */
+
 		{
 			icon: mdiLogout,
 			label: "Odjava",

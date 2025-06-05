@@ -78,9 +78,12 @@ const upperWrapperClass = computed(() => {
 
 const wrapperClass = computed(() => {
 	const base = [];
-	if (props.searchBar) base.push("rounded");
 	if (computedType.value === "button") {
 		base.push(getButtonColor(props.buttonColor, props.buttonOutline, true));
+	}
+
+	if (props.searchBar) {
+		base.push("shadow-md");
 	} else {
 		base.push(borderColor.value, "dark:bg-slate-800", props.borderless ? "bg-gray-50" : "");
 		if (wrapperBorder.value) base.push("border-t border-b", !props.firstAddon && !props.lastAddon && !props.middleAddon ? "rounded border-l border-r" : "");
@@ -157,7 +160,7 @@ if (props.ctrlKFocus) {
 			<div v-if="computedType === 'static'" :class="inputElClass" class="inline-flex items-center whitespace-nowrap">{{ modelValue }}</div>
 
 			<!-- Search Bar -->
-			<div v-if="showSearchBar && mainStore.userAdmin" class="relative" :class="wrapperClass">
+			<div v-if="showSearchBar && mainStore.userAdmin" class="relative">
 				<SearchOptions />
 			</div>
 
@@ -178,11 +181,33 @@ if (props.ctrlKFocus) {
 				<span v-if="buttonLabel" :class="{ 'ml-1': buttonIcon }">{{ buttonLabel }}</span>
 			</button>
 
-			<input v-else :id="id" ref="inputEl" v-model="computedValue" :name="name" :autocomplete="autocomplete" :required="required" :readonly="readonly" :placeholder="placeholder" :type="computedType" :min="min" :max="max" :class="[inputElClass, 'truncate-input']" :disabled="disabled" />
+			<input
+				v-else
+				:id="id"
+				ref="inputEl"
+				v-model="computedValue"
+				:name="name"
+				:autocomplete="autocomplete"
+				:required="required"
+				:readonly="readonly"
+				:placeholder="placeholder"
+				:type="computedType"
+				:min="min"
+				:max="max"
+				:class="[inputElClass, 'truncate-input']"
+				:disabled="disabled" />
 
 			<!-- Icons and Tip Tags -->
 			<FormControlIcon v-if="computedIconLeft" :icon="computedIconLeft" :h="controlIconH" :text-color="textColor" />
-			<FormControlIcon v-if="computedIconRight || props.copyable" :icon="props.copyable ? mdiContentCopy : computedIconRight" :h="controlIconH" :text-color="textColor" :clickable="rightIconClickable || props.copyable" :class="{ 'cursor-pointer hover:text-fipu_blue': props.copyable }" is-right @icon-click="props.copyable ? copyToClipboard() : openPasswordToggle()" />
+			<FormControlIcon
+				v-if="computedIconRight || props.copyable"
+				:icon="props.copyable ? mdiContentCopy : computedIconRight"
+				:h="controlIconH"
+				:text-color="textColor"
+				:clickable="rightIconClickable || props.copyable"
+				:class="{ 'cursor-pointer hover:text-fipu_blue': props.copyable }"
+				is-right
+				@icon-click="props.copyable ? copyToClipboard() : openPasswordToggle()" />
 			<TipTag v-if="tipLeft" :tip="tipLeft" left />
 			<TipTag v-if="tipRight" :tip="tipRight" right />
 		</div>

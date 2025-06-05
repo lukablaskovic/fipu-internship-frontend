@@ -29,12 +29,7 @@
 			<tr v-if="paginatedAssignments.length === 0">
 				<td colspan="9" class="py-4 text-center">Nema rezultata...</td>
 			</tr>
-			<tr
-				v-for="assignment in paginatedAssignments"
-				:key="assignment['id_zadatak']"
-				:class="{
-					'selected-row': assignment_highlight === assignment['id_zadatak'],
-				}">
+			<tr v-for="assignment in paginatedAssignments" :key="assignment['id_zadatak']" :class="{ 'selected-row': assignment_highlight === assignment['id_zadatak'] }">
 				<TableCheckboxCell v-if="checkable" :value="isCheckedAssignment(assignment)" :disabled="disableUnchecked && !isCheckedAssignment(assignment)" @checked="checked($event, assignment)" />
 
 				<td class="border-b-0 before:hidden lg:w-6">
@@ -104,9 +99,7 @@ import { mdiEye, mdiMenuDown } from "@mdi/js";
 
 import { useRoute } from "vue-router";
 
-defineProps({
-	checkable: Boolean,
-});
+defineProps({ checkable: Boolean });
 
 const perPage = ref(10);
 
@@ -118,7 +111,6 @@ function handlePerPageChange(option) {
 const currentPage = ref(0);
 const searchQuery = ref("");
 
-// Combine filtering and pagination logic
 const filteredAssignments = computed(() => {
 	const query = searchQuery.value.toLowerCase();
 	if (!query) {
@@ -176,9 +168,7 @@ async function loadData() {
 	}
 }
 
-watch(() => route.params.id_zadatak, loadData, {
-	immediate: true,
-});
+watch(() => route.params.id_zadatak, loadData, { immediate: true });
 
 onMounted(async () => {
 	const result = await mainStore.fetchAvailableAssignments();
@@ -233,7 +223,6 @@ const isCheckedAssignment = (assignment) => {
 };
 
 const checked = (value, assignment) => {
-	// When checking
 	if (value) {
 		if (checkedAssignments.value.length >= MAX_NUM_ASSIGNMENTS) {
 			alert("Možete odabrati najviše 3 zadatka.");
@@ -246,5 +235,3 @@ const checked = (value, assignment) => {
 	}
 };
 </script>
-
-<style scoped></style>

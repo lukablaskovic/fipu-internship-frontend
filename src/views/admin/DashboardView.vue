@@ -3,7 +3,6 @@ import {
 	mdiAlphaACircle,
 	mdiAbTesting,
 	mdiNoteAlert,
-	mdiClipboardCheck,
 	mdiAccountTie,
 	mdiAlphaBCircleOutline,
 	mdiAccountMultiple,
@@ -11,16 +10,13 @@ import {
 	mdiProgressClock,
 	mdiViewDashboard,
 	mdiCardSearch,
-	mdiMonitorAccount,
 	mdiAccountCancel,
 	mdiAlphaSBox,
 	mdiClockTimeEight,
 	mdiCalendarClock,
 	mdiAccountGroup,
-	mdiOfficeBuilding,
 } from "@mdi/js";
 import { adminStore, mainStore, snackBarStore } from "@/main.js";
-import { layoutStore } from "@/main";
 
 import { ref, computed, onMounted, watch } from "vue";
 import { useRouter } from "vue-router";
@@ -29,15 +25,13 @@ import moment from "@/moment-setup";
 import SectionTitleLineWithButton from "@/components/Section/SectionTitleLineWithButton.vue";
 import SkeletonLoaderEvent from "@/components/SkeletonLoaderEvent.vue";
 import LayoutAuthenticated from "@/layouts/LayoutAuthenticated.vue";
+import PillTagFilter from "@/components/PillTag/PillTagFilter.vue";
 import CardBoxWidget from "@/components/Cardbox/CardBoxWidget.vue";
 import CardBoxEvents from "@/components/Cardbox/CardBoxEvents.vue";
-import PillTagFilter from "@/components/PillTag/PillTagFilter.vue";
-import * as chartConfig from "@/components/Charts/chart.config.js";
 import SectionMain from "@/components/Section/SectionMain.vue";
 import SkeletonLoader from "@/components/SkeletonLoader.vue";
 import BaseButtons from "@/components/Base/BaseButtons.vue";
 import BaseButton from "@/components/Base/BaseButton.vue";
-//import LineChart from "@/components/Charts/LineChart.vue";
 
 import BaseLevel from "@/components/Base/BaseLevel.vue";
 import PillTag from "@/components/PillTag/PillTag.vue";
@@ -119,19 +113,16 @@ const toggleModelEventsFilter = () => {
 const filteredEvents = computed(() => {
 	let filtered = events.value;
 
-	// Filter active instances if needed
 	if (!adminStore.filterActiveInstances) {
 		const endedInstances = events.value.filter((event) => event.activity_id === "end_event_student").map((event) => event.instance_id);
 		filtered = filtered.filter((event) => !endedInstances.includes(event.instance_id));
 	}
 
-	// Model filtering based on the current state
 	if (adminStore.filterModelState === "A") {
 		filtered = filtered.filter((event) => event.model_name === mainStore.bpmn_process_name_A + ".bpmn");
 	} else if (adminStore.filterModelState === "B") {
 		filtered = filtered.filter((event) => event.model_name === mainStore.bpmn_process_name_B + ".bpmn");
 	} else if (adminStore.filterModelState === "AB") {
-		// Do nothing, include both models
 	}
 
 	return filtered;
@@ -191,7 +182,7 @@ const toggleDateType = () => {
 					<CardBoxWidget
 						v-if="adminStore.studentsFetched"
 						color="text-fipu_blue"
-						class="cursor-pointer rounded-lg"
+						class="cursor-pointer rounded-lg hover:bg-fipu_blue/10"
 						:icon="mdiAccountMultiple"
 						:number="ongoing_internships"
 						label="Ukupno aktivnih procesa (A + B)"
@@ -206,7 +197,7 @@ const toggleDateType = () => {
 				</div>
 
 				<p class="mb-4">
-					<b>Statistika | Model <PillTag color="danger" label="A" /></b>
+					<b>Statistika | Model prakse <PillTag color="danger" label="A" /></b>
 				</p>
 
 				<div class="mb-6 grid grid-cols-1 gap-6 lg:grid-cols-3">
@@ -216,7 +207,7 @@ const toggleDateType = () => {
 					<CardBoxWidget
 						v-if="adminStore.studentsFetched"
 						color="text-rose-600"
-						class="cursor-pointer rounded-lg"
+						class="cursor-pointer rounded-lg hover:bg-fipu_blue/10"
 						:icon="mdiAccountMultiple"
 						:number="a_ongoing_internships"
 						label="Ukupno aktivnih procesa (A)"
@@ -226,7 +217,7 @@ const toggleDateType = () => {
 					<CardBoxWidget
 						v-if="adminStore.studentsFetched"
 						color="text-rose-600"
-						class="cursor-pointer rounded-lg"
+						class="cursor-pointer rounded-lg hover:bg-fipu_blue/10"
 						:icon="mdiProgressClock"
 						:number="waiting_for_allocation"
 						label="Čeka na alokaciju"
@@ -238,7 +229,7 @@ const toggleDateType = () => {
 				</div>
 
 				<p class="mb-4">
-					<b>Statistika | Model <PillTag color="success" label="B" /></b>
+					<b>Statistika | Model prakse <PillTag color="success" label="B" /></b>
 				</p>
 
 				<div class="mb-6 grid grid-cols-1 gap-6 lg:grid-cols-3">
@@ -248,7 +239,7 @@ const toggleDateType = () => {
 					<CardBoxWidget
 						v-if="adminStore.studentsFetched"
 						color="text-emerald-500"
-						class="cursor-pointer rounded-lg"
+						class="cursor-pointer rounded-lg hover:bg-fipu_blue/10"
 						:icon="mdiAccountMultiple"
 						:number="b_ongoing_internships"
 						label="Ukupno aktivnih procesa (B)"
@@ -258,7 +249,7 @@ const toggleDateType = () => {
 					<CardBoxWidget
 						v-if="adminStore.studentsFetched"
 						color="text-emerald-500"
-						class="cursor-pointer rounded-lg"
+						class="cursor-pointer rounded-lg hover:bg-fipu_blue/10"
 						:icon="mdiProgressClock"
 						:number="b_waiting_for_assignment_approval"
 						label="Čeka na odobrenje zadatka"
@@ -319,7 +310,7 @@ const toggleDateType = () => {
 							:type="event.activity_id"
 							:jmbag="event.student_JMBAG == undefined ? 'Greška u dohvatu podataka - JMBAG' : event.student_JMBAG"
 							:email="event.student_email == undefined ? 'Greška u dohvatu podataka - email' : event.student_email"
-							class="cursor-pointer rounded-lg"
+							class="cursor-pointer rounded-lg hover:bg-fipu_blue/10"
 							:model="event.model_name"
 							@click="router.push(`/studenti/${event.instance_id}`)" />
 					</div>
@@ -333,7 +324,7 @@ const toggleDateType = () => {
 							:jmbag="event.student_JMBAG == undefined ? 'Greška u dohvatu podataka - JMBAG' : event.student_JMBAG"
 							:email="event.student_email == undefined ? 'Greška u dohvatu podataka - email' : event.student_email"
 							:model="event.model_name"
-							class="cursor-pointer rounded-lg"
+							class="cursor-pointer rounded-lg hover:bg-fipu_blue/10"
 							@click="router.push(`/studenti/${event.instance_id}`)" />
 					</div>
 				</div>
