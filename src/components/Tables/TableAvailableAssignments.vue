@@ -40,10 +40,10 @@
 						<UserAvatar :avatar="getCompanyLogo(assignment)" class="mx-auto h-24 w-24 lg:h-6 lg:w-6" />
 					</td>
 
-					<td data-label="id_zadatak">
+					<td data-label="ID Zadatka">
 						{{ assignment["id_zadatak"] }}
 					</td>
-					<td data-label="Kontakt email">
+					<td data-label="Kontakt email" class="break-all">
 						{{ assignment["poslodavac_email"] }}
 					</td>
 					<td data-label="Preferirane tehnologije" class="max-w-[100px] truncate">

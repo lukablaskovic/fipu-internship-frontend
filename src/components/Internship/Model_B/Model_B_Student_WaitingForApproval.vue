@@ -32,10 +32,10 @@ const Layout = computed(() => {
 			<p><b>Akademska godina:</b> {{ mainStore.academicYear }}</p>
 			<p><b>Voditelj:</b> {{ mainStore.voditelj_prakse }}</p>
 			<br />
-			<img src="/illustrations/waitng-illustration.svg" class="absolute right-0 top-0 mr-6 mt-4 w-1/6 max-w-full" />
+			<img src="/illustrations/selection.svg" class="absolute right-0 top-0 mr-6 mt-4 w-1/5 max-w-full" />
 			<SectionTitleLineWithButton :icon="mdiProgressClock" main title="Postupak odobrenja je u tijeku"></SectionTitleLineWithButton>
 			<div class="flex flex-wrap text-base">Voditelj vam još nije odobrio zadatak. Ako čekate dugo (nekoliko dana), molimo da kontaktirate voditelja stručne prakse.</div>
-			<span class="flex flex-wrap text-base">
+			<span class="mb-4 flex flex-wrap text-base">
 				Ako vam poslodavac još nije prijavio zadatak, javite im se da to što prije to učine na <span class="inline-flex"> <IconTextLink :to="'/poslodavci/novi-zadatak'" :icon="mdiNewBox" :text="'Prijava zadatka'"></IconTextLink>.</span>
 			</span>
 			<hr class="mb-4" />
