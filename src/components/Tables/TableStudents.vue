@@ -1,126 +1,129 @@
 <script setup>
-import { computed, ref, onMounted } from "vue";
-import { watch } from "vue";
-
+import { mdiEye, mdiMenuDown, mdiCloseOutline, mdiSortAscending, mdiSortDescending } from "@mdi/js";
 import { tableButtonMenuOptions } from "@/tableButtonMenuOptions.js";
 import { StudentMappings, UserTaskMappings } from "@/helpers/maps";
 import CardBoxModal from "@/components/Cardbox/CardBoxModal.vue";
-import { mdiEye, mdiMenuDown, mdiCloseOutline } from "@mdi/js";
 import ButtonMenu from "@/components/Premium/ButtonMenu.vue";
 import BaseButtons from "@/components/Base/BaseButtons.vue";
-import BaseButton from "@/components/Base/BaseButton.vue";
 import UserAvatar from "@/components/User/UserAvatar.vue";
+import BaseButton from "@/components/Base/BaseButton.vue";
 import BaseLevel from "@/components/Base/BaseLevel.vue";
 import PillTag from "@/components/PillTag/PillTag.vue";
+import BaseIcon from "@/components/Base/BaseIcon.vue";
+import { computed, ref, onMounted, watch } from "vue";
 import LoadingOverlay from "../LoadingOverlay.vue";
 import { adminStore } from "@/main.js";
 import { useRoute } from "vue-router";
 
-import { mdiSortAscending, mdiSortDescending } from "@mdi/js";
-import BaseIcon from "@/components/Base/BaseIcon.vue";
+defineProps({ checkable: Boolean });
 
 const route = useRoute();
+const emit = defineEmits(["show-student-diagram"]);
 
+const students = computed(() => adminStore.students);
+const studentsFetched = computed(() => adminStore.studentsFetched);
+
+const perPage = ref(10);
+const currentPage = ref(0);
 const sortDirection = ref("asc");
 const sortColumn = ref("ime");
-let instanceDeleteModalActive = ref(false);
+
+const selectedStudentInstanceID = ref(null);
+const selectedStudentInstanceIDForDelete = ref(null);
+const instanceDeleteModalActive = ref(false);
+
+// --- Sorting ---
+function getProgressValue(student) {
+	return UserTaskMappings.getTaskProperty(student["process_instance_data"]["pending"][0], "order", student["process_instance_data"]["state"]);
+}
 
 function sortStudents(studentsList) {
-	const sortedStudents = [...studentsList];
-
-	sortedStudents.sort((a, b) => {
+	return [...studentsList].sort((a, b) => {
 		let valueA, valueB;
 
 		if (sortColumn.value === "progress") {
 			valueA = getProgressValue(a);
 			valueB = getProgressValue(b);
 		} else {
-			valueA = a[sortColumn.value].toLowerCase();
-			valueB = b[sortColumn.value].toLowerCase();
+			valueA = (a[sortColumn.value] || "").toLowerCase();
+			valueB = (b[sortColumn.value] || "").toLowerCase();
 		}
 
-		if (sortDirection.value === "asc") {
-			return valueA > valueB ? 1 : -1;
-		} else {
-			return valueA < valueB ? 1 : -1;
-		}
+		return sortDirection.value === "asc" ? (valueA > valueB ? 1 : -1) : valueA < valueB ? 1 : -1;
 	});
-
-	return sortedStudents;
 }
 
-defineProps({ checkable: Boolean });
+function toggleSortDirection(column) {
+	if (sortColumn.value === column) {
+		sortDirection.value = sortDirection.value === "asc" ? "desc" : "asc";
+	} else {
+		sortColumn.value = column;
+		sortDirection.value = "asc";
+	}
+}
 
-const students = computed(() => adminStore.students);
-const selectedStudentInstanceID = ref(null);
-const selectedStudentInstanceIDForDelete = ref(null);
+// --- Filtering ---
+function getFilteredStudents(studentsToFilter) {
+	let filtered = [...studentsToFilter];
 
-const studentsFetched = computed(() => adminStore.studentsFetched);
-const emit = defineEmits(["show-student-diagram"]);
+	if (!adminStore.filterFinishedInstances) {
+		filtered = filtered.filter((student) => UserTaskMappings.getTaskProperty(student["process_instance_data"]["pending"][0], "name", student["process_instance_data"]["state"]) !== "Student ocjenjen");
+	}
 
-watch(selectedStudentInstanceID, (newVal) => {
-	if (newVal) {
-		const selectedStudent = students.value.find((student) => student.process_instance_id === newVal);
+	if (adminStore.filterModelState !== "AB") {
+		filtered = filtered.filter((student) => student.Model_prakse.value === adminStore.filterModelState);
+	}
 
-		if (selectedStudent) {
-			// Start with sorting the students
-			let sortedStudents = sortStudents(students.value);
-
-			let filteredStudents = sortedStudents;
-
-			// Apply the filter for finished instances
-			if (!adminStore.filterFinishedInstances) {
-				filteredStudents = filteredStudents.filter((student) => UserTaskMappings.getTaskProperty(student["process_instance_data"]["pending"][0], "name", student["process_instance_data"]["state"]) !== "Student ocjenjen");
-			}
-
-			// Apply the model state filter (A, B, AB)
-			if (adminStore.filterModelState === "A") {
-				filteredStudents = filteredStudents.filter((student) => student.Model_prakse.value === "A");
-			} else if (adminStore.filterModelState === "B") {
-				filteredStudents = filteredStudents.filter((student) => student.Model_prakse.value === "B");
-			} else if (adminStore.filterModelState === "AB") {
-				filteredStudents = filteredStudents.filter((student) => student.Model_prakse.value === "A" || student.Model_prakse.value === "B");
-			}
-
-			// Apply internship stage filter (ensure valid stage)
-			if (adminStore.filterInternshipStage && adminStore.filterInternshipStage !== "all" && adminStore.filterInternshipStage !== "") {
-				if (adminStore.filterInternshipStage === "ceka_odobrenje") {
-					filteredStudents = filteredStudents.filter((student) => UserTaskMappings.getTaskProperty(student["process_instance_data"]["pending"][0], "name", student["process_instance_data"]["state"]) === "Čeka odobrenje zadatka");
-				} else if (adminStore.filterInternshipStage === "ceka_alokaciju") {
-					filteredStudents = filteredStudents.filter((student) => UserTaskMappings.getTaskProperty(student["process_instance_data"]["pending"][0], "name", student["process_instance_data"]["state"]) === "Čeka alokaciju profesora");
-				} else {
-					filteredStudents = filteredStudents.filter((student) => UserTaskMappings.getTaskProperty(student["process_instance_data"]["pending"][0], "name", student["process_instance_data"]["state"]) === adminStore.filterInternshipStage);
-				}
-			}
-
-			const selectedIndexInFilteredList = filteredStudents.findIndex((student) => student.process_instance_id === newVal);
-
-			if (selectedIndexInFilteredList !== -1) {
-				const selectedPage = Math.floor(selectedIndexInFilteredList / perPage.value);
-
-				currentPage.value = selectedPage;
-			} else {
-				console.log("Selected student not found in the filtered list.");
-			}
+	const stage = adminStore.filterInternshipStage;
+	if (stage && stage !== "all" && stage !== "") {
+		if (stage === "ceka_odobrenje") {
+			filtered = filtered.filter((student) => UserTaskMappings.getTaskProperty(student["process_instance_data"]["pending"][0], "name", student["process_instance_data"]["state"]) === "Čeka odobrenje zadatka");
+		} else if (stage === "ceka_alokaciju") {
+			filtered = filtered.filter((student) => UserTaskMappings.getTaskProperty(student["process_instance_data"]["pending"][0], "name", student["process_instance_data"]["state"]) === "Čeka alokaciju profesora");
+		} else {
+			filtered = filtered.filter((student) => UserTaskMappings.getTaskProperty(student["process_instance_data"]["pending"][0], "name", student["process_instance_data"]["state"]) === stage);
 		}
 	}
+
+	return filtered;
+}
+
+// --- Computed properties for display ---
+const filteredAndSortedStudents = computed(() => {
+	const filtered = getFilteredStudents(students.value);
+	return sortStudents(filtered);
 });
 
+const studentsPaginated = computed(() => {
+	const start = perPage.value * currentPage.value;
+	const end = start + perPage.value;
+	return filteredAndSortedStudents.value.slice(start, end);
+});
+
+const numPages = computed(() => Math.ceil(filteredAndSortedStudents.value.length / perPage.value));
+const currentPageHuman = computed(() => currentPage.value + 1);
+const pagesList = computed(() => Array.from({ length: numPages.value }, (_, i) => i));
+
+// --- Actions ---
 function showDiagram(student) {
 	selectedStudentInstanceID.value = student["process_instance_id"];
 	adminStore.setSelectedStudent(student);
-
 	emit("show-student-diagram", student);
 }
 
 function deleteProcessInstance(student) {
 	selectedStudentInstanceIDForDelete.value = student["process_instance_id"];
 	adminStore.setSelectedStudentForDelete(student);
-
 	instanceDeleteModalActive.value = true;
 	console.log(adminStore.selectedStudentForDelete);
 }
 
+function handlePerPageChange(option) {
+	perPage.value = option.value;
+	currentPage.value = 0;
+}
+
+// --- Lifecycle and Watchers ---
 onMounted(async () => {
 	await adminStore.getStudents();
 	if (route.params.process_instance_id) {
@@ -136,101 +139,17 @@ onMounted(async () => {
 	}
 });
 
-function updateCurrentPageForSelectedStudent(selectedStudent) {
-	const selectedIndex = students.value.indexOf(selectedStudent);
-	if (selectedIndex !== -1) {
-		currentPage.value = Math.floor(selectedIndex / perPage.value);
-	}
-}
-
-const perPage = ref(10);
-const currentPage = ref(0);
-
-function handlePerPageChange(option) {
-	perPage.value = option.value;
-	currentPage.value = 0;
-}
-
-const studentsPaginated = computed(() => {
-	let filteredStudents = students.value;
-
-	if (!adminStore.filterFinishedInstances) {
-		filteredStudents = filteredStudents.filter((student) => UserTaskMappings.getTaskProperty(student["process_instance_data"]["pending"][0], "name", student["process_instance_data"]["state"]) !== "Student ocjenjen");
-	}
-
-	if (adminStore.filterModelState === "A") {
-		filteredStudents = filteredStudents.filter((student) => student.Model_prakse.value === "A");
-	} else if (adminStore.filterModelState === "B") {
-		filteredStudents = filteredStudents.filter((student) => student.Model_prakse.value === "B");
-	} else if (adminStore.filterModelState === "AB") {
-		filteredStudents = filteredStudents.filter((student) => student.Model_prakse.value === "A" || student.Model_prakse.value === "B");
-	}
-
-	// Adjusted internship stage filter logic with manual checks for specific values
-	if (adminStore.filterInternshipStage && adminStore.filterInternshipStage !== "all" && adminStore.filterInternshipStage !== "") {
-		// Manual checks for specific internship stages
-		if (adminStore.filterInternshipStage === "ceka_odobrenje") {
-			filteredStudents = filteredStudents.filter((student) => UserTaskMappings.getTaskProperty(student["process_instance_data"]["pending"][0], "name", student["process_instance_data"]["state"]) === "Čeka odobrenje zadatka");
-		} else if (adminStore.filterInternshipStage === "ceka_alokaciju") {
-			filteredStudents = filteredStudents.filter((student) => UserTaskMappings.getTaskProperty(student["process_instance_data"]["pending"][0], "name", student["process_instance_data"]["state"]) === "Čeka alokaciju profesora");
-		} else {
-			// Default case for other internship stages
-			filteredStudents = filteredStudents.filter((student) => UserTaskMappings.getTaskProperty(student["process_instance_data"]["pending"][0], "name", student["process_instance_data"]["state"]) === adminStore.filterInternshipStage);
+watch(selectedStudentInstanceID, (newVal) => {
+	if (newVal) {
+		const index = filteredAndSortedStudents.value.findIndex((s) => s.process_instance_id === newVal);
+		if (index !== -1) {
+			currentPage.value = Math.floor(index / perPage.value);
 		}
 	}
-
-	filteredStudents = sortStudents(filteredStudents);
-
-	return filteredStudents.slice(perPage.value * currentPage.value, perPage.value * (currentPage.value + 1));
 });
-
-const numPages = computed(() => {
-	const filteredStudents = students.value.filter((student) => {
-		let match = true;
-
-		if (!adminStore.filterFinishedInstances) {
-			match = match && UserTaskMappings.getTaskProperty(student["process_instance_data"]["pending"][0], "name", student["process_instance_data"]["state"]) !== "Student ocjenjen";
-		}
-
-		if (adminStore.filterModelState === "A") {
-			match = match && student.Model_prakse.value === "A";
-		} else if (adminStore.filterModelState === "B") {
-			match = match && student.Model_prakse.value === "B";
-		} else if (adminStore.filterModelState === "AB") {
-			match = match && (student.Model_prakse.value === "A" || student.Model_prakse.value === "B");
-		}
-
-		// Adjusted internship stage filter logic
-		if (adminStore.filterInternshipStage && adminStore.filterInternshipStage !== "all" && adminStore.filterInternshipStage !== "") {
-			match = match && UserTaskMappings.getTaskProperty(student["process_instance_data"]["pending"][0], "name", student["process_instance_data"]["state"]) === adminStore.filterInternshipStage;
-		}
-
-		return match;
-	});
-
-	return Math.ceil(filteredStudents.length / perPage.value);
-});
-
-const currentPageHuman = computed(() => currentPage.value + 1);
-
-const pagesList = computed(() => {
-	return Array.from({ length: numPages.value }, (_, i) => i);
-});
-
-function getProgressValue(student) {
-	return UserTaskMappings.getTaskProperty(student["process_instance_data"]["pending"][0], "order", student["process_instance_data"]["state"]);
-}
-function toggleSortDirection(column) {
-	if (sortColumn.value === column) {
-		sortDirection.value = sortDirection.value === "asc" ? "desc" : "asc";
-	} else {
-		sortColumn.value = column;
-		sortDirection.value = "asc";
-	}
-}
 
 watch(studentsPaginated, (newList) => {
-	if (newList.length === 0 && numPages.value > 1) {
+	if (newList.length === 0 && currentPage.value > 0) {
 		currentPage.value = 0;
 	}
 });
@@ -275,6 +194,9 @@ watch(studentsPaginated, (newList) => {
 		</thead>
 
 		<tbody>
+			<tr v-if="!studentsPaginated.length">
+				<td colspan="10" class="py-4 text-center">Nema rezultata...</td>
+			</tr>
 			<tr v-for="student in studentsPaginated" :key="student['process_instance_id']" :class="{ 'selected-row bg-blue-100 dark:bg-blue-900': selectedStudentInstanceID === student['process_instance_id'] }">
 				<td class="border-b-0 before:hidden lg:w-6">
 					<UserAvatar :avatar="student['avatar']" class="mx-auto flex h-22 w-22 lg:h-12 lg:w-12" />

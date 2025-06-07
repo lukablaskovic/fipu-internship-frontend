@@ -167,7 +167,7 @@ onMounted(async () => {
 					<li>Ako poduzeće nije do sada surađivalo sa Sveučilištem, potrebno je realizirati Ugovor o stručnoj praksi između Sveučilišta i Poduzeća. Javite se voditelju prakse za predložak ugovora.</li>
 					<li>
 						Svakako provjerite je li poduzeće već potpisalo ugovor, prijavite se u aplikaciju FIPU Praksa i odaberite
-						<div class="inline-flex">na <IconTextLink Link :to="'/poslodavci'" :icon="mdiDomain" :text="'Poslodavci'"></IconTextLink></div>
+						<div class="inline-flex"><IconTextLink Link :to="'/poslodavci'" :icon="mdiDomain" :text="'Poslodavci'"></IconTextLink></div>
 					</li>
 				</ul>
 				<li>
