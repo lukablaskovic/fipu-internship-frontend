@@ -13,7 +13,7 @@ import FormField from "@/components/Form/FormField.vue";
 import CardBox from "@/components/Cardbox/CardBox.vue";
 import LayoutGuest from "@/layouts/LayoutGuest.vue";
 
-import { ref, computed, onMounted } from "vue";
+import { ref, computed, onMounted, watch } from "vue";
 import Utils from "@/helpers/utils.js";
 import draggable from "vuedraggable";
 
@@ -31,6 +31,8 @@ const vueDraggableDragging = ref(false);
 const isLoading = ref(false);
 const napomena = ref(null);
 const isFadedOut = ref(false);
+const vas_odabir = ref(null);
+const hasScrolledForFirstTime = ref(false);
 
 const registerPreferences = async () => {
 	isLoading.value = true;
@@ -52,6 +54,16 @@ const registerPreferences = async () => {
 onMounted(async () => {
 	mainStore.allCompanies = await mainStore.fetchCompanies();
 });
+
+watch(
+	() => checkedAssignments.value.length,
+	(newLength) => {
+		if (newLength === 3 && !hasScrolledForFirstTime.value) {
+			vas_odabir.value?.$el.scrollIntoView({ behavior: "smooth" });
+			hasScrolledForFirstTime.value = true;
+		}
+	},
+);
 
 const getCompanyLogo = (assignment) => {
 	const company = mainStore.allCompanies.find((c) => c.naziv === assignment["Poslodavac"][0].value);
