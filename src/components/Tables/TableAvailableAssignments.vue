@@ -26,47 +26,52 @@
 			</tr>
 		</thead>
 		<tbody>
-			<tr v-if="paginatedAssignments.length === 0">
-				<td colspan="9" class="py-4 text-center">Nema rezultata...</td>
-			</tr>
-			<tr v-for="assignment in paginatedAssignments" :key="assignment['id_zadatak']" :class="{ 'selected-row': assignment_highlight === assignment['id_zadatak'] }">
-				<TableCheckboxCell v-if="checkable" :value="isCheckedAssignment(assignment)" :disabled="disableUnchecked && !isCheckedAssignment(assignment)" @checked="checked($event, assignment)" />
+			<template v-if="!allAvailableAssignments.length">
+				<SkeletonLoaderAssignmentRow v-for="n in perPage" :key="n" :checkable="checkable" :is-admin="mainStore.userAdmin" />
+			</template>
+			<template v-else>
+				<tr v-if="paginatedAssignments.length === 0">
+					<td colspan="9" class="py-4 text-center">Nema rezultata...</td>
+				</tr>
+				<tr v-for="assignment in paginatedAssignments" :key="assignment['id_zadatak']" :class="{ 'selected-row': assignment_highlight === assignment['id_zadatak'] }">
+					<TableCheckboxCell v-if="checkable" :value="isCheckedAssignment(assignment)" :disabled="disableUnchecked && !isCheckedAssignment(assignment)" @checked="checked($event, assignment)" />
 
-				<td class="border-b-0 before:hidden lg:w-6">
-					<UserAvatar :avatar="getCompanyLogo(assignment)" class="mx-auto h-24 w-24 lg:h-6 lg:w-6" />
-				</td>
+					<td class="border-b-0 before:hidden lg:w-6">
+						<UserAvatar :avatar="getCompanyLogo(assignment)" class="mx-auto h-24 w-24 lg:h-6 lg:w-6" />
+					</td>
 
-				<td data-label="id_zadatak">
-					{{ assignment["id_zadatak"] }}
-				</td>
-				<td data-label="Kontakt email">
-					{{ assignment["poslodavac_email"] }}
-				</td>
-				<td data-label="Preferirane tehnologije" class="max-w-[100px] truncate">
-					{{ assignment["preferirane_tehnologije"] }}
-				</td>
+					<td data-label="id_zadatak">
+						{{ assignment["id_zadatak"] }}
+					</td>
+					<td data-label="Kontakt email">
+						{{ assignment["poslodavac_email"] }}
+					</td>
+					<td data-label="Preferirane tehnologije" class="max-w-[100px] truncate">
+						{{ assignment["preferirane_tehnologije"] }}
+					</td>
 
-				<td data-label="Trajanje (sati)">
-					{{ assignment["trajanje_sati"] }}
-				</td>
-				<td data-label="Lokacija">
-					{{ assignment["lokacija"] }}
-				</td>
+					<td data-label="Trajanje (sati)">
+						{{ assignment["trajanje_sati"] }}
+					</td>
+					<td data-label="Lokacija">
+						{{ assignment["lokacija"] }}
+					</td>
 
-				<td v-if="mainStore.userAdmin" data-label="Max. studenata">
-					{{ assignment["broj_studenata"] }}
-				</td>
+					<td v-if="mainStore.userAdmin" data-label="Max. studenata">
+						{{ assignment["broj_studenata"] }}
+					</td>
 
-				<td v-if="mainStore.userAdmin" data-label="Dostupno mjesta">
-					{{ assignment["dostupno_mjesta"] }}
-				</td>
+					<td v-if="mainStore.userAdmin" data-label="Dostupno mjesta">
+						{{ assignment["dostupno_mjesta"] }}
+					</td>
 
-				<td class="whitespace-nowrap before:hidden lg:w-1">
-					<BaseButtons type="justify-start lg:justify-end" no-wrap>
-						<BaseButton color="fipu_blue" :icon="mdiEye" small @click="isModalActive = assignment" />
-					</BaseButtons>
-				</td>
-			</tr>
+					<td class="whitespace-nowrap before:hidden lg:w-1">
+						<BaseButtons type="justify-start lg:justify-end" no-wrap>
+							<BaseButton color="fipu_blue" :icon="mdiEye" small @click="isModalActive = assignment" />
+						</BaseButtons>
+					</td>
+				</tr>
+			</template>
 		</tbody>
 	</table>
 
@@ -84,6 +89,7 @@
 <script setup>
 import { computed, ref, onMounted, watch } from "vue";
 
+import SkeletonLoaderAssignmentRow from "@/components/SkeletonLoaderAssignmentRow.vue";
 import CardboxAllocation from "@/components/Cardbox/CardBoxAllocation.vue";
 import TableCheckboxCell from "@/components/Tables/TableCheckboxCell.vue";
 import { tableButtonMenuOptions } from "@/tableButtonMenuOptions.js";
@@ -91,8 +97,8 @@ import CardBoxModal from "@/components/Cardbox/CardBoxModal.vue";
 import ButtonMenu from "@/components/Premium/ButtonMenu.vue";
 import LoadingOverlay from "@/components/LoadingOverlay.vue";
 import BaseButtons from "@/components/Base/BaseButtons.vue";
-import BaseButton from "@/components/Base/BaseButton.vue";
 import UserAvatar from "@/components/User/UserAvatar.vue";
+import BaseButton from "@/components/Base/BaseButton.vue";
 import BaseLevel from "@/components/Base/BaseLevel.vue";
 import { mainStore, adminStore } from "@/main.js";
 import { mdiEye, mdiMenuDown } from "@mdi/js";
