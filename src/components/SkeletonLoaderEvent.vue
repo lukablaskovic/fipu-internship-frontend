@@ -1,33 +1,38 @@
 <template>
-	<BaseLevel full-width>
-		<div class="mx-auto w-full rounded-md p-6 shadow">
-			<div class="flex-1 space-y-6 py-1">
-				<div class="h-2 animate-pulse rounded"></div>
-				<div class="space-y-3">
-					<div class="grid grid-cols-4 gap-4">
-						<div class="col-span-3 h-2 animate-pulse rounded"></div>
-					</div>
-					<div class="h-2 animate-pulse rounded"></div>
+	<CardBox class="mb-6 last:mb-0" is-hoverable>
+		<BaseLevel>
+			<BaseLevel type="justify-start">
+				<div class="h-12 w-12 animate-pulse rounded-full bg-gray-200 dark:bg-slate-700 md:mr-6"></div>
+				<div class="space-y-2 text-center md:mr-6 md:text-left">
+					<div class="h-6 w-48 animate-pulse rounded bg-gray-200 dark:bg-slate-700"></div>
+					<div class="h-4 w-32 animate-pulse rounded bg-gray-200 dark:bg-slate-700"></div>
+					<div class="h-4 w-40 animate-pulse rounded bg-gray-200 dark:bg-slate-700"></div>
+					<div class="h-4 w-24 animate-pulse rounded bg-gray-200 dark:bg-slate-700"></div>
 				</div>
+			</BaseLevel>
+			<div class="space-y-2 text-center md:text-right">
+				<div class="h-4 w-24 animate-pulse rounded bg-gray-200 dark:bg-slate-700"></div>
+				<div class="h-6 w-32 animate-pulse rounded bg-gray-200 dark:bg-slate-700"></div>
 			</div>
-		</div>
-	</BaseLevel>
+		</BaseLevel>
+	</CardBox>
 </template>
 
 <script setup>
-import BaseLevel from "./Base/BaseLevel.vue";
+import BaseLevel from "@/components/Base/BaseLevel.vue";
+import CardBox from "@/components/Cardbox/CardBox.vue";
 </script>
 
 <style>
 @keyframes pulse {
 	0% {
-		background-color: #f0f0f0;
+		opacity: 0.6;
 	}
 	50% {
-		background-color: #e0e0e0;
+		opacity: 0.8;
 	}
 	100% {
-		background-color: #f0f0f0;
+		opacity: 0.6;
 	}
 }
 </style>

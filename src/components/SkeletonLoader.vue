@@ -1,27 +1,30 @@
 <template>
-	<div class="mx-auto w-full max-w-sm rounded-md p-3 shadow">
-		<div class="flex-1 space-y-6 py-1">
-			<div class="h-2 animate-pulse rounded"></div>
-			<div class="space-y-2">
-				<div class="grid grid-cols-4 gap-4">
-					<div class="col-span-3 h-2 animate-pulse rounded"></div>
-					<div class="col-span-1 h-10 w-10 animate-pulse rounded-full"></div>
-				</div>
-				<div class="h-2 animate-pulse rounded"></div>
+	<CardBox>
+		<BaseLevel mobile>
+			<div>
+				<div class="h-4 w-32 animate-pulse rounded bg-gray-200 dark:bg-slate-700"></div>
+				<div class="mt-2 h-8 w-16 animate-pulse rounded bg-gray-200 dark:bg-slate-700"></div>
 			</div>
-		</div>
-	</div>
+			<div class="h-16 w-16 animate-pulse rounded-full bg-gray-200 dark:bg-slate-700"></div>
+		</BaseLevel>
+	</CardBox>
 </template>
+
+<script setup>
+import BaseLevel from "@/components/Base/BaseLevel.vue";
+import CardBox from "@/components/Cardbox/CardBox.vue";
+</script>
+
 <style>
 @keyframes pulse {
 	0% {
-		background-color: #f0f0f0;
+		opacity: 0.6;
 	}
 	50% {
-		background-color: #e0e0e0;
+		opacity: 0.8;
 	}
 	100% {
-		background-color: #f0f0f0;
+		opacity: 0.6;
 	}
 }
 </style>

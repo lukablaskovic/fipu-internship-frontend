@@ -1,6 +1,7 @@
 <script setup>
 import { mdiEye, mdiMenuDown, mdiCloseOutline, mdiSortAscending, mdiSortDescending } from "@mdi/js";
 import { tableButtonMenuOptions } from "@/tableButtonMenuOptions.js";
+import SkeletonLoaderTableRow from "../SkeletonLoaderTableRow.vue";
 import { StudentMappings, UserTaskMappings } from "@/helpers/maps";
 import CardBoxModal from "@/components/Cardbox/CardBoxModal.vue";
 import ButtonMenu from "@/components/Premium/ButtonMenu.vue";
@@ -193,42 +194,47 @@ watch(studentsPaginated, (newList) => {
 		</thead>
 
 		<tbody>
-			<tr v-if="!studentsPaginated.length">
-				<td colspan="10" class="py-4 text-center">Nema rezultata...</td>
-			</tr>
-			<tr v-for="student in studentsPaginated" :key="student['process_instance_id']" :class="{ 'selected-row bg-blue-100 dark:bg-blue-900': selectedStudentInstanceID === student['process_instance_id'] }">
-				<td class="border-b-0 before:hidden lg:w-6">
-					<UserAvatar :avatar="student['avatar']" class="mx-auto flex h-22 w-22 lg:h-12 lg:w-12" />
-				</td>
-				<td data-label="Model_prakse">
-					<PillTag :color="student.Model_prakse.value == 'A' ? 'danger' : 'success'" :label="student.Model_prakse.value" />
-				</td>
-				<td data-label="JMBAG">{{ student["JMBAG"] }}</td>
-				<td data-label="Ime">{{ student["ime"] }}</td>
-				<td data-label="Prezime">{{ student["prezime"] }}</td>
-				<td data-label="Email">{{ student["email"] }}</td>
-				<td data-label="Godina studija">
-					{{ StudentMappings.getGodinaStudija(student["godina_studija"]["value"]) }}
-				</td>
-				<td data-label="Progress" class="lg:w-32">
-					<progress
-						class="flex w-2/5 self-center lg:w-full"
-						:class="{ 'progress-red': getProgressValue(student) <= 3, 'progress-yellow': getProgressValue(student) == 4, 'progress-green': getProgressValue(student) >= 5 }"
-						max="7"
-						:value="getProgressValue(student)">
-						{{ getProgressValue(student) }}
-					</progress>
-				</td>
-				<td data-label="Stanje">
-					{{ UserTaskMappings.getTaskProperty(student["process_instance_data"]["pending"][0], "name", student["process_instance_data"]["state"]) }}
-				</td>
-				<td class="whitespace-nowrap before:hidden lg:w-1">
-					<BaseButtons type="justify-start lg:justify-end" no-wrap>
-						<BaseButton color="fipu_blue" :icon="mdiEye" small @click="showDiagram(student)" />
-						<BaseButton color="danger" :icon="mdiCloseOutline" small @click="deleteProcessInstance(student)" />
-					</BaseButtons>
-				</td>
-			</tr>
+			<template v-if="!studentsFetched">
+				<SkeletonLoaderTableRow v-for="n in perPage" :key="n" />
+			</template>
+			<template v-else>
+				<tr v-if="!studentsPaginated.length">
+					<td colspan="10" class="py-4 text-center">Nema rezultata...</td>
+				</tr>
+				<tr v-for="student in studentsPaginated" :key="student['process_instance_id']" :class="{ 'selected-row bg-blue-100 dark:bg-blue-900': selectedStudentInstanceID === student['process_instance_id'] }">
+					<td class="border-b-0 before:hidden lg:w-6">
+						<UserAvatar :avatar="student['avatar']" class="mx-auto flex h-22 w-22 lg:h-12 lg:w-12" />
+					</td>
+					<td data-label="Model_prakse">
+						<PillTag :color="student.Model_prakse.value == 'A' ? 'danger' : 'success'" :label="student.Model_prakse.value" />
+					</td>
+					<td data-label="JMBAG">{{ student["JMBAG"] }}</td>
+					<td data-label="Ime">{{ student["ime"] }}</td>
+					<td data-label="Prezime">{{ student["prezime"] }}</td>
+					<td data-label="Email">{{ student["email"] }}</td>
+					<td data-label="Godina studija">
+						{{ StudentMappings.getGodinaStudija(student["godina_studija"]["value"]) }}
+					</td>
+					<td data-label="Progress" class="lg:w-32">
+						<progress
+							class="flex w-2/5 self-center lg:w-full"
+							:class="{ 'progress-red': getProgressValue(student) <= 3, 'progress-yellow': getProgressValue(student) == 4, 'progress-green': getProgressValue(student) >= 5 }"
+							max="7"
+							:value="getProgressValue(student)">
+							{{ getProgressValue(student) }}
+						</progress>
+					</td>
+					<td data-label="Stanje">
+						{{ UserTaskMappings.getTaskProperty(student["process_instance_data"]["pending"][0], "name", student["process_instance_data"]["state"]) }}
+					</td>
+					<td class="whitespace-nowrap before:hidden lg:w-1">
+						<BaseButtons type="justify-start lg:justify-end" no-wrap>
+							<BaseButton color="fipu_blue" :icon="mdiEye" small @click="showDiagram(student)" />
+							<BaseButton color="danger" :icon="mdiCloseOutline" small @click="deleteProcessInstance(student)" />
+						</BaseButtons>
+					</td>
+				</tr>
+			</template>
 		</tbody>
 	</table>
 	<div v-if="instanceDeleteModalActive">
