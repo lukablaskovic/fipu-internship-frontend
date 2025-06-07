@@ -41,7 +41,7 @@ const Layout = computed(() => {
 			<p><b>Akademska godina:</b> {{ mainStore.academicYear }}</p>
 			<p><b>Voditelj:</b> {{ mainStore.voditelj_prakse }}</p>
 
-			<img src="/illustrations/guy_with_glasses.svg" class="absolute right-0 top-0 mr-6 mt-4 hidden w-1/6 max-w-full md:block" />
+			<img src="/illustrations/evaluation.svg" class="absolute right-0 top-0 mr-6 mt-4 hidden w-1/5 max-w-full md:block" />
 
 			<br />
 			<SectionTitleLineWithButton :icon="mdiProgressClock" main title="U procesu evaluacije"></SectionTitleLineWithButton>
@@ -62,6 +62,7 @@ const Layout = computed(() => {
 			</p>
 
 			<br />
+			<p>Kako bi se evaluacija uspješno evidentirala, mentor mora isto potvrditi preko poveznice koja mu je stigla na email.</p>
 			<hr />
 			<br />
 			<SectionTitleLineWithButton :icon="mdiClipboardCheck" main title="Alocirani zadatak"></SectionTitleLineWithButton>

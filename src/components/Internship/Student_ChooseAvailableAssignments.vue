@@ -120,11 +120,12 @@ const handleDragEnd = () => {
 			<p><b>Akademska godina:</b> {{ mainStore.academicYear }}</p>
 			<p><b>Voditelj:</b> {{ mainStore.voditelj_prakse }}</p>
 
-			<img src="/illustrations/technologies.svg" class="absolute right-0 top-0 mr-6 mt-4 hidden w-1/5 max-w-full md:block" />
+			<img src="/illustrations/selection.svg" class="absolute right-0 top-0 mr-6 mt-4 hidden w-1/4 max-w-full md:block" />
 
 			<br />
 			<SectionTitleLineWithButton :icon="mdiClipboardTextOutline" main title="Dostupni zadaci" />
-			<p>Pogledajte zanimljive slobodne zadatke te odaberite i rasporedite 3 najdraža, prema vašim preferencijama: (1. odabir | 2. odabir | 3. odabir) gdje 1. odabir predstavlja zadatak koji najviše želite odraditi.</p>
+			<p>Pogledajte zanimljive slobodne zadatke te odaberite i rasporedite 3 najdraža, prema vašim preferencijama:</p>
+			<p>(1. odabir | 2. odabir | 3. odabir) gdje 1. odabir predstavlja zadatak koji najviše želite odraditi.</p>
 			<br />
 			<p>Molimo da <b>ne prijavljujete</b> zadatke gdje su poslodavci naveli ime i prezime studenta u <b>Preferencijama za studenta</b>.</p>
 			<br />
