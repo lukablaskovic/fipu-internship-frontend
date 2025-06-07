@@ -197,15 +197,17 @@ const setModelFilterFromQuery = () => {
 
 const setStageFilterFromQuery = () => {
 	const stageParam = route.query.stage;
-	if (["ceka_alokaciju", "ceka_odobrenje"].includes(stageParam)) {
+	if (["ceka_alokaciju", "ceka_odobrenje", "all", ""].includes(stageParam)) {
 		adminStore.filterInternshipStage = stageParam;
+	} else {
+		adminStore.filterInternshipStage = "all";
 	}
 };
 
 onMounted(async () => {
-	await adminStore.getStudents();
 	setModelFilterFromQuery();
 	setStageFilterFromQuery();
+	await adminStore.getStudents();
 });
 
 async function handleNewInstance() {

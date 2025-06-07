@@ -101,7 +101,7 @@ export const useAdminStore = defineStore("admin", {
 		filterFinishedInstances: false,
 		availableAssignmentsFilter: true,
 
-		filterModelA: "AB",
+		filterModelState: "AB",
 		filterInternshipStage: "all",
 
 		bpmn_diagram: {

@@ -125,7 +125,6 @@ function handlePerPageChange(option) {
 
 // --- Lifecycle and Watchers ---
 onMounted(async () => {
-	await adminStore.getStudents();
 	if (route.params.process_instance_id) {
 		selectedStudentInstanceID.value = route.params.process_instance_id;
 		const selectedStudent = students.value.find((student) => student["process_instance_id"] === route.params.process_instance_id);
