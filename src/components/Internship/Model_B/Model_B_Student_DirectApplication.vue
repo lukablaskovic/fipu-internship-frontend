@@ -13,8 +13,8 @@ import SectionMain from "@/components/Section/SectionMain.vue";
 
 import CardBoxWidget from "@/components/Cardbox/CardBoxWidget.vue";
 import { mainStore, studentStore, snackBarStore } from "@/main.js";
-import BaseButtons from "@/components/Base/BaseButtons.vue";
 import FormControl from "@/components/Form/FormControl.vue";
+import BaseButtons from "@/components/Base/BaseButtons.vue";
 import BaseButton from "@/components/Base/BaseButton.vue";
 import FormField from "@/components/Form/FormField.vue";
 import Utils from "@/helpers/utils";
@@ -87,10 +87,11 @@ const directApplication = async () => {
 			<p><b>Voditelj:</b> {{ mainStore.voditelj_prakse }}</p>
 
 			<br />
-			<img src="/illustrations/guy_with_glasses.svg" class="absolute right-0 top-0 mb-12 mr-6 mt-4 hidden w-1/12 max-w-full md:block" />
+			<img src="/illustrations/selection.svg" class="absolute right-0 top-0 mb-12 mr-6 mt-4 hidden w-1/5 max-w-full md:block" />
 			<br />
 			<SectionTitleLineWithButton :icon="mdiClipboardText" main title="Direktna prijava na zadatak"></SectionTitleLineWithButton>
-			<div class="flex flex-wrap text-base">Voditelj je odobrio zadatak koji ste prijavili u dogovoru s poslodavcem. Kako biste nastavili, morate se direktno prijaviti ispod. Ako ste već odradili praksu, molimo da to navedete u napomeni.</div>
+			<div class="flex flex-wrap text-base">Voditelj je odobrio zadatak koji ste prijavili u dogovoru s poslodavcem.</div>
+			<div class="mt-2 flex flex-wrap text-base">Kako biste nastavili, morate se direktno prijaviti ispod. Ako ste već odradili praksu, molimo da to navedete u napomeni.</div>
 			<div class="mt-2 flex flex-wrap text-base">Možete kliknuti ispod kako biste pregledali detalje zadatka koji vam je odobren.</div>
 
 			<br />

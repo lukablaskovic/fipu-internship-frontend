@@ -56,7 +56,7 @@ const Layout = computed(() => {
 			<p><b>Akademska godina:</b> {{ mainStore.academicYear }}</p>
 			<p><b>Voditelj:</b>{{ mainStore.voditelj_prakse }}</p>
 			<br />
-			<img src="/illustrations/goal.svg" class="absolute right-0 top-0 mr-6 mt-4 hidden w-1/12 max-w-full md:block" />
+			<img src="/illustrations/finish.svg" class="absolute right-0 top-0 mr-6 mt-4 hidden w-1/6 max-w-full md:block" />
 			<SectionTitleLineWithButton :icon="mdiAlphaSBox" main title="Ocjenjivanje u tijeku"></SectionTitleLineWithButton>
 			<p>Vaš proces prakse je završio. Nakon što vam profesor pregleda potvrdu i odobri dnevnik prakse, ocjena će vam biti unesena u Studomat.</p>
 			<div class="flex flex-wrap text-base">Ako čekate više od 7 dana, molimo vas da se obratite voditelju prakse.</div>

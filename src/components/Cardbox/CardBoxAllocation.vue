@@ -1,6 +1,6 @@
 <template>
 	<div class="relative block overflow-hidden rounded-lg pb-4">
-		<span class="absolute inset-x-0 bottom-0 h-2 bg-gradient-to-r from-green-300 via-fipu_blue to-blue-500"></span>
+		<span class="absolute inset-x-0 bottom-0 h-2 bg-gradient-to-r from-[#212529] via-fipu_blue to-fipu_dark_blue"></span>
 
 		<div class="sm:flex sm:justify-between sm:gap-4">
 			<div>

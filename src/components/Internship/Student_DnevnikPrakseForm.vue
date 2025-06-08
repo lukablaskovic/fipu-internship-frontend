@@ -12,8 +12,8 @@ import LayoutGuest from "@/layouts/LayoutGuest.vue";
 import SectionTitleLineWithButton from "@/components/Section/SectionTitleLineWithButton.vue";
 import CardBoxComponentTitle from "@/components/Cardbox/CardBoxComponentTitle.vue";
 import CardboxAllocation from "@/components/Cardbox/CardBoxAllocation.vue";
-import FormCheckRadio from "@/components/Form/FormCheckRadio.vue";
 import FormFilePicker from "@/components/Form/FormFilePicker.vue";
+import FormCheckRadio from "@/components/Form/FormCheckRadio.vue";
 import SectionMain from "@/components/Section/SectionMain.vue";
 import FormControl from "@/components/Form/FormControl.vue";
 import BaseDivider from "@/components/Base/BaseDivider.vue";
@@ -101,11 +101,11 @@ async function submit_diary_form() {
 		<SectionMain v-if="allocated_assignment != null" class="relative">
 			<SectionTitleLineWithButton :icon="mdiLaptop" title="Moja Praksa" main> </SectionTitleLineWithButton>
 			<p><b>Akademska godina:</b> {{ mainStore.academicYear }}</p>
-			<p><b>Voditelj:</b> {{ mainStore.voditelj_prakse }}</p>
-			<img src="/illustrations/programming.svg" class="absolute right-0 top-0 mr-6 mt-4 hidden w-1/6 max-w-full md:block" />
+			<p><b>Voditelj: </b> {{ mainStore.voditelj_prakse }}</p>
+			<img src="/illustrations/in_progress.svg" class="absolute right-0 top-0 mr-6 mt-4 hidden w-1/5 max-w-full md:block" />
 
 			<SectionTitleLineWithButton :icon="mdiBriefcase" main class="mt-24" title="Izvođenje prakse u tijeku"></SectionTitleLineWithButton>
-			<CardboxAllocation v-if="allocated_assignment != null" :data="allocated_assignment"></CardboxAllocation>
+			<CardboxAllocation class="sm:mt-12" v-if="allocated_assignment != null" :data="allocated_assignment"></CardboxAllocation>
 
 			<br />
 			<hr />
