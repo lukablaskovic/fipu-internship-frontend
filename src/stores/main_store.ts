@@ -45,6 +45,9 @@ export const useMainStore = defineStore("main", {
 		checkedAssignments: [] as Assignment[],
 		isLoading: false,
 		error: null as string | null,
+
+		// Maintenance mode
+		maintenanceMode: false,
 	}),
 
 	getters: {
@@ -223,6 +226,15 @@ export const useMainStore = defineStore("main", {
 
 		resetAssignments() {
 			this.checkedAssignments = [];
+		},
+
+		// Maintenance mode actions
+		enableMaintenanceMode() {
+			this.maintenanceMode = true;
+		},
+
+		disableMaintenanceMode() {
+			this.maintenanceMode = false;
 		},
 
 		async submitNewInternshipProject(formData: any) {

@@ -165,6 +165,17 @@ const pagesList = computed(() => {
 const toggleDateType = () => {
 	adminStore.relativeToNowTimestmap = !adminStore.relativeToNowTimestmap;
 };
+
+// Maintenance control functions
+const enableMaintenance = () => {
+	mainStore.enableMaintenanceMode();
+	snackBarStore.pushMessage("Održavanje je uključeno. Svi korisnici bit će preusmjereni na stranicu održavanja.", "warning");
+};
+
+const disableMaintenance = () => {
+	mainStore.disableMaintenanceMode();
+	snackBarStore.pushMessage("Održavanje je isključeno. Sustav je ponovno dostupan.", "success");
+};
 </script>
 
 <template>
@@ -199,6 +210,28 @@ const toggleDateType = () => {
 				<p class="mb-4">
 					<b>Statistika | Model prakse <PillTag color="danger" label="A" /></b>
 				</p>
+
+				<!-- Maintenance Control Section -->
+				<div class="mb-6 rounded-lg border border-gray-200 bg-gray-50 p-4 dark:border-gray-700 dark:bg-gray-800">
+					<h3 class="mb-4 text-lg font-semibold text-gray-900 dark:text-white">Kontrola održavanja</h3>
+					<div class="flex items-center justify-between">
+						<div>
+							<p class="text-sm text-gray-600 dark:text-gray-400">
+								Status održavanja:
+								<span :class="mainStore.maintenanceMode ? 'font-semibold text-red-600' : 'font-semibold text-green-600'">
+									{{ mainStore.maintenanceMode ? "AKTIVNO" : "NEAKTIVNO" }}
+								</span>
+							</p>
+							<p class="mt-1 text-xs text-gray-500 dark:text-gray-400">
+								{{ mainStore.maintenanceMode ? "Svi korisnici bit će preusmjereni na stranicu održavanja" : "Sustav je dostupan svim korisnicima" }}
+							</p>
+						</div>
+						<div class="flex space-x-2">
+							<BaseButton v-if="!mainStore.maintenanceMode" label="Uključi održavanje" color="danger" small @click="enableMaintenance" />
+							<BaseButton v-else label="Isključi održavanje" color="success" small @click="disableMaintenance" />
+						</div>
+					</div>
+				</div>
 
 				<div class="mb-6 grid grid-cols-1 gap-6 lg:grid-cols-3">
 					<CardBoxWidget v-if="adminStore.studentsFetched" color="text-rose-600" class="rounded-lg" :icon="mdiAccountSchoolOutline" :number="a_finished_internships" label="Uspješno odrađenih praksi (A)" />

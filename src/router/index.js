@@ -23,6 +23,11 @@ router.beforeEach((to, from, next) => {
 	const requiresAuth = to.matched.some((record) => record.meta.requiresAuth);
 	const requiresAdmin = to.matched.some((record) => record.meta.requiresAdmin);
 
+	// Check if maintenance mode is enabled
+	if (mainStore.maintenanceMode && to.path !== "/odrzavanje") {
+		return next("/odrzavanje");
+	}
+
 	// Handle redirection from root path
 	if (to.path === "/") {
 		if (userAuthenticated) {

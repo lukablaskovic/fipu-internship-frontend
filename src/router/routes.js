@@ -143,6 +143,15 @@ const routes = [
 		name: "login",
 		component: () => import("@/views/common/LoginView.vue"),
 	},
+	{
+		meta: {
+			title: "Održavanje",
+			requiresAuth: false,
+		},
+		path: "/odrzavanje",
+		name: "maintenance",
+		component: () => import("@/views/common/MaintenanceView.vue"),
+	},
 
 	{
 		meta: {
