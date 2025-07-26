@@ -19,3 +19,6 @@ export const endpoints = {
 	VITE_PDF_API_URL: "https://fipubot.unipu.hr/api/pdf-connector",
 	//VITE_PDF_API_URL: "http://localhost:8084",
 };
+
+// Maintenance mode configuration
+export const MAINTENANCE_MODE = true;

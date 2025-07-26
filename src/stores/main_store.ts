@@ -4,6 +4,7 @@ import { router } from "@/router";
 
 import { ProcessInstance } from "@/services/bpmn_engine_api";
 import { CurrentUser } from "@/models/CurrentUser";
+import { MAINTENANCE_MODE } from "@/config";
 import { studentStore } from "@/main";
 
 export interface Assignment {
@@ -47,7 +48,7 @@ export const useMainStore = defineStore("main", {
 		error: null as string | null,
 
 		// Maintenance mode
-		maintenanceMode: false,
+		maintenanceMode: MAINTENANCE_MODE,
 	}),
 
 	getters: {
