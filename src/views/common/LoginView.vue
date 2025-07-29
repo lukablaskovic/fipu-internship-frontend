@@ -40,11 +40,6 @@
 						<GoogleLogin :callback="loginCallback" />
 					</div>
 
-					<!-- Temporary maintenance test button (only for development) -->
-					<div v-if="mainStore.userAdmin" class="mb-4 flex w-full justify-center sm:my-6">
-						<BaseButton :label="mainStore.maintenanceMode ? 'Isključi održavanje' : 'Uključi održavanje'" :color="mainStore.maintenanceMode ? 'success' : 'danger'" @click="toggleMaintenance" class="px-4 py-2" />
-					</div>
-
 					<p class="mx-auto mb-4 max-w-md text-center text-lg font-light text-gray-600 sm:mb-5 sm:max-w-2xl sm:p-0 lg:text-lg">
 						Ako želite samo pregledati dostupne zadatke i poduzeća, možete nastaviti kao <a class="hover-underline-animation cursor-pointer text-fipu_text_blue hover:text-fipu_blue" @click="router.push('/moja-praksa')"> gost. </a>
 					</p>
@@ -196,17 +191,6 @@ const loginCallback = async (response) => {
 	} catch (error) {
 		console.error("Login error:", error);
 		snackBarStore.pushMessage("Prijava nije uspjela! Molimo pokušajte ponovno.", "error");
-	}
-};
-
-// Temporary maintenance toggle function (for development/testing)
-const toggleMaintenance = () => {
-	if (mainStore.maintenanceMode) {
-		mainStore.disableMaintenanceMode();
-		snackBarStore.pushMessage("Održavanje je isključeno.", "success");
-	} else {
-		mainStore.enableMaintenanceMode();
-		snackBarStore.pushMessage("Održavanje je uključeno.", "warning");
 	}
 };
 </script>
