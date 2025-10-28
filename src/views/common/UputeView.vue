@@ -58,18 +58,21 @@ onMounted(async () => {
 
 			<SectionTitleLineWithButton :icon="mdiChatQuestionOutline" title="Komunikacija"></SectionTitleLineWithButton>
 
-			<p>Studenti, imate pitanja vezana uz izvođenje prakse, sva komunikacija odvija se na <a href="https://chat.google.com/" target="_blank" class="text-fipu_blue">Google Chat</a> kanalu: <b>FIPU 2024/25 Stručna praksa</b></p>
+			<p>
+				Studenti, imate pitanja vezana uz izvođenje prakse, sva komunikacija odvija se na <a href="https://chat.google.com/" target="_blank" class="text-fipu_blue">Google Chat</a> kanalu:
+				<b><a href="https://chat.google.com/room/AAAASZREDy8" target="_blank" class="text-fipu_blue">FIPU Praksa</a></b>
+			</p>
 
 			<p class="mt-1">Poslodavci i mentori, za sve upite kontaktirajte voditelja stručne prakse.</p>
 
 			<SectionTitleLineWithButton :icon="mdiCalendarRange" title="Važni datumi"></SectionTitleLineWithButton>
 			<p>Za studente koji su upisali Stručnu praksu na prijediplomskom ili diplomskom studiju:</p>
 			<ul class="ml-8 list-disc">
-				<li>Najraniji datum početka izvođenja stručne prakse - <b> 14. listopad 2024.</b></li>
-				<li>Najkasniji datum završetka - <b> 15. rujna 2025.</b></li>
+				<li>Najraniji datum početka izvođenja stručne prakse - <b> 14. listopad 2025.</b></li>
+				<li>Najkasniji datum završetka - <b> 15. rujna 2026.</b></li>
 			</ul>
 			<br />
-			<p>Za sve dodatne informacije kontaktirajte voditelja stručne prakse na FIPU.</p>
+			<p>Za sve dodatne informacije kontaktirajte administratore ili voditelja stručne prakse.</p>
 			<br />
 
 			<div class="w-full shrink-0 grow-0 basis-auto lg:w-7/12">
@@ -78,13 +81,41 @@ onMounted(async () => {
 						<div class="flex items-start">
 							<div class="shrink-0">
 								<div class="bg-primary-100 text-primary inline-block h-24 w-24 items-center rounded-md p-4">
-									<a href="https://fipu.unipu.hr/fipu/ivan.lorencin" target="_blank"><img class="rounded-full" src="https://fipu.unipu.hr/images/users_profiles/Ivan-Lorencin.jpg" alt="Ivan Lorencin" /></a>
+									<a href="https://fipu.unipu.hr/fipu/ivan.lorencin" target="_blank"><img class="h-16 w-16 rounded-full object-cover" src="https://fipu.unipu.hr/images/users_profiles/Ivan-Lorencin.jpg" alt="Ivan Lorencin" /></a>
 								</div>
 							</div>
 							<div class="ml-3 grow">
 								<p class="mb-2 font-bold dark:text-white">doc. dr. sc. Ivan Lorencin</p>
 								<p class="text-neutral-500 dark:text-neutral-200">ivan.lorencin@unipu.hr</p>
 								<p class="text-neutral-500 dark:text-neutral-200">+385 98 96 12 042</p>
+							</div>
+						</div>
+					</div>
+					<div class="mb-6 w-full shrink-0 grow-0 basis-auto md:w-6/12">
+						<div class="flex items-start">
+							<div class="shrink-0">
+								<div class="bg-primary-100 text-primary inline-block h-24 w-24 items-center rounded-md p-4">
+									<a href="https://fipu.unipu.hr/" target="_blank"
+										><img class="h-16 w-16 rounded-full object-cover" src="https://i1.rgstatic.net/ii/profile.image/11431281279391644-1727018247353_Q512/Marijela-Milicevic-2.jpg" alt="Marinela Miličević"
+									/></a>
+								</div>
+							</div>
+							<div class="ml-3 grow">
+								<p class="mb-2 font-bold dark:text-white">Marinela Miličević (administrator)</p>
+								<p class="text-neutral-500 dark:text-neutral-200">mmilicevi@unipu.hr</p>
+							</div>
+						</div>
+					</div>
+					<div class="mb-6 w-full shrink-0 grow-0 basis-auto md:w-6/12">
+						<div class="flex items-start">
+							<div class="shrink-0">
+								<div class="bg-primary-100 text-primary inline-block h-24 w-24 items-center rounded-md p-4">
+									<a href="https://fipu.unipu.hr/" target="_blank"><img class="h-16 w-16 rounded-full object-cover" src="https://fipu.unipu.hr/images/users_profiles/1748527029profile_main.jpg" alt="Luka Blašković" /></a>
+								</div>
+							</div>
+							<div class="ml-3 grow">
+								<p class="mb-2 font-bold dark:text-white">Luka Blašković (administrator)</p>
+								<p class="text-neutral-500 dark:text-neutral-200">luka.blaskovic@unipu.hr</p>
 							</div>
 						</div>
 					</div>

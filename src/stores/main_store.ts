@@ -13,11 +13,11 @@ export interface Assignment {
 
 export const useMainStore = defineStore("main", {
 	state: () => ({
-		praksa_version: "v1.3",
-		academicYear: "2024/2025",
+		praksa_version: "v1.3.1",
+		academicYear: "2025/2026",
 		voditelj_prakse: "doc. dr. sc. Ivan Lorencin",
 
-		admin_emails: ["ntankov@unipu.hr", "ilorencin@unipu.hr", "lblaskovi@unipu.hr", "azuzic@unipu.hr"],
+		admin_emails: ["ntankov@unipu.hr", "ilorencin@unipu.hr", "lblaskovi@unipu.hr", "mmilicevi@unipu.hr"],
 
 		fipulab_web: "https://web.fipulab.unipu.hr/",
 
