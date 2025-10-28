@@ -28,12 +28,13 @@
 					<!-- Hide heading on mobile -->
 
 					<div data-aos="zoom-in" data-aos-delay="200" class="hidden sm:block">
-						<h2 class="mb-4 mt-4 text-center text-2xl font-bold text-fipu_gray lg:text-4xl"><span class="text-fipu_blue">FIPU Praksa</span> je na Ferijama🏖️</h2>
+						<h2 class="mb-4 mt-4 text-center text-2xl font-bold text-fipu_gray lg:text-4xl"><span class="text-fipu_blue">FIPU Praksa</span> je na redovitom održavanju!</h2>
 					</div>
 					<!-- Content paragraphs -->
 
 					<div class="mx-auto mb-4 max-w-md p-2 py-4 text-center text-lg text-gray-600 sm:mb-5 sm:max-w-2xl sm:p-0 lg:text-lg">
-						<p class="mb-4">Trenutno provodimo planirano održavanje sustava.</p>
+						<p class="mb-4">{{ maintenanceMessage }}</p>
+						<p class="text-base text-gray-500 sm:text-lg">Očekivano vrijeme završetka: {{ maintenanceExpectedCompletion }}</p>
 					</div>
 
 					<!-- Contact info -->
@@ -133,14 +134,6 @@ const refreshPage = () => {
 };
 
 // Calculate maintenance end time (2 hours from now)
-const maintenanceEndTime = ref("");
-onMounted(() => {
-	const now = new Date();
-	const endTime = new Date(now.getTime() + 2 * 60 * 60 * 1000); // 2 hours from now
-	maintenanceEndTime.value = endTime.toLocaleTimeString("hr-HR", {
-		hour: "2-digit",
-		minute: "2-digit",
-		timeZone: "Europe/Zagreb",
-	});
-});
+const maintenanceMessage = "Pripreme za novu akademsku godinu su u tijeku... Stay tuned!";
+const maintenanceExpectedCompletion = "31. 10. 2025.";
 </script>
