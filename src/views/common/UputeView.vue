@@ -95,14 +95,14 @@ onMounted(async () => {
 						<div class="flex items-start">
 							<div class="shrink-0">
 								<div class="bg-primary-100 text-primary inline-block h-24 w-24 items-center rounded-md p-4">
-									<a href="https://fipu.unipu.hr/" target="_blank"
-										><img class="h-16 w-16 rounded-full object-cover" src="https://i1.rgstatic.net/ii/profile.image/11431281279391644-1727018247353_Q512/Marijela-Milicevic-2.jpg" alt="Marinela Miličević"
+									<a href="https://fipu.unipu.hr/fipu/marijela.milicevic" target="_blank"
+										><img class="h-16 w-16 rounded-full object-cover" src="https://i1.rgstatic.net/ii/profile.image/11431281279391644-1727018247353_Q512/Marijela-Milicevic-2.jpg" alt="Marijela Miličević"
 									/></a>
 								</div>
 							</div>
 							<div class="ml-3 grow">
-								<p class="mb-2 font-bold dark:text-white">Marinela Miličević (administrator)</p>
-								<p class="text-neutral-500 dark:text-neutral-200">mmilicevi@unipu.hr</p>
+								<p class="mb-2 font-bold dark:text-white">Marijela Miličević (administrator)</p>
+								<p class="text-neutral-500 dark:text-neutral-200">marijela.milicevic@unipu.hr</p>
 							</div>
 						</div>
 					</div>
@@ -110,7 +110,7 @@ onMounted(async () => {
 						<div class="flex items-start">
 							<div class="shrink-0">
 								<div class="bg-primary-100 text-primary inline-block h-24 w-24 items-center rounded-md p-4">
-									<a href="https://fipu.unipu.hr/" target="_blank"><img class="h-16 w-16 rounded-full object-cover" src="https://fipu.unipu.hr/images/users_profiles/1748527029profile_main.jpg" alt="Luka Blašković" /></a>
+									<a href="https://fipu.unipu.hr/fipu/luka.blaskovic" target="_blank"><img class="h-16 w-16 rounded-full object-cover" src="https://fipu.unipu.hr/images/users_profiles/1748527029profile_main.jpg" alt="Luka Blašković" /></a>
 								</div>
 							</div>
 							<div class="ml-3 grow">
