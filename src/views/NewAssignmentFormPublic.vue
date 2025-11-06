@@ -209,19 +209,19 @@ watch(
 			<br />
 			<SectionTitleLineWithButton :icon="mdiNewBox" main title="Prijava zadatka"></SectionTitleLineWithButton>
 			<p>
-				Ova prijavnica je namijenjena <u>privatnim i javnim organizacijama</u> koje žele provoditi studentsku praksu u suradnji s <a href="https://fipu.unipu.hr/" target="_blank" class="text-fipu_blue">Fakultetom informatike u Puli</a>. Na temelju
-				ovog upitnika odredit će se idealni studenti za provođenje prakse u Vašem poduzeću.
+				Ova prijavnica je namijenjena <u>privatnim i javnim poslovnim organizacijama</u> koje žele provoditi studentsku praksu u suradnji s <a href="https://fipu.unipu.hr/" target="_blank" class="text-fipu_blue">Fakultetom informatike u Puli</a>. Na
+				temelju ovog upitnika odabrat će se idealni studenti za provođenje prakse u Vašoj organizaciji.
 			</p>
 			<br />
 
 			<p>Studentima je ovo izborni kolegij i oni koji su prijavljeni, motivirani su i spremni za rad!</p>
 			<br />
 			<p>
-				<b>Važna napomena:</b> Pojedina organizacija može prijaviti i više zadataka. <b>Molimo da za svaki zadatak zasebno popunite prijavnicu</b> (ovaj link) te navedete broj studenata koji može na njemu raditi (npr. može biti 2 zadataka, na prvom 3
-				studenta, na drugom 4).
+				<b>Važna napomena:</b> Pojedina organizacija može prijaviti i više zadataka. <b>Molimo da za svaki zadatak zasebno popunite prijavnicu</b> (ovaj link) te navedete broj studenata koji može na njemu raditi (npr. možete prijaviti 2 zadataka, na
+				prvom 3 studenta, na drugom 4).
 			</p>
 			<br />
-			<p>(<b>Model B</b>) Ako ste već udogovoru sa studentom, ili je student već odradio praksu kod Vas, molimo da navedete njegovo ime i prezime u polju "Preferencije pri odabiru studenta" te detaljno opišete zadatak.</p>
+			<p>(<b>Model B</b>) Ako ste već u dogovoru sa studentom, ili je student već odradio praksu kod Vas, molimo da navedete njegovo ime i prezime u polju "Preferencije pri odabiru studenta" te detaljno opišete zadatak.</p>
 
 			<br />
 			<p><b>Niste sigurni što su Modeli A i B?</b> <router-link class="text-fipu_blue" to="/upute">Proučite kako izvodimo praksu na FIPU.</router-link></p>
@@ -336,7 +336,12 @@ watch(
 					</FormField>
 
 					<FormField label="Potrebna infrastruktura koju student mora posjedovati" horizontal>
-						<FormControl v-model="form.potrebno_imati" :error="getFirstErrorForField(v$, 'potrebno_imati')" :icon-left="mdiDomain" help="Potrebna infrastruktura koju student mora posjedovati" placeholder="npr. laptop" />
+						<FormControl
+							v-model="form.potrebno_imati"
+							:error="getFirstErrorForField(v$, 'potrebno_imati')"
+							:icon-left="mdiDomain"
+							help="Potrebna infrastruktura koju student mora posjedovati"
+							placeholder="npr. Osobno računalo, određeni softver, hardver..." />
 					</FormField>
 
 					<FormField label="Željeno trajanje prakse*" horizontal>

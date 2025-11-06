@@ -1,7 +1,7 @@
 <template>
 	<Combobox v-model="selectedValue">
 		<div class="relative">
-			<div class="relative w-full cursor-default overflow-hidden bg-white text-left sm:text-sm">
+			<div class="relative w-full cursor-default overflow-hidden rounded-lg border border-gray-300 bg-transparent text-left dark:border-gray-600 sm:text-sm">
 				<!-- Prefix label -->
 				<div v-if="hasValidPrefix" class="absolute inset-y-0 left-0 flex items-center" ref="prefixContainer">
 					<span class="ml-2 rounded bg-fipu_blue px-2 py-1 text-sm text-white">{{ prefixLabel }}</span>
@@ -27,7 +27,7 @@
 
 			<TransitionRoot leave="transition ease-in duration-100" leave-from="opacity-100" leave-to="opacity-0" @after-leave="query = ''">
 				<ComboboxOptions
-					class="absolute mt-1 max-h-60 w-full overflow-auto rounded-md border bg-gray-50 py-1 text-base text-gray-900 shadow-lg ring-1 ring-black ring-opacity-5 empty:invisible focus:outline-none dark:bg-gray-900 dark:text-gray-300 sm:text-sm">
+					class="absolute mt-1 max-h-60 w-full overflow-auto rounded-lg border bg-gray-50 py-1 text-base text-gray-900 shadow-lg ring-1 ring-black ring-opacity-5 empty:invisible focus:outline-none dark:bg-gray-900 dark:text-gray-300 sm:text-sm">
 					<div v-if="query === ''" class="relative cursor-default select-none px-4 py-2 text-sm text-gray-700 dark:text-gray-200 md:text-base">
 						<b>Kratke upute kako koristiti tražilicu</b>
 						<hr />

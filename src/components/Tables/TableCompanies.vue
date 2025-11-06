@@ -91,25 +91,25 @@ const goToCompanyWeb = (url) => {
 
 <template>
 	<LoadingOverlay :is-active="!allCompanies.length" title="Učitavanje..." description="Može potrajati nekoliko sekundi, molimo ne zatvarajte stranicu."> </LoadingOverlay>
-	<table>
+	<table style="table-layout: fixed; width: 100%">
 		<thead>
 			<tr v-if="!mainStore.userAdmin">
-				<th />
-				<th>Naziv</th>
-				<th>Web mjesto</th>
-				<th>Adresa</th>
-				<th />
+				<th style="width: 80px" />
+				<th style="width: 25%">Naziv</th>
+				<th style="width: 30%">Web mjesto</th>
+				<th style="width: 30%">Adresa</th>
+				<th style="width: 80px" />
 			</tr>
 			<tr v-else>
-				<th />
-				<th>Naziv</th>
-				<th>Web mjesto</th>
-				<th>Direktor</th>
-				<th>Matični broj</th>
-				<th>OIB</th>
-				<th>Adresa</th>
+				<th style="width: 80px" />
+				<th style="width: 18%">Naziv</th>
+				<th style="width: 20%">Web mjesto</th>
+				<th style="width: 15%">Direktor</th>
+				<th style="width: 12%">Matični broj</th>
+				<th style="width: 12%">OIB</th>
+				<th style="width: 18%">Adresa</th>
 
-				<th />
+				<th style="width: 80px" />
 			</tr>
 		</thead>
 		<tbody v-if="!mainStore.userAdmin">
@@ -124,15 +124,21 @@ const goToCompanyWeb = (url) => {
 				</td>
 
 				<td data-label="Naziv">
-					{{ company["naziv"] }}
+					<div class="overflow-x-auto whitespace-nowrap">
+						{{ company["naziv"] }}
+					</div>
 				</td>
 
-				<td data-label="Web" class="max-w-xs whitespace-normal break-all">
-					<a class="underline" :href="company['web']" target="_blank">{{ company["web"] }}</a>
+				<td data-label="Web">
+					<div class="overflow-x-auto whitespace-nowrap">
+						<a class="underline" :href="company['web']" target="_blank">{{ company["web"] }}</a>
+					</div>
 				</td>
 
 				<td data-label="Adresa">
-					{{ company["adresa"] }}
+					<div class="overflow-x-auto whitespace-nowrap">
+						{{ company["adresa"] }}
+					</div>
 				</td>
 
 				<td class="whitespace-nowrap before:hidden lg:w-1">
@@ -159,25 +165,37 @@ const goToCompanyWeb = (url) => {
 				</td>
 
 				<td data-label="Naziv">
-					{{ company["naziv"] }}
+					<div class="overflow-x-auto whitespace-nowrap">
+						{{ company["naziv"] }}
+					</div>
 				</td>
-				<td data-label="Web" class="max-w-xs whitespace-normal break-all">
-					<a class="underline" :href="company['web']" target="_blank">{{ company["web"] }}</a>
+				<td data-label="Web">
+					<div class="overflow-x-auto whitespace-nowrap">
+						<a class="underline" :href="company['web']" target="_blank">{{ company["web"] }}</a>
+					</div>
 				</td>
 				<td data-label="Direktor">
-					{{ company["direktor"] }}
+					<div class="overflow-x-auto whitespace-nowrap">
+						{{ company["direktor"] }}
+					</div>
 				</td>
 
 				<td data-label="Matični broj">
-					{{ company["maticni_broj"] }}
+					<div class="overflow-x-auto whitespace-nowrap">
+						{{ company["maticni_broj"] }}
+					</div>
 				</td>
 
 				<td data-label="OIB">
-					{{ company["OIB"] }}
+					<div class="overflow-x-auto whitespace-nowrap">
+						{{ company["OIB"] }}
+					</div>
 				</td>
 
 				<td data-label="Adresa">
-					{{ company["adresa"] }}
+					<div class="overflow-x-auto whitespace-nowrap">
+						{{ company["adresa"] }}
+					</div>
 				</td>
 
 				<td class="whitespace-nowrap before:hidden lg:w-1">

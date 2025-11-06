@@ -164,18 +164,18 @@ const pagesList = computed(() => {
 </script>
 
 <template>
-	<table v-if="adminStore.newCompaniesFound">
+	<table v-if="adminStore.newCompaniesFound" style="table-layout: fixed; width: 100%">
 		<thead>
 			<tr>
-				<th />
-				<th>Naziv</th>
-				<th>Web mjesto</th>
-				<th>Direktor</th>
-				<th>Matični broj</th>
-				<th>OIB</th>
-				<th>Adresa</th>
+				<th style="width: 80px" />
+				<th style="width: 18%">Naziv</th>
+				<th style="width: 20%">Web mjesto</th>
+				<th style="width: 15%">Direktor</th>
+				<th style="width: 12%">Matični broj</th>
+				<th style="width: 12%">OIB</th>
+				<th style="width: 18%">Adresa</th>
 
-				<th />
+				<th style="width: 80px" />
 			</tr>
 		</thead>
 

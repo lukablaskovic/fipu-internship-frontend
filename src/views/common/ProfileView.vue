@@ -16,8 +16,8 @@ import SectionBannerProfile from "@/components/Premium/SectionBannerProfile.vue"
 import LayoutAuthenticated from "@/layouts/LayoutAuthenticated.vue";
 import PillTagPlain from "@/components/PillTag/PillTagPlain.vue";
 import SectionMain from "@/components/Section/SectionMain.vue";
-import BaseDivider from "@/components/Base/BaseDivider.vue";
 import FormControl from "@/components/Form/FormControl.vue";
+import BaseDivider from "@/components/Base/BaseDivider.vue";
 import BaseButtons from "@/components/Base/BaseButtons.vue";
 import BaseButton from "@/components/Base/BaseButton.vue";
 import FormField from "@/components/Form/FormField.vue";
@@ -47,34 +47,31 @@ const profileForm = reactive({
 		<SectionMain>
 			<SectionTitleLineWithButton :icon="mdiAccount" title="Korisnički profil" main />
 
-			<div class="mb-6 grid grid-cols-1 gap-6 xl:grid-cols-2">
-				<CardBox flex="flex-row" class="items-center rounded">
-					<div class="flex items-start justify-start">
-						<UserAvatarCurrentUser class="mr-6 h-24 w-24 md:h-36 md:w-36" />
+			<CardBox flex="flex-row" class="mb-6 items-center rounded">
+				<div class="flex items-start justify-start">
+					<UserAvatarCurrentUser class="mr-6 h-24 w-24 md:h-36 md:w-36" />
 
-						<div class="flex-1">
-							<div class="flex items-center justify-between">
-								<div class="mb-3 flex items-center justify-start">
-									<h1 class="mr-1.5 text-2xl">
-										{{ mainStore.currentUser.ime }}
-										{{ mainStore.currentUser.prezime }}
-									</h1>
-									<BaseIcon :path="mdiCheckDecagram" :size="22" class="text-blue-400" />
-								</div>
+					<div class="flex-1">
+						<div class="flex items-center justify-between">
+							<div class="mb-3 flex items-center justify-start">
+								<h1 class="mr-1.5 text-2xl">
+									{{ mainStore.currentUser.ime }}
+									{{ mainStore.currentUser.prezime }}
+								</h1>
+								<BaseIcon :path="mdiCheckDecagram" :size="22" class="text-blue-400" />
 							</div>
-
-							<BaseButtons class="text-fipu_gray dark:text-gray-300">
-								<PillTagPlain v-if="mainStore.userAdmin" :reverse-dark="true" label="Admin" :icon="mdiAccountCircle" />
-								<PillTagPlain v-else :reverse-dark="true" label="Student" :icon="mdiAccountCircle" />
-								<PillTagPlain :reverse-dark="true" label="FIPU" :icon="mdiDomain" />
-							</BaseButtons>
 						</div>
-					</div>
-				</CardBox>
-				<SectionBannerProfile />
-			</div>
 
-			<div class="grid grid-cols-1 gap-6 lg:grid-cols-2">
+						<BaseButtons class="text-fipu_gray dark:text-gray-300">
+							<PillTagPlain v-if="mainStore.userAdmin" :reverse-dark="true" label="Admin" :icon="mdiAccountCircle" />
+							<PillTagPlain v-else :reverse-dark="true" label="Student" :icon="mdiAccountCircle" />
+							<PillTagPlain :reverse-dark="true" label="FIPU" :icon="mdiDomain" />
+						</BaseButtons>
+					</div>
+				</div>
+			</CardBox>
+
+			<div class="mb-6 grid grid-cols-1 gap-6 lg:grid-cols-2">
 				<CardBox is-form class="rounded">
 					<FormField label="Ime">
 						<FormControl v-model="profileForm.ime" :icon="mdiAccount" name="ime" readonly autocomplete="ime" />
@@ -99,13 +96,17 @@ const profileForm = reactive({
 					</div>
 				</CardBox>
 
-				<div>
-					<SectionBanner v-if="mainStore.userAdmin" class="bg-gradient-to-tr from-blue-200 via-blue-400 to-gray-800">
-						<h1 class="mb-6 text-3xl text-white">Baserow baza podataka</h1>
-						<a href="https://baserow.unipu.hr/dashboard" target="_blank">
-							<BaseButton :icon="mdiDatabase" label="Baserow" rounded-full />
-						</a>
-					</SectionBanner>
+				<div class="space-y-6">
+					<SectionBannerProfile />
+
+					<div v-if="mainStore.userAdmin">
+						<SectionBanner class="bg-gradient-to-tr from-blue-200 via-blue-400 to-gray-800">
+							<h1 class="mb-6 text-3xl text-white">Baserow baza podataka</h1>
+							<a href="https://baserow.unipu.hr/dashboard" target="_blank">
+								<BaseButton :icon="mdiDatabase" label="Baserow" rounded-full />
+							</a>
+						</SectionBanner>
+					</div>
 				</div>
 			</div>
 		</SectionMain>

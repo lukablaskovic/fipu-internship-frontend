@@ -1,6 +1,6 @@
 <script setup>
+import { mdiDomain, mdiDomainPlus, mdiLaptop, mdiClipboardCheck, mdiContentCopy } from "@mdi/js";
 import SectionMain from "@/components/Section/SectionMain.vue";
-import { mdiDomain, mdiDomainPlus, mdiLaptop } from "@mdi/js";
 import CardBox from "@/components/Cardbox/CardBox.vue";
 import { mainStore, adminStore } from "@/main.js";
 import { computed, ref } from "vue";
@@ -44,7 +44,7 @@ const addNewAssignmentLink = ref(`${VITE_FRONTEND_URL}/poslodavci/novi-zadatak`)
 					</CardBox>
 				</div>
 				<SectionTitleLineWithButton class="mt-4" :icon="mdiDomain" title="Poslodavci" main> </SectionTitleLineWithButton>
-				<p class="mb-4">U tablici se nalaze poduzeća koja su sklopila ugovor za provođenje studentske prakse u suradnji s Fakultetom informatike u Puli.</p>
+				<p class="mb-4">U tablici se nalaze poslovne organizacije koje su sklopile ugovor za provođenje studentske prakse u suradnji s Fakultetom informatike u Puli.</p>
 				<div v-if="!userAdmin" class="mb-4">
 					<p class="mb-2 text-sm md:text-base">Ukoliko ne možete naći zadatak koji vam se sviđa, javite se poslodavcu, predstavite se i zamolite ih da ispune zadatak putem poveznice ispod.</p>
 					<p class="mb-4 text-sm md:text-base">Novoprijavljeni zadaci bit će dostupni <b>jednom kad ih voditelj odobri.</b></p>
@@ -62,7 +62,7 @@ const addNewAssignmentLink = ref(`${VITE_FRONTEND_URL}/poslodavci/novi-zadatak`)
 		<LayoutGuest v-else>
 			<SectionMain>
 				<SectionTitleLineWithButton class="mt-4" :icon="mdiDomain" title="Poslodavci" main> </SectionTitleLineWithButton>
-				<p class="mb-4">U tablici se nalaze poduzeća koja su sklopila ugovor za provođenje studentske prakse u suradnji s Fakultetom informatike u Puli.</p>
+				<p class="mb-4">U tablici se nalaze poslovne organizacije koje su sklopile ugovor za provođenje studentske prakse u suradnji s Fakultetom informatike u Puli.</p>
 				<div class="mb-4">
 					<p class="mb-2 text-sm md:text-base">Ukoliko ne možete naći zadatak koji vam se sviđa, javite se poslodavcu, predstavite se i zamolite ih da ispune zadatak putem poveznice ispod.</p>
 					<p class="mb-4 text-sm md:text-base">Novoprijavljeni zadaci bit će dostupni <b>jednom kad ih voditelj odobri.</b></p>

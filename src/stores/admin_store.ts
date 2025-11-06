@@ -374,6 +374,17 @@ export const useAdminStore = defineStore("admin", {
 	},
 	persist: {
 		storage: sessionStorage,
+		omit: ["companies"],
 		debug: true,
+		beforeRestore: (ctx: any) => {
+			// Only restore companies if user is authenticated
+			const token = sessionStorage.getItem("token");
+			if (!token) {
+				// For non-authenticated users, prevent restoring companies data
+				if (ctx.store && ctx.store.companies) {
+					ctx.store.companies = [];
+				}
+			}
+		},
 	},
 });

@@ -13,7 +13,7 @@ export interface Assignment {
 
 export const useMainStore = defineStore("main", {
 	state: () => ({
-		praksa_version: "v1.3.3",
+		praksa_version: "v1.4.0",
 		academicYear: "2025/2026",
 		voditelj_prakse: "doc. dr. sc. Ivan Lorencin",
 
@@ -263,5 +263,19 @@ export const useMainStore = defineStore("main", {
 			}
 		},
 	},
-	persist: { storage: sessionStorage, omit: ["assignments", "checkedAssignments"], debug: true },
+	persist: {
+		storage: sessionStorage,
+		omit: ["assignments", "checkedAssignments", "allCompanies", "praksa_version", "academicYear"],
+		debug: true,
+		beforeRestore: (ctx: any) => {
+			// Only restore allCompanies if user is authenticated
+			const token = sessionStorage.getItem("token");
+			if (!token) {
+				// For non-authenticated users, prevent restoring companies data
+				if (ctx.store && ctx.store.allCompanies) {
+					ctx.store.allCompanies = [];
+				}
+			}
+		},
+	},
 });

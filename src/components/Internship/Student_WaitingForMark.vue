@@ -54,7 +54,7 @@ const Layout = computed(() => {
 		<SectionMain v-if="allocated_assignment != null" class="relative">
 			<SectionTitleLineWithButton :icon="mdiLaptop" title="Moja Praksa" main> </SectionTitleLineWithButton>
 			<p><b>Akademska godina:</b> {{ mainStore.academicYear }}</p>
-			<p><b>Voditelj:</b>{{ mainStore.voditelj_prakse }}</p>
+			<p><b>Voditelj:</b> {{ mainStore.voditelj_prakse }}</p>
 			<br />
 			<img src="/illustrations/finish.svg" class="absolute right-0 top-0 mr-6 mt-4 hidden w-1/6 max-w-full md:block" />
 			<SectionTitleLineWithButton :icon="mdiAlphaSBox" main title="Ocjenjivanje u tijeku"></SectionTitleLineWithButton>

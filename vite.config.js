@@ -1,7 +1,7 @@
 import { fileURLToPath } from "url";
 import path from "path";
 
-import vueDevTools from "vite-plugin-vue-devtools";
+// import vueDevTools from "vite-plugin-vue-devtools"; // Temporarily disabled due to localStorage error
 import vue from "@vitejs/plugin-vue";
 
 import { defineConfig } from "vite";
@@ -14,7 +14,7 @@ const __dirname = path.dirname(__filename);
 export default defineConfig({
 	//base: "/fipu/",
 	assetsInclude: "**/*.xml",
-	plugins: [vueDevTools(), vue()],
+	plugins: [vue()],
 	define: {
 		__VUE_PROD_HYDRATION_MISMATCH_DETAILS__: true,
 	},
