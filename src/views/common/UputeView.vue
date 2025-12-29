@@ -65,7 +65,8 @@ onMounted(async () => {
 					<b><a href="https://chat.google.com/room/AAAASZREDy8" target="_blank" class="text-fipu_blue">FIPU Praksa</a></b>
 				</p>
 
-				<p class="mt-1">Poslodavci i mentori, za sve upite kontaktirajte voditelja stručne prakse.</p>
+				<p class="mt-1">Poslodavci i mentori, za sve upite kontaktirajte administratoricu ili voditelja stručne prakse.</p>
+				<b>Kolegij "Stručna praksa" ne koristi klasični Merlin e-kolegij.</b>
 
 				<SectionTitleLineWithButton :icon="mdiCalendarRange" title="Važni datumi"></SectionTitleLineWithButton>
 				<p>Za studente koji su upisali Stručnu praksu na prijediplomskom ili diplomskom studiju:</p>
@@ -90,6 +91,7 @@ onMounted(async () => {
 									<p class="mb-2 font-bold dark:text-white">doc. dr. sc. Ivan Lorencin (voditelj)</p>
 									<p class="text-neutral-500 dark:text-neutral-200">ivan.lorencin@unipu.hr</p>
 									<p class="text-neutral-500 dark:text-neutral-200">+385 98 96 12 042</p>
+									<p class="text-neutral-500 dark:text-neutral-200">ili preko UNIPU Google Chata</p>
 								</div>
 							</div>
 						</div>
@@ -103,8 +105,9 @@ onMounted(async () => {
 									</div>
 								</div>
 								<div class="ml-3 grow">
-									<p class="mb-2 font-bold dark:text-white">Marijela Miličević, mag. educ. inf. (administrator)</p>
+									<p class="mb-2 font-bold dark:text-white">Marijela Miličević, mag. educ. inf. (administratorica)</p>
 									<p class="text-neutral-500 dark:text-neutral-200">marijela.milicevic@unipu.hr</p>
+									<p class="text-neutral-500 dark:text-neutral-200">ili preko UNIPU Google Chata</p>
 								</div>
 							</div>
 						</div>
@@ -118,6 +121,7 @@ onMounted(async () => {
 								<div class="ml-3 grow">
 									<p class="mb-2 font-bold dark:text-white">Luka Blašković, mag. inf. (tehnička podrška)</p>
 									<p class="text-neutral-500 dark:text-neutral-200">luka.blaskovic@unipu.hr</p>
+									<p class="text-neutral-500 dark:text-neutral-200">ili preko UNIPU Google Chata</p>
 								</div>
 							</div>
 						</div>
@@ -257,7 +261,8 @@ onMounted(async () => {
 					<b><a href="https://chat.google.com/room/AAAASZREDy8" target="_blank" class="text-fipu_blue">FIPU Praksa</a></b>
 				</p>
 
-				<p class="mt-1">Poslodavci i mentori, za sve upite kontaktirajte voditelja stručne prakse.</p>
+				<p class="mt-1">Poslodavci i mentori, za sve upite kontaktirajte administratoricu ili voditelja stručne prakse.</p>
+				<b>Kolegij "Stručna praksa" ne koristi klasični Merlin e-kolegij.</b>
 
 				<SectionTitleLineWithButton :icon="mdiCalendarRange" title="Važni datumi"></SectionTitleLineWithButton>
 				<p>Za studente koji su upisali Stručnu praksu na prijediplomskom ili diplomskom studiju:</p>
@@ -282,6 +287,7 @@ onMounted(async () => {
 									<p class="mb-2 font-bold dark:text-white">doc. dr. sc. Ivan Lorencin</p>
 									<p class="text-neutral-500 dark:text-neutral-200">ivan.lorencin@unipu.hr</p>
 									<p class="text-neutral-500 dark:text-neutral-200">+385 98 96 12 042</p>
+									<p class="text-neutral-500 dark:text-neutral-200">ili preko UNIPU Google Chata</p>
 								</div>
 							</div>
 						</div>
@@ -295,8 +301,9 @@ onMounted(async () => {
 									</div>
 								</div>
 								<div class="ml-3 grow">
-									<p class="mb-2 font-bold dark:text-white">Marijela Miličević (administrator)</p>
+									<p class="mb-2 font-bold dark:text-white">Marijela Miličević (administratorica)</p>
 									<p class="text-neutral-500 dark:text-neutral-200">marijela.milicevic@unipu.hr</p>
+									<p class="text-neutral-500 dark:text-neutral-200">ili preko UNIPU Google Chata</p>
 								</div>
 							</div>
 						</div>
@@ -308,8 +315,9 @@ onMounted(async () => {
 									</div>
 								</div>
 								<div class="ml-3 grow">
-									<p class="mb-2 font-bold dark:text-white">Luka Blašković (administrator)</p>
+									<p class="mb-2 font-bold dark:text-white">Luka Blašković (tehnička podrška)</p>
 									<p class="text-neutral-500 dark:text-neutral-200">luka.blaskovic@unipu.hr</p>
+									<p class="text-neutral-500 dark:text-neutral-200">ili preko UNIPU Google Chata</p>
 								</div>
 							</div>
 						</div>
