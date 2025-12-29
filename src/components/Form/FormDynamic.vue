@@ -55,7 +55,7 @@ const props = defineProps({
 });
 
 // Available assignments for validation (model_b_odobrenje_zadatka)
-const availableAssignmentIds = ref([]);
+const availableAssignments = ref([]);
 
 const tableComponent = TaskTable;
 
@@ -72,7 +72,7 @@ onMounted(async () => {
 	if (props.currentTaskId === "model_b_odobrenje_zadatka") {
 		const assignments = await mainStore.fetchAvailableAssignments();
 		if (assignments) {
-			availableAssignmentIds.value = assignments.map((a) => a.id_zadatak);
+			availableAssignments.value = assignments;
 		}
 	}
 });
@@ -92,18 +92,43 @@ const isTableComponentVisible = computed(() => {
 	return formValues["odabir_prihvacen"] !== "false";
 });
 
-// Validate id_zadatak exists in available assignments for model_b_odobrenje_zadatka
-const isIdZadatakValid = computed(() => {
+// Find assignment by id_zadatak
+const findAssignment = (idZadatak) => {
+	return availableAssignments.value.find((a) => a.id_zadatak === idZadatak);
+};
+
+// Get validation status for id_zadatak
+const getIdZadatakValidationStatus = computed(() => {
 	if (props.currentTaskId !== "model_b_odobrenje_zadatka") {
-		return true;
+		return { valid: true, status: null };
 	}
 
 	const idZadatak = formValues["id_zadatak"];
 	if (!idZadatak || idZadatak.trim() === "") {
-		return true; // Will be caught by required field validation
+		return { valid: true, status: null }; // Will be caught by required field validation
 	}
 
-	return availableAssignmentIds.value.includes(idZadatak);
+	const assignment = findAssignment(idZadatak);
+	if (!assignment) {
+		return { valid: false, status: "not_found" };
+	}
+
+	const voditeljOdobrio = assignment.voditelj_odobrio?.value;
+	if (voditeljOdobrio === "odobreno") {
+		return { valid: true, status: "odobreno" };
+	} else if (voditeljOdobrio === "odbijeno") {
+		return { valid: false, status: "odbijeno" };
+	} else if (voditeljOdobrio === "u razradi") {
+		return { valid: false, status: "u_razradi" };
+	}
+
+	// Unknown status - treat as invalid
+	return { valid: false, status: "unknown" };
+});
+
+// Validate id_zadatak exists and is approved for model_b_odobrenje_zadatka
+const isIdZadatakValid = computed(() => {
+	return getIdZadatakValidationStatus.value.valid;
 });
 
 const allFieldsFilled = computed(() => {
@@ -152,6 +177,22 @@ watch(allFieldsFilled, (newValue) => {
 // Debounce timer for id_zadatak validation snackbar
 let idZadatakValidationTimeout = null;
 
+// Get appropriate error message based on validation status
+const getValidationErrorMessage = (idZadatak, status) => {
+	switch (status) {
+		case "not_found":
+			return `Zadatak "${idZadatak}" ne postoji. Provjerite točan ID zadatka u tabu Zadaci.`;
+		case "odbijeno":
+			return `Zadatak "${idZadatak}" je odbijen i nije moguće odobriti ga za studenta.`;
+		case "u_razradi":
+			return `Zadatak "${idZadatak}" je još u razradi. Najprije ga odobrite u tabu Zadaci.`;
+		case "unknown":
+			return `Zadatak "${idZadatak}" ima nepoznat status. Provjerite status zadatka u tabu Zadaci.`;
+		default:
+			return null;
+	}
+};
+
 // Show snackbar error when id_zadatak is invalid for model_b_odobrenje_zadatka (debounced)
 watch(
 	() => formValues["id_zadatak"],
@@ -164,8 +205,12 @@ watch(
 		if (props.currentTaskId === "model_b_odobrenje_zadatka" && newValue && newValue.trim() !== "") {
 			// Debounce the snackbar message to avoid firing on every keystroke
 			idZadatakValidationTimeout = setTimeout(() => {
-				if (!availableAssignmentIds.value.includes(newValue)) {
-					snackBarStore.pushMessage(`Zadatak "${newValue}" ne postoji. Provjerite točan ID zadatka u tabu Zadaci.`, "danger", 5000);
+				const validationStatus = getIdZadatakValidationStatus.value;
+				if (!validationStatus.valid) {
+					const errorMessage = getValidationErrorMessage(newValue, validationStatus.status);
+					if (errorMessage) {
+						snackBarStore.pushMessage(errorMessage, "danger", 5000);
+					}
 				}
 			}, 800);
 		}

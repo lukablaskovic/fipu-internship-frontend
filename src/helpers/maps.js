@@ -197,7 +197,7 @@ class UserTaskMappings {
 			_id: "predavanje_dnevnika_student",
 			name: "Mora predati dnevnik prakse",
 			bpmn_pending_info_msg: "Student nije još predao dnevnik prakse i ispunjenu potvrdu.",
-			snackbar_msg: "Dnevnik predan. Hvala!",
+			snackbar_msg: "Dnevnik i potvrda pohranjeni.",
 			bpmn_task_color: "#79d4f2",
 			snackbar_color: "success",
 			form_title: "Dnevnik prakse",
