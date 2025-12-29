@@ -103,7 +103,7 @@ onMounted(async () => {
 									</div>
 								</div>
 								<div class="ml-3 grow">
-									<p class="mb-2 font-bold dark:text-white">Marijela Miličević (administrator)</p>
+									<p class="mb-2 font-bold dark:text-white">Marijela Miličević, mag. educ. inf. (administrator)</p>
 									<p class="text-neutral-500 dark:text-neutral-200">marijela.milicevic@unipu.hr</p>
 								</div>
 							</div>
@@ -116,7 +116,7 @@ onMounted(async () => {
 									</div>
 								</div>
 								<div class="ml-3 grow">
-									<p class="mb-2 font-bold dark:text-white">Luka Blašković (administrator)</p>
+									<p class="mb-2 font-bold dark:text-white">Luka Blašković, mag. inf. (tehnička podrška)</p>
 									<p class="text-neutral-500 dark:text-neutral-200">luka.blaskovic@unipu.hr</p>
 								</div>
 							</div>

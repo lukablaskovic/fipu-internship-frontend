@@ -48,7 +48,7 @@ const menuAsideAdmin: MenuItem[] = [
 				label: "Forma za prijavu zadatka",
 			},
 			{
-				label: "Baserow baza",
+				label: "Baserow DB",
 				externalURL: "https://baserow.unipu.hr/dashboard",
 			},
 		],

@@ -23,13 +23,15 @@
 </template>
 
 <script setup>
-import { onMounted, computed, reactive, watch } from "vue";
+import { onMounted, computed, reactive, watch, ref } from "vue";
 
 import FormCheckRadioGroup from "./FormCheckRadioGroup.vue";
 import TaskTable from "../BPMN/TaskTable.vue";
 import CardBox from "../Cardbox/CardBox.vue";
 import FormControl from "./FormControl.vue";
 import FormField from "./FormField.vue";
+
+import { mainStore, snackBarStore } from "@/main.js";
 
 const emit = defineEmits(["update:modelValue", "allFieldsFilled"]);
 
@@ -46,16 +48,31 @@ const props = defineProps({
 		type: String,
 		default: null,
 	},
+	currentTaskId: {
+		type: String,
+		default: null,
+	},
 });
+
+// Available assignments for validation (model_b_odobrenje_zadatka)
+const availableAssignmentIds = ref([]);
 
 const tableComponent = TaskTable;
 
 const formValues = reactive(Object.fromEntries(Object.keys(props.formFields).map((key) => [key, null])));
 
-onMounted(() => {
+onMounted(async () => {
 	for (const key in props.formFields) {
 		if (props.formFields[key].type === "var-string" && props.variables[key] !== undefined) {
 			formValues[key] = props.variables[key];
+		}
+	}
+
+	// Fetch available assignments for validation if this is model_b_odobrenje_zadatka
+	if (props.currentTaskId === "model_b_odobrenje_zadatka") {
+		const assignments = await mainStore.fetchAvailableAssignments();
+		if (assignments) {
+			availableAssignmentIds.value = assignments.map((a) => a.id_zadatak);
 		}
 	}
 });
@@ -75,8 +92,22 @@ const isTableComponentVisible = computed(() => {
 	return formValues["odabir_prihvacen"] !== "false";
 });
 
+// Validate id_zadatak exists in available assignments for model_b_odobrenje_zadatka
+const isIdZadatakValid = computed(() => {
+	if (props.currentTaskId !== "model_b_odobrenje_zadatka") {
+		return true;
+	}
+
+	const idZadatak = formValues["id_zadatak"];
+	if (!idZadatak || idZadatak.trim() === "") {
+		return true; // Will be caught by required field validation
+	}
+
+	return availableAssignmentIds.value.includes(idZadatak);
+});
+
 const allFieldsFilled = computed(() => {
-	return Object.keys(formValues).every((key) => {
+	const fieldsFilled = Object.keys(formValues).every((key) => {
 		const field = props.formFields[key];
 		const value = formValues[key];
 
@@ -103,11 +134,43 @@ const allFieldsFilled = computed(() => {
 		// For any other field types, fallback to true if not rendered
 		return true;
 	});
+
+	// For model_b_odobrenje_zadatka, also validate that id_zadatak exists
+	if (props.currentTaskId === "model_b_odobrenje_zadatka" && fieldsFilled) {
+		if (!isIdZadatakValid.value) {
+			return false;
+		}
+	}
+
+	return fieldsFilled;
 });
 
 watch(allFieldsFilled, (newValue) => {
 	emit("allFieldsFilled", newValue);
 });
+
+// Debounce timer for id_zadatak validation snackbar
+let idZadatakValidationTimeout = null;
+
+// Show snackbar error when id_zadatak is invalid for model_b_odobrenje_zadatka (debounced)
+watch(
+	() => formValues["id_zadatak"],
+	(newValue) => {
+		// Clear any pending timeout
+		if (idZadatakValidationTimeout) {
+			clearTimeout(idZadatakValidationTimeout);
+		}
+
+		if (props.currentTaskId === "model_b_odobrenje_zadatka" && newValue && newValue.trim() !== "") {
+			// Debounce the snackbar message to avoid firing on every keystroke
+			idZadatakValidationTimeout = setTimeout(() => {
+				if (!availableAssignmentIds.value.includes(newValue)) {
+					snackBarStore.pushMessage(`Zadatak "${newValue}" ne postoji. Provjerite točan ID zadatka u tabu Zadaci.`, "danger", 5000);
+				}
+			}, 800);
+		}
+	},
+);
 
 watch(
 	formValues,

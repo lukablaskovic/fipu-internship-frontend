@@ -285,6 +285,7 @@ onMounted(loadDataForStudent);
 						:form-fields="adminStore.selectedStudent.process_instance_data.pending_task_info.form_fields"
 						:variables="adminStore.selectedStudent.process_instance_data.variables"
 						:documentation="adminStore.selectedStudent.process_instance_data.pending_task_info.documentation"
+						:current-task-id="process_instance_data.pending[0]"
 						@all-fields-filled="updateDisabledCondition" />
 				</CardBoxModal>
 

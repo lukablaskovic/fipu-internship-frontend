@@ -1,7 +1,7 @@
 <script setup>
-import { mdiFileDocumentEdit, mdiLaptop, mdiBallot, mdiAccount, mdiMail, mdiClipboardCheck, mdiPhone, mdiCardAccountDetailsOutline, mdiDomain, mdiClockTimeFiveOutline, mdiTextLong } from "@mdi/js";
+import { mdiFileDocumentEdit, mdiLaptop, mdiBallot, mdiAccount, mdiMail, mdiClipboardCheck, mdiPhone, mdiCardAccountDetailsOutline, mdiDomain, mdiClockTimeFiveOutline, mdiTextLong, mdiCalendar } from "@mdi/js";
 import { croatianAlpha, getFirstErrorForField, isUnipuEmail, exactLength, containsNumeric } from "@/helpers/validators";
-import { required, email, helpers, numeric } from "@vuelidate/validators";
+import { required, email, helpers, numeric, minLength } from "@vuelidate/validators";
 import { ref, computed, onMounted, reactive } from "vue";
 import { useVuelidate } from "@vuelidate/core";
 
@@ -110,6 +110,7 @@ const rules = {
 	},
 	detaljan_opis_zadatka: {
 		required: helpers.withMessage("Polje je obavezno", required),
+		minLength: helpers.withMessage("Opis mora sadržavati najmanje 200 znakova", minLength(200)),
 	},
 	dogovoreni_broj_sati: {
 		required: helpers.withMessage("Polje je obavezno", required),
@@ -224,21 +225,28 @@ async function submit_application_form() {
 					</FormField>
 					<BaseDivider />
 					<FormField label="Detaljan opis zadatka" horizontal>
-						<FormControl v-model="form.detaljan_opis_zadatka" type="textarea" :error="getFirstErrorForField(v$, 'detaljan_opis_zadatka')" :icon-left="mdiTextLong" placeholder="Detaljno opišite zadatak koji će se izvršavati na praksi." />
+						<FormControl
+							v-model="form.detaljan_opis_zadatka"
+							type="textarea"
+							:error="getFirstErrorForField(v$, 'detaljan_opis_zadatka')"
+							:icon-left="mdiTextLong"
+							placeholder="Detaljno opišite zadatak koji će se izvršavati na praksi (min. 200 znakova)." />
 					</FormField>
 
 					<FormField label="Dogovoreni broj sati" horizontal>
 						<FormField addons>
-							<FormControl v-model="form.dogovoreni_broj_sati" type="number" :icon-left="mdiClockTimeFiveOutline" placeholder="Dogovoreni broj sati" :error="getFirstErrorForField(v$, 'dogovoreni_broj_sati')" expanded />
+							<FormControl v-model="form.dogovoreni_broj_sati" type="number" :min="1" :icon-left="mdiClockTimeFiveOutline" placeholder="Dogovoreni broj sati" :error="getFirstErrorForField(v$, 'dogovoreni_broj_sati')" expanded />
 						</FormField>
 					</FormField>
 
+					<!-- Date pickers with fipu blue hover effects and cursor pointer -->
+					<!-- Note: Translation of native "Clear"/"Today" buttons requires custom date picker component -->
 					<FormField label="Datum početka" horizontal>
-						<FormControl v-model="form.pocetak_prakse" :error="getFirstErrorForField(v$, 'pocetak_prakse')" type="date" />
+						<FormControl v-model="form.pocetak_prakse" :error="getFirstErrorForField(v$, 'pocetak_prakse')" type="date" class="fipu-date-picker" :icon-left="mdiCalendar" />
 					</FormField>
 
 					<FormField label="Datum završetka" horizontal>
-						<FormControl v-model="form.kraj_prakse" :error="getFirstErrorForField(v$, 'kraj_prakse')" type="date" />
+						<FormControl v-model="form.kraj_prakse" :error="getFirstErrorForField(v$, 'kraj_prakse')" type="date" class="fipu-date-picker" :icon-left="mdiCalendar" />
 					</FormField>
 
 					<BaseDivider />
@@ -261,7 +269,7 @@ async function submit_application_form() {
 					<BaseDivider />
 
 					<FormField horizontal grouped>
-						<BaseButton label="Pošalji" type="submit" :disabled="!form.kontakt_potvrda" :loading="isLoading" color="fipu_blue" />
+						<BaseButton label="Pošalji" type="submit" :disabled="!form.kontakt_potvrda || isLoading" :loading="isLoading" color="fipu_blue" />
 					</FormField>
 				</CardBox>
 			</div>
@@ -272,5 +280,19 @@ async function submit_application_form() {
 .ghost {
 	opacity: 0.5;
 	background: #c8ebfb;
+}
+
+/* Date picker cursor pointer and icon hover */
+:deep(input[type="date"]) {
+	cursor: pointer !important;
+}
+
+:deep(input[type="date"]::-webkit-calendar-picker-indicator) {
+	cursor: pointer !important;
+}
+
+/* Calendar icon hover effect */
+:deep(.fipu-date-picker:hover svg) {
+	color: #46bae0 !important;
 }
 </style>

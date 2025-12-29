@@ -86,6 +86,42 @@ async function submit_diary_form() {
 		return;
 	}
 
+	// Validate file size and format for dnevnik_attachment
+	const maxFileSize = 10 * 1024 * 1024; // 10 MB in bytes
+
+	if (form.dnevnik_attachment) {
+		// Check file type
+		if (form.dnevnik_attachment.type !== "application/pdf") {
+			snackBarStore.pushMessage("Dnevnik prakse mora biti u PDF formatu.", "warning");
+			isLoading.value = false;
+			return;
+		}
+		// Check file size
+		if (form.dnevnik_attachment.size > maxFileSize) {
+			const fileSizeMB = (form.dnevnik_attachment.size / (1024 * 1024)).toFixed(2);
+			snackBarStore.pushMessage(`Dnevnik prakse je prevelik (${fileSizeMB} MB). Maksimalna veličina je 10 MB.`, "warning");
+			isLoading.value = false;
+			return;
+		}
+	}
+
+	// Validate file size and format for potvrda_attachment
+	if (form.potvrda_attachment) {
+		// Check file type
+		if (form.potvrda_attachment.type !== "application/pdf") {
+			snackBarStore.pushMessage("Potvrda o obavljenoj praksi mora biti u PDF formatu.", "warning");
+			isLoading.value = false;
+			return;
+		}
+		// Check file size
+		if (form.potvrda_attachment.size > maxFileSize) {
+			const fileSizeMB = (form.potvrda_attachment.size / (1024 * 1024)).toFixed(2);
+			snackBarStore.pushMessage(`Potvrda o obavljenoj praksi je prevelika (${fileSizeMB} MB). Maksimalna veličina je 10 MB.`, "warning");
+			isLoading.value = false;
+			return;
+		}
+	}
+
 	await studentStore.submitDiaryForm(form);
 	if (UserTaskMappings.getTaskProperty(studentStore.student_process_instance_data.pending[0], "snackbar_msg")) {
 		snackBarStore.pushMessage(UserTaskMappings.getTaskProperty(studentStore.student_process_instance_data.pending[0], "snackbar_msg"), UserTaskMappings.getTaskProperty(studentStore.student_process_instance_data.pending[0], "snackbar_color"));
@@ -131,15 +167,11 @@ async function submit_diary_form() {
 				<CardBox :icon="mdiBallot" class="mb-6 lg:col-span-2 lg:mb-0 xl:col-span-3" is-form @submit.prevent="submit_diary_form">
 					<CardBoxComponentTitle title="📓 Dnevnik prakse" />
 
-					<FormField label="PDF dnevnika prakse" help="obavezno PDF format" horizontal>
+					<FormField label="PDF dnevnika prakse" help="obavezno PDF format, maksimalno 10 MB" horizontal>
 						<FormFilePicker v-model="form.dnevnik_attachment" pdf :error="getFirstErrorForField(v$, 'dnevnik_attachment')" label="Prenesi" required />
 					</FormField>
 
-					<FormField
-						label="PDF ispunjene potvrde o obavljenoj praksi"
-						help="obavezno PDF format
-"
-						horizontal>
+					<FormField label="PDF ispunjene potvrde o obavljenoj praksi" help="obavezno PDF format, maksimalno 10 MB" horizontal>
 						<FormFilePicker v-model="form.potvrda_attachment" pdf :error="getFirstErrorForField(v$, 'potvrda_attachment')" label="Prenesi" required />
 					</FormField>
 

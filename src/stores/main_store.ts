@@ -13,7 +13,7 @@ export interface Assignment {
 
 export const useMainStore = defineStore("main", {
 	state: () => ({
-		praksa_version: "v1.4.0",
+		praksa_version: "v1.5.0",
 		academicYear: "2025/2026",
 		voditelj_prakse: "doc. dr. sc. Ivan Lorencin",
 
