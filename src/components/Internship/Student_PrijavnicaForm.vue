@@ -77,11 +77,11 @@ const form = reactive({
 const rules = {
 	student_ime: {
 		required: helpers.withMessage("Polje je obavezno", required),
-		croatianAlpha: helpers.withMessage("Ime može sadržavati samo slova hrvatske abecede", croatianAlpha),
+		croatianAlpha: helpers.withMessage("Ime može sadržavati samo slova hrvatske abecede, razmake i crticu", croatianAlpha),
 	},
 	student_prezime: {
 		required: helpers.withMessage("Polje je obavezno", required),
-		croatianAlpha: helpers.withMessage("Prezime može sadržavati samo slova hrvatske abecede", croatianAlpha),
+		croatianAlpha: helpers.withMessage("Prezime može sadržavati samo slova hrvatske abecede, razmake i crticu", croatianAlpha),
 	},
 	student_broj_mobitela: {
 		required: helpers.withMessage("Polje je obavezno", required),
@@ -98,11 +98,11 @@ const rules = {
 	},
 	mentor_ime: {
 		required: helpers.withMessage("Polje je obavezno", required),
-		croatianAlpha: helpers.withMessage("Ime može sadržavati samo slova hrvatske abecede", croatianAlpha),
+		croatianAlpha: helpers.withMessage("Ime može sadržavati samo slova hrvatske abecede, razmake i crticu", croatianAlpha),
 	},
 	mentor_prezime: {
 		required: helpers.withMessage("Polje je obavezno", required),
-		croatianAlpha: helpers.withMessage("Prezime može sadržavati samo slova hrvatske abecede", croatianAlpha),
+		croatianAlpha: helpers.withMessage("Prezime može sadržavati samo slova hrvatske abecede, razmake i crticu", croatianAlpha),
 	},
 	mentor_email: {
 		required: helpers.withMessage("Polje je obavezno", required),
