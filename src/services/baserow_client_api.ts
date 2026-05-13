@@ -34,6 +34,10 @@ const Guest = {
 		return safeRequest(() => AxiosWrapper.get("/Poslodavac", { search: query }));
 	},
 
+	fetchCompany(id: string | number) {
+		return safeRequest(() => AxiosWrapper.get("/Poslodavac", { id }));
+	},
+
 	submitNewInternshipProject(postData: any) {
 		return safeRequest(() => AxiosWrapper.post("/zadaci_za_odabir", postData));
 	},

@@ -14,6 +14,7 @@ import CardBox from "@/components/Cardbox/CardBox.vue";
 import LayoutGuest from "@/layouts/LayoutGuest.vue";
 
 import { ref, computed, onMounted, watch } from "vue";
+import { DEFAULT_COMPANY_LOGO, fetchCompanyForAssignment, findCompanyForAssignment, getCompanyLogoKey, getCompanyLogoUrl, rememberCompany } from "@/helpers/company-logo.js";
 import Utils from "@/helpers/utils.js";
 import draggable from "vuedraggable";
 
@@ -33,6 +34,9 @@ const napomena = ref(null);
 const isFadedOut = ref(false);
 const vas_odabir = ref(null);
 const hasScrolledForFirstTime = ref(false);
+const companiesLoaded = ref(false);
+const companyLogoCache = ref({});
+const loadingCompanyLogoKeys = new Set();
 
 const registerPreferences = async () => {
 	isLoading.value = true;
@@ -53,6 +57,8 @@ const registerPreferences = async () => {
 
 onMounted(async () => {
 	mainStore.allCompanies = await mainStore.fetchCompanies();
+	companiesLoaded.value = true;
+	loadCompanyLogos(checkedAssignments.value);
 });
 
 watch(
@@ -66,9 +72,44 @@ watch(
 );
 
 const getCompanyLogo = (assignment) => {
-	const company = mainStore.allCompanies.find((c) => c.naziv === assignment["Poslodavac"][0].value);
-	return company?.logo?.[0]?.url || "No-Logo.png";
+	const key = getCompanyLogoKey(assignment);
+
+	return (key && companyLogoCache.value[key]) || getCompanyLogoUrl(findCompanyForAssignment(assignment, mainStore.allCompanies)) || DEFAULT_COMPANY_LOGO;
 };
+
+const loadCompanyLogo = async (assignment) => {
+	const key = getCompanyLogoKey(assignment);
+
+	if (!key || companyLogoCache.value[key] || loadingCompanyLogoKeys.has(key)) {
+		return;
+	}
+
+	if (!companiesLoaded.value && !mainStore.allCompanies.length) {
+		return;
+	}
+
+	const cachedLogo = getCompanyLogoUrl(findCompanyForAssignment(assignment, mainStore.allCompanies));
+	if (cachedLogo) {
+		companyLogoCache.value[key] = cachedLogo;
+		return;
+	}
+
+	loadingCompanyLogoKeys.add(key);
+	try {
+		const company = await fetchCompanyForAssignment(mainStore, assignment);
+		rememberCompany(mainStore, company);
+		companyLogoCache.value[key] = getCompanyLogoUrl(company) || DEFAULT_COMPANY_LOGO;
+	} finally {
+		loadingCompanyLogoKeys.delete(key);
+	}
+};
+
+const loadCompanyLogos = (assignments) => {
+	assignments.forEach((assignment) => loadCompanyLogo(assignment));
+};
+
+watch(checkedAssignments, loadCompanyLogos, { immediate: true, deep: true });
+watch(() => mainStore.allCompanies, () => loadCompanyLogos(checkedAssignments.value), { deep: true });
 
 const getDefaultImage = (index) => {
 	const defaultImages = ["/select_task_1.svg", "/select_task_2.svg", "/select_task_3.svg"];

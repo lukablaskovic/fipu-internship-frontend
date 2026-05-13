@@ -175,9 +175,20 @@ export const useMainStore = defineStore("main", {
 		async fetchCompanies(search = "") {
 			try {
 				const response = await Guest.fetchCompanies(search);
-				return response.data.results;
+				return response?.data?.results || [];
 			} catch (error) {
 				console.log("Error:", error);
+				return [];
+			}
+		},
+
+		async fetchCompany(id: string | number) {
+			try {
+				const response = await Guest.fetchCompany(id);
+				return response?.data || null;
+			} catch (error) {
+				console.log("Error:", error);
+				return null;
 			}
 		},
 

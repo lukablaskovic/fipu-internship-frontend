@@ -102,6 +102,7 @@ import BaseButton from "@/components/Base/BaseButton.vue";
 import BaseLevel from "@/components/Base/BaseLevel.vue";
 import { mainStore, adminStore } from "@/main.js";
 import { mdiEye, mdiMenuDown } from "@mdi/js";
+import { DEFAULT_COMPANY_LOGO, fetchCompanyForAssignment, findCompanyForAssignment, getCompanyLogoKey, getCompanyLogoUrl, rememberCompany } from "@/helpers/company-logo.js";
 
 import { useRoute } from "vue-router";
 
@@ -116,6 +117,9 @@ function handlePerPageChange(option) {
 
 const currentPage = ref(0);
 const searchQuery = ref("");
+const companiesLoaded = ref(false);
+const companyLogoCache = ref({});
+const loadingCompanyLogoKeys = new Set();
 
 const filteredAssignments = computed(() => {
 	const query = searchQuery.value.toLowerCase();
@@ -187,11 +191,49 @@ onMounted(async () => {
 
 onMounted(async () => {
 	mainStore.allCompanies = await mainStore.fetchCompanies();
+	companiesLoaded.value = true;
+	loadCompanyLogos(paginatedAssignments.value);
 });
 
 const getCompanyLogo = (assignment) => {
-	return mainStore.allCompanies.find((c) => c.naziv === assignment?.Poslodavac?.[0]?.value)?.logo?.[0]?.url ?? "No-Logo.png";
+	const key = getCompanyLogoKey(assignment);
+
+	return (key && companyLogoCache.value[key]) || getCompanyLogoUrl(findCompanyForAssignment(assignment, mainStore.allCompanies)) || DEFAULT_COMPANY_LOGO;
 };
+
+const loadCompanyLogo = async (assignment) => {
+	const key = getCompanyLogoKey(assignment);
+
+	if (!key || companyLogoCache.value[key] || loadingCompanyLogoKeys.has(key)) {
+		return;
+	}
+
+	if (!companiesLoaded.value && !mainStore.allCompanies.length) {
+		return;
+	}
+
+	const cachedLogo = getCompanyLogoUrl(findCompanyForAssignment(assignment, mainStore.allCompanies));
+	if (cachedLogo) {
+		companyLogoCache.value[key] = cachedLogo;
+		return;
+	}
+
+	loadingCompanyLogoKeys.add(key);
+	try {
+		const company = await fetchCompanyForAssignment(mainStore, assignment);
+		rememberCompany(mainStore, company);
+		companyLogoCache.value[key] = getCompanyLogoUrl(company) || DEFAULT_COMPANY_LOGO;
+	} finally {
+		loadingCompanyLogoKeys.delete(key);
+	}
+};
+
+const loadCompanyLogos = (assignments) => {
+	assignments.forEach((assignment) => loadCompanyLogo(assignment));
+};
+
+watch(paginatedAssignments, loadCompanyLogos, { immediate: true });
+watch(() => mainStore.allCompanies, () => loadCompanyLogos(paginatedAssignments.value), { deep: true });
 
 function getAssignmentPage(id) {
 	const index = allAvailableAssignments.value.findIndex((assignment) => assignment["id_zadatak"] === id);
