@@ -1,14 +1,6 @@
 <script setup>
-import { onMounted, onUnmounted } from "vue";
-import { RouterView } from "vue-router";
-
 import Tooltip from "@/components/Base/Tooltip.vue";
-
-import GlobalStoreDebug from "@/components/Helpers/GlobalStoreDebug.vue";
-
-onMounted(async () => {});
-
-onUnmounted(() => {});
+import MaintenanceNotice from "@/components/Notification/MaintenanceNotice.vue";
 </script>
 
 <template>
@@ -16,6 +8,7 @@ onUnmounted(() => {});
 
 	<Tooltip />
 	<router-view :key="$route.fullPath"></router-view>
+	<MaintenanceNotice />
 </template>
 
 <style scoped>
