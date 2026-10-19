@@ -133,7 +133,6 @@ const refreshPage = () => {
 	window.location.reload();
 };
 
-// Calculate maintenance end time (2 hours from now)
-const maintenanceMessage = "Pripreme za novu akademsku godinu su u tijeku... Stay tuned!";
-const maintenanceExpectedCompletion = "31. 10. 2025.";
+const maintenanceMessage = "U tijeku su nadogradnja i pripreme za novu akademsku godinu 2026./2027.";
+const maintenanceExpectedCompletion = "1. 11. 2026.";
 </script>

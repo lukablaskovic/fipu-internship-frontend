@@ -8,7 +8,7 @@ import MaintenanceNotice from "@/components/Notification/MaintenanceNotice.vue";
 
 	<Tooltip />
 	<router-view :key="$route.fullPath"></router-view>
-	<MaintenanceNotice />
+	<MaintenanceNotice v-if="$route.name && $route.name !== 'maintenance'" />
 </template>
 
 <style scoped>
