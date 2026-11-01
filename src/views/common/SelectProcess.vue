@@ -11,12 +11,12 @@
 				</div>
 			</header>
 
-			<div class="process-intro">
-				<img src="/fipu-praksa-logo.png" alt="FIPU Praksa" class="praksa-logo" width="512" height="512" />
-				<h1 id="process-title">Molimo odaberite vašu izvedbu stručne prakse</h1>
-			</div>
-
 			<CardBox is-form has-component-layout class="process-form" @submit.prevent="onSubmit">
+				<div class="process-intro">
+					<img src="/fipu-praksa-logo.png" alt="FIPU Praksa" class="praksa-logo" width="512" height="512" />
+					<h1 id="process-title">Molimo odaberite vašu izvedbu stručne prakse</h1>
+				</div>
+
 				<fieldset class="process-options">
 					<legend class="sr-only">Izvedba stručne prakse</legend>
 					<SelectProcessButton button="A" :selected-process="selectedProcess" :steps="processSteps.A" @click="selectedProcess = 'A'" />
@@ -33,7 +33,7 @@
 						<FormControl v-model="fixedUserData.email" :icon-left="mdiEmail" type="email" readonly disabled />
 					</FormField>
 					<FormField label="JMBAG">
-						<FormControl v-model="form.jmbag" :icon-left="mdiCardAccountDetails" type="text" :error="getFirstErrorForField(v$, 'jmbag')" />
+						<FormControl v-model="form.jmbag" :icon-left="mdiCardAccountDetails" type="text" placeholder="Unesite JMBAG (10 znamenki)" :error="getFirstErrorForField(v$, 'jmbag')" />
 					</FormField>
 					<FormField label="Godina studija">
 						<FormControl v-model="selectedStudyYear" name="godina_studija_selection" :error="getFirstErrorForField(v$, 'godina_studija')" :options="studyYears" />
@@ -49,7 +49,7 @@
 
 <script setup>
 import { mdiEmail, mdiAccount, mdiCardAccountDetails, mdiLogin, mdiBookOpenPageVariantOutline } from "@mdi/js";
-import { required, helpers, numeric } from "@vuelidate/validators";
+import { required, helpers } from "@vuelidate/validators";
 import SnackBar from "@/components/Premium/SnackBar.vue";
 
 import { getFirstErrorForField, exactLength } from "@/helpers/validators";
@@ -116,7 +116,7 @@ const rules = reactive({
 	},
 	jmbag: {
 		required: helpers.withMessage("Polje je obavezno", required),
-		numeric: helpers.withMessage("JMBAG smije sadržavati samo brojeve", numeric),
+		numeric: helpers.withMessage("JMBAG smije sadržavati samo brojeve", helpers.regex(/^[0-9]+$/)),
 		exactLength: helpers.withMessage("JMBAG mora sadržavati točno 10 brojeva", exactLength(10)),
 	},
 });
@@ -218,7 +218,7 @@ h1 { max-width: 28ch; font-size: clamp(28px, 3vw, 36px); font-weight: 700; line-
 .process-options { min-width: 0; display: flex; flex-direction: column; gap: 16px; padding: 0 40px 32px; }
 .process-help { margin-top: 4px; color: #4b5563; font-size: 14px; line-height: 1.7; }
 .process-help a { text-decoration: underline; }
-.student-details { min-width: 0; padding: 28px 32px 32px; background: #f9fafb; }
+.student-details { grid-column: 2; grid-row: 1 / 3; min-width: 0; padding: 32px; background: #f9fafb; }
 h2 { margin-bottom: 24px; font-size: 22px; font-weight: 600; letter-spacing: -0.02em; }
 .student-details :deep(label) { font-size: 14px; font-weight: 600; }
 .start-button { width: 100%; min-height: 48px; color: #172234; font-weight: 600; }
@@ -230,7 +230,7 @@ h2 { margin-bottom: 24px; font-size: 22px; font-weight: 600; letter-spacing: -0.
 	.process-intro { padding: 32px 0; }
 	.process-form { grid-template-columns: 1fr; }
 	.process-options { padding: 0 0 28px; }
-	.student-details { padding: 28px 0; border-top: 1px solid #e5e7eb; background: white; }
+	.student-details { grid-column: auto; grid-row: auto; padding: 28px 0; border-top: 1px solid #e5e7eb; background: white; }
 }
 @media (max-width: 640px) {
 	.process-page { padding: 24px 20px; }
