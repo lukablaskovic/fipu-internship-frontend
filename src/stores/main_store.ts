@@ -14,7 +14,7 @@ export interface Assignment {
 export const useMainStore = defineStore("main", {
 	state: () => ({
 		praksa_version: "v1.5.1",
-		academicYear: "2025/2026",
+		academicYear: "2026./2027.",
 		voditelj_prakse: "doc. dr. sc. Ivan Lorencin",
 
 		admin_emails: LOCAL_DEV ? ["admin@local.test"] : ["ntankov@unipu.hr", "ilorencin@unipu.hr", "lblaskovi@unipu.hr", "mmilicevi@unipu.hr"],
