@@ -10,8 +10,6 @@
 		"test:ui": "playwright test"
 	},
 	"dependencies": {
-		"@bugsnag/js": "^7.21.0",
-		"@bugsnag/plugin-vue": "^7.19.0",
 		"@fipu/bpmn": "file:vendor/fipu-bpmn",
 		"@internationalized/date": "^3.12.4",
 		"@mdi/js": "^7.4.47",

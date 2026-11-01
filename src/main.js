@@ -1,5 +1,3 @@
-//import Bugsnag from "@bugsnag/js";
-//import BugsnagPluginVue from "@bugsnag/plugin-vue";
 
 import { createApp, markRaw } from "vue";
 import { createPinia } from "pinia";
@@ -23,13 +21,6 @@ import piniaPluginPersistedstate from "pinia-plugin-persistedstate";
 
 import vue3GoogleLogin from "vue3-google-login";
 
-// Initialize Bugsnag
-/*
-Bugsnag.start({
-	apiKey: "7c2118391f2ecf5b781d78e4920b1478",
-	plugins: [new BugsnagPluginVue()],
-});
-*/
 
 /* Init Pinia */
 const pinia = createPinia();
@@ -40,7 +31,6 @@ pinia.use(({ store }) => {
 });
 
 const app = createApp(App);
-//app.use(Bugsnag.getPlugin("vue"));
 app.component("NotificationBar", NotificationBar);
 app.use(pinia);
 

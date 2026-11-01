@@ -45,7 +45,6 @@ services:
       - BASEROW_CONNECTOR_URL=${BASEROW_CONNECTOR_URL}
       - SENDGRID_CONNECTOR_URL=${SENDGRID_CONNECTOR_URL}
       - PDF_CONNECTOR_URL=${PDF_CONNECTOR_URL}
-      - BUGSNAG=${PBE_BUGSNAG}
       - PORT=${PBE_PORT}
     depends_on:
       - postgres-db
@@ -71,7 +70,6 @@ gateway-api:
       - ACCESS_TOKEN_EXPIRE_MINUTES=${ACCESS_TOKEN_EXPIRE_MINUTES}
       - REMEMBER_ME_EXPIRE_MINUTES=${REMEMBER_ME_EXPIRE_MINUTES}
       - SECRET_KEY=${SECRET_KEY}
-      - BUGSNAG=${FIGA_BUGSNAG}
       - PORT=${FIGA_PORT}
       - DEBUG=1
     depends_on:
@@ -89,7 +87,6 @@ gateway-api:
     environment:
       - BASEROW_TOKEN=${BASEROW_TOKEN}
       - BASE_URL=${BASEROW_BASE_URL}
-      - BUGSNAG=${BCS_BUGSNAG}
       - PORT=${BCS_PORT}
       - DEBUG=1
 
@@ -115,7 +112,6 @@ sendgrid-connector:
       - STUDENT_AFTER_REFUSAL_TEMPLATE=${STUDENT_AFTER_REFUSAL_TEMPLATE}
       - STUDENT_AFTER_RETURN_TEMPLATE=${STUDENT_AFTER_RETURN_TEMPLATE}
       - STUDENT_SEND_PDF_TEMPLATE=${STUDENT_SEND_PDF_TEMPLATE}
-      - BUGSNAG=${SCS_BUGSNAG}
       - PORT=${SCS_PORT}
     depends_on:
       - postgres-db
@@ -132,7 +128,6 @@ sendgrid-connector:
     environment:
       - PORT=${PCS_PORT}
       - SERVICE_URL=${PCS_SERVICE_URL}
-      - BUGSNAG=${PCS_BUGSNAG}
     depends_on:
       - postgres-db
       - baserow-db
