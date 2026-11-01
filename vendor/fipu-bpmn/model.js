@@ -275,7 +275,7 @@ export function moveElement(model, id, x, y) {
 function nextId(model, prefix, requested) {
   const ids = new Set(all(model.document, '*', '*').map(element => attr(element, 'id')));
   if (requested !== undefined) {
-    if (!/^[A-Za-z_][\w.-]*$/.test(requested) || ids.has(requested) || ids.has(`${requested}_di`)) throw new Error('Choose a unique XML ID using letters, digits, underscores, periods, or hyphens.');
+    if (typeof requested !== 'string' || !/^[A-Za-z_][\w.-]*$/.test(requested) || ids.has(requested) || ids.has(`${requested}_di`)) throw new Error('Choose a unique XML ID using letters, digits, underscores, periods, or hyphens.');
     return requested;
   }
   let index = 1;
