@@ -283,16 +283,4 @@ async function submit_application_form() {
 }
 
 /* Date picker cursor pointer and icon hover */
-:deep(input[type="date"]) {
-	cursor: pointer !important;
-}
-
-:deep(input[type="date"]::-webkit-calendar-picker-indicator) {
-	cursor: pointer !important;
-}
-
-/* Calendar icon hover effect */
-:deep(.fipu-date-picker:hover svg) {
-	color: #46bae0 !important;
-}
 </style>

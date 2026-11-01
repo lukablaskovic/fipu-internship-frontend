@@ -1,8 +1,11 @@
 <script setup>
+import { inject } from "vue";
+const fieldLabelId = inject("formFieldLabelId", undefined);
 import { mdiUnfoldMoreHorizontal, mdiAlertCircle, mdiCheckCircle, mdiAsterisk, mdiLockOff, mdiContentCopy } from "@mdi/js";
 import FormControlListbox from "@/components/Premium/FormControlListbox.vue";
 import FormControlIcon from "@/components/Premium/FormControlIcon.vue";
 import FormFieldHelp from "@/components/Premium/FormFieldHelp.vue";
+import FormDatePicker from "@/components/Form/FormDatePicker.vue";
 import { computed, ref, onMounted, onBeforeUnmount } from "vue";
 import SearchOptions from "@/components/SearchOptions.vue";
 import BaseIcon from "@/components/Base/BaseIcon.vue";
@@ -109,6 +112,8 @@ const computedIconRight = computed(() => {
 	return props.type === "list" ? mdiUnfoldMoreHorizontal : null;
 });
 
+const rightIconClickable = computed(() => props.type === "password");
+
 const controlIconH = computed(() => (props.type === "textarea" ? "h-12" : "h-12"));
 
 const openPasswordToggle = (e) => {
@@ -165,15 +170,25 @@ if (props.ctrlKFocus) {
 			</div>
 
 			<!-- Listbox -->
-			<FormControlListbox v-else-if="computedType === 'list'" v-model="computedValue" :readonly="readonly" :options="options" :button-class="inputElClass" />
+			<FormControlListbox v-else-if="computedType === 'list'" :id="id" v-model="computedValue" :readonly="readonly" :options="options" :button-class="inputElClass" :disabled="disabled" :required="required" :name="name" />
 
 			<!-- Select Dropdown -->
-			<select v-else-if="computedType === 'select'" :id="id" v-model="computedValue" :readonly="readonly" :name="name" :class="inputElClass" :disabled="disabled">
-				<option v-for="option in options" :key="option.id ?? option" :value="option">{{ option.label ?? option }}</option>
-			</select>
+			<FormControlListbox v-else-if="computedType === 'select'" :id="id" v-model="computedValue" :name="name" :options="options" :button-class="inputElClass" :disabled="disabled" :readonly="readonly" :required="required" :placeholder="placeholder" />
+			<FormDatePicker v-else-if="computedType === 'date'" :id="id" v-model="computedValue" :name="name" :input-class="inputElClass" :disabled="disabled" :readonly="readonly" :required="required" :min="min" :max="max" />
 
 			<!-- Textarea -->
-			<textarea v-else-if="computedType === 'textarea'" :id="id" v-model="computedValue" class="peer relative" :placeholder="placeholder" :class="inputElClass" :name="name" :readonly="readonly" :required="required" :disabled="disabled"></textarea>
+			<textarea
+				v-else-if="computedType === 'textarea'"
+				:id="id"
+				v-model="computedValue"
+				:aria-labelledby="fieldLabelId"
+				class="peer relative"
+				:placeholder="placeholder"
+				:class="inputElClass"
+				:name="name"
+				:readonly="readonly"
+				:required="required"
+				:disabled="disabled"></textarea>
 
 			<!-- Button -->
 			<button v-else-if="computedType === 'button'" :class="inputElClass" :disabled="disabled">
@@ -186,6 +201,7 @@ if (props.ctrlKFocus) {
 				:id="id"
 				ref="inputEl"
 				v-model="computedValue"
+				:aria-labelledby="fieldLabelId"
 				:name="name"
 				:autocomplete="autocomplete"
 				:required="required"

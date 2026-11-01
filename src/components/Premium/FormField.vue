@@ -1,7 +1,10 @@
 <script setup>
+import { provide, useId } from "vue";
+const fieldLabelId = useId();
+provide("formFieldLabelId", fieldLabelId);
+import FormFieldHelp from "@/components/Premium/FormFieldHelp.vue";
 import { controlTextColor } from "@/colorsPremium.js";
 import { computed, useSlots } from "vue";
-import FormFieldHelp from "@/components/Premium/FormFieldHelp.vue";
 
 const props = defineProps({
 	label: {
@@ -96,10 +99,10 @@ const labelClass = computed(() => {
 
 <template>
 	<div class="grid grid-cols-1 last:mb-0" :class="upperWrapperClass">
-		<label v-if="label" class="block font-bold mb-2" :class="labelClass">{{ label }}</label>
+		<label v-if="label" :id="fieldLabelId" class="mb-2 block font-bold" :class="labelClass">{{ label }}</label>
 		<div :class="wrapperClass">
 			<slot />
 		</div>
-		<FormFieldHelp class="mt-1" :class="{ 'lg:col-start-2 lg:col-span-4 lg:-mt-5': horizontal }" :help="help" :error="error" :success="success" />
+		<FormFieldHelp class="mt-1" :class="{ 'lg:col-span-4 lg:col-start-2 lg:-mt-5': horizontal }" :help="help" :error="error" :success="success" />
 	</div>
 </template>

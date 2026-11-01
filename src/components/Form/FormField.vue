@@ -1,4 +1,7 @@
 <script setup>
+import { provide, useId } from "vue";
+const fieldLabelId = useId();
+provide("formFieldLabelId", fieldLabelId);
 import FormFieldHelp from "@/components/Premium/FormFieldHelp.vue";
 import { controlTextColor } from "@/colorsPremium.js";
 import { computed, useSlots } from "vue";
@@ -98,7 +101,7 @@ const labelParts = computed(() => (props.label || "").split("*"));
 
 <template>
 	<div class="grid grid-cols-1 last:mb-0" :class="upperWrapperClass">
-		<label v-if="label" class="mb-2 block font-bold" :class="labelClass" >
+		<label v-if="label" :id="fieldLabelId" class="mb-2 block font-bold" :class="labelClass">
 			<template v-for="(part, index) in labelParts" :key="index">{{ part }}<span v-if="index < labelParts.length - 1" class="text-red-500">*</span></template>
 		</label>
 		<div :class="wrapperClass">

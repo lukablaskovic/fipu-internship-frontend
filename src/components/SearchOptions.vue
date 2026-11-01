@@ -1,87 +1,8 @@
-<template>
-	<Combobox v-model="selectedValue">
-		<div class="relative">
-			<div class="relative w-full cursor-default overflow-hidden rounded-lg border border-gray-300 bg-transparent text-left dark:border-gray-600 sm:text-sm">
-				<!-- Prefix label -->
-				<div v-if="hasValidPrefix" ref="prefixContainer" class="absolute inset-y-0 left-0 flex items-center">
-					<span class="ml-2 rounded bg-fipu_blue px-2 py-1 text-sm text-white">{{ prefixLabel }}</span>
-				</div>
-
-				<!-- Combobox input -->
-				<ComboboxInput
-					v-model="displayValue"
-					aria-label="Pretraživanje"
-					:placeholder="`${osKey} + k za pretraživanje`"
-					class="inputClass ml-2 w-full pr-10 text-sm leading-5 text-gray-900 focus:ring-0 dark:text-gray-300 md:w-96"
-					:style="[inputStyle]"
-					autocomplete="off"
-					style="overflow-x: auto; outline: none; border: none; background: transparent"
-					@change="handleInputChange"
-					@keydown="handleKeyDown" />
-
-				<!-- Search icon -->
-				<ComboboxButton class="absolute inset-y-0 right-0 flex items-center pr-2" @click="showHelp">
-					<MdiMagnify class="h-5 w-5 text-gray-700 hover:text-fipu_blue" aria-hidden="true" />
-				</ComboboxButton>
-			</div>
-
-			<TransitionRoot leave="transition ease-in duration-100" leave-from="opacity-100" leave-to="opacity-0" @after-leave="query = ''">
-				<ComboboxOptions
-					class="absolute mt-1 max-h-60 w-full overflow-auto rounded-lg border bg-gray-50 py-1 text-base text-gray-900 shadow-lg ring-1 ring-black ring-opacity-5 empty:invisible focus:outline-none dark:bg-gray-900 dark:text-gray-300 sm:text-sm">
-					<div v-if="query === ''" class="relative cursor-default select-none px-4 py-2 text-sm text-gray-700 dark:text-gray-200 md:text-base">
-						<b>Kratke upute kako koristiti tražilicu</b>
-						<hr />
-						<br />
-						<p>ℹ️ Za brzo kretanje upišite naziv rute direktno.</p>
-						<p>ℹ️ Za pregled stavaka, prvo upišite odgovarajući prefix, nakon toga pojam.</p>
-						<br />
-						<div v-for="helpItem in helpItems" :key="helpItem.prefix" class="group flex cursor-pointer gap-1 rounded px-2 py-1 hover:bg-fipu_blue hover:font-medium hover:text-white dark:hover:text-gray-900" @click="insertPrefix(helpItem.prefix)">
-							<div class="flex w-6 items-center justify-center rounded bg-fipu_blue px-0.5 font-bold text-gray-900 group-hover:bg-gray-50 group-hover:text-gray-700 dark:group-hover:bg-gray-900 dark:group-hover:text-gray-300">
-								{{ helpItem.prefix }}
-							</div>
-							{{ helpItem.description }}
-						</div>
-					</div>
-					<!-- No Results -->
-					<div v-else-if="filteredResults.length === 0" class="relative cursor-default select-none px-4 py-2 text-gray-700 dark:text-gray-200">Nema rezultata.</div>
-					<!-- Results List -->
-					<ComboboxOption v-for="result in filteredResults" :key="result.id || result" v-slot="{ selected, active }" as="template" :value="result">
-						<li tabindex="0" class="relative cursor-pointer select-none py-2 pl-10 pr-4" :class="{ 'bg-fipu_blue text-white': active, 'text-gray-900 dark:text-gray-300': !active }">
-							<!-- Icons -->
-							<MdiAccount v-if="result.ime && result.prezime" class="absolute left-3 h-5 w-5" :class="{ 'text-white': active, 'text-gray-900 dark:text-gray-300': !active }" aria-hidden="true" />
-							<MdiPagePreviousOutline v-else-if="routes.includes(result)" class="absolute left-3 h-5 w-5" :class="{ 'text-white': active, 'text-gray-900 dark:text-gray-300': !active }" aria-hidden="true" />
-							<MdiClipboardText v-if="result.id_zadatak" class="absolute left-3 h-5 w-5" :class="{ 'text-white': active, 'text-gray-900 dark:text-gray-300': !active }" aria-hidden="true" />
-							<MdiDomain v-if="result.naziv && !result.ime && !result.prezime" class="absolute left-3 h-5 w-5" :class="{ 'text-white': active, 'text-gray-900 dark:text-gray-300': !active }" aria-hidden="true" />
-							<!-- Result Content -->
-							<template v-if="typeof result === 'string' && routes.includes(result)">
-								<span class="block truncate capitalize" :class="{ 'font-medium': selected, 'font-normal': !selected }">
-									{{ result }}
-								</span>
-							</template>
-							<template v-else-if="result.ime && result.prezime">
-								<span class="block truncate" :class="{ 'font-medium': selected, 'font-normal': !selected }"> {{ result.ime }} {{ result.prezime }} ({{ result.JMBAG }}) - {{ result.email }} </span>
-							</template>
-							<template v-else-if="result.id_zadatak">
-								<span class="block truncate" :class="{ 'font-medium': selected, 'font-normal': !selected }"> Zadatak ID: {{ result.id_zadatak }} </span>
-							</template>
-							<template v-else>
-								<span class="block truncate" :class="{ 'font-medium': selected, 'font-normal': !selected }">
-									{{ result.naziv }}
-								</span>
-							</template>
-						</li>
-					</ComboboxOption>
-				</ComboboxOptions>
-			</TransitionRoot>
-		</div>
-	</Combobox>
-</template>
-
 <script setup>
-import { Combobox, ComboboxInput, ComboboxButton, ComboboxOptions, ComboboxOption, TransitionRoot } from "@headlessui/vue";
+import { ComboboxRoot, ComboboxAnchor, ComboboxInput, ComboboxTrigger, ComboboxPortal, ComboboxContent, ComboboxViewport, ComboboxItem } from "reka-ui";
 import MdiPagePreviousOutline from "vue-material-design-icons/PagePreviousOutline.vue";
+import { ref, computed, onMounted, onUnmounted, watch, nextTick } from "vue";
 import MdiClipboardText from "vue-material-design-icons/ClipboardText.vue";
-import { ref, computed, onMounted, onUnmounted, watch } from "vue";
 import MdiMagnify from "vue-material-design-icons/Magnify.vue";
 import MdiAccount from "vue-material-design-icons/Account.vue";
 import MdiDomain from "vue-material-design-icons/Domain.vue";
@@ -99,6 +20,7 @@ const osKey = computed(() => {
 
 const searchInput = ref(null);
 const selectedValue = ref("");
+const open = ref(false);
 const query = ref("");
 const allCompanies = ref([]);
 const allAssignments = ref([]);
@@ -132,18 +54,8 @@ const prefixLabel = computed(() => {
 	return prefix ? prefixLabels[prefix] : "";
 });
 
-const lastPrefix = ref("");
-
 const displayValue = computed({
-	get: () => {
-		if (!selectedValue.value) {
-			if (hasValidPrefix.value) {
-				return query.value.slice(currentPrefix.value.length);
-			}
-			return query.value;
-		}
-		return selectedValue.value.name;
-	},
+	get: () => (hasValidPrefix.value ? query.value.slice(currentPrefix.value.length) : query.value),
 	set: (value) => {
 		if (hasValidPrefix.value) {
 			query.value = currentPrefix.value + value;
@@ -184,6 +96,14 @@ const filteredResults = computed(() => {
 
 function showHelp() {
 	query.value = "";
+	open.value = true;
+}
+
+async function insertPrefix(prefix) {
+	query.value = prefix;
+	open.value = true;
+	await nextTick();
+	searchInput.value?.$el?.focus();
 }
 
 function navigateToStudent(student) {
@@ -202,6 +122,8 @@ watch(selectedValue, (newValue) => {
 		} else if (newValue.id_zadatak) {
 			router.push(`/dostupni-zadaci/${newValue.id_zadatak}`);
 		}
+		query.value = "";
+		selectedValue.value = "";
 	}
 });
 
@@ -217,23 +139,6 @@ const inputStyle = computed(() => {
 	return { paddingLeft };
 });
 
-function handleInputChange(event) {
-	const newValue = event.target.value;
-
-	const potentialPrefix = newValue.split(":")[0] + ":";
-	const hasNewPrefix = helpItems.some((item) => item.prefix === potentialPrefix) && newValue.includes(":");
-
-	if (hasNewPrefix) {
-		lastPrefix.value = potentialPrefix;
-		query.value = potentialPrefix;
-		event.target.value = "";
-	} else if (hasValidPrefix.value) {
-		query.value = currentPrefix.value + newValue;
-	} else {
-		query.value = newValue;
-	}
-}
-
 function handleKeyDown(event) {
 	if (hasValidPrefix.value && (event.key === "Backspace" || event.key === "Delete") && query.value === currentPrefix.value) {
 		query.value = "";
@@ -245,8 +150,7 @@ onMounted(async () => {
 	const onKeydown = (event) => {
 		if (event.key.toLowerCase() === "k" && (event.ctrlKey || event.metaKey)) {
 			event.preventDefault();
-			searchInput.value = document.querySelector(".inputClass");
-			searchInput.value?.focus();
+			searchInput.value?.$el?.focus();
 		}
 	};
 	document.addEventListener("keydown", onKeydown);
@@ -256,3 +160,64 @@ onMounted(async () => {
 	allAssignments.value = await mainStore.fetchAvailableAssignments();
 });
 </script>
+
+<template>
+	<ComboboxRoot v-model="selectedValue" v-model:open="open" ignore-filter open-on-focus open-on-click :reset-search-term-on-select="false" :reset-search-term-on-blur="false">
+		<ComboboxAnchor class="relative w-full cursor-default overflow-hidden rounded-lg border border-gray-300 bg-transparent text-left dark:border-gray-600 sm:text-sm">
+			<div v-if="hasValidPrefix" ref="prefixContainer" class="absolute inset-y-0 left-0 flex items-center">
+				<span class="ml-2 rounded bg-fipu_blue px-2 py-1 text-sm text-white">{{ prefixLabel }}</span>
+			</div>
+			<ComboboxInput
+				ref="searchInput"
+				v-model="displayValue"
+				aria-label="Pretraživanje"
+				:placeholder="`${osKey} + k za pretraživanje`"
+				class="inputClass ml-2 w-full pr-10 text-sm leading-5 text-gray-900 focus:ring-0 dark:text-gray-300 md:w-96"
+				:style="inputStyle"
+				style="overflow-x: auto; outline: none; border: none; background: transparent"
+				@keydown="handleKeyDown" />
+			<ComboboxTrigger class="absolute inset-y-0 right-0 flex items-center pr-2 focus-visible:outline focus-visible:outline-fipu_blue" aria-label="Upute za pretraživanje" @click="showHelp">
+				<MdiMagnify class="h-5 w-5 text-gray-700 hover:text-fipu_blue" aria-hidden="true" />
+			</ComboboxTrigger>
+		</ComboboxAnchor>
+		<ComboboxPortal>
+			<ComboboxContent
+				position="popper"
+				:side-offset="4"
+				class="z-[10000] max-h-60 w-[var(--reka-combobox-trigger-width)] overflow-auto rounded-lg border bg-gray-50 py-1 text-base text-gray-900 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none dark:bg-gray-900 dark:text-gray-300 sm:text-sm">
+				<ComboboxViewport>
+					<template v-if="query === ''">
+						<div class="px-4 py-2 text-sm text-gray-700 dark:text-gray-200 md:text-base">
+							<b>Kratke upute kako koristiti tražilicu</b>
+							<hr />
+							<br />
+							<p>ℹ️ Za brzo kretanje upišite naziv rute direktno.</p>
+							<p>ℹ️ Za pregled stavaka, prvo upišite odgovarajući prefix, nakon toga pojam.</p>
+						</div>
+						<ComboboxItem
+							v-for="helpItem in helpItems"
+							:key="helpItem.prefix"
+							:value="helpItem"
+							:text-value="helpItem.description"
+							class="group flex cursor-pointer gap-1 rounded px-2 py-1 outline-none data-[highlighted]:bg-fipu_blue data-[highlighted]:font-medium data-[highlighted]:text-white"
+							@select.prevent="insertPrefix(helpItem.prefix)">
+							<span class="flex w-6 items-center justify-center rounded bg-fipu_blue px-0.5 font-bold text-gray-900">{{ helpItem.prefix }}</span>
+							{{ helpItem.description }}
+						</ComboboxItem>
+					</template>
+					<div v-else-if="filteredResults.length === 0" role="status" class="px-4 py-2 text-gray-700 dark:text-gray-200">Nema rezultata.</div>
+					<ComboboxItem v-for="(result, index) in filteredResults" :key="result.id || index" :value="result" class="relative cursor-pointer select-none py-2 pl-10 pr-4 outline-none data-[highlighted]:bg-fipu_blue data-[highlighted]:text-white">
+						<MdiAccount v-if="result.ime && result.prezime" class="absolute left-3 h-5 w-5" aria-hidden="true" />
+						<MdiPagePreviousOutline v-else-if="routes.includes(result)" class="absolute left-3 h-5 w-5" aria-hidden="true" />
+						<MdiClipboardText v-else-if="result.id_zadatak" class="absolute left-3 h-5 w-5" aria-hidden="true" />
+						<MdiDomain v-else class="absolute left-3 h-5 w-5" aria-hidden="true" />
+						<span v-if="typeof result === 'string'" class="block truncate capitalize">{{ result }}</span>
+						<span v-else-if="result.ime && result.prezime" class="block truncate">{{ result.ime }} {{ result.prezime }} ({{ result.JMBAG }}) - {{ result.email }}</span>
+						<span v-else-if="result.id_zadatak" class="block truncate">Zadatak ID: {{ result.id_zadatak }}</span>
+						<span v-else class="block truncate">{{ result.naziv }}</span>
+					</ComboboxItem>
+				</ComboboxViewport>
+			</ComboboxContent>
+		</ComboboxPortal>
+	</ComboboxRoot>
+</template>

@@ -1,4 +1,5 @@
 <script setup>
+import { CheckboxRoot } from "reka-ui";
 import { ref, watch } from "vue";
 
 const props = defineProps({
@@ -34,12 +35,7 @@ watch(
 <template>
 	<component :is="type" class="lg:w-1">
 		<label :class="{ 'opacity-50': disabled }" class="checkbox">
-			<!--
-         Use 'readonly' prop to determine if the checkbox can be changed.
-         The v-model now interacts with the 'checked' ref, which syncs with the external v-model
-      -->
-			<input v-model="checked" type="checkbox" :disabled="disabled || readonly" />
-			<span class="check" />
+			<CheckboxRoot v-model="checked" :disabled="disabled || readonly" :aria-label="type === 'th' ? 'Odaberi sve retke' : 'Odaberi redak'" class="check" />
 		</label>
 	</component>
 </template>

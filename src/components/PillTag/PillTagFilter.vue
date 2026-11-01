@@ -3,7 +3,7 @@ import { mdiChevronUp, mdiChevronDown, mdiAlertCircleOutline, mdiFilter, mdiFilt
 import PillTag from "@/components/PillTag/PillTag.vue";
 import { computed, ref, onMounted } from "vue";
 
-import { Menu, MenuButton, MenuItems, MenuItem } from "@headlessui/vue";
+import { DropdownMenuRoot, DropdownMenuTrigger, DropdownMenuPortal, DropdownMenuContent, DropdownMenuGroup, DropdownMenuItem, DropdownMenuCheckboxItem } from "reka-ui";
 import BaseIcon from "@/components/Base/BaseIcon.vue";
 import { adminStore, snackBarStore } from "@/main";
 
@@ -108,22 +108,13 @@ const trendStyle = computed(() => {
 		};
 	}
 
-	// eslint-disable-next-line no-undef
-	const emit = defineEmits(["update:modelValue"]);
-
-	computed({
-		get: () => props.modelValue,
-		set: (value) => {
-			emit("update:modelValue", value);
-		},
-	});
-
 	return {
 		style: "info",
 	};
 });
 
 const selectedOptions = ref([]);
+const open = ref(false);
 
 const saveSelectedEvents = async () => {
 	console.log("saveSelectedEvents triggered!");
@@ -163,35 +154,38 @@ const toggleSelection = (option) => {
 </script>
 
 <template>
-	<Menu as="div" class="relative inline-block text-left">
-		<div>
-			<MenuButton v-slot="{ open }" :disabled="disabled">
-				<PillTag :label="trend" :color="trendStyle.style" :icon="trendStyle.icon" :small="small" :active="open" :disabled="disabled" />
-			</MenuButton>
-		</div>
-
-		<transition enter-active-class="transition duration-100 ease-out" enter-from-class="transform scale-95 opacity-0" enter-to-class="transform scale-100 opacity-100" leave-active-class="transition duration-75 ease-in" leave-from-class="transform scale-100 opacity-100" leave-to-class="transform scale-95 opacity-0">
-			<MenuItems :class="left ? 'left-0' : 'right-0'" class="fipu_vertical_scrollbar absolute z-50 mt-2 h-96 w-64 origin-top-right divide-y divide-gray-100 overflow-y-auto overflow-x-hidden rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 drop-shadow focus:outline-none dark:divide-gray-700 dark:bg-slate-950 md:w-96">
-				<div class="p-2 text-sm">Odaberite događaje koje želite prikazivati</div>
-				<div v-for="(optionsGroup, index) in options" :key="index" class="px-1 py-1">
-					<MenuItem v-for="option in optionsGroup" :key="option.id" v-slot="{ active }">
-						<button
+	<div class="relative inline-block text-left">
+		<DropdownMenuRoot v-model:open="open">
+			<DropdownMenuTrigger :disabled="disabled" class="rounded-full focus-visible:outline focus-visible:outline-2 focus-visible:outline-fipu_blue" :aria-label="trend">
+				<PillTag :label="trend" :color="trendStyle.style" :icon="trendStyle.icon" :small="small" />
+			</DropdownMenuTrigger>
+			<DropdownMenuPortal>
+				<DropdownMenuContent
+					:align="left ? 'start' : 'end'"
+					:side-offset="8"
+					class="fipu_vertical_scrollbar z-[10000] h-96 max-h-[var(--reka-dropdown-menu-content-available-height)] w-64 divide-y divide-gray-100 overflow-y-auto overflow-x-hidden rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 drop-shadow focus:outline-none dark:divide-gray-700 dark:bg-slate-950 md:w-96">
+					<div class="p-2 text-sm">Odaberite događaje koje želite prikazivati</div>
+					<DropdownMenuGroup v-for="(optionsGroup, index) in options" :key="index" class="px-1 py-1">
+						<component
+							:is="['Spremi', 'Resetiraj'].includes(option.label) ? DropdownMenuItem : DropdownMenuCheckboxItem"
+							v-for="option in optionsGroup"
+							:key="option.id"
+							:model-value="selectedOptions.includes(option.label)"
+							:text-value="capitalizeAndReplace(option.label)"
+							:disabled="option.disabled || (option.label === 'Spremi' && Utils.arraysEqual(selectedOptions, adminStore.selectedEvents))"
+							class="group my-1 flex w-full cursor-pointer items-center gap-2 rounded-md px-1 py-1 text-sm outline-none transition-all data-[disabled]:pointer-events-none data-[highlighted]:bg-gray-300 data-[disabled]:opacity-50 dark:data-[highlighted]:bg-gray-900 md:gap-3 md:px-2 md:py-2"
 							:class="[
-								option.label === 'Spremi' ? 'cursor-pointer hover:bg-emerald-600 hover:font-bold hover:text-slate-100 dark:hover:bg-emerald-500 dark:hover:text-gray-950' : active && option.label != 'Resetiraj' ? 'bg-gray-300 dark:bg-gray-900' : '',
-								selectedOptions.includes(option.label) ? 'bg-fipu_blue font-medium text-gray-950 hover:bg-fipu_light_blue hover:text-slate-800 dark:hover:bg-fipu_dark_blue dark:hover:text-gray-950' : '',
-								option.label === 'Resetiraj' ? 'hover:bg-rose-500 hover:font-bold hover:text-slate-100 dark:hover:bg-rose-600 dark:hover:text-slate-950' : '',
-								'group my-1 flex w-full items-center gap-2 rounded-md px-1 py-1 text-sm transition-all md:gap-3 md:px-2 md:py-2',
+								selectedOptions.includes(option.label) ? 'bg-fipu_blue font-medium text-gray-950' : '',
+								option.label === 'Spremi' ? 'data-[highlighted]:bg-emerald-600 data-[highlighted]:text-white' : '',
+								option.label === 'Resetiraj' ? 'data-[highlighted]:bg-rose-500 data-[highlighted]:text-white' : '',
 							]"
-							:disabled="option.label === 'Spremi' && selectedOptions.length === adminStore.selectedEvents.length"
-							@click.prevent="option.label === 'Spremi' ? saveSelectedEvents() : option.label === 'Resetiraj' ? setDefaultFilters() : toggleSelection(option)">
-							<BaseIcon :path="option.icon" class="" />
-							<div class="flex grow items-center justify-start text-left">
-								{{ capitalizeAndReplace(option.label) }}
-							</div>
-						</button>
-					</MenuItem>
-				</div>
-			</MenuItems>
-		</transition>
-	</Menu>
+							@select.prevent="option.label === 'Spremi' ? saveSelectedEvents() : option.label === 'Resetiraj' ? setDefaultFilters() : toggleSelection(option)">
+							<BaseIcon :path="option.icon" />
+							<span class="flex grow items-center justify-start text-left">{{ capitalizeAndReplace(option.label) }}</span>
+						</component>
+					</DropdownMenuGroup>
+				</DropdownMenuContent>
+			</DropdownMenuPortal>
+		</DropdownMenuRoot>
+	</div>
 </template>

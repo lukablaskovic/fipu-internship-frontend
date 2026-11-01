@@ -1,0 +1,68 @@
+const { test, expect } = require("@playwright/test");
+// Opt in against the local demo stack only; never use production credentials or data.
+test.describe("local authenticated workflows", () => {
+	test.skip(!process.env.LOCAL_AUTH_URL, "Set LOCAL_AUTH_URL=http://localhost:5173 with the local demo stack running");
+	test.beforeEach(async ({ page }) => {
+		const url = new URL(process.env.LOCAL_AUTH_URL);
+		expect(["localhost", "127.0.0.1"]).toContain(url.hostname);
+		await page.goto(url.href);
+	});
+	test("administrator navigation, tooltips, search, filters, profile and logout", async ({ page }) => {
+		const errors = [];
+		page.on("pageerror", (e) => errors.push(e.message));
+		await page.getByRole("button", { name: "Lokalni administrator", exact: true }).click();
+		await expect(page).toHaveURL(/\/dashboard$/);
+		await page.getByRole("button", { name: "Događaji", exact: true }).click();
+		await expect(page.getByRole("menuitemcheckbox").first()).toBeVisible();
+		await page.keyboard.press("Escape");
+		await expect(page.getByRole("button", { name: "Događaji", exact: true })).toBeFocused();
+		const students = page.getByRole("link", { name: "Studenti", exact: true }).first();
+		await students.focus();
+		await expect(page.getByRole("tooltip")).toHaveText("Studenti");
+		await page.keyboard.press("Escape");
+		await expect(page.getByRole("tooltip")).toHaveCount(0);
+		await students.click();
+		await expect(page).toHaveURL(/\/studenti$/);
+		await expect(page.getByText("Studenti u procesu prakse", { exact: true })).toBeVisible();
+		await expect(page.getByText("Učitavanje...", { exact: true })).toHaveCount(0, { timeout: 15000 });
+		const filter = page.getByRole("button", { name: "Otvori izbornik", exact: true });
+		await filter.click();
+		await expect(page.getByRole("menu")).toBeVisible();
+		await page.keyboard.press("Escape");
+		await expect(filter).toBeFocused();
+		const search = page.getByRole("combobox", { name: "Pretraživanje" });
+		await search.fill("poslodavci");
+		await page.getByRole("option", { name: "poslodavci", exact: true }).click();
+		await expect(page).toHaveURL(/\/poslodavci$/);
+		await page.getByRole("link", { name: "Zadaci", exact: true }).first().click();
+		await expect(page.getByText("Zadatak 1 - Demo poduzeće", { exact: true })).toBeVisible();
+		await page.goto(new URL("/profil", process.env.LOCAL_AUTH_URL).href);
+		await expect(page.getByText("Korisnički profil", { exact: true })).toBeVisible();
+		const logout = page.locator("nav").getByRole("button", { name: "Odjava", exact: true }).last();
+		await logout.focus();
+		await expect(page.getByRole("tooltip")).toHaveText("Odjava");
+		await page.keyboard.press("Enter");
+		await expect(page.getByRole("dialog")).toBeVisible();
+		await page.getByRole("button", { name: "Natrag", exact: true }).click();
+		await expect(logout).toBeFocused();
+		await logout.click();
+		await page.getByRole("dialog").getByRole("button", { name: "Odjava", exact: true }).click();
+		await expect(page).toHaveURL(/\/prijava$/);
+		expect(errors).toEqual([]);
+	});
+	test("student login, study-year keyboard selection and admin-route guard", async ({ page }) => {
+		const errors = [];
+		page.on("pageerror", (e) => errors.push(e.message));
+		await page.getByRole("button", { name: "Lokalni student", exact: true }).click();
+		await expect(page).toHaveURL(/\/odabir-procesa$/);
+		await expect(page.getByRole("textbox", { name: "E-mail", exact: true })).toHaveValue("student@local.test");
+		await page.getByRole("textbox", { name: "JMBAG", exact: true }).fill("1234567890");
+		const first = page.getByRole("radio", { name: "1. prijediplomski", exact: true });
+		await first.click();
+		await first.press("ArrowRight", { delay: 50 });
+		await expect(page.getByRole("radio", { name: "2. prijediplomski", exact: true })).toBeChecked();
+		await page.goto(new URL("/dashboard", process.env.LOCAL_AUTH_URL).href);
+		await expect(page).toHaveURL(/\/odabir-procesa$/);
+		expect(errors).toEqual([]);
+	});
+});

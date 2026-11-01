@@ -1,7 +1,11 @@
 <script setup>
+import { CheckboxRoot, SwitchRoot, RadioGroupItem } from "reka-ui";
 import { computed } from "vue";
 
+defineOptions({ inheritAttrs: false });
 const props = defineProps({
+	disabled: Boolean,
+	readonly: Boolean,
 	name: {
 		type: String,
 		required: true,
@@ -21,7 +25,7 @@ const props = defineProps({
 	},
 	inputValue: {
 		type: [String, Number, Boolean],
-		required: true,
+		default: true,
 	},
 	required: {
 		type: Boolean,
@@ -38,13 +42,29 @@ const computedValue = computed({
 	},
 });
 
-const inputType = computed(() => (props.type === "radio" ? "radio" : "checkbox"));
+const checked = computed({
+	get: () => (Array.isArray(props.modelValue) ? props.modelValue.includes(props.inputValue) : !!props.modelValue),
+	set: (value) => {
+		if (props.disabled || props.readonly) return;
+		computedValue.value = Array.isArray(props.modelValue) ? (value ? [...new Set([...props.modelValue, props.inputValue])] : props.modelValue.filter((item) => item !== props.inputValue)) : value;
+	},
+});
 </script>
 
 <template>
-	<label :class="type" class="flex items-center">
-		<input v-model="computedValue" :type="inputType" :name="name" :value="inputValue" :required="required" />
-		<span class="check min-w-[20px]" />
+	<label :class="[type, $attrs.class]" class="flex items-center">
+		<RadioGroupItem v-if="type === 'radio'" v-bind="{ ...$attrs, class: undefined }" :value="inputValue" :disabled="disabled || readonly" :aria-label="label || name" class="check min-w-[20px]" />
+		<component
+			:is="type === 'switch' ? SwitchRoot : CheckboxRoot"
+			v-else
+			v-bind="{ ...$attrs, class: undefined }"
+			v-model="checked"
+			:name="name"
+			:value="String(inputValue)"
+			:required="required"
+			:disabled="disabled || readonly"
+			:aria-label="label || name"
+			class="check min-w-[20px]" />
 		<span class="break-words pl-2">{{ label }}</span>
 	</label>
 </template>

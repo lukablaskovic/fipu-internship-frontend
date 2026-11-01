@@ -1,8 +1,14 @@
 <script setup>
+import { inject } from "vue";
+const fieldLabelId = inject("formFieldLabelId", undefined);
 import FormCheckRadio from "@/components/Form/FormCheckRadio.vue";
+import { RadioGroupRoot } from "reka-ui";
 import { computed } from "vue";
 
 const props = defineProps({
+	disabled: Boolean,
+	readonly: Boolean,
+	required: Boolean,
 	options: {
 		type: Object,
 		default: () => {},
@@ -38,7 +44,29 @@ const computedValue = computed({
 </script>
 
 <template>
-	<div class="flex flex-wrap items-center" :class="{ 'flex-col': isColumn }">
-		<FormCheckRadio v-for="(value, key) in options" :key="key" v-model="computedValue" :type="type" :name="name" :input-value="key" :label="value" :class="componentClass" class="mx-2 mb-3 mr-6 last:mr-0" />
-	</div>
+	<component
+		:is="type === 'radio' ? RadioGroupRoot : 'div'"
+		:aria-labelledby="fieldLabelId"
+		:model-value="type === 'radio' ? computedValue : undefined"
+		:name="name"
+		:disabled="disabled || readonly"
+		:required="required"
+		:orientation="isColumn ? 'vertical' : 'horizontal'"
+		class="flex flex-wrap items-center"
+		:class="{ 'flex-col': isColumn }"
+		@update:model-value="computedValue = $event">
+		<FormCheckRadio
+			v-for="(value, key) in options"
+			:key="key"
+			v-model="computedValue"
+			:type="type"
+			:disabled="disabled"
+			:readonly="readonly"
+			:required="required"
+			:name="name"
+			:input-value="key"
+			:label="value"
+			:class="componentClass"
+			class="mx-2 mb-3 mr-6 last:mr-0" />
+	</component>
 </template>

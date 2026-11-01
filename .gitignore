@@ -27,3 +27,6 @@ coverage
 *.sw?
 .env
 .prettierrc.json
+
+/playwright-report/
+/test-results/

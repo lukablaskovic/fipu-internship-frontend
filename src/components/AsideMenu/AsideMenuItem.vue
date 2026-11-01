@@ -1,12 +1,12 @@
 <script setup>
 import AsideMenuList from "@/components/AsideMenu/AsideMenuList.vue";
+import Tooltip from "@/components/Base/Tooltip.vue";
 
 import { mdiMinus, mdiPlus, mdiChevronRight } from "@mdi/js";
 import BaseIcon from "@/components/Base/BaseIcon.vue";
 import { getButtonColor } from "@/colors.js";
 import { ref, computed, watch } from "vue";
 import { RouterLink } from "vue-router";
-import { layoutStore } from "@/main.js";
 import { styleStore } from "@/main.js";
 
 const props = defineProps({
@@ -70,7 +70,6 @@ const subIcon = computed(() => {
 
 const menuClick = (event) => {
 	emit("menu-click", event, props.item);
-	layoutStore.tooltip.content = "";
 	if (props.item.externalURL) {
 		window.open(props.item.externalURL, "_blank");
 		return;
@@ -84,40 +83,42 @@ const menuClick = (event) => {
 
 <template>
 	<li>
-		<component
-			:is="item.to ? RouterLink : 'a'"
-			v-slot="vSlot"
-			:to="item.to ?? null"
-			:href="item.href ?? null"
-			:target="item.target ?? null"
-			:active-class="asideMenuItemActiveBgStyle"
-			class="group flex cursor-pointer transition-all duration-150"
-			:class="[componentClass, isCompact ? 'justify-center' : 'justify-start', 'group hover:bg-fipu_blue']"
-			@mouseover="isCompact ? (layoutStore.tooltip = { content: item.label, offsetx: 16, offsety: -8, justify: '' }) : ''"
-			@mouseleave="layoutStore.tooltip = { content: '', offsetx: 0, offsety: 0 }"
-			@click="menuClick">
-			<BaseIcon
-				v-if="item.icon"
-				:path="item.icon"
-				class="flex-none transition-all duration-300 group-hover:text-white"
-				:w="isCompact ? 'w-8 lg:w-16' : 'w-8'"
-				:size="item.size ? item.size : 18"
-				:class="[vSlot && vSlot.isExactActive ? asideMenuItemActiveStyle : asideMenuItemInactiveStyle, { relative: item.updateMark }, item.color == 'info' ? 'text-slate-800' : '']">
-			</BaseIcon>
+		<Tooltip :content="item.label" :disabled="!isCompact" side="right">
+			<component
+				:is="item.to ? RouterLink : item.href ? 'a' : 'button'"
+				v-slot="vSlot"
+				:type="!item.to && !item.href ? 'button' : undefined"
+				:aria-label="item.label"
+				:to="item.to ?? null"
+				v-bind="item.to ? {} : { href: item.href }"
+				:target="item.target ?? null"
+				:active-class="asideMenuItemActiveBgStyle"
+				class="group flex w-full cursor-pointer text-left transition-all duration-150"
+				:class="[componentClass, isCompact ? 'justify-center' : 'justify-start', 'group hover:bg-fipu_blue']"
+				@click="menuClick">
+				<BaseIcon
+					v-if="item.icon"
+					:path="item.icon"
+					class="flex-none transition-all duration-300 group-hover:text-white"
+					:w="isCompact ? 'w-8 lg:w-16' : 'w-8'"
+					:size="item.size ? item.size : 18"
+					:class="[vSlot && vSlot.isExactActive ? asideMenuItemActiveStyle : asideMenuItemInactiveStyle, { relative: item.updateMark }, item.color == 'info' ? 'text-slate-800' : '']">
+				</BaseIcon>
 
-			<span
-				class="line-clamp-1 text-clip transition-all duration-300"
-				:class="[
-					{ '': isCompact, '': !hasSub },
-					vSlot && vSlot.isExactActive ? asideMenuItemActiveStyle : asideMenuItemInactiveStyle,
-					isCompact ? (item.menu == undefined ? 'w-52 lg:w-0' : 'w-40 lg:w-0') : 'w-40',
-					item.color == 'info' ? 'font-medium text-slate-900 hover:underline' : '',
-				]">
-				{{ item.label }}
-			</span>
+				<span
+					class="line-clamp-1 text-clip transition-all duration-300"
+					:class="[
+						{ '': isCompact, '': !hasSub },
+						vSlot && vSlot.isExactActive ? asideMenuItemActiveStyle : asideMenuItemInactiveStyle,
+						isCompact ? (item.menu == undefined ? 'w-52 lg:w-0' : 'w-40 lg:w-0') : 'w-40',
+						item.color == 'info' ? 'font-medium text-slate-900 hover:underline' : '',
+					]">
+					{{ item.label }}
+				</span>
 
-			<BaseIcon v-if="hasSub" :path="subIcon" class="flex-none animate-fade-in-fast" w="w-12" :class="[{ 'lg:hidden': isCompact }, vSlot && vSlot.isExactActive ? asideMenuItemActiveStyle : asideMenuItemInactiveStyle]" />
-		</component>
+				<BaseIcon v-if="hasSub" :path="subIcon" class="flex-none animate-fade-in-fast" w="w-12" :class="[{ 'lg:hidden': isCompact }, vSlot && vSlot.isExactActive ? asideMenuItemActiveStyle : asideMenuItemInactiveStyle]" />
+			</component>
+		</Tooltip>
 		<AsideMenuList v-if="hasDropdown" :menu="item.menu" is-dropdown-list :class="[styleStore.asideMenuDropdownStyle, isDropdownActive ? 'block dark:bg-slate-800/50' : 'hidden']" />
 	</li>
 </template>

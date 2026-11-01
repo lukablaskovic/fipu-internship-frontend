@@ -2,6 +2,7 @@
 import BaseIcon from "@/components/Base/BaseIcon.vue";
 import { getButtonColor } from "@/colors.js";
 import { RouterLink } from "vue-router";
+import { Primitive } from "reka-ui";
 import { computed } from "vue";
 
 const props = defineProps({
@@ -76,10 +77,30 @@ const computedType = computed(() => {
 	return null;
 });
 
+function blockDisabledClick(event) {
+	if (props.disabled || props.loading) {
+		event.preventDefault();
+		event.stopImmediatePropagation();
+	}
+}
+
 const labelClass = computed(() => (props.small && props.icon ? "px-1" : "px-2"));
 
 const componentClass = computed(() => {
-	const base = ["inline-flex", "justify-center", "items-center", "whitespace-nowrap", "focus:outline-none", "transition-colors", "focus:ring focus:ring-fipu_blue", "duration-150", "border", props.disabled ? "cursor-not-allowed" : "cursor-pointer", props.roundedFull ? "rounded-full" : "rounded", getButtonColor(props.color, props.outline, !props.disabled, props.active)];
+	const base = [
+		"inline-flex",
+		"justify-center",
+		"items-center",
+		"whitespace-nowrap",
+		"focus:outline-none",
+		"transition-colors",
+		"focus:ring focus:ring-fipu_blue",
+		"duration-150",
+		"border",
+		props.disabled ? "cursor-not-allowed" : "cursor-pointer",
+		props.roundedFull ? "rounded-full" : "rounded",
+		getButtonColor(props.color, props.outline, !props.disabled, props.active),
+	];
 
 	if (!props.label && props.icon) {
 		base.push("p-1");
@@ -98,14 +119,25 @@ const componentClass = computed(() => {
 </script>
 
 <template>
-	<component :is="is" :class="componentClass" :href="href" :type="computedType" :to="to" :target="target" :disabled="disabled || loading">
-		<svg v-if="loading" width="24" height="24" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+	<Primitive
+		:as="is"
+		:aria-busy="loading || undefined"
+		:aria-disabled="disabled || loading || undefined"
+		:tabindex="(disabled || loading) && is !== 'button' ? -1 : undefined"
+		:class="componentClass"
+		v-bind="to ? {} : { href }"
+		:type="computedType"
+		:to="to"
+		:target="target"
+		:disabled="disabled || loading"
+		@click.capture="blockDisabledClick">
+		<svg v-if="loading" aria-hidden="true" width="24" height="24" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
 			<path d="M12,4a8,8,0,0,1,7.89,6.7A1.53,1.53,0,0,0,21.38,12h0a1.5,1.5,0,0,0,1.48-1.75,11,11,0,0,0-21.72,0A1.5,1.5,0,0,0,2.62,12h0a1.53,1.53,0,0,0,1.49-1.3A8,8,0,0,1,12,4Z" class="spinner_aj0A" fill="currentColor" />
 		</svg>
 
 		<BaseIcon v-if="icon && !loading" :path="icon" :size="iconSize" />
-		<span v-if="label && !loading" :class="labelClass">{{ label }}</span>
-	</component>
+		<span v-if="label" :class="loading ? 'sr-only' : labelClass">{{ label }}</span>
+	</Primitive>
 </template>
 <style>
 .spinner_aj0A {

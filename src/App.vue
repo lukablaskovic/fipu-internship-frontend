@@ -1,15 +1,16 @@
 <script setup>
-import Tooltip from "@/components/Base/Tooltip.vue";
 import MaintenanceNotice from "@/components/Notification/MaintenanceNotice.vue";
+import { TooltipProvider } from "reka-ui";
 import { LOCAL_DEV } from "@/config";
 </script>
 
 <template>
 	<!--<GlobalStoreDebug />-->
 
-	<Tooltip />
-	<router-view :key="$route.fullPath"></router-view>
-	<MaintenanceNotice v-if="!LOCAL_DEV && $route.name && $route.name !== 'maintenance'" />
+	<TooltipProvider :delay-duration="1000">
+		<router-view :key="$route.fullPath"></router-view>
+		<MaintenanceNotice v-if="!LOCAL_DEV && $route.name && $route.name !== 'maintenance'" />
+	</TooltipProvider>
 </template>
 
 <style scoped>

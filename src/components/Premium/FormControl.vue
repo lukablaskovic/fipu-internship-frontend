@@ -1,16 +1,21 @@
 <script setup>
-import { getButtonColor } from "@/colors.js";
-import { controlTextColor } from "@/colorsPremium.js";
-import { computed, ref, onMounted, onBeforeUnmount } from "vue";
-import { useMainStore } from "@/stores/main.js";
+import { inject } from "vue";
+const fieldLabelId = inject("formFieldLabelId", undefined);
 import { mdiUnfoldMoreHorizontal, mdiAlertCircle, mdiCheckCircle, mdiAsterisk, mdiLockOff } from "@mdi/js";
+import FormControlListbox from "@/components/Premium/FormControlListbox.vue";
 import FormControlIcon from "@/components/Premium/FormControlIcon.vue";
 import FormFieldHelp from "@/components/Premium/FormFieldHelp.vue";
-import FormControlListbox from "@/components/Premium/FormControlListbox.vue";
-import BaseIcon from "@/components/BaseIcon.vue";
+import FormDatePicker from "@/components/Form/FormDatePicker.vue";
+import { computed, ref, onMounted, onBeforeUnmount } from "vue";
+import { controlTextColor } from "@/colorsPremium.js";
 import TipTag from "@/components/Premium/TipTag.vue";
+import BaseIcon from "@/components/BaseIcon.vue";
+import { useMainStore } from "@/stores/main.js";
+import { getButtonColor } from "@/colors.js";
 
 const props = defineProps({
+	disabled: Boolean,
+	readonly: Boolean,
 	firstAddon: Boolean,
 	middleAddon: Boolean,
 	lastAddon: Boolean,
@@ -305,18 +310,28 @@ if (props.ctrlKFocus) {
 			<div v-if="computedType === 'static'" :class="inputElClass" class="inline-flex items-center whitespace-nowrap">
 				{{ modelValue }}
 			</div>
-			<FormControlListbox v-else-if="computedType === 'list'" v-model="computedValue" :options="options" :button-class="inputElClass" />
-			<select v-else-if="computedType === 'select'" :id="id" v-model="computedValue" :name="name" :class="inputElClass">
-				<option v-for="option in options" :key="option.id ?? option" :value="option">
-					{{ option.label ?? option }}
-				</option>
-			</select>
-			<textarea v-else-if="computedType === 'textarea'" :id="id" v-model="computedValue" :class="inputElClass" :name="name" :placeholder="placeholder" :required="required" />
+			<FormControlListbox v-else-if="computedType === 'list'" :id="id" v-model="computedValue" :readonly="readonly" :options="options" :button-class="inputElClass" :disabled="disabled" :required="required" :name="name" />
+			<FormControlListbox v-else-if="computedType === 'select'" :id="id" v-model="computedValue" :name="name" :options="options" :button-class="inputElClass" :disabled="disabled" :readonly="readonly" :required="required" :placeholder="placeholder" />
+			<FormDatePicker v-else-if="computedType === 'date'" :id="id" v-model="computedValue" :name="name" :input-class="inputElClass" :disabled="disabled" :readonly="readonly" :required="required" :min="min" :max="max" />
+			<textarea v-else-if="computedType === 'textarea'" :id="id" v-model="computedValue" :aria-labelledby="fieldLabelId" :class="inputElClass" :name="name" :placeholder="placeholder" :required="required" />
 			<button v-else-if="computedType === 'button'" :class="inputElClass" class="ring-blue-700">
 				<BaseIcon v-if="buttonIcon" :path="buttonIcon" w="w-8" h="h-8" size="20" />
 				<span v-if="buttonLabel" :class="{ 'ml-1': buttonIcon }">{{ buttonLabel }}</span>
 			</button>
-			<input v-else :id="id" ref="inputEl" v-model="computedValue" :name="name" :autocomplete="autocomplete" :required="required" :placeholder="placeholder" :type="computedType" :min="min" :max="max" :class="inputElClass" />
+			<input
+				v-else
+				:id="id"
+				ref="inputEl"
+				v-model="computedValue"
+				:aria-labelledby="fieldLabelId"
+				:name="name"
+				:autocomplete="autocomplete"
+				:required="required"
+				:placeholder="placeholder"
+				:type="computedType"
+				:min="min"
+				:max="max"
+				:class="inputElClass" />
 			<FormControlIcon v-if="computedIconLeft" :icon="computedIconLeft" :h="controlIconH" :text-color="textColor" />
 			<FormControlIcon v-if="computedIconRight" :icon="computedIconRight" :h="controlIconH" :text-color="textColor" :clickable="rightIconClickable" is-right @icon-click="openPasswordToggle" />
 			<TipTag v-if="tipLeft" :tip="tipLeft" left />

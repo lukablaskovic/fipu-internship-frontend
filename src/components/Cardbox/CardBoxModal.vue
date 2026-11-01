@@ -1,8 +1,8 @@
 <script setup>
+import { DialogRoot, DialogPortal, DialogOverlay, DialogContent, DialogTitle } from "reka-ui";
 import CardBoxComponentTitle from "@/components/Cardbox/CardBoxComponentTitle.vue";
 import BaseButtons from "@/components/Base/BaseButtons.vue";
 import BaseButton from "@/components/Base/BaseButton.vue";
-import OverlayLayer from "@/components/OverlayLayer.vue";
 import CardBox from "@/components/Cardbox/CardBox.vue";
 import { computed, watch } from "vue";
 
@@ -49,13 +49,20 @@ const value = computed({
 	set: (value) => emit("update:modelValue", value),
 });
 
-watch(value, (newValue) => {
-	if (newValue) {
-		document.body.style.overflow = "hidden";
-	} else {
-		document.body.style.overflow = "";
+let returnFocus;
+watch(
+	() => !!props.modelValue,
+	(open) => {
+		if (open) returnFocus = document.activeElement;
+	},
+	{ immediate: true, flush: "sync" },
+);
+function restoreFocus(event) {
+	if (returnFocus?.isConnected) {
+		event.preventDefault();
+		returnFocus.focus();
 	}
-});
+}
 
 const confirmCancel = (mode) => {
 	value.value = false;
@@ -65,37 +72,36 @@ const confirmCancel = (mode) => {
 const confirm = () => confirmCancel("confirm");
 
 const cancel = () => confirmCancel("cancel");
-
-window.addEventListener("keydown", (e) => {
-	if (e.key === "Escape" && value.value) {
-		cancel();
-	}
-});
 </script>
 
 <template>
-	<OverlayLayer :type="value ? '' : 'pointer-events-none'" class="z-[5000]" @overlay-click="cancel">
-		<CardBox
-			v-show="value"
-			:class="{
-				'2xl:3/12 modal-scrollable fipu_vertical_scrollbar z-50 max-h-modal w-11/12 rounded shadow-lg md:w-3/5 lg:w-2/5 xl:w-6/12': !large && !isLogout,
-				'modal-scrollable fipu_vertical_scrollbar z-50 max-h-modal w-full rounded shadow-lg md:w-4/5 lg:w-3/5 xl:w-3/5': large && !isLogout,
-				'2xl:3/12 modal-scrollable fipu_vertical_scrollbar z-50 max-h-modal w-11/12 rounded shadow-lg md:w-3/5 lg:w-1/5 xl:w-4/12': isLogout,
-				'mobile-fullscreen': !isLogout,
-			}"
-			is-modal>
-			<div class="modal-content">
-				<CardBoxComponentTitle :title="title"></CardBoxComponentTitle>
+	<DialogRoot :open="!!value" @update:open="!$event && cancel()">
+		<DialogPortal>
+			<DialogOverlay class="fixed inset-0 z-[5000] bg-gradient-to-tr from-gray-700 via-gray-800 to-gray-900 opacity-90" />
+			<div class="pointer-events-none fixed inset-0 z-[5001] flex items-center justify-center"><DialogContent as-child :aria-describedby="undefined" @close-auto-focus="restoreFocus">
+				<CardBox
+					class="pointer-events-auto"
+					:class="{
+						'2xl:3/12 modal-scrollable fipu_vertical_scrollbar z-50 max-h-modal w-11/12 rounded shadow-lg md:w-3/5 lg:w-2/5 xl:w-6/12': !large && !isLogout,
+						'modal-scrollable fipu_vertical_scrollbar z-50 max-h-modal w-full rounded shadow-lg md:w-4/5 lg:w-3/5 xl:w-3/5': large && !isLogout,
+						'2xl:3/12 modal-scrollable fipu_vertical_scrollbar z-50 max-h-modal w-11/12 rounded shadow-lg md:w-3/5 lg:w-1/5 xl:w-4/12': isLogout,
+						'mobile-fullscreen': !isLogout,
+					}"
+					is-modal>
+					<div class="modal-content">
+						<DialogTitle as-child><CardBoxComponentTitle :title="title" /></DialogTitle>
 
-				<slot v-if="modelValue != null" :assignment="modelValue"></slot>
+						<slot v-if="modelValue != null" :assignment="modelValue"></slot>
 
-				<BaseButtons class="mt-4 justify-center">
-					<BaseButton v-if="hasConfirm" :label="buttonLabel" :color="button" :disabled="disabledCondition" @click="confirm" />
-					<BaseButton v-if="hasCancel" label="Natrag" :color="button" outline @click="cancel" />
-				</BaseButtons>
-			</div>
-		</CardBox>
-	</OverlayLayer>
+						<BaseButtons class="mt-4 justify-center">
+							<BaseButton v-if="hasConfirm" :label="buttonLabel" :color="button" :disabled="disabledCondition" @click="confirm" />
+							<BaseButton v-if="hasCancel" label="Natrag" :color="button" outline @click="cancel" />
+						</BaseButtons>
+					</div>
+				</CardBox>
+			</DialogContent></div>
+		</DialogPortal>
+	</DialogRoot>
 </template>
 
 <style scoped>

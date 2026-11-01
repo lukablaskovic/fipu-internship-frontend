@@ -47,6 +47,18 @@ For Companies:
 - **BPMN Display**: Utilizing [bpmn.io](https://bpmn.io/) and modeled in [Camunda Modeler](https://camunda.com/).
 - **Backend Engine**: Custom-built [Python BPMN Engine](https://github.com/lukablaskovic/python-bpmn-engine) (originally developed by [ntankovic](https://github.com/ntankovic/python-bpmn-engine)).
 
+### UI components
+
+[Reka UI](https://reka-ui.com/docs/overview/installation) is installed for accessible, unstyled Vue components. Import the components you need directly in `<script setup>`; no global registration or Vite plugin is required. Style them with the existing Tailwind utilities.
+
+The shared button, select/listbox, combobox, checkbox/radio/switch, date picker, dropdown and dialog components use Reka primitives while retaining FIPU styling and their existing public model values. Date pickers display Croatian dates and emit ISO `YYYY-MM-DD` strings. Search text in comboboxes is committed only when an option is selected.
+
+Run component regressions with `npm run test:ui` (first run: `npx playwright install chromium`). To use an installed Chrome, set `CHROME_PATH` to its executable. The fixture at `/tests/reka.html` is served only by the development server and is not a production entry point. Additional state checks: `node tests/reka-combobox-menu.cjs` `node tests/reka-search.cjs`, and `node tests/maintenance-notice.cjs`.
+
+Authenticated browser checks use only the local demo stack: `LOCAL_AUTH_URL=http://localhost:5173 npm run test:ui`. They exercise both demo logins, administrator navigation/search/menus/logout, and student onboarding controls and route guards without submitting an internship process.
+
+The Docker development frontend copies package manifests into its image. After dependency changes, rebuild it from the parent directory with `docker compose -p fipu-praksa-dev -f docker-compose.dev.yml up -d --build --no-deps frontend`; restarting alone does not update dependencies.
+
 ### Services :wrench:
 
 1. [**Baserow Connector Service**](https://github.com/lukablaskovic/internship-application-services/tree/main/baserow-connector-service): Manages internship data on Baserow’s no-code database platform.
