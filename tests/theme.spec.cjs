@@ -21,6 +21,8 @@ for (const width of [1280, 390]) {
 		await expect(page.locator("html")).toHaveCSS("color-scheme", "dark");
 		await expect(page.locator(".login-panel")).toHaveCSS("background-color", width === 1280 ? "rgb(30, 41, 59)" : "rgba(0, 0, 0, 0)");
 		await expect(page.locator(".login-note")).toHaveCSS("color", "rgb(203, 213, 225)");
+		await expect(page.locator(".faculty-logo")).toHaveCSS("background-color", "rgba(0, 0, 0, 0)");
+		await expect(page.locator(".faculty-logo")).toHaveCSS("filter", "brightness(0) invert(1)");
 		await page.screenshot({ path: `/tmp/theme-login-dark-${width}.png` });
 		await page.getByRole("link", { name: "Nastavi kao gost" }).click();
 		await expect(page.locator("nav")).toBeVisible();
@@ -37,6 +39,40 @@ for (const width of [1280, 390]) {
 		await page.reload();
 		await expect(toggle(page)).toHaveAttribute("aria-pressed", "false");
 		expect(await page.evaluate(() => localStorage.getItem("darkMode"))).toBe("0");
+		expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
+	});
+}
+
+for (const width of [1280, 390]) {
+	test(`Google sign-in follows the saved theme and updates when toggled at ${width}px`, async ({ page }) => {
+		await page.setViewportSize({ width, height: 844 });
+		await page.addInitScript(() => {
+			sessionStorage.setItem("dev-data-mode", "real");
+			localStorage.setItem("darkMode", "1");
+		});
+		await page.route("https://accounts.google.com/gsi/client", (route) => route.fulfill({
+			contentType: "application/javascript",
+			body: `window.google = { accounts: { id: {
+				initialize() {},
+				renderButton(element, options) {
+					const button = document.createElement("button");
+					button.textContent = "Google sign-in";
+					button.dataset.theme = options.theme;
+					button.dataset.size = options.size;
+					element.replaceChildren(button);
+				}
+			} } };`,
+		}));
+		await page.goto("/prijava");
+		const googleButton = page.getByRole("button", { name: "Google sign-in", exact: true });
+		await expect(googleButton).toHaveAttribute("data-theme", "filled_black");
+		await expect(googleButton).toHaveAttribute("data-size", "large");
+		await toggle(page).click();
+		await expect(googleButton).toHaveAttribute("data-theme", "outline");
+		await expect(page.locator(".faculty-logo")).toHaveCSS("filter", "none");
+		await toggle(page).click();
+		await expect(googleButton).toHaveAttribute("data-theme", "filled_black");
+		await expect(googleButton).toHaveCount(1);
 		expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
 	});
 }

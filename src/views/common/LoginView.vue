@@ -31,7 +31,7 @@
 							<BaseButton label="Lokalni student" color="info" type="button" @click="localLogin('student')" />
 							<BaseButton label="Lokalni administrator" color="info" type="button" @click="localLogin('admin')" />
 						</div>
-						<GoogleLogin v-else :callback="loginCallback" />
+						<GoogleLogin v-else :key="uiStore.darkMode" :callback="loginCallback" :button-config="{ theme: uiStore.darkMode ? 'filled_black' : 'outline', size: 'large' }" />
 					</div>
 					<div class="guest-access">
 						<p>Ako želite samo pregledati dostupne zadatke i poduzeća, možete nastaviti kao gost.</p>
@@ -58,6 +58,7 @@ import FormCheckRadio from "@/components/Form/FormCheckRadio.vue";
 import SnackBar from "@/components/Premium/SnackBar.vue";
 import { isUnipuEmail } from "@/helpers/validators";
 import { useMainStore } from "@/stores/main_store";
+import { useUiStore } from "@/stores/ui_store";
 import { useSnackBarStore } from "@/stores/snackbar_store";
 
 import fipu_unipu from "/fipu_unipu.png";
@@ -66,6 +67,7 @@ import { DEV_MODE, LOCAL_DEV, setLocalDevelopment } from "@/config";
 
 import { ref } from "vue";
 
+const uiStore = useUiStore();
 const mainStore = useMainStore();
 const snackBarStore = useSnackBarStore();
 
@@ -428,8 +430,7 @@ h2 {
 	background: #334155;
 }
 .dark .faculty-logo {
-	background: white;
-	border-radius: 4px;
+	filter: brightness(0) invert(1);
 }
 @media (max-width: 1024px) {
 	.dark .login-panel,
