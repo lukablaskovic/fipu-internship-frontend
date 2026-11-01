@@ -30,3 +30,6 @@ coverage
 
 /playwright-report/
 /test-results/
+
+# Generated production build output.
+/dist/
