@@ -1,5 +1,8 @@
 <script setup>
 import { computed, ref } from "vue";
+import ButtonMenu from "../src/components/Premium/ButtonMenu.vue";
+import { tableButtonMenuOptions } from "../src/tableButtonMenuOptions.js";
+import { mdiMenuDown } from "@mdi/js";
 import BasePagination from "../src/components/Base/BasePagination.vue";
 import "../src/css/main.css";
 const currentPage = ref(0);
@@ -9,6 +12,7 @@ const rows = computed(() => Array.from({ length: total.value }, (_, i) => i + 1)
 </script>
 <template>
 	<main class="p-3">
+		<ButtonMenu class="pagination-page-size" :options="tableButtonMenuOptions" :icon="mdiMenuDown" small left @update:model-value="perPage = $event.value; currentPage = 0" />
 		<BasePagination :page="currentPage + 1" :total="total" :items-per-page="perPage" @update:page="currentPage = $event - 1" />
 		<output data-testid="rows">{{ rows.join(',') }}</output>
 		<button @click="total = 12">Filter</button>

@@ -1,0 +1,18 @@
+<!doctype html>
+<html lang="hr">
+<head><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>Empty tables</title></head>
+<body><div id="app"></div><script type="module">
+import { createApp } from 'vue';
+import { createRouter, createMemoryHistory } from 'vue-router';
+import '../src/css/main.css';
+const tables = import.meta.glob('../src/components/Tables/Table*.vue');
+tables.TableInstanceData = () => import('../src/components/BPMN/TableInstanceData.vue');
+tables.DashboardView = () => import('../src/views/admin/DashboardView.vue');
+const name = new URLSearchParams(location.search).get('table');
+const load = tables[`../src/components/Tables/${name}.vue`] || tables[name];
+const component = (await load()).default;
+const router = createRouter({ history: createMemoryHistory(), routes: [{ path: '/', component }] });
+await router.push('/');
+createApp(component).use(router).mount('#app');
+</script></body>
+</html>

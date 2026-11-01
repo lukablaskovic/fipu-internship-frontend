@@ -10,7 +10,6 @@ import { adminStore, mainStore, snackBarStore } from "@/main.js";
 import Utils from "@/helpers/utils.js";
 
 import SectionTitleLineWithButton from "@/components/Section/SectionTitleLineWithButton.vue";
-import CardBoxComponentEmpty from "@/components/Cardbox/CardBoxComponentEmpty.vue";
 import TableInstanceData from "@/components/BPMN/TableInstanceData.vue";
 import LoadingAnimatedIcon from "@/components/LoadingAnimatedIcon.vue";
 import LayoutAuthenticated from "@/layouts/LayoutAuthenticated.vue";
@@ -259,9 +258,6 @@ onMounted(loadDataForStudent);
 					<TableStudents @show-student-diagram="handleProcessDiagram" />
 				</CardBox>
 
-				<CardBox v-if="adminStore.studentsFetched && !adminStore.students.length">
-					<CardBoxComponentEmpty />
-				</CardBox>
 				<p v-if="adminStore.selectedStudent != null" class="mt-2">
 					Trenutno se prikazuje:
 					<b>{{ adminStore.selectedStudent.ime }} {{ adminStore.selectedStudent.prezime }}</b>

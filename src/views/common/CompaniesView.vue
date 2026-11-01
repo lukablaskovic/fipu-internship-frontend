@@ -2,14 +2,13 @@
 import { mdiDomain, mdiDomainPlus, mdiClipboardCheck, mdiContentCopy } from "@mdi/js";
 import SectionMain from "@/components/Section/SectionMain.vue";
 import CardBox from "@/components/Cardbox/CardBox.vue";
-import { mainStore, adminStore } from "@/main.js";
+import { mainStore } from "@/main.js";
 import { computed, ref } from "vue";
 
 import SectionTitleLineWithButton from "@/components/Section/SectionTitleLineWithButton.vue";
 import LayoutAuthenticated from "@/layouts/LayoutAuthenticated.vue";
 import LayoutGuest from "@/layouts/LayoutGuest.vue";
 
-import CardBoxComponentEmpty from "@/components/Cardbox/CardBoxComponentEmpty.vue";
 import TableNewCompanies from "@/components/Tables/TableNewCompanies.vue";
 import TableCompanies from "@/components/Tables/TableCompanies.vue";
 import FormControl from "@/components/Form/FormControl.vue";
@@ -37,9 +36,6 @@ const addNewAssignmentLink = ref(`${VITE_FRONTEND_URL}/poslodavci/novi-zadatak`)
 						<TableNewCompanies />
 					</CardBox>
 
-					<CardBox v-if="!adminStore.newCompaniesFound">
-						<CardBoxComponentEmpty />
-					</CardBox>
 				</div>
 				<SectionTitleLineWithButton class="mt-4" :icon="mdiDomain" title="Poslodavci" main> </SectionTitleLineWithButton>
 				<p class="mb-4">U tablici se nalaze poslovne organizacije koje su sklopile ugovor za provođenje studentske prakse u suradnji s Fakultetom informatike u Puli.</p>

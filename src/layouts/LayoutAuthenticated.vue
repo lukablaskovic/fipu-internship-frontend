@@ -30,8 +30,14 @@ import { useRouter } from "vue-router";
 
 const router = useRouter();
 
-const logoutModalActive = computed(() => mainStore.logoutModalActive);
-const helpModalActive = computed(() => mainStore.helpModalActive);
+const logoutModalActive = computed({
+	get: () => mainStore.logoutModalActive,
+	set: (open) => mainStore.activateLogoutModal(open),
+});
+const helpModalActive = computed({
+	get: () => mainStore.helpModalActive,
+	set: (open) => mainStore.activateHelpModal(open),
+});
 
 const userAdmin = ref(false);
 

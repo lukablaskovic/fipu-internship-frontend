@@ -1,6 +1,9 @@
 <script setup>
+import { FieldDescription, FieldError, injectFieldRootContext } from "reka-ui";
 import { controlTextColor } from "@/colorsPremium.js";
 import { computed } from "vue";
+
+const fieldContext = injectFieldRootContext(null);
 
 const props = defineProps({
 	help: {
@@ -27,7 +30,7 @@ const textColor = computed(() => {
 </script>
 
 <template>
-	<div v-if="computedHelp" class="text-xs" :class="[textColor]">
+	<component :is="fieldContext ? (error ? FieldError : FieldDescription) : 'div'" v-if="computedHelp" :match="fieldContext && error ? true : undefined" class="text-xs" :class="[textColor]">
 		{{ computedHelp }}
-	</div>
+	</component>
 </template>

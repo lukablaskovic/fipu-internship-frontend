@@ -8,7 +8,6 @@ import LayoutAuthenticated from "@/layouts/LayoutAuthenticated.vue";
 import SectionTitleLineWithButton from "@/components/Section/SectionTitleLineWithButton.vue";
 import TableAvailableAssignments from "@/components/Tables/TableAvailableAssignments.vue";
 import TableRejectedAssignments from "@/components/Tables/TableRejectedAssignments.vue";
-import CardBoxComponentEmpty from "@/components/Cardbox/CardBoxComponentEmpty.vue";
 import TableNewAssignments from "@/components/Tables/TableNewAssignments.vue";
 import SectionMain from "@/components/Section/SectionMain.vue";
 import FormControl from "@/components/Form/FormControl.vue";
@@ -44,9 +43,6 @@ const addNewAssignmentLink = ref(`${VITE_FRONTEND_URL}/poslodavci/novi-zadatak`)
 					<TableNewAssignments />
 				</CardBox>
 
-				<CardBox v-if="!adminStore.newAssignments.length">
-					<CardBoxComponentEmpty />
-				</CardBox>
 
 				<SectionTitleLineWithButton class="mt-8" :icon="mdiClipboardTextOutline" title="Aktivni (odobreni) zadaci" main> </SectionTitleLineWithButton>
 				<div class="flex flex-row">

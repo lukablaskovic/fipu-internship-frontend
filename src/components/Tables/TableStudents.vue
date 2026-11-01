@@ -1,4 +1,5 @@
 <script setup>
+import CardBoxComponentEmpty from "@/components/Cardbox/CardBoxComponentEmpty.vue";
 import BasePagination from "@/components/Base/BasePagination.vue";
 import { Progress } from "reka-ui/namespaced";
 import { mdiEye, mdiMenuDown, mdiCloseOutline, mdiSortAscending, mdiSortDescending } from "@mdi/js";
@@ -158,7 +159,7 @@ watch(studentsPaginated, (newList) => {
 
 <template>
 	<LoadingOverlay :is-active="!studentsFetched" title="Učitavanje..." description="Može potrajati nekoliko sekundi, molimo ne zatvarajte stranicu."> </LoadingOverlay>
-	<table>
+	<table v-if="filteredAndSortedStudents.length || !studentsFetched">
 		<thead>
 			<tr>
 				<th />
@@ -199,9 +200,6 @@ watch(studentsPaginated, (newList) => {
 				<SkeletonLoaderTableRow v-for="n in perPage" :key="n" />
 			</template>
 			<template v-else>
-				<tr v-if="!studentsPaginated.length">
-					<td colspan="10" class="py-4 text-center">Nema rezultata...</td>
-				</tr>
 				<tr v-for="student in studentsPaginated" :key="student['process_instance_id']" :class="{ 'selected-row bg-fipu_blue/10 dark:bg-fipu_blue/20': selectedStudentInstanceID === student['process_instance_id'] }">
 					<td class="border-b-0 before:hidden lg:w-6">
 						<UserAvatar :avatar="student['avatar']" class="mx-auto flex h-22 w-22 lg:h-12 lg:w-12" />
@@ -241,6 +239,7 @@ watch(studentsPaginated, (newList) => {
 			</template>
 		</tbody>
 	</table>
+	<CardBoxComponentEmpty v-if="!filteredAndSortedStudents.length && studentsFetched" />
 	<div v-if="instanceDeleteModalActive">
 		<CardBoxModal v-model="instanceDeleteModalActive" title="Brisanje procesne instance" button="danger" has-cancel button-label="Obriši" @confirm="adminStore.removeInstanceData()">
 			<p>
@@ -257,10 +256,10 @@ watch(studentsPaginated, (newList) => {
 			<br />
 		</CardBoxModal>
 	</div>
-	<div class="border-t border-gray-100 p-3 dark:border-slate-800 lg:px-6">
+	<div v-if="filteredAndSortedStudents.length" class="border-t border-gray-100 p-3 dark:border-slate-800 lg:px-6">
 		<BaseLevel>
 			<div class="flex flex-wrap items-center justify-center gap-3">
-				<ButtonMenu :options="tableButtonMenuOptions" :icon="mdiMenuDown" small left @update:model-value="handlePerPageChange" />
+				<ButtonMenu class="pagination-page-size" :options="tableButtonMenuOptions" :icon="mdiMenuDown" small left @update:model-value="handlePerPageChange" />
 
 				<BasePagination :page="currentPage + 1" :total="filteredAndSortedStudents.length" :items-per-page="perPage" @update:page="currentPage = $event - 1" />
 			</div>

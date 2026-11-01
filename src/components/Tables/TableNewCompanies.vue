@@ -1,4 +1,5 @@
 <script setup>
+import CardBoxComponentEmpty from "@/components/Cardbox/CardBoxComponentEmpty.vue";
 import BasePagination from "@/components/Base/BasePagination.vue";
 import { computed, ref, onMounted, watch, reactive } from "vue";
 
@@ -156,7 +157,7 @@ const currentPageHuman = computed(() => numPages.value ? currentPage.value + 1 :
 </script>
 
 <template>
-	<table v-if="adminStore.newCompaniesFound" style="table-layout: fixed; width: 100%">
+	<table v-if="newCompanies.length" style="table-layout: fixed; width: 100%">
 		<thead>
 			<tr>
 				<th style="width: 80px" />
@@ -220,6 +221,7 @@ const currentPageHuman = computed(() => numPages.value ? currentPage.value + 1 :
 			</tr>
 		</tbody>
 	</table>
+	<CardBoxComponentEmpty v-if="!newCompanies.length" />
 
 	<CardBoxModal v-model="confirmationModal.isActive" title="Potvrda akcije" button-label="Ažuriraj" has-cancel @confirm="confirmTaskAction">
 		<div class="mb-4">
@@ -238,7 +240,7 @@ const currentPageHuman = computed(() => numPages.value ? currentPage.value + 1 :
 		</div>
 	</CardBoxModal>
 
-	<div class="border-t border-gray-100 p-3 dark:border-slate-800 lg:px-6">
+	<div v-if="newCompanies.length" class="border-t border-gray-100 p-3 dark:border-slate-800 lg:px-6">
 		<BaseLevel>
 			<div class="flex flex-wrap items-center justify-center gap-3">
 				<BasePagination :page="currentPage + 1" :total="newCompanies.length" :items-per-page="perPage" @update:page="currentPage = $event - 1" />

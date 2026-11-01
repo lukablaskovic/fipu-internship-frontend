@@ -1,4 +1,5 @@
 <script setup>
+import CardBoxComponentEmpty from "@/components/Cardbox/CardBoxComponentEmpty.vue";
 import BasePagination from "@/components/Base/BasePagination.vue";
 import { computed, ref, onMounted, watch } from "vue";
 
@@ -40,6 +41,7 @@ const currentPageHuman = computed(() => numPages.value ? currentPage.value + 1 :
 
 
 const allCompanies = ref([]);
+const dataLoaded = ref(false);
 
 let company_highlight = ref("");
 const route = useRoute();
@@ -49,6 +51,7 @@ async function loadData() {
 
 	let response = await mainStore.fetchCompanies();
 	allCompanies.value = response;
+	dataLoaded.value = true;
 
 	if (naziv) {
 		company_highlight.value = naziv;
@@ -74,6 +77,7 @@ watch(() => route.params.naziv, loadData, {
 onMounted(async () => {
 	let response = await mainStore.fetchCompanies();
 	allCompanies.value = response;
+	dataLoaded.value = true;
 });
 
 const goToCompanyWeb = (url) => {
@@ -82,8 +86,8 @@ const goToCompanyWeb = (url) => {
 </script>
 
 <template>
-	<LoadingOverlay :is-active="!allCompanies.length" title="Učitavanje..." description="Može potrajati nekoliko sekundi, molimo ne zatvarajte stranicu."> </LoadingOverlay>
-	<table style="table-layout: fixed; width: 100%">
+	<LoadingOverlay :is-active="!dataLoaded" title="Učitavanje..." description="Može potrajati nekoliko sekundi, molimo ne zatvarajte stranicu."> </LoadingOverlay>
+	<table v-if="filteredCompanies.length || !dataLoaded" style="table-layout: fixed; width: 100%">
 		<thead>
 			<tr v-if="!mainStore.userAdmin">
 				<th style="width: 80px" />
@@ -198,11 +202,12 @@ const goToCompanyWeb = (url) => {
 			</tr>
 		</tbody>
 	</table>
+	<CardBoxComponentEmpty v-if="!filteredCompanies.length && dataLoaded" />
 
-	<div class="mb-12 border-t border-gray-100 p-3 dark:border-slate-800 lg:px-6">
+	<div v-if="filteredCompanies.length" class="mb-12 border-t border-gray-100 p-3 dark:border-slate-800 lg:px-6">
 		<BaseLevel>
 			<div class="flex flex-wrap items-center justify-center gap-3">
-				<ButtonMenu :options="tableButtonMenuOptions" :icon="mdiMenuDown" small left @update:model-value="handlePerPageChange" />
+				<ButtonMenu class="pagination-page-size" :options="tableButtonMenuOptions" :icon="mdiMenuDown" small left @update:model-value="handlePerPageChange" />
 
 				<BasePagination :page="currentPage + 1" :total="filteredCompanies.length" :items-per-page="perPage" @update:page="currentPage = $event - 1" />
 			</div>

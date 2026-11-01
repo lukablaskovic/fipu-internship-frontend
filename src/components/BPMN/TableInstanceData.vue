@@ -1,4 +1,5 @@
 <script setup>
+import CardBoxComponentEmpty from "@/components/Cardbox/CardBoxComponentEmpty.vue";
 import { ref, onMounted, computed } from "vue";
 import { adminStore } from "@/main.js";
 import { mainStore } from "@/main.js";
@@ -45,7 +46,8 @@ const formattedVariables = computed(() => {
 </script>
 
 <template>
-	<table class="mb-4">
+	<CardBoxComponentEmpty v-if="!tableAttributes.length" />
+	<table v-else class="mb-4">
 		<tbody class="text-sm">
 			<tr v-if="tableAttributes.length <= 5">
 				<th v-for="(attribute, index) in tableAttributes" :key="index">

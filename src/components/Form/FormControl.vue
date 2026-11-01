@@ -1,5 +1,7 @@
 <script setup>
+import { FieldControl, Primitive, injectFieldRootContext } from "reka-ui";
 import { inject } from "vue";
+const fieldContext = injectFieldRootContext(null);
 const fieldLabelId = inject("formFieldLabelId", undefined);
 import { mdiUnfoldMoreHorizontal, mdiAlertCircle, mdiCheckCircle, mdiAsterisk, mdiLockOff, mdiContentCopy, mdiCheck } from "@mdi/js";
 import FormControlListbox from "@/components/Premium/FormControlListbox.vue";
@@ -11,8 +13,8 @@ import SearchOptions from "@/components/SearchOptions.vue";
 import BaseIcon from "@/components/Base/BaseIcon.vue";
 import { controlTextColor } from "@/colorsPremium.js";
 import TipTag from "@/components/Premium/TipTag.vue";
-import { mainStore } from "@/main";
 import { getButtonColor } from "@/colors.js";
+import { mainStore } from "@/main";
 
 const props = defineProps({
 	firstAddon: Boolean,
@@ -67,9 +69,11 @@ const computedType = computed(() => {
 	return props.type === "password" && passwordIsOpen.value ? "text" : props.type;
 });
 
-const borderColor = computed(() => (props.error ? "border-red-600" : props.success ? "border-green-600" : "border-gray-700"));
-const textColor = computed(() => controlTextColor(props.error, props.success));
-const placeholderColor = computed(() => (props.error ? "placeholder-red-600" : props.success ? "placeholder-green-600" : null));
+const fieldError = computed(() => props.error || fieldContext?.invalid.value);
+
+const borderColor = computed(() => (fieldError.value ? "border-red-600" : props.success ? "border-green-600" : "border-gray-700"));
+const textColor = computed(() => controlTextColor(fieldError.value, props.success));
+const placeholderColor = computed(() => (fieldError.value ? "placeholder-red-600" : props.success ? "placeholder-green-600" : null));
 const wrapperBorder = computed(() => computedType.value !== "textarea");
 
 const upperWrapperClass = computed(() => {
@@ -103,7 +107,7 @@ const inputElClass = computed(() => {
 
 const computedIconLeft = computed(() => props.iconLeft || null);
 const computedIconRight = computed(() => {
-	if (props.error) return mdiAlertCircle;
+	if (fieldError.value) return mdiAlertCircle;
 	if (props.success) return mdiCheckCircle;
 	if (props.iconRight) return props.iconRight;
 	if (props.type === "password") return passwordIsOpen.value ? mdiLockOff : mdiAsterisk;
@@ -183,18 +187,9 @@ if (props.ctrlKFocus) {
 			<FormDatePicker v-else-if="computedType === 'date'" :id="id" v-model="computedValue" :name="name" :input-class="inputElClass" :disabled="disabled" :readonly="readonly" :required="required" :min="min" :max="max" />
 
 			<!-- Textarea -->
-			<textarea
-				v-else-if="computedType === 'textarea'"
-				:id="id"
-				v-model="computedValue"
-				:aria-labelledby="fieldLabelId"
-				class="peer relative"
-				:placeholder="placeholder"
-				:class="inputElClass"
-				:name="name"
-				:readonly="readonly"
-				:required="required"
-				:disabled="disabled"></textarea>
+			<component :is="fieldContext ? FieldControl : Primitive" v-else-if="computedType === 'textarea'" as-child :model-value="fieldContext ? computedValue : undefined" v-bind="fieldContext ? { id, name, disabled, required } : {}">
+				<textarea v-bind="fieldContext ? {} : { id, name, required, disabled, 'aria-labelledby': fieldLabelId }" v-model="computedValue" class="peer relative" :placeholder="placeholder" :class="inputElClass" :readonly="readonly"></textarea>
+			</component>
 
 			<!-- Button -->
 			<button v-else-if="computedType === 'button'" :class="inputElClass" :disabled="disabled">
@@ -202,22 +197,19 @@ if (props.ctrlKFocus) {
 				<span v-if="buttonLabel" :class="{ 'ml-1': buttonIcon }">{{ buttonLabel }}</span>
 			</button>
 
-			<input
-				v-else
-				:id="id"
-				ref="inputEl"
-				v-model="computedValue"
-				:aria-labelledby="fieldLabelId"
-				:name="name"
-				:autocomplete="autocomplete"
-				:required="required"
-				:readonly="readonly"
-				:placeholder="placeholder"
-				:type="computedType"
-				:min="min"
-				:max="max"
-				:class="[inputElClass, 'truncate-input']"
-				:disabled="disabled" />
+			<component :is="fieldContext ? FieldControl : Primitive" v-else as-child :model-value="fieldContext ? computedValue : undefined" v-bind="fieldContext ? { id, name, disabled, required } : {}">
+				<input
+					v-bind="fieldContext ? {} : { id, name, required, disabled, 'aria-labelledby': fieldLabelId }"
+					ref="inputEl"
+					v-model="computedValue"
+					:autocomplete="autocomplete"
+					:readonly="readonly"
+					:placeholder="placeholder"
+					:type="computedType"
+					:min="min"
+					:max="max"
+					:class="[inputElClass, 'truncate-input']" />
+			</component>
 
 			<!-- Icons and Tip Tags -->
 			<FormControlIcon v-if="computedIconLeft" :icon="computedIconLeft" :h="controlIconH" :text-color="textColor" />

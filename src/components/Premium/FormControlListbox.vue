@@ -1,4 +1,6 @@
 <script setup>
+import BaseIcon from "@/components/Base/BaseIcon.vue";
+import { mdiChevronDown } from "@mdi/js";
 import { inject } from "vue";
 const fieldLabelId = inject("formFieldLabelId", undefined);
 import { Select } from "reka-ui/namespaced";
@@ -34,7 +36,7 @@ function update(value) {
 <template>
 	<Select.Root :model-value="selected" :disabled="disabled || readonly" :required="required" @update:model-value="update">
 		<Select.Trigger v-bind="$attrs" :id="id" ref="trigger" :aria-labelledby="fieldLabelId" :class="buttonClass" class="form-select-trigger flex items-center justify-between gap-2 text-left" :aria-readonly="readonly || undefined">
-			<Select.Value :placeholder="placeholder" /><Select.Icon aria-hidden="true">⌄</Select.Icon>
+			<Select.Value :placeholder="placeholder" /><Select.Icon aria-hidden="true" class="inline-flex shrink-0 items-center text-gray-500 dark:text-slate-400"><BaseIcon :path="mdiChevronDown" w="w-4" h="h-4" :size="16" /></Select.Icon>
 		</Select.Trigger>
 		<Select.Portal>
 			<Select.Content position="popper" :side-offset="4" class="reka-animated z-[10000] max-h-60 min-w-[var(--reka-select-trigger-width)] overflow-auto rounded bg-white text-gray-700 shadow-lg ring-1 ring-black/10 dark:bg-slate-800 dark:text-white">

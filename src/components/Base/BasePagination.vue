@@ -18,7 +18,7 @@ watchEffect(() => {
 </script>
 
 <template>
-	<PaginationRoot :page="page" :total="total" :items-per-page="itemsPerPage" :sibling-count="1" :disabled="total === 0" show-edges aria-label="Navigacija po stranicama" @update:page="emit('update:page', $event)">
+	<PaginationRoot v-if="total > 0" :page="page" :total="total" :items-per-page="itemsPerPage" :sibling-count="1" show-edges aria-label="Navigacija po stranicama" @update:page="emit('update:page', $event)">
 		<PaginationList v-slot="{ items }" class="pagination flex flex-wrap items-center justify-center gap-1">
 			<PaginationFirst aria-label="Prva stranica"><BaseIcon :path="mdiChevronDoubleLeft" aria-hidden="true" /></PaginationFirst>
 			<PaginationPrev aria-label="Prethodna stranica"><BaseIcon :path="mdiChevronLeft" aria-hidden="true" /></PaginationPrev>

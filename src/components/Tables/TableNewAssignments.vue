@@ -1,4 +1,5 @@
 <script setup>
+import CardBoxComponentEmpty from "@/components/Cardbox/CardBoxComponentEmpty.vue";
 import BasePagination from "@/components/Base/BasePagination.vue";
 import { computed, ref, onMounted, watch } from "vue";
 
@@ -22,6 +23,7 @@ defineProps({
 const MAX_NUM_ASSIGNMENTS = 3;
 
 const isModalActive = ref(null);
+const assignmentLimitActive = ref(false);
 const allAvailableAssignments = ref([]);
 
 let checkedAssignments = computed(() => mainStore.checkedAssignments);
@@ -84,7 +86,7 @@ const checked = (value, assignment) => {
 	// When checking
 	if (value) {
 		if (checkedAssignments.value.length >= MAX_NUM_ASSIGNMENTS) {
-			alert("You can only select a maximum of 3 assignments.");
+			assignmentLimitActive.value = true;
 			assignmentCheckedStates[assignment["id_zadatak"]] = false;
 			return;
 		}
@@ -124,6 +126,8 @@ const cancelTaskAction = () => {
 </script>
 
 <template>
+	<CardBoxModal v-model="assignmentLimitActive" title="Možete odabrati najviše 3 zadatka." button-label="U redu" />
+
 	<CardBoxModal v-if="isModalActive" v-model="isModalActive" large button-label="Zatvori" button="fipu_blue" has-cancel:false @cancel="mainStore.activateLogoutModal(false)">
 		<CardBoxAllocation :data="isModalActive"></CardBoxAllocation>
 
@@ -141,7 +145,7 @@ const cancelTaskAction = () => {
 		</div>
 	</CardBoxModal>
 
-	<table>
+	<table v-if="allAvailableAssignments.length">
 		<thead>
 			<tr>
 				<th v-if="checkable"></th>
@@ -204,8 +208,9 @@ const cancelTaskAction = () => {
 			</tr>
 		</tbody>
 	</table>
+	<CardBoxComponentEmpty v-if="!allAvailableAssignments.length" />
 
-	<div class="border-t border-gray-100 p-3 dark:border-slate-800 lg:px-6">
+	<div v-if="allAvailableAssignments.length" class="border-t border-gray-100 p-3 dark:border-slate-800 lg:px-6">
 		<BaseLevel>
 			<div class="flex flex-wrap items-center justify-center gap-3">
 				<BasePagination :page="currentPage + 1" :total="allAvailableAssignments.length" :items-per-page="perPage" @update:page="currentPage = $event - 1" />

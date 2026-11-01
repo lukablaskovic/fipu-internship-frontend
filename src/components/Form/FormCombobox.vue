@@ -1,5 +1,9 @@
 <script setup>
+import { FieldControl, Primitive, injectFieldRootContext } from "reka-ui";
+import BaseIcon from "@/components/Base/BaseIcon.vue";
 import { Combobox } from "reka-ui/namespaced";
+import { mdiChevronDown } from "@mdi/js";
+const fieldContext = injectFieldRootContext(null);
 import { computed, ref, useId } from "vue";
 
 const props = defineProps({ labelName: { type: String, default: "" }, emitName: { type: String, default: "" }, list: { type: Array, default: () => [] }, l: Boolean, disabled: Boolean, important: Boolean, help: { type: String, default: "" } });
@@ -22,17 +26,19 @@ const filteredList = computed(() => {
 <template>
 	<div class="flex flex-col gap-2" :class="disabled ? 'opacity-75 contrast-[0.9]' : ''">
 		<Combobox.Root :model-value="model" :disabled="disabled" :ignore-filter="true" open-on-focus open-on-click reset-model-value-on-clear @update:model-value="model = $event ?? ''">
-			<Combobox.Anchor class="form-control-surface relative rounded border" :class="important ? 'border-red-500' : 'border-gray-700'">
-				<Combobox.Input
-					v-model="search"
-					:display-value="displayValue"
-					:disabled="disabled"
-					:aria-invalid="important || undefined"
-					:aria-describedby="helpId"
-					aria-label="Odaberi opciju"
-					class="peer relative block w-full max-w-full cursor-text overflow-hidden rounded border-0 bg-white p-3 pr-10 text-left hover:border-fipu_blue focus:outline-none focus:ring focus:ring-fipu_blue" />
+			<Combobox.Anchor class="form-control-surface relative rounded border" :class="important || fieldContext?.invalid.value ? 'border-red-500' : 'border-gray-700'">
+				<component :is="fieldContext ? FieldControl : Primitive" as-child :model-value="fieldContext ? search : undefined">
+					<Combobox.Input
+						v-model="search"
+						:display-value="displayValue"
+						:disabled="disabled"
+						:aria-invalid="important || fieldContext?.invalid.value || undefined"
+						v-bind="important || help ? { 'aria-describedby': helpId } : {}"
+						:aria-label="fieldContext ? undefined : 'Odaberi opciju'"
+						class="peer relative block w-full max-w-full cursor-text overflow-hidden rounded border-0 bg-white p-3 pr-10 text-left hover:border-fipu_blue focus:outline-none focus:ring focus:ring-fipu_blue" />
+				</component>
 				<Combobox.Trigger class="absolute right-1.5 top-0 flex h-full items-center px-2 focus-visible:outline focus-visible:outline-fipu_blue" aria-label="Prikaži opcije" :disabled="disabled">
-					<svg aria-hidden="true" viewBox="0 0 20 20" class="h-4 w-4" fill="currentColor"><path d="m5 7 5 5 5-5H5Z" /></svg>
+					<BaseIcon :path="mdiChevronDown" w="w-4" h="h-4" :size="16" aria-hidden="true" class="shrink-0 text-gray-500 dark:text-slate-400" />
 				</Combobox.Trigger>
 			</Combobox.Anchor>
 			<Combobox.Portal>
@@ -53,6 +59,6 @@ const filteredList = computed(() => {
 				</Combobox.Content>
 			</Combobox.Portal>
 		</Combobox.Root>
-		<div :id="helpId" class="-mt-1 text-xs" :class="important ? 'text-red-500' : 'text-gray-500'">{{ important ? "Polje je obavezno" : help }}</div>
+		<div v-if="important || help" :id="helpId" class="-mt-1 text-xs" :class="important ? 'text-red-500' : 'text-gray-500'">{{ important ? "Polje je obavezno" : help }}</div>
 	</div>
 </template>

@@ -1,5 +1,7 @@
 <template>
-	<LoadingOverlay :is-active="!allAvailableAssignments.length" title="Učitavanje..." description="Može potrajati nekoliko sekundi, molimo ne zatvarajte stranicu."> </LoadingOverlay>
+	<CardBoxModal v-model="assignmentLimitActive" title="Možete odabrati najviše 3 zadatka." button-label="U redu" />
+
+	<LoadingOverlay :is-active="!dataLoaded" title="Učitavanje..." description="Može potrajati nekoliko sekundi, molimo ne zatvarajte stranicu."> </LoadingOverlay>
 
 	<CardBoxModal v-if="isModalActive" v-model="isModalActive" large button-label="Zatvori" button="fipu_blue" has-cancel:false @cancel="mainStore.activateLogoutModal(false)">
 		<CardboxAllocation :data="isModalActive"></CardboxAllocation>
@@ -10,7 +12,7 @@
 		<input v-model="searchQuery" type="text" placeholder="Pretraži zadatke..." class="w-full border border-gray-50 p-2 text-gray-700 outline-none focus:border-fipu_blue" />
 	</div>
 
-	<table>
+	<table v-if="filteredAssignments.length || !dataLoaded">
 		<thead>
 			<tr>
 				<th v-if="checkable"></th>
@@ -26,13 +28,10 @@
 			</tr>
 		</thead>
 		<tbody>
-			<template v-if="!allAvailableAssignments.length">
+			<template v-if="!dataLoaded">
 				<SkeletonLoaderAssignmentRow v-for="n in perPage" :key="n" :checkable="checkable" :is-admin="mainStore.userAdmin" />
 			</template>
 			<template v-else>
-				<tr v-if="paginatedAssignments.length === 0">
-					<td colspan="9" class="py-4 text-center">Nema rezultata...</td>
-				</tr>
 				<tr v-for="assignment in paginatedAssignments" :key="assignment['id_zadatak']" :class="{ 'selected-row': assignment_highlight === assignment['id_zadatak'] }">
 					<TableCheckboxCell v-if="checkable" :value="isCheckedAssignment(assignment)" :disabled="disableUnchecked && !isCheckedAssignment(assignment)" @checked="checked($event, assignment)" />
 
@@ -74,11 +73,12 @@
 			</template>
 		</tbody>
 	</table>
+	<CardBoxComponentEmpty v-if="!filteredAssignments.length && dataLoaded" />
 
-	<div class="border-t border-gray-100 p-3 dark:border-slate-800 lg:px-6">
+	<div v-if="filteredAssignments.length" class="border-t border-gray-100 p-3 dark:border-slate-800 lg:px-6">
 		<BaseLevel>
 			<div class="flex flex-wrap items-center justify-center gap-3">
-				<ButtonMenu :options="tableButtonMenuOptions" :icon="mdiMenuDown" small left @update:model-value="handlePerPageChange" />
+				<ButtonMenu class="pagination-page-size" :options="tableButtonMenuOptions" :icon="mdiMenuDown" small left @update:model-value="handlePerPageChange" />
 				<BasePagination :page="currentPage + 1" :total="filteredAssignments.length" :items-per-page="perPage" @update:page="currentPage = $event - 1" />
 			</div>
 			<small>Stranica {{ currentPageHuman }} od {{ numPages }}</small>
@@ -87,6 +87,7 @@
 </template>
 
 <script setup>
+import CardBoxComponentEmpty from "@/components/Cardbox/CardBoxComponentEmpty.vue";
 import BasePagination from "@/components/Base/BasePagination.vue";
 import { computed, ref, onMounted, watch } from "vue";
 
@@ -149,8 +150,10 @@ const currentPageHuman = computed(() => numPages.value ? currentPage.value + 1 :
 const MAX_NUM_ASSIGNMENTS = 3;
 
 const isModalActive = ref(null);
+const assignmentLimitActive = ref(false);
 
 const allAvailableAssignments = ref([]);
+const dataLoaded = ref(false);
 
 let checkedAssignments = computed(() => mainStore.checkedAssignments);
 let assignment_highlight = ref("");
@@ -165,6 +168,8 @@ async function loadData() {
 		const condition = adminStore.availableAssignmentsFilter ? task.dostupno_mjesta > 0 : task.dostupno_mjesta >= 0;
 		return condition && task.voditelj_odobrio.value == "odobreno";
 	});
+
+	dataLoaded.value = true;
 
 	if (id_zadatak) {
 		assignment_highlight.value = id_zadatak;
@@ -267,7 +272,7 @@ const isCheckedAssignment = (assignment) => {
 const checked = (value, assignment) => {
 	if (value) {
 		if (checkedAssignments.value.length >= MAX_NUM_ASSIGNMENTS) {
-			alert("Možete odabrati najviše 3 zadatka.");
+			assignmentLimitActive.value = true;
 			assignmentCheckedStates[assignment["id_zadatak"]] = false;
 			return;
 		}

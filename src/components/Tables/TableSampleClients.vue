@@ -1,4 +1,5 @@
 <script setup>
+import CardBoxComponentEmpty from "@/components/Cardbox/CardBoxComponentEmpty.vue";
 import BasePagination from "@/components/Base/BasePagination.vue";
 import { computed, ref } from "vue";
 import { mainStore } from "@/main.js";
@@ -71,7 +72,7 @@ const checked = (isChecked, client) => {
 		</span>
 	</div>
 
-	<table>
+	<table v-if="items.length">
 		<thead>
 			<tr>
 				<th v-if="checkable" />
@@ -116,7 +117,8 @@ const checked = (isChecked, client) => {
 			</tr>
 		</tbody>
 	</table>
-	<div class="p-3 lg:px-6 border-t border-gray-100 dark:border-slate-800">
+	<CardBoxComponentEmpty v-if="!items.length" />
+	<div v-if="items.length" class="p-3 lg:px-6 border-t border-gray-100 dark:border-slate-800">
 		<BaseLevel>
 			<div class="flex flex-wrap items-center justify-center gap-3">
 				<BasePagination :page="currentPage + 1" :total="items.length" :items-per-page="perPage" @update:page="currentPage = $event - 1" />

@@ -1,12 +1,15 @@
 <script setup>
+import { FieldRoot, FieldLabel } from "reka-ui";
 import { provide, useId } from "vue";
 const fieldLabelId = useId();
-provide("formFieldLabelId", fieldLabelId);
+
 import FormFieldHelp from "@/components/Premium/FormFieldHelp.vue";
 import { controlTextColor } from "@/colorsPremium.js";
 import { computed, useSlots } from "vue";
 
 const props = defineProps({
+	name: { type: String, default: undefined },
+	disabled: Boolean,
 	label: {
 		type: String,
 		default: null,
@@ -28,6 +31,8 @@ const props = defineProps({
 		default: null,
 	},
 });
+
+provide("formFieldLabelId", props.name ? undefined : fieldLabelId);
 
 const slots = useSlots();
 
@@ -100,13 +105,13 @@ const labelParts = computed(() => (props.label || "").split("*"));
 </script>
 
 <template>
-	<div class="grid grid-cols-1 last:mb-0" :class="upperWrapperClass">
-		<label v-if="label" :id="fieldLabelId" class="mb-2 block font-bold" :class="labelClass">
+	<component :is="name ? FieldRoot : 'div'" :name="name" :disabled="disabled || undefined" :invalid="name ? !!error : undefined" class="grid grid-cols-1 last:mb-0" :class="upperWrapperClass">
+		<component :is="name ? FieldLabel : 'label'" v-if="label" v-bind="name ? { as: 'div', nativeLabel: false } : { id: fieldLabelId }" class="mb-2 block font-bold" :class="labelClass">
 			<template v-for="(part, index) in labelParts" :key="index">{{ part }}<span v-if="index < labelParts.length - 1" class="text-red-500">*</span></template>
-		</label>
+		</component>
 		<div :class="wrapperClass">
 			<slot />
 		</div>
 		<FormFieldHelp class="mt-1" :class="{ 'lg:col-span-4 lg:col-start-2 lg:-mt-5': horizontal }" :help="help" :error="error" :success="success" />
-	</div>
+	</component>
 </template>

@@ -1,4 +1,5 @@
 <script setup>
+import CardBoxComponentEmpty from "@/components/Cardbox/CardBoxComponentEmpty.vue";
 import BasePagination from "@/components/Base/BasePagination.vue";
 import { computed, ref, onMounted } from "vue";
 
@@ -68,7 +69,7 @@ const currentPageHuman = computed(() => numPages.value ? currentPage.value + 1 :
 
 <template>
 	<LoadingOverlay :is-active="!allocations.length && !dataLoaded" title="Učitavanje..." description="Može potrajati nekoliko sekundi, molimo ne zatvarajte stranicu."> </LoadingOverlay>
-	<table>
+	<table v-if="filteredAllocations.length || !dataLoaded">
 		<thead>
 			<tr>
 				<th>Ime i prezime</th>
@@ -128,11 +129,12 @@ const currentPageHuman = computed(() => numPages.value ? currentPage.value + 1 :
 			</tr>
 		</tbody>
 	</table>
+	<CardBoxComponentEmpty v-if="!filteredAllocations.length && dataLoaded" />
 
-	<div class="border-t border-gray-100 p-3 dark:border-slate-800 lg:px-6">
+	<div v-if="filteredAllocations.length" class="border-t border-gray-100 p-3 dark:border-slate-800 lg:px-6">
 		<BaseLevel>
 			<div class="flex flex-wrap items-center justify-center gap-3">
-				<ButtonMenu :options="tableButtonMenuOptions" :icon="mdiMenuDown" small left @update:model-value="handlePerPageChange" />
+				<ButtonMenu class="pagination-page-size" :options="tableButtonMenuOptions" :icon="mdiMenuDown" small left @update:model-value="handlePerPageChange" />
 
 				<BasePagination :page="currentPage + 1" :total="filteredAllocations.length" :items-per-page="perPage" @update:page="currentPage = $event - 1" />
 			</div>

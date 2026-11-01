@@ -1,4 +1,5 @@
 <script setup>
+import CardBoxComponentEmpty from "@/components/Cardbox/CardBoxComponentEmpty.vue";
 import { ref, onMounted } from "vue";
 
 import CardBoxModal from "@/components/Cardbox/CardBoxModal.vue";
@@ -23,6 +24,7 @@ const treciOdabir = ref({});
 
 const selectedAssignmentId = ref(null);
 const preferencesArray = ref([]);
+const dataLoaded = ref(false);
 
 const emit = defineEmits(["rowSelected"]);
 
@@ -34,11 +36,14 @@ const selectAssignment = (assignment) => {
 onMounted(async () => {
 	registeredPreferences.value = await adminStore.getPreferencesDetailed(adminStore.selectedStudent.process_instance_data.variables.id_preferencije);
 	registeredPreferences.value = registeredPreferences.value.data;
-	prviOdabir.value = registeredPreferences.value["Prvi_odabir"][0]["details"];
-	drugiOdabir.value = registeredPreferences.value["Drugi_odabir"][0]["details"];
-	treciOdabir.value = registeredPreferences.value["Treci_odabir"][0]["details"];
+	prviOdabir.value = registeredPreferences.value["Prvi_odabir"]?.[0]?.details;
+	drugiOdabir.value = registeredPreferences.value["Drugi_odabir"]?.[0]?.details;
+	treciOdabir.value = registeredPreferences.value["Treci_odabir"]?.[0]?.details;
 
-	preferencesArray.value = [prviOdabir.value, drugiOdabir.value, treciOdabir.value];
+	preferencesArray.value = [prviOdabir.value, drugiOdabir.value, treciOdabir.value]
+		.map((assignment, index) => ({ assignment, order: index + 1 }))
+		.filter(({ assignment }) => assignment);
+	dataLoaded.value = true;
 });
 </script>
 
@@ -49,9 +54,10 @@ onMounted(async () => {
 		<br />
 	</CardBoxModal>
 
-	<LoadingOverlay v-if="!preferencesArray.length" :is-active="!preferencesArray.length" title="Učitavanje..." description="Može potrajati nekoliko sekundi, molimo ne zatvarajte stranicu."> </LoadingOverlay>
+	<LoadingOverlay :is-active="!dataLoaded" title="Učitavanje..." description="Može potrajati nekoliko sekundi, molimo ne zatvarajte stranicu."> </LoadingOverlay>
 
-	<table v-else>
+	<CardBoxComponentEmpty v-if="dataLoaded && !preferencesArray.length" />
+	<table v-if="preferencesArray.length">
 		<thead class="text-sm">
 			<tr>
 				<th>Odabir</th>
@@ -63,14 +69,14 @@ onMounted(async () => {
 		</thead>
 		<tbody class="text-sm">
 			<tr
-				v-for="(assignment, index) in preferencesArray"
+				v-for="{ assignment, order } in preferencesArray"
 				:key="assignment['id_zadatak']"
 				:class="{
 					'selected-row': selectedAssignmentId === assignment['id_zadatak'],
 					'cursor-pointer': true,
 				}"
 				@click="selectAssignment(assignment)">
-				<td data-label="Odabir">{{ index + 1 }}</td>
+				<td data-label="Odabir">{{ order }}</td>
 				<td data-label="ID Zadatka">{{ assignment["id_zadatak"] }}</td>
 				<td data-label="Kontakt email">{{ assignment["poslodavac_email"] }}</td>
 				<td data-label="Lokacija">{{ assignment["lokacija"] }}</td>

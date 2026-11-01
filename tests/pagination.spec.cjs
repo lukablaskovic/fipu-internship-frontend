@@ -32,6 +32,16 @@ test('filters, page sizes, and empty results stay in range on mobile', async ({ 
 	await expect(page.getByTestId('rows')).toHaveText('1,2,3,4,5');
 	await page.getByRole('button', { name: 'Empty', exact: true }).click();
 	await expect(page.getByTestId('rows')).toHaveText('');
-	for (const button of await page.getByRole('navigation').getByRole('button').all()) await expect(button).toBeDisabled();
+	await expect(page.getByRole('navigation')).toHaveCount(0);
 	await expect.poll(() => page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(true);
 });
+
+ test('page-size dropdown matches pagination height and updates rows', async ({ page }) => {
+ const trigger = page.getByRole('button', { name: 'Otvori izbornik' });
+ const next = page.getByRole('button', { name: 'Sljedeća stranica', exact: true });
+ expect((await trigger.boundingBox()).height).toBe((await next.boundingBox()).height);
+ await trigger.click();
+ await page.getByRole('menuitem', { name: '20 stavki po stranici' }).click();
+ await expect(page.getByTestId('rows')).toHaveText(Array.from({ length: 20 }, (_, i) => i + 1).join(','));
+ await expect(trigger).toBeFocused();
+ });
