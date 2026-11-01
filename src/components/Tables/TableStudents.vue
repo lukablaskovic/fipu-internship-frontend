@@ -1,4 +1,6 @@
 <script setup>
+import BasePagination from "@/components/Base/BasePagination.vue";
+import { Progress } from "reka-ui/namespaced";
 import { mdiEye, mdiMenuDown, mdiCloseOutline, mdiSortAscending, mdiSortDescending } from "@mdi/js";
 import { tableButtonMenuOptions } from "@/tableButtonMenuOptions.js";
 import SkeletonLoaderTableRow from "../SkeletonLoaderTableRow.vue";
@@ -102,8 +104,7 @@ const studentsPaginated = computed(() => {
 });
 
 const numPages = computed(() => Math.ceil(filteredAndSortedStudents.value.length / perPage.value));
-const currentPageHuman = computed(() => currentPage.value + 1);
-const pagesList = computed(() => Array.from({ length: numPages.value }, (_, i) => i));
+const currentPageHuman = computed(() => numPages.value ? currentPage.value + 1 : 0);
 
 // --- Actions ---
 function showDiagram(student) {
@@ -216,13 +217,16 @@ watch(studentsPaginated, (newList) => {
 						{{ StudentMappings.getGodinaStudija(student["godina_studija"]["value"]) }}
 					</td>
 					<td data-label="Progress" class="lg:w-32">
-						<progress
-							class="flex w-2/5 self-center lg:w-full"
-							:class="{ 'progress-red': getProgressValue(student) <= 3, 'progress-yellow': getProgressValue(student) == 4, 'progress-green': getProgressValue(student) >= 5 }"
-							max="7"
-							:value="getProgressValue(student)">
-							{{ getProgressValue(student) }}
-						</progress>
+						<Progress.Root
+							class="h-3 w-2/5 self-center overflow-hidden rounded-full bg-gray-200 ring-1 ring-inset ring-black/10 dark:bg-slate-950 dark:ring-white/15 lg:w-full"
+							:max="7"
+							:model-value="getProgressValue(student)"
+							:aria-label="`Napredak: ${student.ime} ${student.prezime}`">
+							<Progress.Indicator
+								class="student-progress-fill h-full origin-left rounded-full transition-[width] duration-700 ease-out motion-reduce:transition-none"
+								:class="{ 'bg-red-500': getProgressValue(student) <= 3, 'bg-yellow-500': getProgressValue(student) == 4, 'bg-green-500': getProgressValue(student) >= 5 }"
+								:style="{ width: `${(getProgressValue(student) / 7) * 100}%` }" />
+						</Progress.Root>
 					</td>
 					<td data-label="Stanje">
 						{{ UserTaskMappings.getTaskProperty(student["process_instance_data"]["pending"][0], "name", student["process_instance_data"]["state"]) }}
@@ -255,12 +259,40 @@ watch(studentsPaginated, (newList) => {
 	</div>
 	<div class="border-t border-gray-100 p-3 dark:border-slate-800 lg:px-6">
 		<BaseLevel>
-			<BaseButtons>
+			<div class="flex flex-wrap items-center justify-center gap-3">
 				<ButtonMenu :options="tableButtonMenuOptions" :icon="mdiMenuDown" small left @update:model-value="handlePerPageChange" />
 
-				<BaseButton v-for="page in pagesList" :key="page" :active="page === currentPage" :label="page + 1" :color="page === currentPage ? 'lightDark' : 'whiteDark'" small @click="currentPage = page" />
-			</BaseButtons>
+				<BasePagination :page="currentPage + 1" :total="filteredAndSortedStudents.length" :items-per-page="perPage" @update:page="currentPage = $event - 1" />
+			</div>
 			<small>Stranica {{ currentPageHuman }} od {{ numPages }}</small>
 		</BaseLevel>
 	</div>
 </template>
+
+<style scoped>
+.student-progress-fill {
+	background-image: linear-gradient(135deg, rgb(255 255 255 / 25%) 25%, transparent 25%, transparent 50%, rgb(255 255 255 / 25%) 50%, rgb(255 255 255 / 25%) 75%, transparent 75%, transparent);
+	background-size: 24px 24px;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+	.student-progress-fill {
+		animation: progress-fill 700ms ease-out, progress-stripes 1s linear infinite;
+	}
+}
+
+@keyframes progress-stripes {
+	to {
+		background-position: 24px 0;
+	}
+}
+
+@keyframes progress-fill {
+	from {
+		transform: scaleX(0);
+	}
+	to {
+		transform: scaleX(1);
+	}
+}
+</style>

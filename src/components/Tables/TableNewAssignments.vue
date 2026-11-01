@@ -1,4 +1,5 @@
 <script setup>
+import BasePagination from "@/components/Base/BasePagination.vue";
 import { computed, ref, onMounted, watch } from "vue";
 
 import TableCheckboxCell from "@/components/Tables/TableCheckboxCell.vue";
@@ -60,17 +61,8 @@ const currentPage = ref(0);
 const assignmentsPaginated = computed(() => allAvailableAssignments.value.slice(perPage.value * currentPage.value, perPage.value * (currentPage.value + 1)));
 
 const numPages = computed(() => Math.ceil(allAvailableAssignments.value.length / perPage.value));
-const currentPageHuman = computed(() => currentPage.value + 1);
+const currentPageHuman = computed(() => numPages.value ? currentPage.value + 1 : 0);
 
-const pagesList = computed(() => {
-	const pagesList = [];
-
-	for (let i = 0; i < numPages.value; i++) {
-		pagesList.push(i);
-	}
-
-	return pagesList;
-});
 
 const assignmentCheckedStates = ref({});
 
@@ -215,9 +207,9 @@ const cancelTaskAction = () => {
 
 	<div class="border-t border-gray-100 p-3 dark:border-slate-800 lg:px-6">
 		<BaseLevel>
-			<BaseButtons>
-				<BaseButton v-for="page in pagesList" :key="page" :active="page === currentPage" :label="page + 1" :color="page === currentPage ? 'lightDark' : 'whiteDark'" small @click="currentPage = page" />
-			</BaseButtons>
+			<div class="flex flex-wrap items-center justify-center gap-3">
+				<BasePagination :page="currentPage + 1" :total="allAvailableAssignments.length" :items-per-page="perPage" @update:page="currentPage = $event - 1" />
+			</div>
 			<small>Stranica {{ currentPageHuman }} od {{ numPages }}</small>
 		</BaseLevel>
 	</div>

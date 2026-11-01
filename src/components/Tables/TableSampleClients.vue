@@ -1,4 +1,5 @@
 <script setup>
+import BasePagination from "@/components/Base/BasePagination.vue";
 import { computed, ref } from "vue";
 import { mainStore } from "@/main.js";
 import { mdiEye, mdiTrashCan } from "@mdi/js";
@@ -29,17 +30,8 @@ const itemsPaginated = computed(() => items.value.slice(perPage.value * currentP
 
 const numPages = computed(() => Math.ceil(items.value.length / perPage.value));
 
-const currentPageHuman = computed(() => currentPage.value + 1);
+const currentPageHuman = computed(() => numPages.value ? currentPage.value + 1 : 0);
 
-const pagesList = computed(() => {
-	const pagesList = [];
-
-	for (let i = 0; i < numPages.value; i++) {
-		pagesList.push(i);
-	}
-
-	return pagesList;
-});
 
 const remove = (arr, cb) => {
 	const newArr = [];
@@ -126,9 +118,9 @@ const checked = (isChecked, client) => {
 	</table>
 	<div class="p-3 lg:px-6 border-t border-gray-100 dark:border-slate-800">
 		<BaseLevel>
-			<BaseButtons>
-				<BaseButton v-for="page in pagesList" :key="page" :active="page === currentPage" :label="page + 1" :color="page === currentPage ? 'lightDark' : 'whiteDark'" small @click="currentPage = page" />
-			</BaseButtons>
+			<div class="flex flex-wrap items-center justify-center gap-3">
+				<BasePagination :page="currentPage + 1" :total="items.length" :items-per-page="perPage" @update:page="currentPage = $event - 1" />
+			</div>
 			<small>Page {{ currentPageHuman }} of {{ numPages }}</small>
 		</BaseLevel>
 	</div>

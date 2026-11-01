@@ -1,4 +1,5 @@
 <script setup>
+import BasePagination from "@/components/Base/BasePagination.vue";
 import {
 	mdiAlphaACircle,
 	mdiAbTesting,
@@ -30,8 +31,6 @@ import CardBoxWidget from "@/components/Cardbox/CardBoxWidget.vue";
 import CardBoxEvents from "@/components/Cardbox/CardBoxEvents.vue";
 import SectionMain from "@/components/Section/SectionMain.vue";
 import SkeletonLoader from "@/components/SkeletonLoader.vue";
-import BaseButtons from "@/components/Base/BaseButtons.vue";
-import BaseButton from "@/components/Base/BaseButton.vue";
 
 import BaseLevel from "@/components/Base/BaseLevel.vue";
 import PillTag from "@/components/PillTag/PillTag.vue";
@@ -150,16 +149,7 @@ const rightItems = computed(() => {
 	return itemsPaginated.value.slice(5, 10);
 });
 const numPages = computed(() => Math.ceil(filteredEvents.value.length / perPage.value));
-const currentPageHuman = computed(() => currentPage.value + 1);
-const pagesList = computed(() => {
-	const pagesList = [];
-
-	for (let i = 0; i < numPages.value; i++) {
-		pagesList.push(i);
-	}
-
-	return pagesList;
-});
+const currentPageHuman = computed(() => numPages.value ? currentPage.value + 1 : 0);
 
 const toggleDateType = () => {
 	adminStore.relativeToNowTimestmap = !adminStore.relativeToNowTimestmap;
@@ -343,9 +333,9 @@ const toggleDateType = () => {
 				<div v-else class="mb-6 text-red-500">Nakon više ponovljenih pokušaja, nije moguće dohvatiti evente.</div>
 				<div v-if="!eventsFetchError" class="border-t border-gray-100 p-3 dark:border-slate-800 lg:px-6">
 					<BaseLevel>
-						<BaseButtons>
-							<BaseButton v-for="page in pagesList" :key="page" :active="page === currentPage" :label="page + 1" :color="page === currentPage ? 'lightDark' : 'whiteDark'" small @click="currentPage = page" />
-						</BaseButtons>
+						<div class="flex flex-wrap items-center justify-center gap-3">
+							<BasePagination :page="currentPage + 1" :total="filteredEvents.length" :items-per-page="perPage" @update:page="currentPage = $event - 1" />
+						</div>
 						<small>Stranica {{ currentPageHuman }} od {{ numPages }}</small>
 					</BaseLevel>
 				</div>

@@ -1,12 +1,11 @@
 <script setup>
+import BasePagination from "@/components/Base/BasePagination.vue";
 import { computed, ref, onMounted } from "vue";
 
 import TableCheckboxCell from "@/components/Tables/TableCheckboxCell.vue";
 import { tableButtonMenuOptions } from "@/tableButtonMenuOptions.js";
 import { mainStore, studentStore, adminStore } from "@/main.js";
 import ButtonMenu from "@/components/Premium/ButtonMenu.vue";
-import BaseButtons from "@/components/Base/BaseButtons.vue";
-import BaseButton from "@/components/Base/BaseButton.vue";
 import BaseLevel from "@/components/Base/BaseLevel.vue";
 import LoadingOverlay from "../LoadingOverlay.vue";
 import { StudentMappings } from "@/helpers/maps";
@@ -62,18 +61,9 @@ function handlePerPageChange(option) {
 }
 const allocationsPaginated = computed(() => filteredAllocations.value.slice(perPage.value * currentPage.value, perPage.value * (currentPage.value + 1)));
 
-const numPages = computed(() => Math.ceil(allocations.value.length / perPage.value));
-const currentPageHuman = computed(() => currentPage.value + 1);
+const numPages = computed(() => Math.ceil(filteredAllocations.value.length / perPage.value));
+const currentPageHuman = computed(() => numPages.value ? currentPage.value + 1 : 0);
 
-const pagesList = computed(() => {
-	const pagesList = [];
-
-	for (let i = 0; i < numPages.value; i++) {
-		pagesList.push(i);
-	}
-
-	return pagesList;
-});
 </script>
 
 <template>
@@ -141,11 +131,11 @@ const pagesList = computed(() => {
 
 	<div class="border-t border-gray-100 p-3 dark:border-slate-800 lg:px-6">
 		<BaseLevel>
-			<BaseButtons>
+			<div class="flex flex-wrap items-center justify-center gap-3">
 				<ButtonMenu :options="tableButtonMenuOptions" :icon="mdiMenuDown" small left @update:model-value="handlePerPageChange" />
 
-				<BaseButton v-for="page in pagesList" :key="page" :active="page === currentPage" :label="page + 1" :color="page === currentPage ? 'lightDark' : 'whiteDark'" small @click="currentPage = page" />
-			</BaseButtons>
+				<BasePagination :page="currentPage + 1" :total="filteredAllocations.length" :items-per-page="perPage" @update:page="currentPage = $event - 1" />
+			</div>
 			<small>Stranica {{ currentPageHuman }} od {{ numPages }}</small>
 		</BaseLevel>
 	</div>
