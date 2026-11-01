@@ -43,12 +43,14 @@
 							Za hitne upite kontaktirajte:
 							<br />
 							<a href="mailto:ilorencin@unipu.hr" class="text-fipu_text_blue hover:text-fipu_blue">doc. dr. sc. Ivan Lorencin</a>
+							<br />
+							<a href="mailto:mmilicevi@unipu.hr" class="text-fipu_text_blue hover:text-fipu_blue">Marijela Miličević, mag. educ. inf.</a>
 						</p>
 					</div>
 
 					<!-- Refresh button -->
 					<div class="mb-4 mt-6">
-						<BaseButton label="Osvježi stranicu" color="fipu_blue" @click="refreshPage" class="px-6 py-2" />
+						<BaseButton label="Osvježi stranicu" color="fipu_blue" class="px-6 py-2" @click="refreshPage" />
 					</div>
 				</div>
 			</CardBox>
@@ -65,6 +67,35 @@
 		<SnackBar />
 	</div>
 </template>
+
+<script setup>
+import BaseButton from "@/components/Base/BaseButton.vue";
+import SnackBar from "@/components/Premium/SnackBar.vue";
+import CardBox from "@/components/Cardbox/CardBox.vue";
+import fipu_unipu from "/fipu_unipu.png";
+import { onMounted } from "vue";
+import { ref } from "vue";
+import AOS from "aos";
+
+onMounted(() => {
+	AOS.init();
+});
+
+const isBouncing = ref(false);
+const startBounce = () => {
+	isBouncing.value = true;
+	setTimeout(() => {
+		isBouncing.value = false;
+	}, 2000);
+};
+
+const refreshPage = () => {
+	window.location.reload();
+};
+
+const maintenanceMessage = "U tijeku su nadogradnja i pripreme za novu akademsku godinu 2026./2027.";
+const maintenanceExpectedCompletion = "1. 11. 2026.";
+</script>
 
 <style scoped>
 html,
@@ -107,32 +138,3 @@ body {
 	}
 }
 </style>
-
-<script setup>
-import BaseButton from "@/components/Base/BaseButton.vue";
-import SnackBar from "@/components/Premium/SnackBar.vue";
-import CardBox from "@/components/Cardbox/CardBox.vue";
-import fipu_unipu from "/fipu_unipu.png";
-import { onMounted } from "vue";
-import { ref } from "vue";
-import AOS from "aos";
-
-onMounted(() => {
-	AOS.init();
-});
-
-const isBouncing = ref(false);
-const startBounce = () => {
-	isBouncing.value = true;
-	setTimeout(() => {
-		isBouncing.value = false;
-	}, 2000);
-};
-
-const refreshPage = () => {
-	window.location.reload();
-};
-
-const maintenanceMessage = "U tijeku su nadogradnja i pripreme za novu akademsku godinu 2026./2027.";
-const maintenanceExpectedCompletion = "1. 11. 2026.";
-</script>
