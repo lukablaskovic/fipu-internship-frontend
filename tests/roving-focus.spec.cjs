@@ -1,0 +1,94 @@
+const { test, expect } = require("@playwright/test");
+test.beforeEach(async ({ page }) => {
+	await page.addInitScript(() => sessionStorage.setItem("dev-data-mode", "local"));
+	await page.goto("/tests/roving-focus.html");
+});
+test("groups use one Tab entry, arrows skip disabled/loading items, Home/End and looping work", async ({ page }) => {
+	const button = (name) => page.getByRole("button", { name, exact: true });
+	await page.locator("#before").focus();
+	await page.keyboard.press("Tab");
+	await expect(button("First")).toBeFocused();
+	await page.keyboard.press("ArrowRight");
+	await expect(button("Second")).toBeFocused();
+	await page.keyboard.press("ArrowDown");
+	await expect(button("Second")).toBeFocused();
+	await page.keyboard.press("End");
+	await expect(button("Menu")).toBeFocused();
+	await page.keyboard.press("ArrowRight");
+	await expect(button("First")).toBeFocused();
+	await page.keyboard.press("Space");
+	await expect(page.locator("output")).toHaveText("1");
+	await page.keyboard.press("Tab");
+	await expect(page.locator("#after")).toBeFocused();
+	await page.keyboard.press("Shift+Tab");
+	await expect(button("First")).toBeFocused();
+	await page.keyboard.press("Shift+Tab");
+	await expect(page.locator("#before")).toBeFocused();
+	await button("Third").focus();
+	await page.keyboard.press("Home");
+	await expect(button("First")).toBeFocused();
+	await page.locator("#after").click();
+	await button("First").focus();
+	await page.keyboard.press("ArrowRight");
+	await expect(button("Third")).toBeFocused();
+});
+test("dropdown keeps its own navigation and restores focus; standalone buttons remain tabbable", async ({ page }) => {
+	const menu = page.getByRole("button", { name: "Menu", exact: true });
+	await menu.focus();
+	await page.keyboard.press("ArrowDown");
+	await expect(page.getByRole("menuitem", { name: "Edit" })).toBeFocused();
+	await page.keyboard.press("Escape");
+	await expect(menu).toBeFocused();
+	await page.keyboard.press("Tab");
+	await expect(page.locator("#after")).toBeFocused();
+	await page.keyboard.press("Tab");
+	await expect(page.getByRole("button", { name: "Standalone" })).toBeFocused();
+});
+
+test("sidebar arrows stay vertical and nested lists have independent focus", async ({ page }) => {
+	const sidebar = page.locator("#sidebar");
+	await sidebar.getByRole("link", { name: "Overview", exact: true }).focus();
+	await page.keyboard.press("ArrowDown");
+	await expect(sidebar.getByRole("button", { name: "More" })).toBeFocused();
+	await page.keyboard.press("Enter");
+	await page.keyboard.press("Tab");
+	await expect(sidebar.getByRole("link", { name: "Child" })).toBeFocused();
+	await page.keyboard.press("ArrowDown");
+	await expect(sidebar.getByRole("link", { name: "Child" })).toBeFocused();
+	await sidebar.getByRole("link", { name: "Last" }).focus();
+	await page.keyboard.press("ArrowDown");
+	await expect(sidebar.getByRole("link", { name: "Overview", exact: true })).toBeFocused();
+});
+test("navbar navigates horizontally on desktop and vertically on mobile, hiding closed submenu", async ({ page }) => {
+	const navbar = page.locator("#navbar");
+	const account = navbar.getByRole("button", { name: "Account", exact: true });
+	await account.focus();
+	await page.keyboard.press("ArrowRight");
+	await expect(navbar.getByRole("button", { name: "Help", exact: true })).toBeFocused();
+	await page.keyboard.press("ArrowLeft");
+	await page.keyboard.press("Enter");
+	await expect(account).toHaveAttribute("aria-expanded", "true");
+	await page.keyboard.press("Tab");
+	await expect(navbar.getByRole("link", { name: "Profile", exact: true })).toBeFocused();
+	await page.keyboard.press("ArrowDown");
+	await expect(navbar.getByRole("button", { name: "Sign out" })).toBeFocused();
+	await page.keyboard.press("Escape");
+	await expect(account).toBeFocused();
+	await expect(navbar.getByRole("link", { name: "Profile", exact: true })).toBeHidden();
+	await page.setViewportSize({ width: 390, height: 844 });
+	await navbar.getByRole("link", { name: "Mobile profile" }).focus();
+	await page.keyboard.press("ArrowDown");
+	await expect(navbar.getByRole("button", { name: "Mobile help" })).toBeFocused();
+});
+
+test("collapsed mobile navigation is excluded from focus and opens with the keyboard", async ({ page }) => {
+	await page.setViewportSize({ width: 390, height: 844 });
+	const nav = page.locator("#responsive-nav");
+	const toggle = nav.getByRole("button", { name: "Navigacijski izbornik" });
+	await expect(nav.locator("[inert]")).toHaveCount(1);
+	await toggle.focus();
+	await page.keyboard.press("Enter");
+	await expect(toggle).toHaveAttribute("aria-expanded", "true");
+	await page.keyboard.press("Tab");
+	await expect(nav.getByRole("button", { name: "Mobile action" })).toBeFocused();
+});

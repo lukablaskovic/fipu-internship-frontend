@@ -1,4 +1,5 @@
 <script setup>
+import { RovingFocusGroup } from "reka-ui";
 import NavBarItem from "@/components/Navbar/NavBarItem.vue";
 import { layoutStore } from "@/main";
 
@@ -21,5 +22,7 @@ const menuClick = (event, item) => {
 </script>
 
 <template>
-	<NavBarItem v-for="(item, index) in isSubmenu ? menu : menu[layoutStore.isLg ? 0 : 1]" :key="index" :item="item" @menu-click="menuClick" />
+	<RovingFocusGroup :orientation="isSubmenu || !layoutStore.isLg ? 'vertical' : 'horizontal'" loop :class="isSubmenu ? '' : 'lg:flex lg:items-stretch'">
+		<NavBarItem v-for="(item, index) in isSubmenu ? menu : menu[layoutStore.isLg ? 0 : 1]" :key="index" :item="item" @menu-click="menuClick" />
+	</RovingFocusGroup>
 </template>

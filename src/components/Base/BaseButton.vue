@@ -2,8 +2,10 @@
 import BaseIcon from "@/components/Base/BaseIcon.vue";
 import { getButtonColor } from "@/colors.js";
 import { RouterLink } from "vue-router";
-import { Primitive } from "reka-ui";
-import { computed } from "vue";
+import { Primitive, RovingFocusItem } from "reka-ui";
+import { computed, inject } from "vue";
+
+const inButtonGroup = inject("buttonRovingFocus", false);
 
 const props = defineProps({
 	label: {
@@ -119,13 +121,14 @@ const componentClass = computed(() => {
 </script>
 
 <template>
-	<Primitive
+	<component
+		:is="inButtonGroup ? RovingFocusItem : Primitive"
 		:as="is"
 		:aria-busy="loading || undefined"
 		:aria-disabled="disabled || loading || undefined"
 		:tabindex="(disabled || loading) && is !== 'button' ? -1 : undefined"
 		:class="componentClass"
-		v-bind="to ? {} : { href }"
+		v-bind="{ ...(to ? {} : { href }), ...(inButtonGroup ? { focusable: !disabled && !loading } : {}) }"
 		:type="computedType"
 		:to="to"
 		:target="target"
@@ -137,7 +140,7 @@ const componentClass = computed(() => {
 
 		<BaseIcon v-if="icon && !loading" :path="icon" :size="iconSize" />
 		<span v-if="label" :class="loading ? 'sr-only' : labelClass">{{ label }}</span>
-	</Primitive>
+	</component>
 </template>
 <style>
 .spinner_aj0A {

@@ -1,0 +1,7 @@
+<html><head><title>Roving focus</title></head><body><div id="app" hidden></div><div id="fixture"></div><script type="module">
+import {createApp} from "vue";
+import {createRouter, createMemoryHistory} from "vue-router";
+import Test from "./RovingFocus.vue";
+const router = createRouter({history: createMemoryHistory(), routes: [{path: '/:pathMatch(.*)*', component: {template: '<div />'}}]});
+createApp(Test).use(router).mount("#fixture");
+</script></body></html>

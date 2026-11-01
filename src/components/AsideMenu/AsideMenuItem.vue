@@ -1,4 +1,5 @@
 <script setup>
+import { RovingFocusItem } from "reka-ui";
 import AsideMenuList from "@/components/AsideMenu/AsideMenuList.vue";
 import Tooltip from "@/components/Base/Tooltip.vue";
 
@@ -84,40 +85,42 @@ const menuClick = (event) => {
 <template>
 	<li>
 		<Tooltip :content="item.label" :disabled="!isCompact" side="right">
-			<component
-				:is="item.to ? RouterLink : item.href ? 'a' : 'button'"
-				v-slot="vSlot"
-				:type="!item.to && !item.href ? 'button' : undefined"
-				:aria-label="item.label"
-				:to="item.to ?? null"
-				v-bind="item.to ? {} : { href: item.href }"
-				:target="item.target ?? null"
-				:active-class="asideMenuItemActiveBgStyle"
-				class="group flex w-full cursor-pointer text-left transition-all duration-150"
-				:class="[componentClass, isCompact ? 'justify-center' : 'justify-start', 'group hover:bg-fipu_blue']"
-				@click="menuClick">
-				<BaseIcon
-					v-if="item.icon"
-					:path="item.icon"
-					class="flex-none transition-all duration-300 group-hover:text-white"
-					:w="isCompact ? 'w-8 lg:w-16' : 'w-8'"
-					:size="item.size ? item.size : 18"
-					:class="[vSlot && vSlot.isExactActive ? asideMenuItemActiveStyle : asideMenuItemInactiveStyle, { relative: item.updateMark }, item.color == 'info' ? 'text-slate-800' : '']">
-				</BaseIcon>
+			<RovingFocusItem as-child>
+				<component
+					:is="item.to ? RouterLink : item.href ? 'a' : 'button'"
+					v-slot="vSlot"
+					:type="!item.to && !item.href ? 'button' : undefined"
+					:aria-label="item.label"
+					:to="item.to ?? null"
+					v-bind="item.to ? {} : { href: item.href }"
+					:target="item.target ?? null"
+					:active-class="asideMenuItemActiveBgStyle"
+					class="group flex w-full cursor-pointer text-left transition-all duration-150"
+					:class="[componentClass, isCompact ? 'justify-center' : 'justify-start', 'group hover:bg-fipu_blue']"
+					@click="menuClick">
+					<BaseIcon
+						v-if="item.icon"
+						:path="item.icon"
+						class="flex-none transition-all duration-300 group-hover:text-white"
+						:w="isCompact ? 'w-8 lg:w-16' : 'w-8'"
+						:size="item.size ? item.size : 18"
+						:class="[vSlot && vSlot.isExactActive ? asideMenuItemActiveStyle : asideMenuItemInactiveStyle, { relative: item.updateMark }, item.color == 'info' ? 'text-slate-800' : '']">
+					</BaseIcon>
 
-				<span
-					class="line-clamp-1 text-clip transition-all duration-300"
-					:class="[
-						{ '': isCompact, '': !hasSub },
-						vSlot && vSlot.isExactActive ? asideMenuItemActiveStyle : asideMenuItemInactiveStyle,
-						isCompact ? (item.menu == undefined ? 'w-52 lg:w-0' : 'w-40 lg:w-0') : 'w-40',
-						item.color == 'info' ? 'font-medium text-slate-900 hover:underline' : '',
-					]">
-					{{ item.label }}
-				</span>
+					<span
+						class="line-clamp-1 text-clip transition-all duration-300"
+						:class="[
+							{ '': isCompact, '': !hasSub },
+							vSlot && vSlot.isExactActive ? asideMenuItemActiveStyle : asideMenuItemInactiveStyle,
+							isCompact ? (item.menu == undefined ? 'w-52 lg:w-0' : 'w-40 lg:w-0') : 'w-40',
+							item.color == 'info' ? 'font-medium text-slate-900 hover:underline' : '',
+						]">
+						{{ item.label }}
+					</span>
 
-				<BaseIcon v-if="hasSub" :path="subIcon" class="flex-none animate-fade-in-fast" w="w-12" :class="[{ 'lg:hidden': isCompact }, vSlot && vSlot.isExactActive ? asideMenuItemActiveStyle : asideMenuItemInactiveStyle]" />
-			</component>
+					<BaseIcon v-if="hasSub" :path="subIcon" class="flex-none animate-fade-in-fast" w="w-12" :class="[{ 'lg:hidden': isCompact }, vSlot && vSlot.isExactActive ? asideMenuItemActiveStyle : asideMenuItemInactiveStyle]" />
+				</component>
+			</RovingFocusItem>
 		</Tooltip>
 		<AsideMenuList v-if="hasDropdown" :menu="item.menu" is-dropdown-list :class="[styleStore.asideMenuDropdownStyle, isDropdownActive ? 'block dark:bg-slate-800/50' : 'hidden']" />
 	</li>

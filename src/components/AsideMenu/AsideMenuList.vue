@@ -1,4 +1,5 @@
 <script setup>
+import { RovingFocusGroup } from "reka-ui";
 import AsideMenuItem from "@/components/AsideMenu/AsideMenuItem.vue";
 
 defineProps({
@@ -22,7 +23,7 @@ const menuClick = (event, item) => {
 </script>
 
 <template>
-	<ul>
+	<RovingFocusGroup as="ul" orientation="vertical" loop>
 		<AsideMenuItem v-for="(item, index) in menu" :key="index" :item="item" :is-dropdown-list="isDropdownList" :is-compact="isCompact" :active-secondary-menu-key="activeSecondaryMenuKey" @menu-click="menuClick" />
-	</ul>
+	</RovingFocusGroup>
 </template>

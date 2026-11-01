@@ -51,7 +51,7 @@ const menuClick = (event, item) => {
 				</NavBarItemPlain>
 			</NavBar>
 
-			<AsideMenu :menu="menuAsideGuest" :is-aside-mobile-expanded="layoutStore.isAsideMobileExpanded" :is-aside-lg-active="layoutStore.isAsideLgActive" @menu-click="menuClick" @aside-lg-close-click="layoutStore.isAsideLgActive = false" />
+			<AsideMenu :menu="menuAsideGuest" @menu-click="menuClick" />
 			<slot></slot>
 			<div class="mt-6">
 				<FooterBar

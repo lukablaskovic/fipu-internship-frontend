@@ -1,5 +1,6 @@
 <script>
-import { h, defineComponent } from "vue";
+import { h, defineComponent, provide } from "vue";
+import { RovingFocusGroup } from "reka-ui";
 
 export default defineComponent({
 	name: "BaseButtons",
@@ -18,6 +19,9 @@ export default defineComponent({
 			default: "-mb-3",
 		},
 	},
+	setup() {
+		provide("buttonRovingFocus", true);
+	},
 	render() {
 		const hasSlot = this.$slots && this.$slots.default;
 
@@ -28,9 +32,9 @@ export default defineComponent({
 		}
 
 		return h(
-			"div",
-			{ class: parentClass },
-			hasSlot
+			RovingFocusGroup,
+			{ class: parentClass, orientation: "horizontal", loop: true },
+			() => hasSlot
 				? this.$slots.default().map((element) => {
 						if (element && element.children && typeof element.children === "object") {
 							return h(

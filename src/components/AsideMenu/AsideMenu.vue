@@ -1,7 +1,7 @@
 <script setup>
 import { mdiClose, mdiChevronRightCircleOutline, mdiChevronLeftCircleOutline } from "@mdi/js";
 import AsideMenuLayer from "@/components/AsideMenu/AsideMenuLayer.vue";
-import AsideMenuItem from "@/components/AsideMenu/AsideMenuItem.vue";
+import AsideMenuList from "@/components/AsideMenu/AsideMenuList.vue";
 import OverlayLayer from "@/components/OverlayLayer.vue";
 import BaseIcon from "@/components/Base/BaseIcon.vue";
 import { useRouter } from "vue-router";
@@ -102,9 +102,7 @@ const expandCollapseItem = computed(() => ({
 
 		<!--Expand strelica-->
 		<template #footer>
-			<ul class="hidden lg:block">
-				<AsideMenuItem :item="expandCollapseItem" :is-compact="isPrimaryMenuCompact" @menu-click="isPrimaryMenuCompact = !isPrimaryMenuCompact" />
-			</ul>
+			<AsideMenuList :menu="[expandCollapseItem]" :is-compact="isPrimaryMenuCompact" class="hidden lg:block" @menu-click="isPrimaryMenuCompact = !isPrimaryMenuCompact" />
 		</template>
 	</AsideMenuLayer>
 
