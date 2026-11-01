@@ -12,9 +12,9 @@ test("guest internship renders and the sidebar expands without console errors", 
 	await page.goto("/moja-praksa");
 	await expect(page.getByRole("heading", { name: "Dostupni zadaci", exact: true })).toBeVisible();
 	await expect(page.getByText("Učitavanje...", { exact: true })).toHaveCount(0);
-	await page.getByRole("button", { name: "Proširi", exact: true }).press("Enter");
-	await expect(page.getByRole("button", { name: "Smanji", exact: true })).toBeVisible();
+	await page.getByRole("button", { name: "Proširi izbornik", exact: true }).press("Enter");
+	await expect(page.getByRole("button", { name: "Smanji izbornik", exact: true })).toBeVisible();
 	await page.keyboard.press("Escape");
-	await expect(page.getByRole("button", { name: "Proširi", exact: true })).toBeVisible();
+	await expect(page.getByRole("button", { name: "Proširi izbornik", exact: true })).toBeVisible();
 	expect(errors).toEqual([]);
 });

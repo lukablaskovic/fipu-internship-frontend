@@ -53,7 +53,7 @@ test.describe("local authenticated workflows", () => {
 		await page.keyboard.press("Escape");
 		await expect(filter).toBeFocused();
 		await page.goto(new URL("/profil", process.env.LOCAL_AUTH_URL).href);
-		await expect(page.getByText("Korisnički profil", { exact: true })).toBeVisible();
+		await expect(page.getByRole("heading", { name: "Moj profil", exact: true })).toHaveClass("sr-only");
 		const logout = page.locator("nav").getByRole("button", { name: "Odjava", exact: true }).last();
 		await logout.focus();
 		await expect(page.getByRole("tooltip")).toHaveText("Odjava");

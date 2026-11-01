@@ -126,7 +126,7 @@ const routes = [
 	},
 	{
 		meta: {
-			title: "Korisnički profil",
+			title: "Moj profil",
 			requiresAuth: true,
 		},
 		path: "/profil",

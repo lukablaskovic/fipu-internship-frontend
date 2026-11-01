@@ -1,9 +1,7 @@
 <script setup>
 import { computed, ref } from "vue";
-import { BASEROW_URL } from "@/config.js";
 import { mainStore } from "@/main.js";
-import { mdiAccount, mdiAccountCircle, mdiDatabase, mdiDomain, mdiLaptop, mdiAccountMultiple, mdiCameraOutline } from "@mdi/js";
-import SectionTitleLineWithButton from "@/components/Section/SectionTitleLineWithButton.vue";
+import { mdiAccountCircle, mdiDomain, mdiLaptop, mdiCameraOutline } from "@mdi/js";
 import UserAvatarCurrentUser from "@/components/User/UserAvatarCurrentUser.vue";
 import UserAvatar from "@/components/User/UserAvatar.vue";
 import LayoutAuthenticated from "@/layouts/LayoutAuthenticated.vue";
@@ -77,7 +75,7 @@ const details = computed(() => [
 <template>
 	<LayoutAuthenticated>
 		<SectionMain>
-			<SectionTitleLineWithButton :icon="mdiAccount" title="Korisnički profil" main />
+			<h1 class="sr-only">Moj profil</h1>
 			<CardBox class="rounded-lg">
 				<div class="flex items-center gap-4">
 					<div class="relative h-28 w-28 shrink-0">
@@ -105,12 +103,20 @@ const details = computed(() => [
 
 				<p v-if="message" role="status" class="mt-3 text-sm text-green-700 dark:text-green-400">{{ message }}</p>
 				<form v-if="editing" id="avatar-editor" class="mt-4 max-w-lg" @submit.prevent="saveAvatar">
-					<FormField label="URL profilne slike" help="Unesite javno dostupnu HTTPS poveznicu na sliku.">
-						<FormControl v-model="avatarUrl" type="url" maxlength="2048" required :disabled="saving" placeholder="https://…" @update:model-value="previewLoaded = false; error = ''" />
+					<FormField :error="error || (avatarUrl && !previewUrl ? 'Unesite valjanu HTTPS poveznicu.' : null)" label="URL profilne slike" help="Unesite javno dostupnu HTTPS poveznicu na sliku.">
+						<FormControl
+							v-model="avatarUrl"
+							type="url"
+							maxlength="2048"
+							required
+							:disabled="saving"
+							placeholder="https://…"
+							@update:model-value="
+								previewLoaded = false;
+								error = '';
+							" />
 					</FormField>
 					<UserAvatar v-if="previewUrl" :key="previewUrl" :avatar="previewUrl" username="Pregled nove profilne slike" referrer-policy="no-referrer" class="mb-3 h-16 w-16" @loading-status-change="updatePreviewStatus" />
-					<p v-if="avatarUrl && !previewUrl" class="mb-3 text-sm text-red-600">Unesite valjanu HTTPS poveznicu.</p>
-					<p v-if="error" role="alert" class="mb-3 text-sm text-red-600 dark:text-red-400">{{ error }}</p>
 					<div class="flex gap-2">
 						<BaseButton type="submit" label="Spremi sliku" color="info" small :loading="saving" :disabled="!previewLoaded || !previewUrl" />
 						<BaseButton label="Odustani" small :disabled="saving" @click="editing = false" />
@@ -120,19 +126,13 @@ const details = computed(() => [
 				<dl class="my-5 grid grid-cols-1 gap-x-6 gap-y-4 border-y border-gray-100 py-5 dark:border-slate-700 sm:grid-cols-2 lg:grid-cols-3">
 					<div v-for="[label, value] in details" :key="label" class="min-w-0">
 						<dt class="text-sm text-gray-500 dark:text-gray-400">{{ label }}</dt>
-						<dd class="mt-1 break-words font-medium">{{ value || '—' }}</dd>
+						<dd class="mt-1 break-words font-medium">{{ value || "—" }}</dd>
 					</div>
 				</dl>
 
-				<div class="flex flex-wrap gap-2">
-					<template v-if="mainStore.userAdmin">
-						<BaseButton to="/studenti" :icon="mdiAccountMultiple" label="Studenti" small />
-						<BaseButton :href="BASEROW_URL" target="_blank" rel="noopener noreferrer" :icon="mdiDatabase" label="Baserow" small />
-					</template>
-					<template v-else>
-						<BaseButton to="/moja-praksa" :icon="mdiLaptop" label="Moja praksa" small />
-						<BaseButton to="/stanje-procesa" :icon="mdiLaptop" label="Stanje procesa" small />
-					</template>
+				<div v-if="!mainStore.userAdmin" class="flex flex-wrap gap-2">
+					<BaseButton to="/moja-praksa" :icon="mdiLaptop" label="Moja praksa" small />
+					<BaseButton to="/stanje-procesa" :icon="mdiLaptop" label="Stanje procesa" small />
 				</div>
 			</CardBox>
 		</SectionMain>

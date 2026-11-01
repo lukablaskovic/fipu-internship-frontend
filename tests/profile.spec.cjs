@@ -1,5 +1,32 @@
 const { test, expect } = require("@playwright/test");
 
+for (const width of [1280, 390]) {
+	test(`Moj profil navigates to its authenticated route and survives reload at ${width}px`, async ({ page }) => {
+		await page.setViewportSize({ width, height: 844 });
+		await page.addInitScript(() => sessionStorage.setItem("dev-data-mode", "local"));
+		await page.goto("/profil");
+		await expect(page).toHaveURL(/\/prijava$/);
+		await page.evaluate(() => {
+			sessionStorage.setItem("token", "local-profile-test");
+			sessionStorage.setItem("main", JSON.stringify({ currentUser: {
+				ime: "Demo", prezime: "Korisnik", email: "student@local.test",
+				internship_process: { id: null, pending_user_task: null },
+			} }));
+		});
+		await page.goto("/upute");
+		if (width < 1024) await page.getByRole("button", { name: "Navigacijski izbornik", exact: true }).click();
+		else await page.locator("nav").getByRole("button", { name: "Demo Korisnik", exact: true }).click();
+		const profile = page.locator("nav").getByRole("link", { name: "Moj profil", exact: true });
+		await expect(profile).toHaveAttribute("href", "/profil");
+		await profile.click();
+		await expect(page).toHaveURL(/\/profil$/);
+		await expect(page).toHaveTitle("Moj profil — FIPU Praksa");
+		await page.reload();
+		await expect(page).toHaveURL(/\/profil$/);
+		await expect(page.getByRole("heading", { name: "Demo Korisnik", exact: true })).toBeVisible();
+	});
+}
+
 async function openProfile(page, admin = false) {
 	await page.route(/\/src\/main(?:\.js)?(?:\?.*)?$/, route => route.fulfill({ contentType: "application/javascript", body: `
 		import { reactive } from '/node_modules/.vite/deps/vue.js';
@@ -14,6 +41,8 @@ async function openProfile(page, admin = false) {
 
 test("profile is compact on desktop and mobile, with role-specific details", async ({ page }) => {
 	await openProfile(page);
+	await expect(page.getByRole("heading", { name: "Moj profil", exact: true })).toHaveClass("sr-only");
+	await expect(page.getByText("Korisnički profil", { exact: true })).toHaveCount(0);
 	await expect(page.getByText("JMBAG", { exact: true })).toBeVisible();
 	await expect(page.getByRole("link", { name: "Moja praksa" })).toBeVisible();
 	await page.setViewportSize({ width: 1280, height: 800 });
@@ -24,7 +53,8 @@ test("profile is compact on desktop and mobile, with role-specific details", asy
 	await page.screenshot({ path: "/tmp/profile-mobile.png" });
 	await openProfile(page, true);
 	await expect(page.getByText("JMBAG", { exact: true })).toHaveCount(0);
-	await expect(page.getByRole("link", { name: "Baserow" })).toBeVisible();
+	await expect(page.getByRole("link", { name: "Baserow", exact: true })).toHaveCount(0);
+	await expect(page.getByRole("link", { name: "Studenti", exact: true })).toHaveCount(0);
 });
 
 test("avatar preview, validation, failed save, successful save and cancel", async ({ page }) => {
