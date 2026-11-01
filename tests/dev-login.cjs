@@ -15,7 +15,7 @@ async function renderLogin(dev, local) {
 		if (name === "vue-router") return { useRouter: () => ({}) };
 		if (name === "vue3-google-login") return { GoogleLogin: { render: () => h("button", "Google sign-in") } };
 		if (name.endsWith("BaseButton.vue")) return { props: ["label"], render() { return h("button", this.label); } };
-		if (name.endsWith("FormCheckRadio.vue")) return { props: ["name", "modelValue"], render() { return h("button", { role: "switch", "aria-label": this.name, "aria-checked": this.modelValue }); } };
+		if (name.endsWith("FormCheckRadio.vue")) return { props: ["name", "label", "modelValue"], render() { return h("button", { role: "switch", "aria-label": this.label || this.name, "aria-checked": this.modelValue }, this.label); } };
 		if (name.endsWith("SnackBar.vue")) return { render: () => null };
 		if (name.startsWith("/")) return name;
 		return require(name);
@@ -29,11 +29,10 @@ async function renderLogin(dev, local) {
 (async () => {
 	for (const [dev, local] of [[true, true], [true, false], [false, false]]) {
 		const html = await renderLogin(dev, local);
-		assert.equal(html.includes("Testni podaci (lokalno)"), dev);
+		assert.equal(html.includes('>Mock</button>'), dev);
 		if (dev) {
 			assert.ok(html.indexOf('role="switch"') > html.indexOf("</main>"));
 			assert.ok(html.includes('aria-checked="' + local + '"'));
-			assert.ok(!html.includes('>Testni podaci (lokalno)<'));
 		}
 		assert.equal(html.includes("Lokalni student"), local);
 		assert.equal(html.includes("Lokalni administrator"), local);
