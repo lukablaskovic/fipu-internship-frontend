@@ -40,7 +40,6 @@ import PillTag from "@/components/PillTag/PillTag.vue";
 import { ActivityEventMappings } from "@/helpers/maps.js";
 import { latestEvents } from "@/filterOptions.js";
 
-
 const router = useRouter();
 
 const ongoing_internships = ref(0);
@@ -100,6 +99,7 @@ onMounted(async () => {
 	}
 });
 
+const statisticsModel = ref("AB");
 const logView = ref("list");
 const logSearch = ref("");
 const studentName = (event) => [event.student_ime, event.student_prezime].filter(Boolean).join(" ") || "Nepoznat student";
@@ -174,92 +174,101 @@ const { perPage, currentPage, itemsPaginated, numPages, currentPageHuman } = use
 			<SectionMain>
 				<SectionTitleLineWithButton :icon="mdiViewDashboard" title="Nadzorna ploča" main> </SectionTitleLineWithButton>
 				<p class="mb-4"><b>Akademska godina:</b> {{ mainStore.academicYear }}</p>
-				<p class="mb-4"><b>Statistika | Općenito</b></p>
+				<Tabs.Root v-model="statisticsModel">
+					<Tabs.List aria-label="Statistika po modelu prakse" class="mb-4 inline-flex rounded-lg bg-white p-1 text-sm dark:bg-slate-800">
+						<Tabs.Trigger v-for="model in [{ id: 'A', label: 'A' }, { id: 'B', label: 'B' }, { id: 'AB', label: 'Sve' }]" :key="model.id" :value="model.id" class="rounded px-3 py-1.5 focus-visible:outline focus-visible:outline-2 focus-visible:outline-fipu_blue data-[state=active]:bg-fipu_blue data-[state=active]:text-white">{{ model.label }}</Tabs.Trigger>
+					</Tabs.List>
+					<Tabs.Content value="AB">
+						<p class="mb-4"><b>Statistika | Općenito</b></p>
 
-				<div class="mb-6 grid grid-cols-1 gap-6 lg:grid-cols-3">
-					<CardBoxWidget v-if="adminStore.studentsFetched" color="text-fipu_blue" class="rounded-lg" :icon="mdiAccountSchoolOutline" :number="finished_internships" label="Uspješno odrađenih praksi (A + B)" />
-					<SkeletonLoader v-else></SkeletonLoader>
+						<div class="mb-6 grid grid-cols-1 gap-6 lg:grid-cols-3">
+							<CardBoxWidget v-if="adminStore.studentsFetched" color="text-fipu_blue" class="rounded-lg" :icon="mdiAccountSchoolOutline" :number="finished_internships" label="Uspješno odrađenih praksi (A + B)" />
+							<SkeletonLoader v-else></SkeletonLoader>
 
-					<CardBoxWidget
-						v-if="adminStore.studentsFetched"
-						color="text-fipu_blue"
-						class="cursor-pointer rounded-lg hover:bg-fipu_blue/10"
-						:icon="mdiAccountMultiple"
-						:number="ongoing_internships"
-						label="Ukupno aktivnih procesa (A + B)"
-						@click="router.push('/studenti?model=AB')" />
-					<SkeletonLoader v-else></SkeletonLoader>
+							<CardBoxWidget
+								v-if="adminStore.studentsFetched"
+								color="text-fipu_blue"
+								class="cursor-pointer rounded-lg hover:bg-fipu_blue/10"
+								:icon="mdiAccountMultiple"
+								:number="ongoing_internships"
+								label="Ukupno aktivnih procesa (A + B)"
+								@click="router.push('/studenti?model=AB')" />
+							<SkeletonLoader v-else></SkeletonLoader>
 
-					<CardBoxWidget v-if="adminStore.studentsFetched" color="text-fipu_blue" class="rounded-lg" :icon="mdiAccountCancel" :number="0" label="Odustalo od prakse" />
-					<SkeletonLoader v-else></SkeletonLoader>
+							<CardBoxWidget v-if="adminStore.studentsFetched" color="text-fipu_blue" class="rounded-lg" :icon="mdiAccountCancel" :number="0" label="Odustalo od prakse" />
+							<SkeletonLoader v-else></SkeletonLoader>
 
-					<CardBoxWidget v-if="adminStore.studentsFetched" color="text-fipu_blue" class="rounded-lg" :icon="mdiAlphaSBox" :number="waiting_for_mark" label="Čeka na upis ocjene" />
-					<SkeletonLoader v-else></SkeletonLoader>
-				</div>
+							<CardBoxWidget v-if="adminStore.studentsFetched" color="text-fipu_blue" class="rounded-lg" :icon="mdiAlphaSBox" :number="waiting_for_mark" label="Čeka na upis ocjene" />
+							<SkeletonLoader v-else></SkeletonLoader>
+						</div>
+					</Tabs.Content>
+					<Tabs.Content value="A">
+						<p class="mb-4">
+							<b>Statistika | Model prakse <PillTag color="danger" label="A" /></b>
+						</p>
 
-				<p class="mb-4">
-					<b>Statistika | Model prakse <PillTag color="danger" label="A" /></b>
-				</p>
+						<div class="mb-6 grid grid-cols-1 gap-6 lg:grid-cols-3">
+							<CardBoxWidget v-if="adminStore.studentsFetched" color="text-rose-600" class="rounded-lg" :icon="mdiAccountSchoolOutline" :number="a_finished_internships" label="Uspješno odrađenih praksi (A)" />
+							<SkeletonLoader v-else></SkeletonLoader>
 
-				<div class="mb-6 grid grid-cols-1 gap-6 lg:grid-cols-3">
-					<CardBoxWidget v-if="adminStore.studentsFetched" color="text-rose-600" class="rounded-lg" :icon="mdiAccountSchoolOutline" :number="a_finished_internships" label="Uspješno odrađenih praksi (A)" />
-					<SkeletonLoader v-else></SkeletonLoader>
+							<CardBoxWidget
+								v-if="adminStore.studentsFetched"
+								color="text-rose-600"
+								class="cursor-pointer rounded-lg hover:bg-fipu_blue/10"
+								:icon="mdiAccountMultiple"
+								:number="a_ongoing_internships"
+								label="Ukupno aktivnih procesa (A)"
+								@click="router.push('/studenti?model=A')" />
+							<SkeletonLoader v-else></SkeletonLoader>
 
-					<CardBoxWidget
-						v-if="adminStore.studentsFetched"
-						color="text-rose-600"
-						class="cursor-pointer rounded-lg hover:bg-fipu_blue/10"
-						:icon="mdiAccountMultiple"
-						:number="a_ongoing_internships"
-						label="Ukupno aktivnih procesa (A)"
-						@click="router.push('/studenti?model=A')" />
-					<SkeletonLoader v-else></SkeletonLoader>
+							<CardBoxWidget
+								v-if="adminStore.studentsFetched"
+								color="text-rose-600"
+								class="cursor-pointer rounded-lg hover:bg-fipu_blue/10"
+								:icon="mdiProgressClock"
+								:number="waiting_for_allocation"
+								label="Čeka na alokaciju"
+								@click="router.push('/studenti?stage=ceka_alokaciju')" />
+							<SkeletonLoader v-else></SkeletonLoader>
 
-					<CardBoxWidget
-						v-if="adminStore.studentsFetched"
-						color="text-rose-600"
-						class="cursor-pointer rounded-lg hover:bg-fipu_blue/10"
-						:icon="mdiProgressClock"
-						:number="waiting_for_allocation"
-						label="Čeka na alokaciju"
-						@click="router.push('/studenti?stage=ceka_alokaciju')" />
-					<SkeletonLoader v-else></SkeletonLoader>
+							<CardBoxWidget v-if="adminStore.studentsFetched" color="text-rose-600" class="rounded-lg" :icon="mdiAccountTie" :number="waiting_for_evaluation" label="Evaluacija poslodavca u tijeku" />
+							<SkeletonLoader v-else></SkeletonLoader>
+						</div>
+					</Tabs.Content>
+					<Tabs.Content value="B">
+						<p class="mb-4">
+							<b>Statistika | Model prakse <PillTag color="success" label="B" /></b>
+						</p>
 
-					<CardBoxWidget v-if="adminStore.studentsFetched" color="text-rose-600" class="rounded-lg" :icon="mdiAccountTie" :number="waiting_for_evaluation" label="Evaluacija poslodavca u tijeku" />
-					<SkeletonLoader v-else></SkeletonLoader>
-				</div>
+						<div class="mb-6 grid grid-cols-1 gap-6 lg:grid-cols-3">
+							<CardBoxWidget v-if="adminStore.studentsFetched" color="text-emerald-500" class="rounded-lg" :icon="mdiAccountSchoolOutline" :number="b_finished_internships" label="Uspješno odrađenih praksi (B)" />
+							<SkeletonLoader v-else></SkeletonLoader>
 
-				<p class="mb-4">
-					<b>Statistika | Model prakse <PillTag color="success" label="B" /></b>
-				</p>
+							<CardBoxWidget
+								v-if="adminStore.studentsFetched"
+								color="text-emerald-500"
+								class="cursor-pointer rounded-lg hover:bg-fipu_blue/10"
+								:icon="mdiAccountMultiple"
+								:number="b_ongoing_internships"
+								label="Ukupno aktivnih procesa (B)"
+								@click="router.push('/studenti?model=B')" />
+							<SkeletonLoader v-else></SkeletonLoader>
 
-				<div class="mb-6 grid grid-cols-1 gap-6 lg:grid-cols-3">
-					<CardBoxWidget v-if="adminStore.studentsFetched" color="text-emerald-500" class="rounded-lg" :icon="mdiAccountSchoolOutline" :number="b_finished_internships" label="Uspješno odrađenih praksi (B)" />
-					<SkeletonLoader v-else></SkeletonLoader>
+							<CardBoxWidget
+								v-if="adminStore.studentsFetched"
+								color="text-emerald-500"
+								class="cursor-pointer rounded-lg hover:bg-fipu_blue/10"
+								:icon="mdiProgressClock"
+								:number="b_waiting_for_assignment_approval"
+								label="Čeka na odobrenje zadatka"
+								@click="router.push('/studenti?stage=ceka_odobrenje')" />
+							<SkeletonLoader v-else></SkeletonLoader>
 
-					<CardBoxWidget
-						v-if="adminStore.studentsFetched"
-						color="text-emerald-500"
-						class="cursor-pointer rounded-lg hover:bg-fipu_blue/10"
-						:icon="mdiAccountMultiple"
-						:number="b_ongoing_internships"
-						label="Ukupno aktivnih procesa (B)"
-						@click="router.push('/studenti?model=B')" />
-					<SkeletonLoader v-else></SkeletonLoader>
-
-					<CardBoxWidget
-						v-if="adminStore.studentsFetched"
-						color="text-emerald-500"
-						class="cursor-pointer rounded-lg hover:bg-fipu_blue/10"
-						:icon="mdiProgressClock"
-						:number="b_waiting_for_assignment_approval"
-						label="Čeka na odobrenje zadatka"
-						@click="router.push('/studenti?stage=ceka_odobrenje')" />
-					<SkeletonLoader v-else></SkeletonLoader>
-
-					<CardBoxWidget v-if="adminStore.studentsFetched" color="text-emerald-500" class="rounded-lg" :icon="mdiNoteAlert" :number="b_waiting_for_direct_assignment" label="Nije se još prijavilo" />
-					<SkeletonLoader v-else></SkeletonLoader>
-				</div>
+							<CardBoxWidget v-if="adminStore.studentsFetched" color="text-emerald-500" class="rounded-lg" :icon="mdiNoteAlert" :number="b_waiting_for_direct_assignment" label="Nije se još prijavilo" />
+							<SkeletonLoader v-else></SkeletonLoader>
+						</div>
+					</Tabs.Content>
+				</Tabs.Root>
 
 				<SectionTitleLineWithButton :icon="mdiCardSearch" title="Događaji (logs)" main> </SectionTitleLineWithButton>
 
