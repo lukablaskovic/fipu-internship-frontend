@@ -1,6 +1,7 @@
 <script setup>
 import CardBoxComponentEmpty from "@/components/Cardbox/CardBoxComponentEmpty.vue";
 import BasePagination from "@/components/Base/BasePagination.vue";
+import { usePagination } from "@/composables/usePagination.js";
 import { computed, ref } from "vue";
 import { mainStore } from "@/main.js";
 import { mdiEye, mdiTrashCan } from "@mdi/js";
@@ -21,18 +22,9 @@ const isModalActive = ref(false);
 
 const isModalDangerActive = ref(false);
 
-const perPage = ref(5);
-
-const currentPage = ref(0);
-
 const checkedRows = ref([]);
 
-const itemsPaginated = computed(() => items.value.slice(perPage.value * currentPage.value, perPage.value * (currentPage.value + 1)));
-
-const numPages = computed(() => Math.ceil(items.value.length / perPage.value));
-
-const currentPageHuman = computed(() => numPages.value ? currentPage.value + 1 : 0);
-
+const { perPage, currentPage, itemsPaginated, numPages, currentPageHuman } = usePagination(items, 5);
 
 const remove = (arr, cb) => {
 	const newArr = [];

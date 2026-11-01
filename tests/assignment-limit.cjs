@@ -16,6 +16,7 @@ for (const name of ["Available", "New", "Rejected"]) {
 	});
 	const dependency = (name) => {
 		if (name === "vue") return { ...vue, onMounted() {}, watch() {} };
+		if (name === "@/composables/usePagination.js") return { usePagination: () => ({}) };
 		if (name === "vue-router") return { useRoute: () => ({ params: {} }) };
 		if (name === "@/main.js") return { mainStore, adminStore: {} };
 		return {};

@@ -1,6 +1,7 @@
 <script setup>
 import CardBoxComponentEmpty from "@/components/Cardbox/CardBoxComponentEmpty.vue";
 import BasePagination from "@/components/Base/BasePagination.vue";
+import { usePagination } from "@/composables/usePagination.js";
 import { computed, ref, onMounted, watch } from "vue";
 
 import TableCheckboxCell from "@/components/Tables/TableCheckboxCell.vue";
@@ -20,8 +21,7 @@ defineProps({
 	checkable: Boolean,
 });
 
-const perPage = ref(10);
-const currentPage = ref(0);
+const allCompanies = ref([]);
 
 const filteredCompanies = computed(() => {
 	return allCompanies.value.filter((company) => {
@@ -29,18 +29,8 @@ const filteredCompanies = computed(() => {
 	});
 });
 
-const companiesPaginated = computed(() => {
-	return filteredCompanies.value.slice(perPage.value * currentPage.value, perPage.value * (currentPage.value + 1));
-});
+const { perPage, currentPage, itemsPaginated: companiesPaginated, numPages, currentPageHuman, handlePerPageChange } = usePagination(filteredCompanies);
 
-const numPages = computed(() => {
-	return Math.ceil(filteredCompanies.value.length / perPage.value);
-});
-
-const currentPageHuman = computed(() => numPages.value ? currentPage.value + 1 : 0);
-
-
-const allCompanies = ref([]);
 const dataLoaded = ref(false);
 
 let company_highlight = ref("");
@@ -63,11 +53,6 @@ function getAssignmentPage(naziv) {
 	const index = allCompanies.value.findIndex((assignment) => assignment["naziv"] === naziv);
 	if (index === -1) return 0;
 	return Math.floor(index / perPage.value);
-}
-
-function handlePerPageChange(option) {
-	perPage.value = option.value;
-	currentPage.value = 0;
 }
 
 watch(() => route.params.naziv, loadData, {

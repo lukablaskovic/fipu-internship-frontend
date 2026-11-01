@@ -4,6 +4,7 @@ import FormControlListbox from "@/components/Premium/FormControlListbox.vue";
 import { searchAndSortEvents } from "@/helpers/log-events.js";
 import CardBoxComponentEmpty from "@/components/Cardbox/CardBoxComponentEmpty.vue";
 import BasePagination from "@/components/Base/BasePagination.vue";
+import { usePagination } from "@/composables/usePagination.js";
 import {
 	mdiNoteAlert,
 	mdiAccountTie,
@@ -163,11 +164,7 @@ const formattedDate = (timestamp) => {
 	}
 };
 
-const perPage = ref(10);
-const currentPage = ref(0);
-const itemsPaginated = computed(() => filteredEvents.value.slice(perPage.value * currentPage.value, perPage.value * (currentPage.value + 1)));
-const numPages = computed(() => Math.ceil(filteredEvents.value.length / perPage.value));
-const currentPageHuman = computed(() => numPages.value ? currentPage.value + 1 : 0);
+const { perPage, currentPage, itemsPaginated, numPages, currentPageHuman } = usePagination(filteredEvents);
 
 </script>
 

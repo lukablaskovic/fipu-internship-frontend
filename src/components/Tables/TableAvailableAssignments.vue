@@ -89,6 +89,7 @@
 <script setup>
 import CardBoxComponentEmpty from "@/components/Cardbox/CardBoxComponentEmpty.vue";
 import BasePagination from "@/components/Base/BasePagination.vue";
+import { usePagination } from "@/composables/usePagination.js";
 import { computed, ref, onMounted, watch } from "vue";
 
 import SkeletonLoaderAssignmentRow from "@/components/SkeletonLoaderAssignmentRow.vue";
@@ -110,18 +111,12 @@ import { useRoute } from "vue-router";
 
 defineProps({ checkable: Boolean });
 
-const perPage = ref(10);
-
-function handlePerPageChange(option) {
-	perPage.value = option.value;
-	currentPage.value = 0;
-}
-
-const currentPage = ref(0);
 const searchQuery = ref("");
 const companiesLoaded = ref(false);
 const companyLogoCache = ref({});
 const loadingCompanyLogoKeys = new Set();
+
+const allAvailableAssignments = ref([]);
 
 const filteredAssignments = computed(() => {
 	const query = searchQuery.value.toLowerCase();
@@ -136,23 +131,13 @@ const filteredAssignments = computed(() => {
 	});
 });
 
-// Paginated version of filtered assignments
-const paginatedAssignments = computed(() => {
-	const start = perPage.value * currentPage.value;
-	const end = perPage.value * (currentPage.value + 1);
-	return filteredAssignments.value.slice(start, end);
-});
-
-const numPages = computed(() => Math.ceil(filteredAssignments.value.length / perPage.value));
-const currentPageHuman = computed(() => numPages.value ? currentPage.value + 1 : 0);
-
+const { perPage, currentPage, itemsPaginated: paginatedAssignments, numPages, currentPageHuman, handlePerPageChange } = usePagination(filteredAssignments);
 
 const MAX_NUM_ASSIGNMENTS = 3;
 
 const isModalActive = ref(null);
 const assignmentLimitActive = ref(false);
 
-const allAvailableAssignments = ref([]);
 const dataLoaded = ref(false);
 
 let checkedAssignments = computed(() => mainStore.checkedAssignments);

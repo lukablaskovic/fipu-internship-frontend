@@ -1,6 +1,7 @@
 <script setup>
 import CardBoxComponentEmpty from "@/components/Cardbox/CardBoxComponentEmpty.vue";
 import BasePagination from "@/components/Base/BasePagination.vue";
+import { usePagination } from "@/composables/usePagination.js";
 import { computed, ref, onMounted } from "vue";
 
 import TableCheckboxCell from "@/components/Tables/TableCheckboxCell.vue";
@@ -53,17 +54,7 @@ async function fetchPDF(type, search) {
 	window.open(url, "_blank");
 }
 
-const perPage = ref(10);
-const currentPage = ref(0);
-
-function handlePerPageChange(option) {
-	perPage.value = option.value;
-	currentPage.value = 0;
-}
-const allocationsPaginated = computed(() => filteredAllocations.value.slice(perPage.value * currentPage.value, perPage.value * (currentPage.value + 1)));
-
-const numPages = computed(() => Math.ceil(filteredAllocations.value.length / perPage.value));
-const currentPageHuman = computed(() => numPages.value ? currentPage.value + 1 : 0);
+const { perPage, currentPage, itemsPaginated: allocationsPaginated, numPages, currentPageHuman, handlePerPageChange } = usePagination(filteredAllocations);
 
 </script>
 

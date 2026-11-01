@@ -1,6 +1,7 @@
 <script setup>
 import CardBoxComponentEmpty from "@/components/Cardbox/CardBoxComponentEmpty.vue";
 import BasePagination from "@/components/Base/BasePagination.vue";
+import { usePagination } from "@/composables/usePagination.js";
 import { computed, ref, onMounted, watch } from "vue";
 
 import TableCheckboxCell from "@/components/Tables/TableCheckboxCell.vue";
@@ -58,13 +59,7 @@ onMounted(async () => {
 	mainStore.resetAssignments();
 });
 
-const perPage = ref(5);
-const currentPage = ref(0);
-const assignmentsPaginated = computed(() => allAvailableAssignments.value.slice(perPage.value * currentPage.value, perPage.value * (currentPage.value + 1)));
-
-const numPages = computed(() => Math.ceil(allAvailableAssignments.value.length / perPage.value));
-const currentPageHuman = computed(() => numPages.value ? currentPage.value + 1 : 0);
-
+const { perPage, currentPage, itemsPaginated: assignmentsPaginated, numPages, currentPageHuman } = usePagination(allAvailableAssignments, 5);
 
 const assignmentCheckedStates = ref({});
 

@@ -1,6 +1,7 @@
 <script setup>
 import CardBoxComponentEmpty from "@/components/Cardbox/CardBoxComponentEmpty.vue";
 import BasePagination from "@/components/Base/BasePagination.vue";
+import { usePagination } from "@/composables/usePagination.js";
 import { computed, ref, onMounted, watch, reactive } from "vue";
 import { FieldRoot, FieldLabel } from "reka-ui";
 
@@ -148,13 +149,7 @@ async function saveUpdatedCompany() {
 	}
 }
 
-const perPage = ref(5);
-const currentPage = ref(0);
-const companiesPaginated = computed(() => newCompanies.value.slice(perPage.value * currentPage.value, perPage.value * (currentPage.value + 1)));
-
-const numPages = computed(() => Math.ceil(newCompanies.value.length / perPage.value));
-const currentPageHuman = computed(() => numPages.value ? currentPage.value + 1 : 0);
-
+const { perPage, currentPage, itemsPaginated: companiesPaginated, numPages, currentPageHuman } = usePagination(newCompanies, 5);
 </script>
 
 <template>

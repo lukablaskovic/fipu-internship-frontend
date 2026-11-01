@@ -45,3 +45,31 @@ test('filters, page sizes, and empty results stay in range on mobile', async ({ 
  await expect(page.getByTestId('rows')).toHaveText(Array.from({ length: 20 }, (_, i) => i + 1).join(','));
  await expect(trigger).toBeFocused();
  });
+
+
+test('shared calculations clamp filtered rows even when pagination is unmounted', async ({ page }) => {
+	await page.getByRole('button', { name: 'Posljednja stranica', exact: true }).click();
+	await page.getByRole('button', { name: 'Hide pagination', exact: true }).click();
+	await expect(page.getByRole('navigation')).toHaveCount(0);
+	await page.getByRole('button', { name: 'Filter', exact: true }).click();
+	await expect(page.getByTestId('rows')).toHaveText('11,12');
+	await expect(page.getByTestId('page')).toHaveText('2 / 2');
+	await page.getByRole('button', { name: 'Empty', exact: true }).click();
+	await expect(page.getByTestId('rows')).toHaveText('');
+	await expect(page.getByTestId('page')).toHaveText('0 / 0');
+	await page.getByRole('button', { name: 'Restore', exact: true }).click();
+	await expect(page.getByTestId('rows')).toHaveText('1,2,3,4,5,6,7,8,9,10');
+	await expect(page.getByTestId('page')).toHaveText('1 / 10');
+});
+
+test('filtering keeps a valid page and page-size changes reset to the first page', async ({ page }) => {
+	await page.getByRole('button', { name: 'Stranica 2', exact: true }).click();
+	await page.getByRole('button', { name: 'Filter', exact: true }).click();
+	await expect(page.getByTestId('rows')).toHaveText('11,12');
+	await expect(page.getByTestId('page')).toHaveText('2 / 2');
+	await page.getByRole('button', { name: 'Restore', exact: true }).click();
+	await page.getByRole('button', { name: 'Otvori izbornik', exact: true }).click();
+	await page.getByRole('menuitem', { name: '20 stavki po stranici', exact: true }).click();
+	await expect(page.getByTestId('rows')).toHaveText(Array.from({ length: 20 }, (_, i) => i + 1).join(','));
+	await expect(page.getByTestId('page')).toHaveText('1 / 5');
+});

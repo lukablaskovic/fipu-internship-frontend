@@ -1,6 +1,7 @@
 <script setup>
 import CardBoxComponentEmpty from "@/components/Cardbox/CardBoxComponentEmpty.vue";
 import BasePagination from "@/components/Base/BasePagination.vue";
+import { usePagination } from "@/composables/usePagination.js";
 import { Progress } from "reka-ui/namespaced";
 import { mdiEye, mdiMenuDown, mdiCloseOutline, mdiSortAscending, mdiSortDescending } from "@mdi/js";
 import { tableButtonMenuOptions } from "@/tableButtonMenuOptions.js";
@@ -27,8 +28,6 @@ const emit = defineEmits(["show-student-diagram"]);
 const students = computed(() => adminStore.students);
 const studentsFetched = computed(() => adminStore.studentsFetched);
 
-const perPage = ref(10);
-const currentPage = ref(0);
 const sortDirection = ref("asc");
 const sortColumn = ref("ime");
 
@@ -98,14 +97,7 @@ const filteredAndSortedStudents = computed(() => {
 	return sortStudents(filtered);
 });
 
-const studentsPaginated = computed(() => {
-	const start = perPage.value * currentPage.value;
-	const end = start + perPage.value;
-	return filteredAndSortedStudents.value.slice(start, end);
-});
-
-const numPages = computed(() => Math.ceil(filteredAndSortedStudents.value.length / perPage.value));
-const currentPageHuman = computed(() => numPages.value ? currentPage.value + 1 : 0);
+const { perPage, currentPage, itemsPaginated: studentsPaginated, numPages, currentPageHuman, handlePerPageChange } = usePagination(filteredAndSortedStudents);
 
 // --- Actions ---
 function showDiagram(student) {
@@ -119,11 +111,6 @@ function deleteProcessInstance(student) {
 	adminStore.setSelectedStudentForDelete(student);
 	instanceDeleteModalActive.value = true;
 	console.log(adminStore.selectedStudentForDelete);
-}
-
-function handlePerPageChange(option) {
-	perPage.value = option.value;
-	currentPage.value = 0;
 }
 
 // --- Lifecycle and Watchers ---
@@ -150,11 +137,6 @@ watch(selectedStudentInstanceID, (newVal) => {
 	}
 });
 
-watch(studentsPaginated, (newList) => {
-	if (newList.length === 0 && currentPage.value > 0) {
-		currentPage.value = 0;
-	}
-});
 </script>
 
 <template>
