@@ -8,6 +8,12 @@
 @import "_table.css";
 @import "_reka-animations.css";
 
+@layer base {
+	html { color-scheme: light; }
+	html.dark { color-scheme: dark; }
+	body { @apply bg-gray-50 text-gray-900 dark:bg-slate-800 dark:text-slate-100; }
+}
+
 @layer components {
 	.fipu_vertical_scrollbar {
 		@apply scrollbar-thin scrollbar-track-slate-100 scrollbar-thumb-slate-400 scrollbar-track-rounded-full scrollbar-thumb-rounded-full hover:scrollbar-thumb-slate-500 dark:scrollbar-track-slate-800 dark:scrollbar-thumb-slate-600;

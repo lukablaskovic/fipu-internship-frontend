@@ -5,7 +5,10 @@
 				<a href="https://fipu.unipu.hr/" target="_blank" rel="noopener noreferrer" aria-label="Fakultet informatike u Puli (otvara se u novoj kartici)">
 					<img :src="fipu_unipu" alt="Fakultet informatike u Puli - logotip" class="faculty-logo" />
 				</a>
-				<RouterLink to="/upute" class="help-link">Upute za praksu <span aria-hidden="true">↗</span></RouterLink>
+				<div class="flex items-center gap-4">
+					<RouterLink to="/upute" class="help-link">Upute za praksu <span aria-hidden="true">↗</span></RouterLink>
+					<ThemeToggle />
+				</div>
 			</header>
 
 			<div class="login-content">
@@ -50,6 +53,7 @@
 <script setup>
 import { decodeCredential, GoogleLogin } from "vue3-google-login";
 import BaseButton from "@/components/Base/BaseButton.vue";
+import ThemeToggle from "@/components/Navbar/ThemeToggle.vue";
 import FormCheckRadio from "@/components/Form/FormCheckRadio.vue";
 import SnackBar from "@/components/Premium/SnackBar.vue";
 import { isUnipuEmail } from "@/helpers/validators";
@@ -391,6 +395,41 @@ h2 {
 	}
 	h1 {
 		font-size: clamp(24px, 6.5vw, 32px);
+	}
+}
+.dark .login-page {
+	background: #0f172a;
+	color: #f1f5f9;
+}
+.dark .login-panel {
+	background: #1e293b;
+}
+.dark .welcome {
+	background: #172234;
+}
+.dark .login-header,
+.dark .guest-access,
+.dark .login-footer {
+	border-color: #475569;
+}
+.dark .welcome p,
+.dark .guest-access p,
+.dark .login-footer p,
+.dark .login-note,
+.dark .login-note a {
+	color: #cbd5e1;
+}
+.dark .guest-link:hover {
+	background: #334155;
+}
+.dark .faculty-logo {
+	background: white;
+	border-radius: 4px;
+}
+@media (max-width: 1024px) {
+	.dark .login-panel,
+	.dark .welcome {
+		background: transparent;
 	}
 }
 </style>

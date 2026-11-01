@@ -2,8 +2,6 @@ import { darkModeKey, styleKey } from "@/config";
 import { defineStore } from "pinia";
 import * as styles from "@/styles";
 
-import Utils from "@/helpers/utils";
-
 // Define a type for styles from the imported styles object
 type StylePayload = keyof typeof styles; // Extracting keys from styles to restrict payload to valid styles
 
@@ -67,27 +65,19 @@ export const useStyleStore = defineStore("style", {
 			}
 		},
 
-		async setDarkMode(payload: boolean | null = null) {
-			const app = document.getElementById("app");
-			if (app) {
-				app.classList.add("darkModeTransition");
-			}
-
+		setDarkMode(payload: boolean | null = null, savePreference = true) {
 			this.darkMode = payload !== null ? payload : !this.darkMode;
 
-			if (typeof sessionStorage !== "undefined") {
-				sessionStorage.setItem(darkModeKey, this.darkMode ? "1" : "0");
+			try {
+				if (savePreference) localStorage.setItem(darkModeKey, this.darkMode ? "1" : "0");
+			} catch {
+				// Keep switching themes when browser storage is unavailable.
 			}
 
 			if (typeof document !== "undefined") {
+				document.documentElement.classList.toggle("dark", this.darkMode);
 				document.body.classList[this.darkMode ? "add" : "remove"]("dark-scrollbars");
 				document.documentElement.classList[this.darkMode ? "add" : "remove"]("dark-scrollbars-compat");
-			}
-
-			await Utils.wait(0.2);
-
-			if (app) {
-				app.classList.remove("darkModeTransition");
 			}
 		},
 	},

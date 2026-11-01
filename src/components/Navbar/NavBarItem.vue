@@ -2,13 +2,14 @@
 import { RovingFocusItem } from "reka-ui";
 import UserAvatarCurrentUser from "@/components/User/UserAvatarCurrentUser.vue";
 import NavBarMenuList from "@/components/Navbar/NavBarMenuList.vue";
+import ThemeToggle from "@/components/Navbar/ThemeToggle.vue";
 import { computed, ref, onMounted, onBeforeUnmount } from "vue";
 import BaseDivider from "@/components/Base/BaseDivider.vue";
 import { mdiChevronUp, mdiChevronDown } from "@mdi/js";
 import BaseIcon from "@/components/Base/BaseIcon.vue";
 import Tooltip from "@/components/Base/Tooltip.vue";
 import { RouterLink, useRoute } from "vue-router";
-import { mainStore, styleStore } from "@/main.js";
+import { layoutStore, mainStore, styleStore } from "@/main.js";
 
 const props = defineProps({
 	item: {
@@ -141,4 +142,7 @@ onBeforeUnmount(() => {
 			</component>
 		</RovingFocusItem>
 	</Tooltip>
+	<RovingFocusItem v-if="item.isCurrentUser && layoutStore.isLg" as-child>
+		<ThemeToggle class="mx-1 self-center" />
+	</RovingFocusItem>
 </template>

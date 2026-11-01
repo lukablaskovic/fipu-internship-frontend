@@ -16,7 +16,7 @@ async function renderLogin(dev, local) {
 		if (name === "vue3-google-login") return { GoogleLogin: { render: () => h("button", "Google sign-in") } };
 		if (name.endsWith("BaseButton.vue")) return { props: ["label"], render() { return h("button", this.label); } };
 		if (name.endsWith("FormCheckRadio.vue")) return { props: ["name", "label", "modelValue"], render() { return h("button", { role: "switch", "aria-label": this.label || this.name, "aria-checked": this.modelValue }, this.label); } };
-		if (name.endsWith("SnackBar.vue")) return { render: () => null };
+		if (name.endsWith("SnackBar.vue") || name.endsWith("ThemeToggle.vue")) return { render: () => null };
 		if (name.startsWith("/")) return name;
 		return require(name);
 	};

@@ -16,7 +16,7 @@ import { useLayoutStore } from "@/stores/layout_store.ts";
 import { useStyleStore } from "@/stores/style_store.ts";
 import { useAdminStore } from "@/stores/admin_store.ts";
 import { useMainStore } from "@/stores/main_store.ts";
-import { LOCAL_DEV } from "@/config.js";
+import { darkModeKey, LOCAL_DEV } from "@/config.js";
 
 import NotificationBar from "@/components/Notification/NotificationBar.vue";
 import piniaPluginPersistedstate from "pinia-plugin-persistedstate";
@@ -58,6 +58,15 @@ const styleStore = useStyleStore(pinia);
 const layoutStore = useLayoutStore(pinia);
 const snackBarStore = useSnackBarStore(pinia);
 
+let darkMode = window.matchMedia("(prefers-color-scheme: dark)").matches;
+try {
+	const savedTheme = localStorage.getItem(darkModeKey);
+	if (savedTheme === "1" || savedTheme === "0") darkMode = savedTheme === "1";
+} catch {
+	// Use the device preference when browser storage is unavailable.
+}
+styleStore.setDarkMode(darkMode, false);
+
 app.use(router);
 
 const mountPoint = document.querySelector("#app");
@@ -74,13 +83,6 @@ window.onresize = () => layoutStore.responsiveLayoutControl();
 /* App style */
 //styleStore.setStyle(localStorage[styleKey] ?? "basic");
 styleStore.setStyle("basic");
-
-/* temporary disabled dark mode */
-/* Dark mode
-if ((!localStorage[darkModeKey] && window.matchMedia("(prefers-color-scheme: dark)").matches) || localStorage[darkModeKey] === "1") {
-	styleStore.setDarkMode(true);
-}
-*/
 
 /* Default title tag */
 const defaultDocumentTitle = "FIPU Praksa";
