@@ -1,8 +1,8 @@
 <script setup>
 import { ref, computed } from "vue";
 
-const props = defineProps(["labelName", "emitName", "list", "l", "disabled", "important", "help"]);
-const model = defineModel();
+const props = defineProps({ labelName: { type: String, default: "" }, emitName: { type: String, default: "" }, list: { type: Array, default: () => [] }, l: Boolean, disabled: Boolean, important: Boolean, help: { type: String, default: "" } });
+const model = defineModel({ type: [String, Object], default: "" });
 
 function update(value) {
 	model.value = value;
@@ -44,33 +44,33 @@ function checkFocusOut() {
 		<div class="group relative w-full">
 			<div class="rounded border" :class="important ? 'border-red-500' : 'border-gray-700'">
 				<input
+					v-model="model"
+					class="peer relative block w-full max-w-full cursor-text overflow-hidden rounded border-0 bg-transparent bg-white p-3 text-left hover:border-cyan-700 focus:outline-none focus:ring focus:ring-fipu_blue"
 					@input="show = true"
 					@focusout="
 						!focus ? (show = false) : '';
 						checkFocusOut();
 					"
-					@click="show = !show"
-					v-model="model"
-					class="peer relative block w-full max-w-full cursor-text overflow-hidden rounded border-0 bg-transparent bg-white p-3 text-left hover:border-cyan-700 focus:outline-none focus:ring focus:ring-fipu_blue" />
+					@click="show = !show" />
 			</div>
 
 			<div class="absolute right-1.5 top-0 flex h-full items-center justify-center px-1" @focusout="!focus ? (show = false) : ''" @click="show = !show">
 				<div class="aspect-square absolute mr-4 flex h-fit w-fit items-center justify-center bg-white px-0.5">
-					<i class="fa-solid fa-caret-down cursor-pointer transition-all duration-300" :class="show ? '-scale-100' : '', important ? 'text-red-500' : 'text-gray-700'"></i>
+					<i class="fa-solid fa-caret-down cursor-pointer transition-all duration-300" :class="[show ? '-scale-100' : '', important ? 'text-red-500' : 'text-gray-700']"></i>
 				</div>
 			</div>
 
-			<div @mouseleave="focus = false" @mouseenter="focus = true" :class="show ? 'h-fit max-h-64 opacity-100' : 'h-0 opacity-0'" class="fipu_vertical_scrollbar absolute z-50 mt-2 w-full overflow-hidden overflow-y-auto rounded bg-gray-50 drop-shadow-lg transition-opacity duration-300">
+			<div :class="show ? 'h-fit max-h-64 opacity-100' : 'h-0 opacity-0'" class="fipu_vertical_scrollbar absolute z-50 mt-2 w-full overflow-hidden overflow-y-auto rounded bg-gray-50 drop-shadow-lg transition-opacity duration-300" @mouseleave="focus = false" @mouseenter="focus = true">
 				<ul class="z-50 w-full text-left" aria-labelledby="drop-shadow-lg" @mousedown="preventFocusOut()">
 					<div
 						v-for="(v, id) in computedList"
+						:key="id"
+						class="z-50 block cursor-pointer whitespace-nowrap px-2"
+						:class="[(labelName ? v[labelName] : v) == model ? 'bg-fipu_blue font-bold text-gray-50 hover:bg-opacity-80' : 'text-gray-950 hover:bg-gray-200 hover:font-bold hover:text-gray-700', l ? 'py-2 text-sm' : 'py-4']"
 						@click="
 							show = false;
 							update(emitName ? v[emitName] : v);
-						"
-						:key="id"
-						class="z-50 block cursor-pointer whitespace-nowrap px-2"
-						:class="[(labelName ? v[labelName] : v) == model ? 'bg-fipu_blue font-bold text-gray-50 hover:bg-opacity-80' : 'text-gray-950 hover:bg-gray-200 hover:font-bold hover:text-gray-700', l ? 'py-2 text-sm' : 'py-4']">
+						">
 						{{ labelName ? v[labelName] : v }}
 					</div>
 				</ul>
@@ -82,7 +82,7 @@ function checkFocusOut() {
 
 <script>
 export default {
-	name: "Dropdown.vue",
+	name: "FormCombobox",
 	data() {
 		return {
 			show: false,

@@ -60,7 +60,7 @@ defineProps({
 	<CardBox is-hoverable :class="{ 'hover:border hover:border-fipu_blue hover:ring': hoverable }">
 		<BaseLevel v-if="trend" class="mb-3" mobile>
 			<PillTagTrend :trend="trend" :trend-type="trendType" small />
-			<BaseButton :icon="mdiCog" iconSize="18" color="lightDark" small />
+			<BaseButton :icon="mdiCog" icon-size="18" color="lightDark" small />
 		</BaseLevel>
 		<BaseLevel mobile>
 			<div>

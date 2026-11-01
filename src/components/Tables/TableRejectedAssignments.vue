@@ -4,7 +4,7 @@ import { computed, ref, onMounted, watch } from "vue";
 import TableCheckboxCell from "@/components/Tables/TableCheckboxCell.vue";
 import CardBoxModal from "@/components/Cardbox/CardBoxModal.vue";
 import CardBoxAllocation from "../Cardbox/CardBoxAllocation.vue";
-import LoadingOverlay from "@/components/LoadingOverlay.vue";
+
 import BaseButtons from "@/components/Base/BaseButtons.vue";
 import BaseButton from "@/components/Base/BaseButton.vue";
 import BaseLevel from "@/components/Base/BaseLevel.vue";

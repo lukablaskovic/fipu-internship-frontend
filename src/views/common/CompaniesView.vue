@@ -1,5 +1,5 @@
 <script setup>
-import { mdiDomain, mdiDomainPlus, mdiLaptop, mdiClipboardCheck, mdiContentCopy } from "@mdi/js";
+import { mdiDomain, mdiDomainPlus, mdiClipboardCheck, mdiContentCopy } from "@mdi/js";
 import SectionMain from "@/components/Section/SectionMain.vue";
 import CardBox from "@/components/Cardbox/CardBox.vue";
 import { mainStore, adminStore } from "@/main.js";
@@ -14,8 +14,6 @@ import TableNewCompanies from "@/components/Tables/TableNewCompanies.vue";
 import TableCompanies from "@/components/Tables/TableCompanies.vue";
 import FormControl from "@/components/Form/FormControl.vue";
 import FormField from "@/components/Form/FormField.vue";
-import BaseIcon from "@/components/Base/BaseIcon.vue";
-import { router } from "@/router";
 
 const userAuthenticated = computed(() => mainStore.userAuthenticated);
 const userAdmin = computed(() => mainStore.userAdmin);

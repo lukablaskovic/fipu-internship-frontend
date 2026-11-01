@@ -93,16 +93,14 @@ const labelClass = computed(() => {
 	return base;
 });
 
-const formattedLabel = computed(() => {
-	if (!props.label) return "";
-	// Replace * with a red-colored span
-	return props.label.replace(/\*/g, '<span class="text-red-500">*</span>');
-});
+const labelParts = computed(() => (props.label || "").split("*"));
 </script>
 
 <template>
 	<div class="grid grid-cols-1 last:mb-0" :class="upperWrapperClass">
-		<label v-if="label" class="mb-2 block font-bold" :class="labelClass" v-html="formattedLabel"></label>
+		<label v-if="label" class="mb-2 block font-bold" :class="labelClass" >
+			<template v-for="(part, index) in labelParts" :key="index">{{ part }}<span v-if="index < labelParts.length - 1" class="text-red-500">*</span></template>
+		</label>
 		<div :class="wrapperClass">
 			<slot />
 		</div>

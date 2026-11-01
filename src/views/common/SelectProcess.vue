@@ -10,9 +10,9 @@
 
 				<div class="flex flex-col justify-center space-y-4 px-6 sm:flex-row sm:space-x-4 sm:space-y-0">
 					<!-- Button 1: Nemam poduzeće -->
-					<SelectProcessButton button="A" :hoveredButton="hoveredButton" :selectedProcess="selectedProcess" :hoverTexts="hoverTexts.A" @click.prevent="selectProcess('A')" @mouseover="hoveredButton = 'A'" @mouseleave="hoveredButton = ''" />
+					<SelectProcessButton button="A" :hovered-button="hoveredButton" :selected-process="selectedProcess" :hover-texts="hoverTexts.A" @click.prevent="selectProcess('A')" @mouseover="hoveredButton = 'A'" @mouseleave="hoveredButton = ''" />
 					<!-- Button 2: Imam već dogovoreno -->
-					<SelectProcessButton button="B" :hoveredButton="hoveredButton" :selectedProcess="selectedProcess" :hoverTexts="hoverTexts.B" @click.prevent="selectProcess('B')" @mouseover="hoveredButton = 'B'" @mouseleave="hoveredButton = ''" />
+					<SelectProcessButton button="B" :hovered-button="hoveredButton" :selected-process="selectedProcess" :hover-texts="hoverTexts.B" @click.prevent="selectProcess('B')" @mouseover="hoveredButton = 'B'" @mouseleave="hoveredButton = ''" />
 				</div>
 
 				<div class="mb-12 mt-4 flex flex-col justify-center space-y-4 px-6 sm:flex-row sm:space-x-4 sm:space-y-0">

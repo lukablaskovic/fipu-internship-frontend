@@ -1,18 +1,18 @@
 <script setup>
 import UserAvatarCurrentUser from "@/components/User/UserAvatarCurrentUser.vue";
 import { mdiCheckDecagram, mdiSchool, mdiShieldAccount } from "@mdi/js";
-import FormCheckRadio from "@/components/Form/FormCheckRadio.vue";
+
 import BaseLevel from "@/components/Base/BaseLevel.vue";
 import CardBox from "@/components/Cardbox/CardBox.vue";
 import PillTag from "@/components/PillTag/PillTag.vue";
 import { mainStore } from "@/main.js";
-import { computed, ref } from "vue";
+import { computed } from "vue";
 
 import moment from "@/moment-setup";
 
 const loggeddTimeAgo = computed(() => moment(mainStore.currentUser.loggedAt).fromNow());
 
-const userSwitchVal = ref(false);
+
 </script>
 
 <template>

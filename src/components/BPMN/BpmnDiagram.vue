@@ -5,7 +5,7 @@
 <script setup>
 import { UserTaskMappings, SendTaskMappings } from "@/helpers/maps";
 import { ref, onMounted, onBeforeUnmount } from "vue";
-import { adminStore, mainStore } from "@/main";
+import { adminStore } from "@/main";
 import BpmnViewer from "bpmn-js";
 
 const props = defineProps({
@@ -60,7 +60,7 @@ function initializeBpmnViewer(container) {
 }
 
 async function importBpmnDiagram(viewer, xml) {
-	const result = await viewer.importXML(xml);
+	await viewer.importXML(xml);
 }
 
 function setupEventListeners(viewer) {
@@ -121,12 +121,8 @@ function handleElementClick(event, emitFunction, viewer) {
 	if (element) {
 		const elementRegistry = viewer.get("elementRegistry");
 		const startEvents = elementRegistry.filter((el) => el.type === "bpmn:StartEvent");
-		let pathToCurrent = [];
 		startEvents.forEach((startElement) => {
-			const path = traverseFromStartToCurrent(startElement, element.id, elementRegistry);
-			if (path.length > 0) {
-				pathToCurrent = path;
-			}
+			traverseFromStartToCurrent(startElement, element.id, elementRegistry);
 		});
 
 		if (element.type === "bpmn:UserTask") {

@@ -90,9 +90,9 @@ onMounted(async () => {
 			</SectionMain>
 			<div class="hidden sm:block">
 				<BpmnDiagram
-					class="mt-12"
 					v-if="bpmn_model && process_instance_data"
 					:key="bpmnKey"
+					class="mt-12"
 					:xml="bpmn_model"
 					:current-order="UserTaskMappings.getTaskProperty(process_instance_data.pending[0], 'order', process_instance_data['state'])"
 					:highlight-color="UserTaskMappings.getTaskProperty(process_instance_data.pending[0], 'bpmn_task_color', process_instance_data['state'])"

@@ -13,7 +13,7 @@ import SectionMain from "@/components/Section/SectionMain.vue";
 import { mainStore, studentStore } from "@/main.js";
 
 onMounted(async () => {
-	let result = await studentStore.getInstanceInfo(mainStore.currentUser.internship_process.id);
+	await studentStore.getInstanceInfo(mainStore.currentUser.internship_process.id);
 });
 
 const Layout = computed(() => {

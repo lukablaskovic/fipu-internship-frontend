@@ -3,7 +3,7 @@
 		<div class="relative">
 			<div class="relative w-full cursor-default overflow-hidden rounded-lg border border-gray-300 bg-transparent text-left dark:border-gray-600 sm:text-sm">
 				<!-- Prefix label -->
-				<div v-if="hasValidPrefix" class="absolute inset-y-0 left-0 flex items-center" ref="prefixContainer">
+				<div v-if="hasValidPrefix" ref="prefixContainer" class="absolute inset-y-0 left-0 flex items-center">
 					<span class="ml-2 rounded bg-fipu_blue px-2 py-1 text-sm text-white">{{ prefixLabel }}</span>
 				</div>
 
@@ -15,9 +15,9 @@
 					class="inputClass ml-2 w-full pr-10 text-sm leading-5 text-gray-900 focus:ring-0 dark:text-gray-300 md:w-96"
 					:style="[inputStyle]"
 					autocomplete="off"
+					style="overflow-x: auto; outline: none; border: none; background: transparent"
 					@change="handleInputChange"
-					@keydown="handleKeyDown"
-					style="overflow-x: auto; outline: none; border: none; background: transparent" />
+					@keydown="handleKeyDown" />
 
 				<!-- Search icon -->
 				<ComboboxButton class="absolute inset-y-0 right-0 flex items-center pr-2" @click="showHelp">

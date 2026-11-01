@@ -15,20 +15,20 @@
 export default {
 	props: {
 		button: {
-			typeof: String,
+			type: String,
 			default: "",
 		},
 		hoveredButton: {
-			typeof: String,
+			type: String,
 			default: "",
 		},
 		selectedProcess: {
-			typeof: String,
+			type: String,
 			default: "",
 		},
 		hoverTexts: {
-			typeof: String,
-			default: "",
+			type: Array,
+			default: () => [],
 		},
 	},
 };

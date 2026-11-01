@@ -1,5 +1,5 @@
 <script setup>
-import { mdiClipboardTextOutline, mdiAccountMultiple, mdiClipboardPlusOutline, mdiClipboardCheck, mdiContentCopy, mdiClipboardTextOff, mdiClipboardText, mdiClipboardTextMultiple } from "@mdi/js";
+import { mdiClipboardTextOutline, mdiClipboardPlusOutline, mdiClipboardCheck, mdiContentCopy, mdiClipboardTextOff, mdiClipboardText, mdiClipboardTextMultiple } from "@mdi/js";
 import { mainStore, adminStore } from "@/main";
 import { ref } from "vue";
 
@@ -12,7 +12,7 @@ import CardBoxComponentEmpty from "@/components/Cardbox/CardBoxComponentEmpty.vu
 import TableNewAssignments from "@/components/Tables/TableNewAssignments.vue";
 import SectionMain from "@/components/Section/SectionMain.vue";
 import FormControl from "@/components/Form/FormControl.vue";
-import IconTextLink from "@/components/IconTextLink.vue";
+
 import FormField from "@/components/Form/FormField.vue";
 import CardBox from "@/components/Cardbox/CardBox.vue";
 import PillTag from "@/components/PillTag/PillTag.vue";

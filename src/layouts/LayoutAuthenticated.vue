@@ -1,5 +1,5 @@
 <script setup>
-import { mdiForwardburger, mdiChartTimeline, mdiInformation, mdiBackburger, mdiMenu, mdiMagnify, mdiLaptop, mdiEmail, mdiAccountMultiple, mdiClipboardCheck, mdiDomain, mdiClipboardText } from "@mdi/js";
+import { mdiForwardburger, mdiChartTimeline, mdiInformation, mdiBackburger, mdiMenu, mdiMagnify, mdiLaptop, mdiClipboardCheck, mdiDomain, mdiClipboardText } from "@mdi/js";
 import { mainStore, styleStore } from "@/main.js";
 import { ref, onMounted, computed } from "vue";
 

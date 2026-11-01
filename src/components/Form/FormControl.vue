@@ -17,28 +17,28 @@ const props = defineProps({
 	lastAddon: Boolean,
 	expanded: Boolean,
 	inputW: { type: String, default: "w-full" },
-	help: String,
-	name: String,
-	id: String,
-	min: [String, Number],
-	max: [String, Number],
+	help: { type: String, default: undefined },
+	name: { type: String, default: undefined },
+	id: { type: String, default: undefined },
+	min: { type: [String, Number], default: undefined },
+	max: { type: [String, Number], default: undefined },
 	required: Boolean,
-	autocomplete: String,
-	placeholder: String,
-	iconLeft: String,
-	iconRight: String,
-	error: [Boolean, String],
-	success: [Boolean, String],
-	options: Array,
+	autocomplete: { type: String, default: undefined },
+	placeholder: { type: String, default: undefined },
+	iconLeft: { type: String, default: undefined },
+	iconRight: { type: String, default: undefined },
+	error: { type: [Boolean, String], default: undefined },
+	success: { type: [Boolean, String], default: undefined },
+	options: { type: Array, default: undefined },
 	type: { type: String, default: "text" },
 	modelValue: { type: [String, Number, Boolean, Array, Object], default: "" },
-	buttonLabel: String,
-	buttonIcon: String,
+	buttonLabel: { type: String, default: undefined },
+	buttonIcon: { type: String, default: undefined },
 	buttonColor: { type: String, default: "white" },
 	buttonOutline: Boolean,
 	borderless: Boolean,
-	tipLeft: String,
-	tipRight: String,
+	tipLeft: { type: String, default: undefined },
+	tipRight: { type: String, default: undefined },
 	ctrlKFocus: Boolean,
 	searchBar: Boolean,
 	transparent: Boolean,
@@ -173,7 +173,7 @@ if (props.ctrlKFocus) {
 			</select>
 
 			<!-- Textarea -->
-			<textarea v-else-if="computedType === 'textarea'" class="peer relative" :id="id" v-model="computedValue" :placeholder="placeholder" :class="inputElClass" :name="name" :readonly="readonly" :required="required" :disabled="disabled"></textarea>
+			<textarea v-else-if="computedType === 'textarea'" :id="id" v-model="computedValue" class="peer relative" :placeholder="placeholder" :class="inputElClass" :name="name" :readonly="readonly" :required="required" :disabled="disabled"></textarea>
 
 			<!-- Button -->
 			<button v-else-if="computedType === 'button'" :class="inputElClass" :disabled="disabled">

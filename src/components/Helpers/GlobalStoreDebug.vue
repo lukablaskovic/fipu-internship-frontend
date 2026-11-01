@@ -25,6 +25,8 @@ const newValueFormatted = computed(() => {
 			return layoutStore.$state;
 		case "snackBarStore":
 			return snackBarStore.$state;
+		default:
+			return {};
 	}
 });
 </script>
@@ -33,13 +35,13 @@ const newValueFormatted = computed(() => {
 	<div v-if="mainStore.debug" class="fixed z-[1000] flex h-screen w-screen items-center justify-center px-[8%] py-16 backdrop-blur-sm">
 		<div class="flex h-full w-full flex-col rounded-xl bg-black bg-opacity-90 p-4 text-slate-400 shadow-xl">
 			<div class="text-center text-2xl font-bold">DEBUG INFO</div>
-			<Slider class="slider my-4 h-[8px] min-h-[8px] w-64 self-center" v-model="mainStore.depth" :min="1" :max="8" showTooltip="focus" :merge="1" :lazy="false" />
+			<Slider v-model="mainStore.depth" class="slider my-4 h-[8px] min-h-[8px] w-64 self-center" :min="1" :max="8" show-tooltip="focus" :merge="1" :lazy="false" />
 			<div class="fipu_vertical_scrollbar flex w-full items-center justify-start overflow-x-auto overflow-y-hidden py-1 pb-4">
-				<DebugSelectButton v-for="name in storeNames" :name="name" />
+				<DebugSelectButton v-for="name in storeNames" :key="name" :name="name" />
 			</div>
 			<hr />
 			<div class="fipu_vertical_scrollbar overflow-auto">
-				<vue-json-pretty showIcon :deep="mainStore.depth" :data="newValueFormatted" />
+				<vue-json-pretty show-icon :deep="mainStore.depth" :data="newValueFormatted" />
 			</div>
 		</div>
 	</div>

@@ -120,11 +120,6 @@ const fadeOutAnimation = () => {
 	isFadedOut.value = true;
 };
 
-function handlePerPageChange(option) {
-	perPage.value = option.value;
-	currentPage.value = 0;
-}
-
 const isDraggableEnabled = computed(() => checkedAssignments.value.length === 3);
 const isEmptySlot = (element) => element.id?.startsWith("empty");
 const isAssignment = (element) => element && !isEmptySlot(element);
@@ -188,7 +183,7 @@ const handleDragEnd = () => {
 							class="draggable-item aspect-h-1 aspect-w-1 relative flex items-center justify-center border-2 bg-gray-50"
 							:class="{ grab: isAssignment(element) && isDraggableEnabled, grabbing: vueDraggableDragging && isAssignment(element) && isDraggableEnabled }">
 							<transition name="image-fade">
-								<img data-aos="zoom-out" v-if="isAssignment(element)" class="rounded-full sm:p-22" :src="getCompanyLogo(element)" />
+								<img v-if="isAssignment(element)" data-aos="zoom-out" class="rounded-full sm:p-22" :src="getCompanyLogo(element)" />
 								<img v-else class="sm:p-22" :src="getDefaultImage(index)" alt="Default Task" />
 							</transition>
 							<div v-if="isAssignment(element)" class="absolute inset-0 flex items-center justify-center bg-black bg-opacity-50 text-sm font-bold text-white opacity-0 transition-opacity hover:opacity-100">ID: {{ element.id_zadatak }}</div>

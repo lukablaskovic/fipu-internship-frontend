@@ -1,13 +1,11 @@
 <script setup>
-import { mdiClipboardCheck, mdiFilePdfBox } from "@mdi/js";
-
-import { adminStore } from "@/main.js";
+import { mdiClipboardCheck } from "@mdi/js";
 
 import LayoutAuthenticated from "@/layouts/LayoutAuthenticated.vue";
 
 import SectionTitleLineWithButton from "@/components/Section/SectionTitleLineWithButton.vue";
 import TableAllocations from "@/components/Tables/TableAllocations.vue";
-import CardBoxModal from "@/components/Cardbox/CardBoxModal.vue";
+
 import SectionMain from "@/components/Section/SectionMain.vue";
 import CardBox from "@/components/Cardbox/CardBox.vue";
 </script>

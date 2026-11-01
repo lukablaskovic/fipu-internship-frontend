@@ -85,17 +85,17 @@ const menuClick = (event) => {
 <template>
 	<li>
 		<component
-			@mouseover="isCompact ? (layoutStore.tooltip = { content: item.label, offsetx: 16, offsety: -8, justify: '' }) : ''"
-			@mouseleave="layoutStore.tooltip = { content: '', offsetx: 0, offsety: 0 }"
-			v-slot="vSlot"
 			:is="item.to ? RouterLink : 'a'"
-			@click="menuClick"
+			v-slot="vSlot"
 			:to="item.to ?? null"
 			:href="item.href ?? null"
 			:target="item.target ?? null"
 			:active-class="asideMenuItemActiveBgStyle"
 			class="group flex cursor-pointer transition-all duration-150"
-			:class="[componentClass, isCompact ? 'justify-center' : 'justify-start', 'group hover:bg-fipu_blue']">
+			:class="[componentClass, isCompact ? 'justify-center' : 'justify-start', 'group hover:bg-fipu_blue']"
+			@mouseover="isCompact ? (layoutStore.tooltip = { content: item.label, offsetx: 16, offsety: -8, justify: '' }) : ''"
+			@mouseleave="layoutStore.tooltip = { content: '', offsetx: 0, offsety: 0 }"
+			@click="menuClick">
 			<BaseIcon
 				v-if="item.icon"
 				:path="item.icon"

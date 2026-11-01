@@ -9,6 +9,9 @@
 	</div>
 </template>
 
+<script>
+export default { name: "BaseTooltip" };
+</script>
 <script setup>
 import { ref, onMounted, onBeforeUnmount } from "vue";
 import { layoutStore } from "@/main";
@@ -16,7 +19,6 @@ import { layoutStore } from "@/main";
 const mouseX = ref(0);
 const mouseY = ref(0);
 let tooltipWidth = 100;
-let tooltipHeight = 30;
 
 const handleMouseMove = (event) => {
 	mouseX.value = event.clientX;
@@ -25,7 +27,6 @@ const handleMouseMove = (event) => {
 	const tooltipElement = document.getElementById("tooltip");
 	if (tooltipElement) {
 		tooltipWidth = tooltipElement.clientWidth;
-		tooltipHeight = tooltipElement.clientHeight;
 
 		leftPosition.value = Math.min(window.innerWidth - tooltipWidth / 2 - 8, Math.max(0, mouseX.value + layoutStore.tooltip.offsetx));
 		topPosition.value = Math.min(window.innerHeight - 30 / 2 + layoutStore.tooltip.offsety * 2, Math.max(30 / 2, mouseY.value + layoutStore.tooltip.offsety));

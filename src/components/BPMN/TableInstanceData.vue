@@ -57,7 +57,7 @@ const formattedVariables = computed(() => {
 					{{ formattedVariables[attribute] }}
 				</td>
 			</tr>
-			<tr v-else v-for="(attribute, index) in tableAttributes" :key="index">
+			<tr v-for="(attribute, index) in tableAttributes" v-else :key="index">
 				<th>{{ attribute }}</th>
 				<td :data-label="attribute">
 					{{ formattedVariables[attribute] }}

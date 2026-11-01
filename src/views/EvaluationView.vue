@@ -83,7 +83,7 @@ const updateDisabledCondition = (allFilled) => {
 			</SectionTitleLineWithButton>
 
 			<div v-if="instanceInfo != null && instanceInfo.pending[0] == 'evaluacija_poslodavac'">
-				<div class="mb-4" v-if="studentInfo">
+				<div v-if="studentInfo" class="mb-4">
 					<h1 class="text-lg font-bold sm:text-2xl">{{ studentInfo.student_ime }} {{ studentInfo.student_prezime }}</h1>
 					<h3 class="text-base font-bold">
 						{{ studentInfo.student_email }}

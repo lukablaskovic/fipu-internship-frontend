@@ -141,7 +141,7 @@ async function submit_diary_form() {
 			<img src="/illustrations/in_progress.svg" class="absolute right-0 top-0 mr-6 mt-4 hidden w-1/5 max-w-full md:block" />
 
 			<SectionTitleLineWithButton :icon="mdiBriefcase" main class="mt-24" title="Izvođenje prakse u tijeku"></SectionTitleLineWithButton>
-			<CardboxAllocation class="sm:mt-12" v-if="allocated_assignment != null" :data="allocated_assignment"></CardboxAllocation>
+			<CardboxAllocation v-if="allocated_assignment != null" class="sm:mt-12" :data="allocated_assignment"></CardboxAllocation>
 
 			<br />
 			<hr />

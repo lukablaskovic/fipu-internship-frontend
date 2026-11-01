@@ -1,4 +1,4 @@
-import { mdiLogin, mdiInformation, mdiBug } from "@mdi/js";
+import { mdiLogin, mdiBug } from "@mdi/js";
 
 export default [
 	[

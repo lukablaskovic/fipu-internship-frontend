@@ -1,14 +1,9 @@
 <script setup>
-import { useVuelidate } from "@vuelidate/core";
-import { reactive, ref, computed } from "vue";
+
+import { reactive } from "vue";
 import { mainStore } from "@/main.js";
-import Utils from "@/helpers/utils";
 
-import { required, minLength, sameAs, helpers, not } from "@vuelidate/validators";
-
-import { containsAlpha, containsNumeric, getFirstErrorForField } from "@/helpers/validators";
-
-import { mdiAccount, mdiAccountCircle, mdiEmail, mdiAsterisk, mdiFormTextboxPassword, mdiCardAccountDetails, mdiSchool, mdiCheckDecagram, mdiPencil, mdiDomain, mdiAlert, mdiCheckCircle, mdiCalendarAccount } from "@mdi/js";
+import { mdiAccount, mdiAccountCircle, mdiEmail, mdiCardAccountDetails, mdiSchool, mdiCheckDecagram, mdiDomain } from "@mdi/js";
 
 import SectionTitleLineWithButton from "@/components/Section/SectionTitleLineWithButton.vue";
 import UserAvatarCurrentUser from "@/components/Premium/UserAvatarCurrentUser.vue";
@@ -17,7 +12,7 @@ import LayoutAuthenticated from "@/layouts/LayoutAuthenticated.vue";
 import PillTagPlain from "@/components/PillTag/PillTagPlain.vue";
 import SectionMain from "@/components/Section/SectionMain.vue";
 import FormControl from "@/components/Form/FormControl.vue";
-import BaseDivider from "@/components/Base/BaseDivider.vue";
+
 import BaseButtons from "@/components/Base/BaseButtons.vue";
 import BaseButton from "@/components/Base/BaseButton.vue";
 import FormField from "@/components/Form/FormField.vue";
@@ -27,9 +22,7 @@ import { StudentMappings } from "@/helpers/maps.js";
 
 import SectionBanner from "@/components/Section/SectionBanner.vue";
 
-import { mdiLaptop, mdiDatabase } from "@mdi/js";
-
-import moment from "@/moment-setup";
+import { mdiDatabase } from "@mdi/js";
 
 const profileForm = reactive({
 	username: mainStore.currentUser.username,

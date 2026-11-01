@@ -1,5 +1,5 @@
 <script setup>
-import { mdiClipboardCheckOutline, mdiProgressClock, mdiLaptop, mdiNumeric, mdiNumeric1Circle, mdiNumeric2CircleOutline, mdiNumeric3CircleOutline, mdiEmail } from "@mdi/js";
+import { mdiProgressClock, mdiLaptop, mdiNumeric } from "@mdi/js";
 import { ref, computed, onMounted } from "vue";
 
 import LayoutAuthenticated from "@/layouts/LayoutAuthenticated.vue";
@@ -10,7 +10,7 @@ import CardboxAllocation from "@/components/Cardbox/CardBoxAllocation.vue";
 import CardBoxWidget from "@/components/Cardbox/CardBoxWidget.vue";
 import CardBoxModal from "@/components/Cardbox/CardBoxModal.vue";
 import SectionMain from "@/components/Section/SectionMain.vue";
-import BaseIcon from "@/components/Base/BaseIcon.vue";
+
 
 import { mainStore, studentStore } from "@/main.js";
 

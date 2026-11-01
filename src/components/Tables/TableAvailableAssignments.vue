@@ -7,7 +7,7 @@
 	</CardBoxModal>
 
 	<div class="mb-4">
-		<input type="text" v-model="searchQuery" placeholder="Pretraži zadatke..." class="w-full border border-gray-50 p-2 text-gray-700 outline-none focus:border-fipu_blue" />
+		<input v-model="searchQuery" type="text" placeholder="Pretraži zadatke..." class="w-full border border-gray-50 p-2 text-gray-700 outline-none focus:border-fipu_blue" />
 	</div>
 
 	<table>
@@ -78,7 +78,7 @@
 	<div class="border-t border-gray-100 p-3 dark:border-slate-800 lg:px-6">
 		<BaseLevel>
 			<BaseButtons>
-				<ButtonMenu :options="tableButtonMenuOptions" :icon="mdiMenuDown" small left @update:modelValue="handlePerPageChange" />
+				<ButtonMenu :options="tableButtonMenuOptions" :icon="mdiMenuDown" small left @update:model-value="handlePerPageChange" />
 				<BaseButton v-for="page in pagesList" :key="page" :active="page === currentPage" :label="page + 1" :color="page === currentPage ? 'lightDark' : 'whiteDark'" small @click="currentPage = page" />
 			</BaseButtons>
 			<small>Stranica {{ currentPageHuman }} od {{ numPages }}</small>

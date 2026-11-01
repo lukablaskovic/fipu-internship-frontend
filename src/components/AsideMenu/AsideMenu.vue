@@ -111,9 +111,9 @@ const expandCollapseItem = computed(() => ({
 	<AsideMenuLayer
 		v-if="secondaryMenuItem"
 		:menu="secondaryMenuItem.menuSecondary"
-		@menu-click="menuClickSecondaryMenu"
 		:class="[isPrimaryMenuCompact ? 'lg:left-22' : 'md:left-60']"
-		class="right-0 animate-fade-in-right-fast md:right-auto lg:animate-fade-in-left-fast">
+		class="right-0 animate-fade-in-right-fast md:right-auto lg:animate-fade-in-left-fast"
+		@menu-click="menuClickSecondaryMenu">
 		<BaseIcon v-if="secondaryMenuItem.icon" :path="secondaryMenuItem.icon" w="w-16" />
 		<div class="flex-1">
 			{{ secondaryMenuItem.label }}

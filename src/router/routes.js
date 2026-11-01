@@ -1,4 +1,4 @@
-import { mainStore } from "@/main.js";
+
 
 const routes = [
 	{

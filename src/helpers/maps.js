@@ -259,25 +259,7 @@ class UserTaskMappings {
 	}
 }
 
-import {
-	mdiRayStartArrow,
-	mdiClipboardCheck,
-	mdiNumeric,
-	mdiHandshake,
-	mdiProgressClock,
-	mdiCheck,
-	mdiThumbsUpDownOutline,
-	mdiNoteCheck,
-	mdiAccountTie,
-	mdiNotebook,
-	mdiFileDocumentPlus,
-	mdiRayEnd,
-	mdiContentSaveOutline,
-	mdiApi,
-	mdiEmailArrowRight,
-	mdiCertificate,
-	mdiCancel,
-} from "@mdi/js";
+import { mdiRayStartArrow, mdiClipboardCheck, mdiNumeric, mdiProgressClock, mdiCheck, mdiThumbsUpDownOutline, mdiNoteCheck, mdiAccountTie, mdiNotebook, mdiFileDocumentPlus, mdiRayEnd, mdiContentSaveOutline, mdiApi, mdiEmailArrowRight, mdiCertificate, mdiCancel } from "@mdi/js";
 
 import { endpoints } from "@/config";
 

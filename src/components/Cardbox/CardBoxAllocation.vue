@@ -82,7 +82,7 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted } from "vue";
+import { ref, onMounted } from "vue";
 import { mainStore } from "@/main";
 
 const props = defineProps({
@@ -92,13 +92,6 @@ const props = defineProps({
 	},
 });
 let companyLogo = ref("");
-
-const truncatedDescription = computed(() => {
-	if (props.data.opis_zadatka.length > 50) {
-		return props.data.opis_zadatka.substring(0, 50) + "...";
-	}
-	return props.data.opis_zadatka;
-});
 
 onMounted(async () => {
 	let result = await mainStore.fetchCompanies(props.data["Poslodavac"][0]["value"]);

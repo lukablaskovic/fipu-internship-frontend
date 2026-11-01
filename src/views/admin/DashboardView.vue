@@ -122,7 +122,6 @@ const filteredEvents = computed(() => {
 		filtered = filtered.filter((event) => event.model_name === mainStore.bpmn_process_name_A + ".bpmn");
 	} else if (adminStore.filterModelState === "B") {
 		filtered = filtered.filter((event) => event.model_name === mainStore.bpmn_process_name_B + ".bpmn");
-	} else if (adminStore.filterModelState === "AB") {
 	}
 
 	return filtered;
@@ -166,16 +165,6 @@ const toggleDateType = () => {
 	adminStore.relativeToNowTimestmap = !adminStore.relativeToNowTimestmap;
 };
 
-// Maintenance control functions
-const enableMaintenance = () => {
-	mainStore.enableMaintenanceMode();
-	snackBarStore.pushMessage("Održavanje je uključeno. Svi korisnici bit će preusmjereni na stranicu održavanja.", "warning");
-};
-
-const disableMaintenance = () => {
-	mainStore.disableMaintenanceMode();
-	snackBarStore.pushMessage("Održavanje je isključeno. Sustav je ponovno dostupan.", "success");
-};
 </script>
 
 <template>

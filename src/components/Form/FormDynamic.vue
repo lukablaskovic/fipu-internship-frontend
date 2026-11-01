@@ -8,7 +8,7 @@
 			</FormField>
 
 			<FormField v-if="field.type === 'input'" :label="field.label">
-				<FormControl class="my-2" v-model="formValues[key]" type="text" />
+				<FormControl v-model="formValues[key]" class="my-2" type="text" />
 			</FormField>
 
 			<template v-if="field.type === 'var-string'"> </template>
@@ -219,7 +219,7 @@ watch(
 
 watch(
 	formValues,
-	(newValues, oldValues) => {
+	(newValues) => {
 		emit("update:modelValue", newValues);
 	},
 	{ deep: true },

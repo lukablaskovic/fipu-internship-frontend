@@ -1,21 +1,5 @@
 <script setup>
-import {
-	mdiBallot,
-	mdiNewBox,
-	mdiEmail,
-	mdiClipboardText,
-	mdiLaptop,
-	mdiDomain,
-	mdiMapMarker,
-	mdiClipboardTextClockOutline,
-	mdiAccountGroup,
-	mdiSchool,
-	mdiTextLong,
-	mdiXml,
-	mdiThumbsUpDown,
-	mdiClockTimeFiveOutline,
-	mdiNoteTextOutline,
-} from "@mdi/js";
+import { mdiBallot, mdiNewBox, mdiEmail, mdiLaptop, mdiDomain, mdiMapMarker, mdiClipboardTextClockOutline, mdiAccountGroup, mdiSchool, mdiTextLong, mdiXml, mdiThumbsUpDown, mdiClockTimeFiveOutline, mdiNoteTextOutline } from "@mdi/js";
 import { ref, reactive, onMounted, watch, computed } from "vue";
 import SectionMain from "@/components/Section/SectionMain.vue";
 
@@ -255,12 +239,12 @@ watch(
 
 					<FormField label="Postojeći partner*" horizontal>
 						<FormCombobox
-							:disabled="form.Poslodavac_novi_naziv"
 							v-model="form.Poslodavac"
+							:disabled="form.Poslodavac_novi_naziv"
 							:important="triggered && form.Poslodavac == '' && form.Poslodavac_novi_naziv == ''"
 							:list="mappedCompanies"
-							labelName="label"
-							emitName="label"
+							label-name="label"
+							emit-name="label"
 							help="Ako niste partner, unesite naziv organizacije ispod." />
 					</FormField>
 
@@ -268,8 +252,8 @@ watch(
 
 					<FormField label="Naziv organizacije*" horizontal>
 						<FormControl
-							:disabled="form.Poslodavac != ''"
 							v-model="form.Poslodavac_novi_naziv"
+							:disabled="form.Poslodavac != ''"
 							:icon-left="mdiDomain"
 							help="Ovdje unesite naziv organizacije ako ste novi partner (nema vas u dropdown obrascu iznad)"
 							:error="getFirstErrorForField(v$, 'Poslodavac_novi_naziv')"

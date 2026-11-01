@@ -238,7 +238,7 @@ watch(studentsPaginated, (newList) => {
 		</tbody>
 	</table>
 	<div v-if="instanceDeleteModalActive">
-		<CardBoxModal v-model="instanceDeleteModalActive" title="Brisanje procesne instance" button="danger" has-cancel @confirm="adminStore.removeInstanceData()" button-label="Obriši">
+		<CardBoxModal v-model="instanceDeleteModalActive" title="Brisanje procesne instance" button="danger" has-cancel button-label="Obriši" @confirm="adminStore.removeInstanceData()">
 			<p>
 				<b>OPREZ!</b> Ova radnja će obrisati kompletnu procesnu instancu prakse za studenta: <b>{{ adminStore.selectedStudentForDelete.ime }} {{ adminStore.selectedStudentForDelete.prezime }}</b> uključujući sve podatke koje je student unio,
 				generirane prijavnice i dnevnik prakse. <b>Radnja je nepovratna.</b>
@@ -256,7 +256,7 @@ watch(studentsPaginated, (newList) => {
 	<div class="border-t border-gray-100 p-3 dark:border-slate-800 lg:px-6">
 		<BaseLevel>
 			<BaseButtons>
-				<ButtonMenu :options="tableButtonMenuOptions" :icon="mdiMenuDown" small left @update:modelValue="handlePerPageChange" />
+				<ButtonMenu :options="tableButtonMenuOptions" :icon="mdiMenuDown" small left @update:model-value="handlePerPageChange" />
 
 				<BaseButton v-for="page in pagesList" :key="page" :active="page === currentPage" :label="page + 1" :color="page === currentPage ? 'lightDark' : 'whiteDark'" small @click="currentPage = page" />
 			</BaseButtons>

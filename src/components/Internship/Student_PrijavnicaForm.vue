@@ -1,6 +1,6 @@
 <script setup>
 import { mdiFileDocumentEdit, mdiLaptop, mdiBallot, mdiAccount, mdiMail, mdiClipboardCheck, mdiPhone, mdiCardAccountDetailsOutline, mdiDomain, mdiClockTimeFiveOutline, mdiTextLong, mdiCalendar } from "@mdi/js";
-import { croatianAlpha, getFirstErrorForField, isUnipuEmail, exactLength, containsNumeric } from "@/helpers/validators";
+import { croatianAlpha, getFirstErrorForField, exactLength, containsNumeric } from "@/helpers/validators";
 import { required, email, helpers, numeric, minLength } from "@vuelidate/validators";
 import { ref, computed, onMounted, reactive } from "vue";
 import { useVuelidate } from "@vuelidate/core";
@@ -191,12 +191,12 @@ async function submit_application_form() {
 				<CardBox :icon="mdiBallot" class="mb-6 lg:col-span-2 lg:mb-0 xl:col-span-3" is-form @submit.prevent="submit_application_form">
 					<CardBoxComponentTitle title="📃 Prijavnica na praksu" />
 					<FormField label="Ime i prezime" horizontal>
-						<FormControl disabled v-model="form.student_ime" :icon-left="mdiAccount" help="Vaše ime" :error="getFirstErrorForField(v$, 'student_ime')" placeholder="Vaše ime" />
-						<FormControl disabled v-model="form.student_prezime" :icon-left="mdiAccount" help="Vaše prezime" :error="getFirstErrorForField(v$, 'student_prezime')" placeholder="Vaše prezime" />
+						<FormControl v-model="form.student_ime" disabled :icon-left="mdiAccount" help="Vaše ime" :error="getFirstErrorForField(v$, 'student_ime')" placeholder="Vaše ime" />
+						<FormControl v-model="form.student_prezime" disabled :icon-left="mdiAccount" help="Vaše prezime" :error="getFirstErrorForField(v$, 'student_prezime')" placeholder="Vaše prezime" />
 					</FormField>
 
 					<FormField label="UNIPU email" horizontal>
-						<FormControl disabled v-model="form.student_email" :icon-left="mdiMail" type="email" help="Vaša UNIPU email adresa" :error="getFirstErrorForField(v$, 'student_email')" placeholder="Email" />
+						<FormControl v-model="form.student_email" disabled :icon-left="mdiMail" type="email" help="Vaša UNIPU email adresa" :error="getFirstErrorForField(v$, 'student_email')" placeholder="Email" />
 					</FormField>
 
 					<FormField label="Broj mobitela" help="Neće se trajno pohraniti. Samo za slučajeve brzog dogovora." horizontal>
