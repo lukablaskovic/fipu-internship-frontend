@@ -27,30 +27,23 @@ const allAssignments = ref([]);
 
 const routes = ["dashboard", "studenti", "alokacije", "dostupni-zadaci", "poslodavci", "profil", "poruke", "poslodavci/novi-zadatak"];
 const helpItems = [
-	{ prefix: "s:", description: "Student po imenu", example: "Ana Anić" },
-	{ prefix: "sj:", description: "Student po JMBAG-u", example: "0303000000" },
-	{ prefix: "se:", description: "Student po e-mailu", example: "ana@unipu.hr" },
-	{ prefix: "p:", description: "Poduzeće", example: "Naziv poduzeća" },
-	{ prefix: "z:", description: "Zadatak", example: "ID zadatka" },
+	{ prefix: "student:", aliases: ["studenti", "ime", "name", "s"], description: "Student po imenu", example: "Ana Anić" },
+	{ prefix: "jmbag:", aliases: ["sj"], description: "Student po JMBAG-u", example: "0303000000" },
+	{ prefix: "email:", aliases: ["e-mail", "eposta", "e-pošta", "e-posta", "se"], description: "Student po e-mailu", example: "ana@unipu.hr" },
+	{ prefix: "company:", aliases: ["poduzeće", "poduzece", "tvrtka", "poslodavac", "p"], description: "Poduzeće", example: "Naziv poduzeća" },
+	{ prefix: "task:", aliases: ["zadatak", "z"], description: "Zadatak", example: "ID zadatka" },
 ];
 const suggestedFilters = computed(() => {
 	if (query.value.includes(":")) return [];
 	const term = normalizeString(query.value);
-	return helpItems.filter((item) => item.prefix.startsWith(term) || normalizeString(item.description).includes(term));
+	return helpItems.filter((item) => item.prefix.startsWith(term) || item.aliases.some((alias) => alias.startsWith(term)) || normalizeString(item.description).includes(term));
 });
-const activeFilter = computed(() => helpItems.find((item) => item.prefix === currentPrefix.value));
-
-const hasValidPrefix = computed(() => {
-	const input = query.value;
-	const prefix = input.split(":")[0] + ":";
-	return helpItems.some((item) => item.prefix === prefix) && input.includes(":");
+const currentPrefix = computed(() => query.value.includes(":") ? query.value.slice(0, query.value.indexOf(":") + 1) : "");
+const activeFilter = computed(() => {
+	const keyword = normalizeString(currentPrefix.value.slice(0, -1));
+	return helpItems.find((item) => item.prefix === `${keyword}:` || item.aliases.includes(keyword));
 });
-
-const currentPrefix = computed(() => {
-	const input = query.value;
-	const prefix = input.split(":")[0] + ":";
-	return helpItems.some((item) => item.prefix === prefix) ? prefix : "";
-});
+const hasValidPrefix = computed(() => !!activeFilter.value);
 
 const displayValue = computed({
 	get: () => query.value,
@@ -67,19 +60,18 @@ const filteredResults = computed(() => {
 		return routes.filter((route) => route.includes(searchTerm));
 	}
 
-	const terms = searchTerm.split(" ");
-	const prefix = query.value.split(":")[0];
+	const terms = query.value.slice(query.value.indexOf(":") + 1).trim().toLowerCase().split(/\s+/);
 
-	switch (prefix) {
-		case "s":
+	switch (activeFilter.value?.prefix) {
+		case "student:":
 			return filterStudentsByName(adminStore.students, terms);
-		case "se":
+		case "email:":
 			return filterByEmail(adminStore.students, searchTerm);
-		case "sj":
+		case "jmbag:":
 			return filterByJMBAG(adminStore.students, searchTerm);
-		case "p":
+		case "company:":
 			return filterByCompany(allCompanies.value, searchTerm);
-		case "z":
+		case "task:":
 			return filterByAssignmentId(allAssignments.value, searchTerm);
 		default:
 			return [];
