@@ -67,6 +67,7 @@ for (const width of [1280, 390]) {
 		const googleButton = page.getByRole("button", { name: "Google sign-in", exact: true });
 		await expect(googleButton).toHaveAttribute("data-theme", "filled_black");
 		await expect(googleButton).toHaveAttribute("data-size", "large");
+		await expect(page.locator(".g-btn-wrapper")).toHaveCSS("color-scheme", "light");
 		await toggle(page).click();
 		await expect(googleButton).toHaveAttribute("data-theme", "outline");
 		await expect(page.locator(".faculty-logo")).toHaveCSS("filter", "none");

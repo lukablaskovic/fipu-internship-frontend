@@ -255,6 +255,10 @@ h2 {
 .sign-in {
 	margin: 24px 0 28px;
 }
+.sign-in :deep(.g-btn-wrapper) {
+	/* Match Google’s iframe canvas scheme to keep its background transparent. */
+	color-scheme: light;
+}
 .sign-in :deep(button) {
 	min-height: 44px;
 }
