@@ -5,6 +5,7 @@ FROM node:18 as build-stage
 WORKDIR /app
 
 COPY package*.json ./
+COPY vendor ./vendor
 RUN npm install
 
 COPY . .

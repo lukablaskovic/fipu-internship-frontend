@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:bioc="http://bpmn.io/schema/bpmn/biocolor/1.0" xmlns:modeler="http://camunda.org/schema/modeler/1.0" id="Definitions_1nk7pui" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="5.4.2" modeler:executionPlatform="Camunda Platform" modeler:executionPlatformVersion="7.15.0">
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:fipu="urn:fipu:bpmn:1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:bioc="http://bpmn.io/schema/bpmn/biocolor/1.0" id="Definitions_1nk7pui" targetNamespace="urn:fipu:praksa" exporter="Praksa BPMN Studio" exporterVersion="1">
   <bpmn:collaboration id="Collaboration_0ojchsi">
     <bpmn:participant id="sustav_pool" name="Provođenje prakse (Model B)" processRef="Process_0or099w" />
   </bpmn:collaboration>
@@ -16,6 +16,7 @@
         <bpmn:flowNodeRef>ispunjavanje_prijavnice_student</bpmn:flowNodeRef>
         <bpmn:flowNodeRef>Gateway_1865qr0</bpmn:flowNodeRef>
         <bpmn:flowNodeRef>model_b_direktna_prijava_student</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Activity_0dri58t</bpmn:flowNodeRef>
       </bpmn:lane>
       <bpmn:lane id="profesor_lane" name="Profesor">
         <bpmn:flowNodeRef>spremanje_dnevnika</bpmn:flowNodeRef>
@@ -35,31 +36,31 @@
     </bpmn:laneSet>
     <bpmn:userTask id="predavanje_dnevnika_student" name="Predavanje dnevnika prakse">
       <bpmn:extensionElements>
-        <camunda:formData>
-          <camunda:formField id="nastavak_radnog_odnosa" label="Označi ako nastavljaš i dalje raditi u tvrtci ili ćeš ubrzo početi raditi honorarno" type="boolean" />
-          <camunda:formField id="prijavljen_rok" type="date" />
-          <camunda:formField id="student_OIB" type="string" defaultValue="${student_OIB}" />
-        </camunda:formData>
+        <fipu:formData>
+          <fipu:formField id="nastavak_radnog_odnosa" label="Označi ako nastavljaš i dalje raditi u tvrtci ili ćeš ubrzo početi raditi honorarno" type="boolean" />
+          <fipu:formField id="prijavljen_rok" type="date" />
+          <fipu:formField id="student_OIB" type="string" defaultValue="${student_OIB}" />
+        </fipu:formData>
       </bpmn:extensionElements>
       <bpmn:incoming>Flow_03i13r1</bpmn:incoming>
       <bpmn:outgoing>Flow_1btfl5a</bpmn:outgoing>
     </bpmn:userTask>
     <bpmn:serviceTask id="spremanje_dnevnika" name="Ažuriranje podataka u baserow">
       <bpmn:extensionElements>
-        <camunda:connector>
-          <camunda:inputOutput>
-            <camunda:inputParameter name="url">/api/dnevnik</camunda:inputParameter>
-            <camunda:inputParameter name="method">POST</camunda:inputParameter>
-          </camunda:inputOutput>
-          <camunda:connectorId>baserow</camunda:connectorId>
-        </camunda:connector>
-        <camunda:inputOutput>
-          <camunda:inputParameter name="nastavak_radnog_odnosa">${nastavak_radnog_odnosa}</camunda:inputParameter>
-          <camunda:inputParameter name="prijavljen_rok">${prijavljen_rok}</camunda:inputParameter>
-          <camunda:inputParameter name="id_dnevnik_prakse">${id_dnevnik_prakse}</camunda:inputParameter>
-          <camunda:inputParameter name="id_instance" />
-          <camunda:inputParameter name="id_alokacija">${id_alokacija}</camunda:inputParameter>
-        </camunda:inputOutput>
+        <fipu:connector>
+          <fipu:inputOutput>
+            <fipu:inputParameter name="url">/api/dnevnik</fipu:inputParameter>
+            <fipu:inputParameter name="method">POST</fipu:inputParameter>
+          </fipu:inputOutput>
+          <fipu:connectorId>baserow</fipu:connectorId>
+        </fipu:connector>
+        <fipu:inputOutput>
+          <fipu:inputParameter name="nastavak_radnog_odnosa">${nastavak_radnog_odnosa}</fipu:inputParameter>
+          <fipu:inputParameter name="prijavljen_rok">${prijavljen_rok}</fipu:inputParameter>
+          <fipu:inputParameter name="id_dnevnik_prakse">${id_dnevnik_prakse}</fipu:inputParameter>
+          <fipu:inputParameter name="id_instance" />
+          <fipu:inputParameter name="id_alokacija">${id_alokacija}</fipu:inputParameter>
+        </fipu:inputOutput>
       </bpmn:extensionElements>
       <bpmn:incoming>Flow_1btfl5a</bpmn:incoming>
       <bpmn:outgoing>Flow_0nepg4p</bpmn:outgoing>
@@ -68,13 +69,13 @@
       <bpmn:documentation>Potrebno je ocjenu unijeti u ISVU sustav - Studomat
 https://www.isvu.hr/nastavnickiportal/hr/prijava</bpmn:documentation>
       <bpmn:extensionElements>
-        <camunda:formData>
-          <camunda:formField id="ocjena_unesena_studomat" label="Jeste li unijeli ocjenu u ISVU sustav?" type="yes-no-boolean" />
-        </camunda:formData>
-        <camunda:inputOutput>
-          <camunda:inputParameter name="nastavak_radnog_odnosa">${nastavak_radnog_odnosa}</camunda:inputParameter>
-          <camunda:inputParameter name="prijavljen_rok">${prijavljen_rok}</camunda:inputParameter>
-        </camunda:inputOutput>
+        <fipu:formData>
+          <fipu:formField id="ocjena_unesena_studomat" label="Jeste li unijeli ocjenu u ISVU sustav?" type="yes-no-boolean" />
+        </fipu:formData>
+        <fipu:inputOutput>
+          <fipu:inputParameter name="nastavak_radnog_odnosa">${nastavak_radnog_odnosa}</fipu:inputParameter>
+          <fipu:inputParameter name="prijavljen_rok">${prijavljen_rok}</fipu:inputParameter>
+        </fipu:inputOutput>
       </bpmn:extensionElements>
       <bpmn:incoming>Flow_0nepg4p</bpmn:incoming>
       <bpmn:outgoing>Flow_15bhsc5</bpmn:outgoing>
@@ -97,114 +98,114 @@ https://www.isvu.hr/nastavnickiportal/hr/prijava</bpmn:documentation>
     </bpmn:startEvent>
     <bpmn:sendTask id="slanje_potvrde_student_email" name="Slanje potvrde o obavljenoj praksi studentu (email)">
       <bpmn:extensionElements>
-        <camunda:connector>
-          <camunda:inputOutput>
-            <camunda:inputParameter name="url_parameter">
-              <camunda:map>
-                <camunda:entry key="to">${student_email}</camunda:entry>
-                <camunda:entry key="template">student_potvrda_pdf</camunda:entry>
-              </camunda:map>
-            </camunda:inputParameter>
-            <camunda:inputParameter name="url">/email</camunda:inputParameter>
-            <camunda:inputParameter name="method">POST</camunda:inputParameter>
-          </camunda:inputOutput>
-          <camunda:connectorId>sendgrid</camunda:connectorId>
-        </camunda:connector>
-        <camunda:inputOutput>
-          <camunda:inputParameter name="attachment_name">${student_prezime}_potvrda.pdf</camunda:inputParameter>
-          <camunda:inputParameter name="id_instance" />
-          <camunda:inputParameter name="next_task">predavanje_dnevnika_student</camunda:inputParameter>
-          <camunda:inputParameter name="pdf_attachment_url">${pdf_attachment_url}</camunda:inputParameter>
-          <camunda:inputParameter name="mentor_email">${mentor_email}</camunda:inputParameter>
-        </camunda:inputOutput>
+        <fipu:connector>
+          <fipu:inputOutput>
+            <fipu:inputParameter name="url_parameter">
+              <fipu:map>
+                <fipu:entry key="to">${student_email}</fipu:entry>
+                <fipu:entry key="template">student_potvrda_pdf</fipu:entry>
+              </fipu:map>
+            </fipu:inputParameter>
+            <fipu:inputParameter name="url">/email</fipu:inputParameter>
+            <fipu:inputParameter name="method">POST</fipu:inputParameter>
+          </fipu:inputOutput>
+          <fipu:connectorId>sendgrid</fipu:connectorId>
+        </fipu:connector>
+        <fipu:inputOutput>
+          <fipu:inputParameter name="attachment_name">${student_prezime}_potvrda.pdf</fipu:inputParameter>
+          <fipu:inputParameter name="id_instance" />
+          <fipu:inputParameter name="next_task">predavanje_dnevnika_student</fipu:inputParameter>
+          <fipu:inputParameter name="pdf_attachment_url">${pdf_attachment_url}</fipu:inputParameter>
+          <fipu:inputParameter name="mentor_email">${mentor_email}</fipu:inputParameter>
+        </fipu:inputOutput>
       </bpmn:extensionElements>
       <bpmn:incoming>Flow_0rr5pyh</bpmn:incoming>
       <bpmn:outgoing>Flow_1jgq625</bpmn:outgoing>
     </bpmn:sendTask>
     <bpmn:userTask id="ispunjavanje_prijavnice_student" name="Ispunjavanje prijavnice">
       <bpmn:extensionElements>
-        <camunda:formData>
-          <camunda:formField id="student_broj_mobitela" type="string" />
-          <camunda:formField id="student_OIB" type="string" />
-          <camunda:formField id="mentor_ime" type="string" />
-          <camunda:formField id="mentor_prezime" type="string" />
-          <camunda:formField id="mentor_email" type="string" />
-          <camunda:formField id="detaljan_opis_zadatka" type="string" />
-          <camunda:formField id="dogovoreni_broj_sati" type="integer" />
-          <camunda:formField id="pocetak_prakse" type="date" />
-          <camunda:formField id="kraj_prakse" type="date" />
-          <camunda:formField id="alokacija_potvrda" type="boolean" />
-          <camunda:formField id="kontakt_potvrda" type="boolean" />
-          <camunda:formField id="mjesto_izvrsavanja" type="string" />
-        </camunda:formData>
+        <fipu:formData>
+          <fipu:formField id="student_broj_mobitela" type="string" />
+          <fipu:formField id="student_OIB" type="string" />
+          <fipu:formField id="mentor_ime" type="string" />
+          <fipu:formField id="mentor_prezime" type="string" />
+          <fipu:formField id="mentor_email" type="string" />
+          <fipu:formField id="detaljan_opis_zadatka" type="string" />
+          <fipu:formField id="dogovoreni_broj_sati" type="integer" />
+          <fipu:formField id="pocetak_prakse" type="date" />
+          <fipu:formField id="kraj_prakse" type="date" />
+          <fipu:formField id="alokacija_potvrda" type="boolean" />
+          <fipu:formField id="kontakt_potvrda" type="boolean" />
+          <fipu:formField id="mjesto_izvrsavanja" type="string" />
+        </fipu:formData>
       </bpmn:extensionElements>
       <bpmn:incoming>Flow_13ar6jz</bpmn:incoming>
       <bpmn:outgoing>Flow_1l8y47v</bpmn:outgoing>
     </bpmn:userTask>
     <bpmn:serviceTask id="azuriranje_podataka_profesor" name="Ažuriranje podataka u baserow">
       <bpmn:extensionElements>
-        <camunda:connector>
-          <camunda:inputOutput>
-            <camunda:inputParameter name="url">/api/prijavnica</camunda:inputParameter>
-            <camunda:inputParameter name="method">POST</camunda:inputParameter>
-            <camunda:inputParameter name="url_parameter">
-              <camunda:map>
-                <camunda:entry key="Student">${Student}</camunda:entry>
-              </camunda:map>
-            </camunda:inputParameter>
-          </camunda:inputOutput>
-          <camunda:connectorId>baserow</camunda:connectorId>
-        </camunda:connector>
-        <camunda:inputOutput>
-          <camunda:inputParameter name="Student">${Student}</camunda:inputParameter>
-          <camunda:inputParameter name="student_OIB">${student_OIB}</camunda:inputParameter>
-          <camunda:inputParameter name="student_broj_mobitela">${student_broj_mobitela}</camunda:inputParameter>
-          <camunda:inputParameter name="student_email">${student_email}</camunda:inputParameter>
-          <camunda:inputParameter name="mentor_ime">${mentor_ime}</camunda:inputParameter>
-          <camunda:inputParameter name="mentor_prezime">${mentor_prezime}</camunda:inputParameter>
-          <camunda:inputParameter name="mentor_email">${mentor_email}</camunda:inputParameter>
-          <camunda:inputParameter name="detaljan_opis_zadatka">${detaljan_opis_zadatka}</camunda:inputParameter>
-          <camunda:inputParameter name="dogovoreni_broj_sati">${dogovoreni_broj_sati}</camunda:inputParameter>
-          <camunda:inputParameter name="pocetak_prakse">${pocetak_prakse}</camunda:inputParameter>
-          <camunda:inputParameter name="kraj_prakse">${kraj_prakse}</camunda:inputParameter>
-          <camunda:inputParameter name="alokacija_potvrda">${alokacija_potvrda}</camunda:inputParameter>
-          <camunda:inputParameter name="kontakt_potvrda">${kontakt_potvrda}</camunda:inputParameter>
-          <camunda:inputParameter name="Poslodavac">${poslodavac_naziv}</camunda:inputParameter>
-          <camunda:inputParameter name="mjesto_izvrsavanja">${mjesto_izvrsavanja}</camunda:inputParameter>
-          <camunda:inputParameter name="id_instance" />
-          <camunda:inputParameter name="id_alokacija">${id_alokacija}</camunda:inputParameter>
-          <camunda:outputParameter name="id_prijavnica" />
-          <camunda:outputParameter name="id_dnevnik_prakse" />
-        </camunda:inputOutput>
+        <fipu:connector>
+          <fipu:inputOutput>
+            <fipu:inputParameter name="url">/api/prijavnica</fipu:inputParameter>
+            <fipu:inputParameter name="method">POST</fipu:inputParameter>
+            <fipu:inputParameter name="url_parameter">
+              <fipu:map>
+                <fipu:entry key="Student">${Student}</fipu:entry>
+              </fipu:map>
+            </fipu:inputParameter>
+          </fipu:inputOutput>
+          <fipu:connectorId>baserow</fipu:connectorId>
+        </fipu:connector>
+        <fipu:inputOutput>
+          <fipu:inputParameter name="Student">${Student}</fipu:inputParameter>
+          <fipu:inputParameter name="student_OIB">${student_OIB}</fipu:inputParameter>
+          <fipu:inputParameter name="student_broj_mobitela">${student_broj_mobitela}</fipu:inputParameter>
+          <fipu:inputParameter name="student_email">${student_email}</fipu:inputParameter>
+          <fipu:inputParameter name="mentor_ime">${mentor_ime}</fipu:inputParameter>
+          <fipu:inputParameter name="mentor_prezime">${mentor_prezime}</fipu:inputParameter>
+          <fipu:inputParameter name="mentor_email">${mentor_email}</fipu:inputParameter>
+          <fipu:inputParameter name="detaljan_opis_zadatka">${detaljan_opis_zadatka}</fipu:inputParameter>
+          <fipu:inputParameter name="dogovoreni_broj_sati">${dogovoreni_broj_sati}</fipu:inputParameter>
+          <fipu:inputParameter name="pocetak_prakse">${pocetak_prakse}</fipu:inputParameter>
+          <fipu:inputParameter name="kraj_prakse">${kraj_prakse}</fipu:inputParameter>
+          <fipu:inputParameter name="alokacija_potvrda">${alokacija_potvrda}</fipu:inputParameter>
+          <fipu:inputParameter name="kontakt_potvrda">${kontakt_potvrda}</fipu:inputParameter>
+          <fipu:inputParameter name="Poslodavac">${poslodavac_naziv}</fipu:inputParameter>
+          <fipu:inputParameter name="mjesto_izvrsavanja">${mjesto_izvrsavanja}</fipu:inputParameter>
+          <fipu:inputParameter name="id_instance" />
+          <fipu:inputParameter name="id_alokacija">${id_alokacija}</fipu:inputParameter>
+          <fipu:outputParameter name="id_prijavnica" />
+          <fipu:outputParameter name="id_dnevnik_prakse" />
+        </fipu:inputOutput>
       </bpmn:extensionElements>
       <bpmn:incoming>Flow_1l8y47v</bpmn:incoming>
       <bpmn:outgoing>Flow_1bua3l7</bpmn:outgoing>
     </bpmn:serviceTask>
     <bpmn:serviceTask id="kreiranje_potvrde_profesor" name="Kreiranje potvrde">
       <bpmn:extensionElements>
-        <camunda:connector>
-          <camunda:inputOutput>
-            <camunda:inputParameter name="url">/api/potvrda</camunda:inputParameter>
-            <camunda:inputParameter name="method">POST</camunda:inputParameter>
-          </camunda:inputOutput>
-          <camunda:connectorId>pdf</camunda:connectorId>
-        </camunda:connector>
-        <camunda:inputOutput>
-          <camunda:inputParameter name="student_ime">${student_ime}</camunda:inputParameter>
-          <camunda:inputParameter name="student_prezime">${student_prezime}</camunda:inputParameter>
-          <camunda:inputParameter name="student_broj_mobitela">${student_broj_mobitela}</camunda:inputParameter>
-          <camunda:inputParameter name="student_OIB">${student_OIB}</camunda:inputParameter>
-          <camunda:inputParameter name="student_email">${student_email}</camunda:inputParameter>
-          <camunda:inputParameter name="mentor_ime">${mentor_ime}</camunda:inputParameter>
-          <camunda:inputParameter name="mentor_prezime">${mentor_prezime}</camunda:inputParameter>
-          <camunda:inputParameter name="detaljan_opis_zadatka">${detaljan_opis_zadatka}</camunda:inputParameter>
-          <camunda:inputParameter name="dogovoreni_broj_sati">${dogovoreni_broj_sati}</camunda:inputParameter>
-          <camunda:inputParameter name="pocetak_prakse">${pocetak_prakse}</camunda:inputParameter>
-          <camunda:inputParameter name="kraj_prakse">${kraj_prakse}</camunda:inputParameter>
-          <camunda:inputParameter name="Poslodavac">${poslodavac_naziv}</camunda:inputParameter>
-          <camunda:inputParameter name="mjesto_izvrsavanja">${mjesto_izvrsavanja}</camunda:inputParameter>
-          <camunda:outputParameter name="pdf_attachment_url" />
-        </camunda:inputOutput>
+        <fipu:connector>
+          <fipu:inputOutput>
+            <fipu:inputParameter name="url">/api/potvrda</fipu:inputParameter>
+            <fipu:inputParameter name="method">POST</fipu:inputParameter>
+          </fipu:inputOutput>
+          <fipu:connectorId>pdf</fipu:connectorId>
+        </fipu:connector>
+        <fipu:inputOutput>
+          <fipu:inputParameter name="student_ime">${student_ime}</fipu:inputParameter>
+          <fipu:inputParameter name="student_prezime">${student_prezime}</fipu:inputParameter>
+          <fipu:inputParameter name="student_broj_mobitela">${student_broj_mobitela}</fipu:inputParameter>
+          <fipu:inputParameter name="student_OIB">${student_OIB}</fipu:inputParameter>
+          <fipu:inputParameter name="student_email">${student_email}</fipu:inputParameter>
+          <fipu:inputParameter name="mentor_ime">${mentor_ime}</fipu:inputParameter>
+          <fipu:inputParameter name="mentor_prezime">${mentor_prezime}</fipu:inputParameter>
+          <fipu:inputParameter name="detaljan_opis_zadatka">${detaljan_opis_zadatka}</fipu:inputParameter>
+          <fipu:inputParameter name="dogovoreni_broj_sati">${dogovoreni_broj_sati}</fipu:inputParameter>
+          <fipu:inputParameter name="pocetak_prakse">${pocetak_prakse}</fipu:inputParameter>
+          <fipu:inputParameter name="kraj_prakse">${kraj_prakse}</fipu:inputParameter>
+          <fipu:inputParameter name="Poslodavac">${poslodavac_naziv}</fipu:inputParameter>
+          <fipu:inputParameter name="mjesto_izvrsavanja">${mjesto_izvrsavanja}</fipu:inputParameter>
+          <fipu:outputParameter name="pdf_attachment_url" />
+        </fipu:inputOutput>
       </bpmn:extensionElements>
       <bpmn:incoming>Flow_1bua3l7</bpmn:incoming>
       <bpmn:outgoing>Flow_1g3f3ei</bpmn:outgoing>
@@ -215,27 +216,27 @@ https://www.isvu.hr/nastavnickiportal/hr/prijava</bpmn:documentation>
     </bpmn:parallelGateway>
     <bpmn:sendTask id="slanje_potvrde_mentor_email" name="Slanje potvrde o obavljenoj praksi mentoru (email)">
       <bpmn:extensionElements>
-        <camunda:connector>
-          <camunda:inputOutput>
-            <camunda:inputParameter name="url_parameter">
-              <camunda:map>
-                <camunda:entry key="to">${mentor_email}</camunda:entry>
-                <camunda:entry key="template">mentor_potvrda_pdf</camunda:entry>
-              </camunda:map>
-            </camunda:inputParameter>
-            <camunda:inputParameter name="url">/email</camunda:inputParameter>
-            <camunda:inputParameter name="method">POST</camunda:inputParameter>
-          </camunda:inputOutput>
-          <camunda:connectorId>sendgrid</camunda:connectorId>
-        </camunda:connector>
-        <camunda:inputOutput>
-          <camunda:inputParameter name="attachment_name">${student_prezime}_potvrda.pdf</camunda:inputParameter>
-          <camunda:inputParameter name="id_instance" />
-          <camunda:inputParameter name="pdf_attachment_url">${pdf_attachment_url}</camunda:inputParameter>
-          <camunda:inputParameter name="student_email">${student_email}</camunda:inputParameter>
-          <camunda:inputParameter name="student_ime">${student_ime}</camunda:inputParameter>
-          <camunda:inputParameter name="student_prezime">${student_prezime}</camunda:inputParameter>
-        </camunda:inputOutput>
+        <fipu:connector>
+          <fipu:inputOutput>
+            <fipu:inputParameter name="url_parameter">
+              <fipu:map>
+                <fipu:entry key="to">${mentor_email}</fipu:entry>
+                <fipu:entry key="template">mentor_potvrda_pdf</fipu:entry>
+              </fipu:map>
+            </fipu:inputParameter>
+            <fipu:inputParameter name="url">/email</fipu:inputParameter>
+            <fipu:inputParameter name="method">POST</fipu:inputParameter>
+          </fipu:inputOutput>
+          <fipu:connectorId>sendgrid</fipu:connectorId>
+        </fipu:connector>
+        <fipu:inputOutput>
+          <fipu:inputParameter name="attachment_name">${student_prezime}_potvrda.pdf</fipu:inputParameter>
+          <fipu:inputParameter name="id_instance" />
+          <fipu:inputParameter name="pdf_attachment_url">${pdf_attachment_url}</fipu:inputParameter>
+          <fipu:inputParameter name="student_email">${student_email}</fipu:inputParameter>
+          <fipu:inputParameter name="student_ime">${student_ime}</fipu:inputParameter>
+          <fipu:inputParameter name="student_prezime">${student_prezime}</fipu:inputParameter>
+        </fipu:inputOutput>
       </bpmn:extensionElements>
       <bpmn:incoming>Flow_1jgq625</bpmn:incoming>
       <bpmn:outgoing>Flow_05znxzo</bpmn:outgoing>
@@ -251,23 +252,23 @@ https://www.isvu.hr/nastavnickiportal/hr/prijava</bpmn:documentation>
     <bpmn:sequenceFlow id="Flow_13ar6jz" sourceRef="obavjestavanje_studenta_nakon_alokacije" targetRef="ispunjavanje_prijavnice_student" />
     <bpmn:serviceTask id="uzimanje_podataka_o_poslodavcu_student" name="Dohvat podataka o poslodavcu">
       <bpmn:extensionElements>
-        <camunda:connector>
-          <camunda:inputOutput>
-            <camunda:inputParameter name="url_parameter">
-              <camunda:map>
-                <camunda:entry key="id_zadatak">${id_zadatak}</camunda:entry>
-              </camunda:map>
-            </camunda:inputParameter>
-            <camunda:inputParameter name="url">/api/poslodavac/zadatak</camunda:inputParameter>
-            <camunda:inputParameter name="method">GET</camunda:inputParameter>
-          </camunda:inputOutput>
-          <camunda:connectorId>baserow</camunda:connectorId>
-        </camunda:connector>
-        <camunda:inputOutput>
-          <camunda:outputParameter name="poslodavac_email" />
-          <camunda:outputParameter name="poslodavac_naziv" />
-          <camunda:outputParameter name="opis_zadatka" />
-        </camunda:inputOutput>
+        <fipu:connector>
+          <fipu:inputOutput>
+            <fipu:inputParameter name="url_parameter">
+              <fipu:map>
+                <fipu:entry key="id_zadatak">${id_zadatak}</fipu:entry>
+              </fipu:map>
+            </fipu:inputParameter>
+            <fipu:inputParameter name="url">/api/poslodavac/zadatak</fipu:inputParameter>
+            <fipu:inputParameter name="method">GET</fipu:inputParameter>
+          </fipu:inputOutput>
+          <fipu:connectorId>baserow</fipu:connectorId>
+        </fipu:connector>
+        <fipu:inputOutput>
+          <fipu:outputParameter name="poslodavac_email" />
+          <fipu:outputParameter name="poslodavac_naziv" />
+          <fipu:outputParameter name="opis_zadatka" />
+        </fipu:inputOutput>
       </bpmn:extensionElements>
       <bpmn:incoming>Flow_1msjihr</bpmn:incoming>
       <bpmn:outgoing>Flow_0jgnrnc</bpmn:outgoing>
@@ -293,34 +294,34 @@ https://www.isvu.hr/nastavnickiportal/hr/prijava</bpmn:documentation>
       <bpmn:documentation>Jeste li odobrili zadatak namijenjen ovom studentu?
 Prijavljene zadatke možete pregledati u tabu Zadaci.</bpmn:documentation>
       <bpmn:extensionElements>
-        <camunda:formData>
-          <camunda:formField id="zadatak_odobren" label="Odobravate li prijavljeni zadatak za ovog studenta?" type="yes-no-boolean" />
-          <camunda:formField id="id_zadatak" label="Unesite točan ID zadatka koji odobravate studentu (format: Zadatak x - nazivOrganizacije)" type="input" />
-        </camunda:formData>
+        <fipu:formData>
+          <fipu:formField id="zadatak_odobren" label="Odobravate li prijavljeni zadatak za ovog studenta?" type="yes-no-boolean" />
+          <fipu:formField id="id_zadatak" label="Unesite točan ID zadatka koji odobravate studentu (format: Zadatak x - nazivOrganizacije)" type="input" />
+        </fipu:formData>
       </bpmn:extensionElements>
       <bpmn:incoming>Flow_0q8jyt1</bpmn:incoming>
       <bpmn:outgoing>Flow_1msjihr</bpmn:outgoing>
     </bpmn:userTask>
     <bpmn:sendTask id="obavjestavanje_studenta_nakon_alokacije" name="Obavještavanje studenta nakon alociranja (email)">
       <bpmn:extensionElements>
-        <camunda:connector>
-          <camunda:inputOutput>
-            <camunda:inputParameter name="url">/email</camunda:inputParameter>
-            <camunda:inputParameter name="method">POST</camunda:inputParameter>
-            <camunda:inputParameter name="url_parameter">
-              <camunda:map>
-                <camunda:entry key="to">${student_email}</camunda:entry>
-                <camunda:entry key="template">student_after_allocation</camunda:entry>
-              </camunda:map>
-            </camunda:inputParameter>
-          </camunda:inputOutput>
-          <camunda:connectorId>sendgrid</camunda:connectorId>
-        </camunda:connector>
-        <camunda:inputOutput>
-          <camunda:inputParameter name="poslodavac_email">${poslodavac_email}</camunda:inputParameter>
-          <camunda:inputParameter name="Alocirani_zadatak">${Alocirani_zadatak}</camunda:inputParameter>
-          <camunda:inputParameter name="opis_zadatka">${opis_zadatka}</camunda:inputParameter>
-        </camunda:inputOutput>
+        <fipu:connector>
+          <fipu:inputOutput>
+            <fipu:inputParameter name="url">/email</fipu:inputParameter>
+            <fipu:inputParameter name="method">POST</fipu:inputParameter>
+            <fipu:inputParameter name="url_parameter">
+              <fipu:map>
+                <fipu:entry key="to">${student_email}</fipu:entry>
+                <fipu:entry key="template">student_after_allocation</fipu:entry>
+              </fipu:map>
+            </fipu:inputParameter>
+          </fipu:inputOutput>
+          <fipu:connectorId>sendgrid</fipu:connectorId>
+        </fipu:connector>
+        <fipu:inputOutput>
+          <fipu:inputParameter name="poslodavac_email">${poslodavac_email}</fipu:inputParameter>
+          <fipu:inputParameter name="Alocirani_zadatak">${Alocirani_zadatak}</fipu:inputParameter>
+          <fipu:inputParameter name="opis_zadatka">${opis_zadatka}</fipu:inputParameter>
+        </fipu:inputOutput>
       </bpmn:extensionElements>
       <bpmn:incoming>Flow_0azr5k2</bpmn:incoming>
       <bpmn:outgoing>Flow_13ar6jz</bpmn:outgoing>
@@ -329,19 +330,19 @@ Prijavljene zadatke možete pregledati u tabu Zadaci.</bpmn:documentation>
     <bpmn:serviceTask id="spremanje_zahtjeva_prihvacanje" name="Ažuriraj status zahtjeva">
       <bpmn:documentation>spremanje_zahtjeva_prihvacanje</bpmn:documentation>
       <bpmn:extensionElements>
-        <camunda:connector>
-          <camunda:inputOutput>
-            <camunda:inputParameter name="url">/api/status_zahtjeva</camunda:inputParameter>
-            <camunda:inputParameter name="method">PATCH</camunda:inputParameter>
-          </camunda:inputOutput>
-          <camunda:connectorId>baserow</camunda:connectorId>
-        </camunda:connector>
-        <camunda:inputOutput>
-          <camunda:inputParameter name="id_alokacija">${id_alokacija}</camunda:inputParameter>
-          <camunda:inputParameter name="status_zahtjeva">student_prihvaćen</camunda:inputParameter>
-          <camunda:inputParameter name="Alocirani_zadatak">${Alocirani_zadatak}</camunda:inputParameter>
-          <camunda:inputParameter name="Student">${Student}</camunda:inputParameter>
-        </camunda:inputOutput>
+        <fipu:connector>
+          <fipu:inputOutput>
+            <fipu:inputParameter name="url">/api/status_zahtjeva</fipu:inputParameter>
+            <fipu:inputParameter name="method">PATCH</fipu:inputParameter>
+          </fipu:inputOutput>
+          <fipu:connectorId>baserow</fipu:connectorId>
+        </fipu:connector>
+        <fipu:inputOutput>
+          <fipu:inputParameter name="id_alokacija">${id_alokacija}</fipu:inputParameter>
+          <fipu:inputParameter name="status_zahtjeva">student_prihvaćen</fipu:inputParameter>
+          <fipu:inputParameter name="Alocirani_zadatak">${Alocirani_zadatak}</fipu:inputParameter>
+          <fipu:inputParameter name="Student">${Student}</fipu:inputParameter>
+        </fipu:inputOutput>
       </bpmn:extensionElements>
       <bpmn:incoming>Flow_0gjgrzo</bpmn:incoming>
       <bpmn:outgoing>Flow_0azr5k2</bpmn:outgoing>
@@ -349,27 +350,28 @@ Prijavljene zadatke možete pregledati u tabu Zadaci.</bpmn:documentation>
     <bpmn:userTask id="model_b_direktna_prijava_student" name="Direktna prijava na zadatak">
       <bpmn:documentation>Student se mora prijaviti na zadatak koji mu je odobren.</bpmn:documentation>
       <bpmn:extensionElements>
-        <camunda:formData>
-          <camunda:formField id="JMBAG" type="string">
-            <camunda:validation>
-              <camunda:constraint name="required" config="true" />
-            </camunda:validation>
-          </camunda:formField>
-          <camunda:formField id="student_godina_studija" type="string" />
-          <camunda:formField id="Alocirani_zadatak" label="Alocirani zadatak" type="string" />
-          <camunda:formField id="napomena" label="Napomena" type="string" />
-          <camunda:formField id="Student" type="string" />
-          <camunda:formField id="student_email" type="string" />
-          <camunda:formField id="student_ime" type="string" />
-          <camunda:formField id="student_prezime" type="string" />
-          <camunda:formField id="process_instance_id" type="string" />
-          <camunda:formField id="frontend_url" type="string" />
-          <camunda:formField id="id_alokacija" type="string" />
-        </camunda:formData>
+        <fipu:formData>
+          <fipu:formField id="JMBAG" type="string">
+            <fipu:validation>
+              <fipu:constraint name="required" config="true" />
+            </fipu:validation>
+          </fipu:formField>
+          <fipu:formField id="student_godina_studija" type="string" />
+          <fipu:formField id="Alocirani_zadatak" label="Alocirani zadatak" type="string" />
+          <fipu:formField id="napomena" label="Napomena" type="string" />
+          <fipu:formField id="Student" type="string" />
+          <fipu:formField id="student_email" type="string" />
+          <fipu:formField id="student_ime" type="string" />
+          <fipu:formField id="student_prezime" type="string" />
+          <fipu:formField id="process_instance_id" type="string" />
+          <fipu:formField id="frontend_url" type="string" />
+          <fipu:formField id="id_alokacija" type="string" />
+        </fipu:formData>
       </bpmn:extensionElements>
       <bpmn:incoming>Flow_0jgnrnc</bpmn:incoming>
       <bpmn:outgoing>Flow_0gjgrzo</bpmn:outgoing>
     </bpmn:userTask>
+    <bpmn:task id="Activity_0dri58t" />
   </bpmn:process>
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
     <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="Collaboration_0ojchsi">
@@ -463,6 +465,9 @@ Prijavljene zadatke možete pregledati u tabu Zadaci.</bpmn:documentation>
       <bpmndi:BPMNShape id="Activity_11cml9m_di" bpmnElement="model_b_direktna_prijava_student">
         <dc:Bounds x="1110" y="310" width="100" height="80" />
         <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0dri58t_di" bpmnElement="Activity_0dri58t">
+        <dc:Bounds x="500" y="290" width="100" height="80" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge id="Flow_1l8y47v_di" bpmnElement="Flow_1l8y47v">
         <di:waypoint x="1480" y="390" />

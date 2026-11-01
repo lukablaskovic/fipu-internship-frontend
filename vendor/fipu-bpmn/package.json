@@ -1,0 +1,18 @@
+{
+  "name": "@fipu/bpmn",
+  "version": "0.1.0",
+  "type": "module",
+  "private": true,
+  "exports": {
+    ".": "./model.js",
+    "./model": "./model.js",
+    "./model.js": "./model.js",
+    "./BpmnDiagram.vue": "./BpmnDiagram.vue"
+  },
+  "peerDependencies": {
+    "vue": "^3.5.0"
+  },
+  "dependencies": {
+    "@mdi/js": "7.4.47"
+  }
+}

@@ -12,6 +12,7 @@
 	"dependencies": {
 		"@bugsnag/js": "^7.21.0",
 		"@bugsnag/plugin-vue": "^7.19.0",
+		"@fipu/bpmn": "file:vendor/fipu-bpmn",
 		"@internationalized/date": "^3.12.4",
 		"@mdi/js": "^7.4.47",
 		"@vueform/slider": "^2.1.9",
@@ -20,7 +21,6 @@
 		"animate.css": "^4.1.1",
 		"aos": "^2.3.4",
 		"axios": "^1.7.7",
-		"bpmn-js": "^13.2.2",
 		"chart.js": "^4.4.0",
 		"moment": "^2.29.4",
 		"numeral": "^2.0.6",
