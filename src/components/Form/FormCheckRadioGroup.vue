@@ -1,7 +1,5 @@
 <script setup>
-import { inject } from "vue";
-const fieldLabelId = inject("formFieldLabelId", undefined);
-import { FieldControl, Primitive, injectFieldRootContext } from "reka-ui";
+import { FieldControl, FieldRoot, Primitive, injectFieldRootContext } from "reka-ui";
 import FormCheckRadio from "@/components/Form/FormCheckRadio.vue";
 import { RadioGroup } from "reka-ui/namespaced";
 const fieldContext = injectFieldRootContext(null);
@@ -35,6 +33,8 @@ const props = defineProps({
 	},
 });
 
+const groupDisabled = computed(() => props.disabled || props.readonly || fieldContext?.disabled.value);
+
 const emit = defineEmits(["update:modelValue"]);
 
 const computedValue = computed({
@@ -46,31 +46,21 @@ const computedValue = computed({
 </script>
 
 <template>
-	<component :is="fieldContext && type === 'radio' ? FieldControl : Primitive" as-child :model-value="fieldContext && type === 'radio' ? String(computedValue ?? '') : undefined">
+	<component :is="fieldContext ? FieldControl : Primitive" as-child :model-value="fieldContext ? String(computedValue ?? '') : undefined">
 		<component
 			:is="type === 'radio' ? RadioGroup.Root : 'div'"
-			v-bind="fieldContext ? {} : { 'aria-labelledby': fieldLabelId }"
+			v-bind="type !== 'radio' ? { role: 'group', tabindex: fieldContext ? -1 : undefined } : {}"
 			:model-value="type === 'radio' ? computedValue : undefined"
 			:name="name"
-			:disabled="disabled || readonly"
+			:disabled="!!groupDisabled"
 			:required="required"
 			:orientation="isColumn ? 'vertical' : 'horizontal'"
 			class="flex flex-wrap items-center"
 			:class="{ 'flex-col': isColumn }"
 			@update:model-value="computedValue = $event">
-			<FormCheckRadio
-				v-for="(value, key) in options"
-				:key="key"
-				v-model="computedValue"
-				:type="type"
-				:disabled="disabled"
-				:readonly="readonly"
-				:required="required"
-				:name="name"
-				:input-value="key"
-				:label="value"
-				:class="componentClass"
-				class="mx-2 mb-3 mr-6 last:mr-0" />
+			<component :is="fieldContext && type !== 'radio' ? FieldRoot : Primitive" v-for="(value, key) in options" :key="key" as-child>
+				<FormCheckRadio v-model="computedValue" :type="type" :disabled="!!groupDisabled" :readonly="readonly" :required="required" :name="name" :input-value="key" :label="value" :class="componentClass" class="mx-2 mb-3 mr-6 last:mr-0" />
+			</component>
 		</component>
 	</component>
 </template>

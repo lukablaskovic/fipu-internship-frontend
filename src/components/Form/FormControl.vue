@@ -1,8 +1,6 @@
 <script setup>
 import { FieldControl, Primitive, injectFieldRootContext } from "reka-ui";
-import { inject } from "vue";
 const fieldContext = injectFieldRootContext(null);
-const fieldLabelId = inject("formFieldLabelId", undefined);
 import { mdiUnfoldMoreHorizontal, mdiAlertCircle, mdiCheckCircle, mdiAsterisk, mdiLockOff, mdiContentCopy, mdiCheck } from "@mdi/js";
 import FormControlListbox from "@/components/Premium/FormControlListbox.vue";
 import FormControlIcon from "@/components/Premium/FormControlIcon.vue";
@@ -175,7 +173,7 @@ if (props.ctrlKFocus) {
 			<div v-if="computedType === 'static'" :class="inputElClass" class="inline-flex items-center whitespace-nowrap">{{ modelValue }}</div>
 
 			<!-- Search Bar -->
-			<div v-if="showSearchBar && mainStore.userAdmin" class="relative">
+			<div v-else-if="showSearchBar && mainStore.userAdmin" class="relative">
 				<SearchOptions />
 			</div>
 
@@ -188,7 +186,7 @@ if (props.ctrlKFocus) {
 
 			<!-- Textarea -->
 			<component :is="fieldContext ? FieldControl : Primitive" v-else-if="computedType === 'textarea'" as-child :model-value="fieldContext ? computedValue : undefined" v-bind="fieldContext ? { id, name, disabled, required } : {}">
-				<textarea v-bind="fieldContext ? {} : { id, name, required, disabled, 'aria-labelledby': fieldLabelId }" v-model="computedValue" class="peer relative" :placeholder="placeholder" :class="inputElClass" :readonly="readonly"></textarea>
+				<textarea v-bind="fieldContext ? {} : { id, name, required, disabled }" v-model="computedValue" class="peer relative" :placeholder="placeholder" :class="inputElClass" :readonly="readonly"></textarea>
 			</component>
 
 			<!-- Button -->

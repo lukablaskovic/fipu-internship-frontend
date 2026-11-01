@@ -2,6 +2,7 @@
 import CardBoxComponentEmpty from "@/components/Cardbox/CardBoxComponentEmpty.vue";
 import BasePagination from "@/components/Base/BasePagination.vue";
 import { computed, ref, onMounted, watch, reactive } from "vue";
+import { FieldRoot, FieldLabel } from "reka-ui";
 
 import TableCheckboxCell from "@/components/Tables/TableCheckboxCell.vue";
 import { mainStore, adminStore, snackBarStore } from "@/main.js";
@@ -190,27 +191,45 @@ const currentPageHuman = computed(() => numPages.value ? currentPage.value + 1 :
 				</td>
 
 				<td data-label="Naziv">
-					<FormControl v-model="companyForms[company.id].naziv" readonly></FormControl>
+					<FieldRoot>
+						<FieldLabel as="div" :native-label="false" class="sr-only">Naziv</FieldLabel>
+						<FormControl v-model="companyForms[company.id].naziv" readonly></FormControl>
+					</FieldRoot>
 				</td>
 
 				<td data-label="Web mjesto">
-					<FormControl v-model="companyForms[company.id].web" :error="getFirstErrorForField(v$, 'web')"></FormControl>
+					<FieldRoot :invalid="!!getFirstErrorForField(v$, 'web')">
+						<FieldLabel as="div" :native-label="false" class="sr-only">Web mjesto</FieldLabel>
+						<FormControl v-model="companyForms[company.id].web" :error="getFirstErrorForField(v$, 'web')"></FormControl>
+					</FieldRoot>
 				</td>
 
 				<td data-label="Direktor">
-					<FormControl v-model="companyForms[company.id].direktor" :error="getFirstErrorForField(v$, 'direktor')"></FormControl>
+					<FieldRoot :invalid="!!getFirstErrorForField(v$, 'direktor')">
+						<FieldLabel as="div" :native-label="false" class="sr-only">Direktor</FieldLabel>
+						<FormControl v-model="companyForms[company.id].direktor" :error="getFirstErrorForField(v$, 'direktor')"></FormControl>
+					</FieldRoot>
 				</td>
 
 				<td data-label="Matični broj">
-					<FormControl v-model="companyForms[company.id].maticni_broj" :error="getFirstErrorForField(v$, 'maticni_broj')"></FormControl>
+					<FieldRoot :invalid="!!getFirstErrorForField(v$, 'maticni_broj')">
+						<FieldLabel as="div" :native-label="false" class="sr-only">Matični broj</FieldLabel>
+						<FormControl v-model="companyForms[company.id].maticni_broj" :error="getFirstErrorForField(v$, 'maticni_broj')"></FormControl>
+					</FieldRoot>
 				</td>
 
 				<td data-label="OIB">
-					<FormControl v-model="companyForms[company.id].OIB" :error="getFirstErrorForField(v$, 'OIB')"></FormControl>
+					<FieldRoot :invalid="!!getFirstErrorForField(v$, 'OIB')">
+						<FieldLabel as="div" :native-label="false" class="sr-only">OIB</FieldLabel>
+						<FormControl v-model="companyForms[company.id].OIB" :error="getFirstErrorForField(v$, 'OIB')"></FormControl>
+					</FieldRoot>
 				</td>
 
 				<td data-label="Adresa">
-					<FormControl v-model="companyForms[company.id].adresa" :error="getFirstErrorForField(v$, 'adresa')"></FormControl>
+					<FieldRoot :invalid="!!getFirstErrorForField(v$, 'adresa')">
+						<FieldLabel as="div" :native-label="false" class="sr-only">Adresa</FieldLabel>
+						<FormControl v-model="companyForms[company.id].adresa" :error="getFirstErrorForField(v$, 'adresa')"></FormControl>
+					</FieldRoot>
 				</td>
 
 				<td class="whitespace-nowrap before:hidden lg:w-1">

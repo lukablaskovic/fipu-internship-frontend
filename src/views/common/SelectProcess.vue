@@ -11,7 +11,7 @@
 				</div>
 			</header>
 
-			<CardBox is-form has-component-layout class="process-form" @submit.prevent="onSubmit">
+			<CardBox is-form has-component-layout class="process-form" novalidate @submit.prevent="onSubmit">
 				<div class="process-intro">
 					<img src="/fipu-praksa-logo.png" alt="FIPU Praksa" class="praksa-logo" width="512" height="512" />
 					<h1 id="process-title">Molimo odaberite vašu izvedbu stručne prakse</h1>
@@ -32,16 +32,15 @@
 					<FormField label="E-mail">
 						<FormControl v-model="fixedUserData.email" :icon-left="mdiEmail" type="email" readonly disabled />
 					</FormField>
-					<FormField label="JMBAG">
-						<FormControl v-model="form.jmbag" :icon-left="mdiCardAccountDetails" type="text" placeholder="Unesite JMBAG (10 znamenki)" :error="getFirstErrorForField(v$, 'jmbag')" />
+					<FormField :error="getFirstErrorForField(v$, 'jmbag')" label="JMBAG">
+						<FormControl v-model="form.jmbag" :icon-left="mdiCardAccountDetails" type="text" placeholder="Unesite JMBAG (10 znamenki)" />
 					</FormField>
-					<FormField label="Godina studija">
-						<FormControl v-model="selectedStudyYear" name="godina_studija_selection" :error="getFirstErrorForField(v$, 'godina_studija')" :options="studyYears" />
+					<FormField :error="getFirstErrorForField(v$, 'godina_studija')" label="Godina studija">
+						<FormControl v-model="selectedStudyYear" name="godina_studija_selection" :options="studyYears" />
 					</FormField>
 					<BaseButton label="Započni proces prakse" icon="M8,19V5l11,7L8,19Zm2-7Zm0,3.35L15.25,12L10,8.65v6.7Z" icon-size="24" type="submit" :disabled="isLoading" :loading="isLoading" color="fipu_blue" class="start-button" />
 				</section>
 			</CardBox>
-
 		</main>
 		<SnackBar />
 	</div>
@@ -220,7 +219,7 @@ h1 { max-width: 28ch; font-size: clamp(28px, 3vw, 36px); font-weight: 700; line-
 .process-help a { text-decoration: underline; }
 .student-details { grid-column: 2; grid-row: 1 / 3; min-width: 0; padding: 32px; background: #f9fafb; }
 h2 { margin-bottom: 24px; font-size: 22px; font-weight: 600; letter-spacing: -0.02em; }
-.student-details :deep(label) { font-size: 14px; font-weight: 600; }
+.student-details :deep(.form-field-label) { font-size: 14px; font-weight: 600; }
 .start-button { width: 100%; min-height: 48px; color: #172234; font-weight: 600; }
 @media (max-width: 1024px) {
 	.process-page { align-items: flex-start; padding: 32px 24px; background: white; }

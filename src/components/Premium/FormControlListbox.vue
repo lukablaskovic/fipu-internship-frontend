@@ -1,8 +1,8 @@
 <script setup>
 import BaseIcon from "@/components/Base/BaseIcon.vue";
+import { injectFieldRootContext } from "reka-ui";
 import { mdiChevronDown } from "@mdi/js";
-import { inject } from "vue";
-const fieldLabelId = inject("formFieldLabelId", undefined);
+const fieldContext = injectFieldRootContext(null);
 import { Select } from "reka-ui/namespaced";
 import { computed, ref } from "vue";
 const props = defineProps({
@@ -16,6 +16,9 @@ const props = defineProps({
 	readonly: Boolean,
 	required: Boolean,
 });
+const isDisabled = computed(() => props.disabled || props.readonly || fieldContext?.disabled.value);
+const isRequired = computed(() => props.required || fieldContext?.required.value);
+
 defineOptions({ inheritAttrs: false });
 const trigger = ref(null);
 const emit = defineEmits(["update:modelValue"]);
@@ -34,8 +37,9 @@ function update(value) {
 }
 </script>
 <template>
-	<Select.Root :model-value="selected" :disabled="disabled || readonly" :required="required" @update:model-value="update">
-		<Select.Trigger v-bind="$attrs" :id="id" ref="trigger" :aria-labelledby="fieldLabelId" :class="buttonClass" class="form-select-trigger flex items-center justify-between gap-2 text-left" :aria-readonly="readonly || undefined">
+	<!-- Only the native select below submits the public value, rather than an internal option index. -->
+	<Select.Root name="" :model-value="selected" :disabled="!!isDisabled" :required="!!isRequired" @update:model-value="update">
+		<Select.Trigger v-bind="$attrs" :id="id" ref="trigger" :class="buttonClass" class="form-select-trigger flex items-center justify-between gap-2 text-left" :aria-readonly="readonly || undefined">
 			<Select.Value :placeholder="placeholder" /><Select.Icon aria-hidden="true" class="inline-flex shrink-0 items-center text-gray-500 dark:text-slate-400"><BaseIcon :path="mdiChevronDown" w="w-4" h="h-4" :size="16" /></Select.Icon>
 		</Select.Trigger>
 		<Select.Portal>
@@ -54,7 +58,7 @@ function update(value) {
 			</Select.Content>
 		</Select.Portal>
 	</Select.Root>
-	<select :name="name" :value="modelValue == null ? '' : String(modelValue)" :required="required" :disabled="disabled || readonly" tabindex="-1" aria-hidden="true" class="sr-only" @invalid.prevent="trigger?.$el?.focus()">
+	<select :name="name ?? fieldContext?.name.value" :value="modelValue == null ? '' : String(modelValue)" :required="!!isRequired" :disabled="!!isDisabled" tabindex="-1" aria-hidden="true" class="sr-only" @invalid.prevent="trigger?.$el?.focus()">
 		<option value="" />
 		<option v-for="(option, index) in options" :key="index" :value="String(option)" :disabled="!!(option?.unavailable || option?.disabled)">{{ option?.label ?? option }}</option>
 	</select>

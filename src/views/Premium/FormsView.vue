@@ -91,13 +91,17 @@ const formErrorSubmit = () => {
 				<BaseButton href="https://justboil.me/tailwind-admin-templates/vue-dashboard/" label="Buy dashboard" :icon="mdiCreditCardOutline" color="contrast" rounded-full small />
 			</SectionTitleLineWithButton>
 
-			<div class="grid grid-cols-1 gap-6 mb-6 xl:grid-cols-4">
-				<CardBox :icon="mdiBallot" class="mb-6 lg:mb-0 lg:col-span-2 xl:col-span-3" is-form @submit.prevent="submit">
+			<div class="mb-6 grid grid-cols-1 gap-6 xl:grid-cols-4">
+				<CardBox :icon="mdiBallot" class="mb-6 lg:col-span-2 lg:mb-0 xl:col-span-3" is-form @submit.prevent="submit">
 					<CardBoxComponentTitle title="Horizontal fields layout and advanced controls" class="mb-12" />
-					<FormField label="Fields" horizontal>
-						<FormControl v-model="form.name" :icon-left="mdiAccount" help="Your full name" placeholder="Name" />
-						<FormControl v-model="form.email" :icon-left="mdiMail" :icon-right="mdiCheck" type="email" help="Your e-mail" placeholder="Email" />
-					</FormField>
+					<div class="grid grid-cols-1 gap-3 md:grid-cols-2">
+						<FormField label="Your full name" horizontal>
+							<FormControl v-model="form.name" :icon-left="mdiAccount" help="Your full name" placeholder="Name" />
+						</FormField>
+						<FormField label="Your e-mail" horizontal>
+							<FormControl v-model="form.email" :icon-left="mdiMail" :icon-right="mdiCheck" type="email" help="Your e-mail" placeholder="Email" />
+						</FormField>
+					</div>
 
 					<FormField label="*** Show/hide" help="Show/hide by clicking icon on the right" horizontal>
 						<FormControl v-model="form.pass" type="password" name="password" placeholder="Password" :tip-right="passShowHideClicked ? null : 'Click to show/hide'" @right-icon-click="passShowHideClicked = true" />
@@ -111,15 +115,14 @@ const formErrorSubmit = () => {
 						</FormField>
 					</FormField>
 
-					<FormField help="Static prefix with dropdown at the end" horizontal>
-						<FormField addons>
-							<FormControl type="static" model-value="$" first-addon />
-							<FormControl v-model="form.amount" type="number" placeholder="Amount" expanded middle-addon />
-							<FormControl v-model="form.currency" :options="['USD', 'CAD', 'AUD']" input-w="w-24" last-addon />
-						</FormField>
-					</FormField>
+					<div class="grid grid-cols-1 gap-3 md:grid-cols-2">
+						<FormField label="Amount" help="Static prefix with dropdown at the end"
+							><div class="flex"><FormControl type="static" model-value="$" first-addon /><FormControl v-model="form.amount" type="number" placeholder="Amount" expanded middle-addon /></div
+						></FormField>
+						<FormField label="Currency"><FormControl v-model="form.currency" :options="['USD', 'CAD', 'AUD']" input-w="w-24" last-addon /></FormField>
+					</div>
 
-					<FormField help="Static prefix with button at the end" horizontal>
+					<FormField label="IPv6" help="Static prefix with button at the end" horizontal>
 						<FormField addons>
 							<FormControl type="static" model-value="IPv6:" first-addon />
 							<FormControl v-model="form.ipv6" type="text" placeholder="Link-local" expanded middle-addon />
@@ -127,12 +130,9 @@ const formErrorSubmit = () => {
 						</FormField>
 					</FormField>
 
-					<FormField help="Button and text field" horizontal>
-						<FormField addons>
-							<FormControl button-color="success" :button-icon="mdiReload" first-addon />
-							<FormControl v-model="form.ipv4" type="text" placeholder="IPv4" expanded last-addon />
-						</FormField>
-					</FormField>
+					<FormField label="IPv4" help="Button and text field" horizontal
+						><FormField addons><FormControl button-color="success" :button-icon="mdiReload" first-addon /><FormControl v-model="form.ipv4" type="text" placeholder="IPv4" expanded last-addon /></FormField
+					></FormField>
 
 					<FormField label="Custom dropdown" help="Customized dropdown component" horizontal>
 						<FormControl v-model="form.person" type="list" :options="listBoxOptions" />
@@ -232,16 +232,26 @@ const formErrorSubmit = () => {
 			<SectionTitleLineWithButton :icon="mdiProgressCheck" title="Layout & state examples" />
 
 			<CardBox>
-				<FormField label="Fields">
-					<FormControl v-model="formLower.name" :icon-left="mdiAccount" help="Your full name" placeholder="Name" />
-					<FormControl v-model="formLower.email" success :icon-left="mdiMail" type="email" help="Field in success state" placeholder="Email" />
-					<FormControl v-model="formLower.email" error="Field in error state" :icon-left="mdiMail" type="email" help="Your e-mail" placeholder="Email" />
-				</FormField>
+				<div class="grid grid-cols-1 gap-3 md:grid-cols-2">
+					<FormField label="Your full name">
+						<FormControl v-model="formLower.name" :icon-left="mdiAccount" help="Your full name" placeholder="Name" />
+					</FormField>
+					<FormField label="Field in success state">
+						<FormControl v-model="formLower.email" success :icon-left="mdiMail" type="email" help="Field in success state" placeholder="Email" />
+					</FormField>
+					<FormField error="Field in error state" label="Your e-mail">
+						<FormControl v-model="formLower.email" :icon-left="mdiMail" type="email" help="Your e-mail" placeholder="Email" />
+					</FormField>
+				</div>
 
-				<FormField label="Fields">
-					<FormControl v-model="formLower.person" type="list" :options="listBoxOptions" />
-					<FormControl v-model="formLower.department" :options="selectFieldOptions" />
-				</FormField>
+				<div class="grid grid-cols-1 gap-3 md:grid-cols-2">
+					<FormField label="Person">
+						<FormControl v-model="formLower.person" type="list" :options="listBoxOptions" />
+					</FormField>
+					<FormField label="Department">
+						<FormControl v-model="formLower.department" :options="selectFieldOptions" />
+					</FormField>
+				</div>
 
 				<FormField error="Textarea in error state" label="Textarea" help="Your question. Max 255 characters">
 					<FormControl v-model="formLower.question" error type="textarea" placeholder="Explain how we can help you" />
@@ -250,7 +260,7 @@ const formErrorSubmit = () => {
 
 			<SectionTitle>Form with error example</SectionTitle>
 
-			<CardBox class="md:w-7/12 lg:w-5/12 xl:w-4/12 shadow-2xl md:mx-auto" :class="{ 'animate-shake': formErrorHasError }" is-form @submit.prevent="formErrorSubmit">
+			<CardBox class="shadow-2xl md:mx-auto md:w-7/12 lg:w-5/12 xl:w-4/12" :class="{ 'animate-shake': formErrorHasError }" is-form @submit.prevent="formErrorSubmit">
 				<FormField label="Fields" :error="formErrorHasError">
 					<FormControl v-model="form.name" :icon-left="mdiAccount" help="Your full name" placeholder="Name" :error="formErrorHasError ? 'Oops, this is error' : null" />
 				</FormField>

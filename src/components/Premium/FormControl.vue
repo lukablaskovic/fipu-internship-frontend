@@ -1,6 +1,6 @@
 <script setup>
-import { inject } from "vue";
-const fieldLabelId = inject("formFieldLabelId", undefined);
+import { FieldControl, Primitive, injectFieldRootContext } from "reka-ui";
+const fieldContext = injectFieldRootContext(null);
 import { mdiUnfoldMoreHorizontal, mdiAlertCircle, mdiCheckCircle, mdiAsterisk, mdiLockOff } from "@mdi/js";
 import FormControlListbox from "@/components/Premium/FormControlListbox.vue";
 import FormControlIcon from "@/components/Premium/FormControlIcon.vue";
@@ -115,8 +115,10 @@ const computedValue = computed({
 	},
 });
 
+const fieldError = computed(() => props.error || fieldContext?.invalid.value);
+
 const borderColor = computed(() => {
-	if (props.error) {
+	if (fieldError.value) {
 		return "border-red-600";
 	}
 
@@ -128,11 +130,11 @@ const borderColor = computed(() => {
 });
 
 const textColor = computed(() => {
-	return controlTextColor(props.error, props.success);
+	return controlTextColor(fieldError.value, props.success);
 });
 
 const placeholderColor = computed(() => {
-	if (props.error) {
+	if (fieldError.value) {
 		return "placeholder-red-600";
 	}
 
@@ -238,7 +240,7 @@ const computedType = computed(() => {
 const computedIconLeft = computed(() => props.iconLeft ?? null);
 
 const computedIconRight = computed(() => {
-	if (props.error) {
+	if (fieldError.value) {
 		return mdiAlertCircle;
 	}
 
@@ -313,25 +315,26 @@ if (props.ctrlKFocus) {
 			<FormControlListbox v-else-if="computedType === 'list'" :id="id" v-model="computedValue" :readonly="readonly" :options="options" :button-class="inputElClass" :disabled="disabled" :required="required" :name="name" />
 			<FormControlListbox v-else-if="computedType === 'select'" :id="id" v-model="computedValue" :name="name" :options="options" :button-class="inputElClass" :disabled="disabled" :readonly="readonly" :required="required" :placeholder="placeholder" />
 			<FormDatePicker v-else-if="computedType === 'date'" :id="id" v-model="computedValue" :name="name" :input-class="inputElClass" :disabled="disabled" :readonly="readonly" :required="required" :min="min" :max="max" />
-			<textarea v-else-if="computedType === 'textarea'" :id="id" v-model="computedValue" :aria-labelledby="fieldLabelId" :class="inputElClass" :name="name" :placeholder="placeholder" :required="required" />
+			<component :is="fieldContext ? FieldControl : Primitive" v-else-if="computedType === 'textarea'" as-child :model-value="fieldContext ? computedValue : undefined" v-bind="fieldContext ? { id: id ?? undefined, name, required, disabled } : {}">
+				<textarea v-model="computedValue" v-bind="fieldContext ? {} : { id, name, required, disabled }" :class="inputElClass" :placeholder="placeholder" :readonly="readonly" />
+			</component>
 			<button v-else-if="computedType === 'button'" :class="inputElClass" class="ring-fipu_blue">
 				<BaseIcon v-if="buttonIcon" :path="buttonIcon" w="w-8" h="h-8" size="20" />
 				<span v-if="buttonLabel" :class="{ 'ml-1': buttonIcon }">{{ buttonLabel }}</span>
 			</button>
-			<input
-				v-else
-				:id="id"
-				ref="inputEl"
-				v-model="computedValue"
-				:aria-labelledby="fieldLabelId"
-				:name="name"
-				:autocomplete="autocomplete"
-				:required="required"
-				:placeholder="placeholder"
-				:type="computedType"
-				:min="min"
-				:max="max"
-				:class="inputElClass" />
+			<component :is="fieldContext ? FieldControl : Primitive" v-else as-child :model-value="fieldContext ? computedValue : undefined" v-bind="fieldContext ? { id: id ?? undefined, name, required, disabled } : {}">
+				<input
+					v-bind="fieldContext ? {} : { id, name, required, disabled }"
+					ref="inputEl"
+					v-model="computedValue"
+					:autocomplete="autocomplete"
+					:placeholder="placeholder"
+					:type="computedType"
+					:min="min"
+					:max="max"
+					:class="inputElClass"
+					:readonly="readonly" />
+			</component>
 			<FormControlIcon v-if="computedIconLeft" :icon="computedIconLeft" :h="controlIconH" :text-color="textColor" />
 			<FormControlIcon v-if="computedIconRight" :icon="computedIconRight" :h="controlIconH" :text-color="textColor" :clickable="rightIconClickable" is-right @icon-click="openPasswordToggle" />
 			<TipTag v-if="tipLeft" :tip="tipLeft" left />

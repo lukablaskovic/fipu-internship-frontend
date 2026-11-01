@@ -59,10 +59,14 @@ const formStatusSubmit = () => {
 				<BaseButton href="https://github.com/justboil/admin-one-vue-tailwind" target="_blank" :icon="mdiGithub" label="Star on GitHub" color="contrast" rounded-full small />
 			</SectionTitleLineWithButton>
 			<CardBox form @submit.prevent="submit">
-				<FormField label="Grouped with icons">
-					<FormControl v-model="form.name" :icon="mdiAccount" />
-					<FormControl v-model="form.email" type="email" :icon="mdiMail" />
-				</FormField>
+				<div class="grid grid-cols-1 gap-3 md:grid-cols-2">
+					<FormField label="Name">
+						<FormControl v-model="form.name" :icon="mdiAccount" />
+					</FormField>
+					<FormField label="E-mail">
+						<FormControl v-model="form.email" type="email" :icon="mdiMail" />
+					</FormField>
+				</div>
 
 				<FormField label="With help line" help="Do not enter the leading zero">
 					<FormControl v-model="form.phone" type="tel" placeholder="Your phone number" />
@@ -114,7 +118,7 @@ const formStatusSubmit = () => {
 
 			<SectionTitle>Form with status example</SectionTitle>
 
-			<CardBox class="md:w-7/12 lg:w-5/12 xl:w-4/12 shadow-2xl md:mx-auto" is-form is-hoverable @submit.prevent="formStatusSubmit">
+			<CardBox class="shadow-2xl md:mx-auto md:w-7/12 lg:w-5/12 xl:w-4/12" is-form is-hoverable @submit.prevent="formStatusSubmit">
 				<NotificationBarInCard :color="formStatusOptions[formStatusCurrent]" :is-placed-with-header="formStatusWithHeader">
 					<span
 						><b class="capitalize">{{ formStatusOptions[formStatusCurrent] }}</b> state</span

@@ -30,7 +30,7 @@ const textColor = computed(() => {
 </script>
 
 <template>
-	<component :is="fieldContext ? (error ? FieldError : FieldDescription) : 'div'" v-if="computedHelp" :match="fieldContext && error ? true : undefined" class="text-xs" :class="[textColor]">
+	<component :is="fieldContext ? (error ? FieldError : FieldDescription) : 'div'" v-if="computedHelp" :role="error ? 'alert' : undefined" :match="fieldContext && error ? true : undefined" class="text-xs" :class="[textColor]">
 		{{ computedHelp }}
 	</component>
 </template>

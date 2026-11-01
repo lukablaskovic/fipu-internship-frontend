@@ -1,6 +1,4 @@
 <script setup>
-import { inject } from "vue";
-const fieldLabelId = inject("formFieldLabelId", undefined);
 import { DatePicker, Popover } from "reka-ui/namespaced";
 import { parseDate } from "@internationalized/date";
 import { computed } from "vue";
@@ -30,19 +28,7 @@ const selected = computed({
 });
 </script>
 <template>
-	<DatePicker.Root
-		:id="id"
-		v-model="selected"
-		:aria-labelledby="fieldLabelId"
-		:name="name"
-		locale="hr-HR"
-		:week-starts-on="1"
-		:disabled="disabled"
-		:readonly="readonly"
-		:required="required"
-		:min-value="date(min)"
-		:max-value="date(max)"
-		close-on-select>
+	<DatePicker.Root :id="id" v-model="selected" :name="name" locale="hr-HR" :week-starts-on="1" :disabled="disabled" :readonly="readonly" :required="required" :min-value="date(min)" :max-value="date(max)" close-on-select>
 		<DatePicker.Field v-slot="{ segments }" :class="inputClass" class="form-control-surface flex items-center border-gray-700 bg-white dark:bg-slate-800">
 			<DatePicker.Input v-for="item in segments" :key="item.part" :part="item.part" class="rounded focus:bg-fipu_blue/20 focus:outline-none">{{ item.value }}</DatePicker.Input>
 			<DatePicker.Trigger :disabled="disabled || readonly" aria-label="Otvori kalendar" class="ml-auto rounded px-2 focus-visible:ring focus-visible:ring-fipu_blue">▦</DatePicker.Trigger>

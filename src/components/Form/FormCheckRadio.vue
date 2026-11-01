@@ -1,6 +1,9 @@
 <script setup>
+import { FieldControl, FieldRoot, Primitive, injectFieldRootContext } from "reka-ui";
 import { Checkbox, Switch, RadioGroup } from "reka-ui/namespaced";
-import { computed } from "vue";
+import { computed, useId } from "vue";
+const fieldContext = injectFieldRootContext(null);
+const labelId = useId();
 
 defineOptions({ inheritAttrs: false });
 const props = defineProps({
@@ -52,19 +55,23 @@ const checked = computed({
 </script>
 
 <template>
-	<label :class="[type, $attrs.class]" class="flex items-center">
-		<RadioGroup.Item v-if="type === 'radio'" v-bind="{ ...$attrs, class: undefined }" :value="inputValue" :disabled="disabled || readonly" :aria-label="label || name" class="check min-w-[20px]" />
-		<component
-			:is="type === 'switch' ? Switch.Root : Checkbox.Root"
-			v-else
-			v-bind="{ ...$attrs, class: undefined }"
-			v-model="checked"
-			:name="name"
-			:value="String(inputValue)"
-			:required="required"
-			:disabled="disabled || readonly"
-			:aria-label="label || name"
-			class="check min-w-[20px]" />
-		<span class="break-words pl-2">{{ label }}</span>
-	</label>
+	<component :is="fieldContext ? Primitive : FieldRoot" as-child>
+		<label :class="[type, $attrs.class]" class="flex items-center">
+			<RadioGroup.Item v-if="type === 'radio'" v-bind="{ ...$attrs, class: undefined }" :value="inputValue" :disabled="disabled || readonly || fieldContext?.disabled.value" :aria-label="label || name" class="check min-w-[20px]" />
+			<component :is="type === 'switch' ? FieldControl : Primitive" v-else as-child :model-value="type === 'switch' ? (checked ? 'true' : '') : undefined">
+				<component
+					:is="type === 'switch' ? Switch.Root : Checkbox.Root"
+					v-bind="{ ...$attrs, class: undefined }"
+					v-model="checked"
+					:name="name"
+					:value="String(inputValue)"
+					:required="required"
+					:disabled="disabled || readonly || fieldContext?.disabled.value"
+					:aria-label="label || name"
+					:aria-labelledby="label ? labelId : undefined"
+					class="check min-w-[20px]" />
+			</component>
+			<span :id="labelId" class="break-words pl-2">{{ label }}</span>
+		</label>
+	</component>
 </template>

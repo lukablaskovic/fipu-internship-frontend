@@ -188,25 +188,29 @@ async function submit_application_form() {
 			<hr />
 
 			<div class="mb-8 grid grid-cols-1 gap-6">
-				<CardBox :icon="mdiBallot" class="mb-6 lg:col-span-2 lg:mb-0 xl:col-span-3" is-form @submit.prevent="submit_application_form">
+				<CardBox :icon="mdiBallot" class="mb-6 lg:col-span-2 lg:mb-0 xl:col-span-3" is-form novalidate @submit.prevent="submit_application_form">
 					<CardBoxComponentTitle title="📃 Prijavnica na praksu" />
-					<FormField label="Ime i prezime" horizontal>
-						<FormControl v-model="form.student_ime" disabled :icon-left="mdiAccount" help="Vaše ime" :error="getFirstErrorForField(v$, 'student_ime')" placeholder="Vaše ime" />
-						<FormControl v-model="form.student_prezime" disabled :icon-left="mdiAccount" help="Vaše prezime" :error="getFirstErrorForField(v$, 'student_prezime')" placeholder="Vaše prezime" />
+					<div class="mb-6 grid grid-cols-1 gap-3 md:grid-cols-2">
+						<FormField :error="getFirstErrorForField(v$, 'student_ime')" label="Ime" horizontal>
+							<FormControl v-model="form.student_ime" disabled :icon-left="mdiAccount" help="Vaše ime" placeholder="Vaše ime" />
+						</FormField>
+						<FormField :error="getFirstErrorForField(v$, 'student_prezime')" label="Prezime" horizontal>
+							<FormControl v-model="form.student_prezime" disabled :icon-left="mdiAccount" help="Vaše prezime" placeholder="Vaše prezime" />
+						</FormField>
+					</div>
+
+					<FormField :error="getFirstErrorForField(v$, 'student_email')" label="UNIPU email" horizontal>
+						<FormControl v-model="form.student_email" disabled :icon-left="mdiMail" type="email" help="Vaša UNIPU email adresa" placeholder="Email" />
 					</FormField>
 
-					<FormField label="UNIPU email" horizontal>
-						<FormControl v-model="form.student_email" disabled :icon-left="mdiMail" type="email" help="Vaša UNIPU email adresa" :error="getFirstErrorForField(v$, 'student_email')" placeholder="Email" />
-					</FormField>
-
-					<FormField label="Broj mobitela" help="Neće se trajno pohraniti. Samo za slučajeve brzog dogovora." horizontal>
+					<FormField :error="getFirstErrorForField(v$, 'student_broj_mobitela')" label="Broj mobitela" help="Neće se trajno pohraniti. Samo za slučajeve brzog dogovora." horizontal>
 						<FormField addons>
-							<FormControl v-model="form.student_broj_mobitela" type="tel" :icon-left="mdiPhone" placeholder="Unesite vaš broj mobitela" :error="getFirstErrorForField(v$, 'student_broj_mobitela')" expanded />
+							<FormControl v-model="form.student_broj_mobitela" type="tel" :icon-left="mdiPhone" placeholder="Unesite vaš broj mobitela" expanded />
 						</FormField>
 					</FormField>
 
-					<FormField label="Vaš OIB" horizontal>
-						<FormControl v-model="form.student_OIB" :icon-left="mdiCardAccountDetailsOutline" :error="getFirstErrorForField(v$, 'student_OIB')" help="Za potrebe prijave osiguranja" placeholder="Unesite vaš OIB" />
+					<FormField :error="getFirstErrorForField(v$, 'student_OIB')" label="Vaš OIB" horizontal>
+						<FormControl v-model="form.student_OIB" :icon-left="mdiCardAccountDetailsOutline" help="Za potrebe prijave osiguranja" placeholder="Unesite vaš OIB" />
 					</FormField>
 
 					<BaseDivider />
@@ -215,56 +219,49 @@ async function submit_application_form() {
 						<FormControl v-model="form.Poslodavac" :icon-left="mdiDomain" readonly disabled help="Odabrano poduzeće" placeholder="Odabrano poduzeće" />
 					</FormField>
 
-					<FormField label="Ime i prezime mentora" horizontal>
-						<FormControl v-model="form.mentor_ime" :icon-left="mdiAccount" help="Ime mentora" :error="getFirstErrorForField(v$, 'mentor_ime')" placeholder="Ime mentora" />
-						<FormControl v-model="form.mentor_prezime" :icon-left="mdiAccount" help="Prezime mentora" :error="getFirstErrorForField(v$, 'mentor_prezime')" placeholder="Prezime mentora" />
-					</FormField>
+					<div class="mb-6 grid grid-cols-1 gap-3 md:grid-cols-2">
+						<FormField :error="getFirstErrorForField(v$, 'mentor_ime')" label="Ime mentora" horizontal>
+							<FormControl v-model="form.mentor_ime" :icon-left="mdiAccount" help="Ime mentora" placeholder="Ime mentora" />
+						</FormField>
+						<FormField :error="getFirstErrorForField(v$, 'mentor_prezime')" label="Prezime mentora" horizontal>
+							<FormControl v-model="form.mentor_prezime" :icon-left="mdiAccount" help="Prezime mentora" placeholder="Prezime mentora" />
+						</FormField>
+					</div>
 
-					<FormField label="Email mentora" horizontal>
-						<FormControl v-model="form.mentor_email" :icon-left="mdiMail" :error="getFirstErrorForField(v$, 'mentor_email')" type="email" help="Email mentora (provjeriti dvaput)" placeholder="Email mentora" />
+					<FormField :error="getFirstErrorForField(v$, 'mentor_email')" label="Email mentora" horizontal>
+						<FormControl v-model="form.mentor_email" :icon-left="mdiMail" type="email" help="Email mentora (provjeriti dvaput)" placeholder="Email mentora" />
 					</FormField>
 					<BaseDivider />
-					<FormField label="Detaljan opis zadatka" horizontal>
-						<FormControl
-							v-model="form.detaljan_opis_zadatka"
-							type="textarea"
-							:error="getFirstErrorForField(v$, 'detaljan_opis_zadatka')"
-							:icon-left="mdiTextLong"
-							placeholder="Detaljno opišite zadatak koji će se izvršavati na praksi (min. 200 znakova)." />
+					<FormField :error="getFirstErrorForField(v$, 'detaljan_opis_zadatka')" label="Detaljan opis zadatka" horizontal>
+						<FormControl v-model="form.detaljan_opis_zadatka" type="textarea" :icon-left="mdiTextLong" placeholder="Detaljno opišite zadatak koji će se izvršavati na praksi (min. 200 znakova)." />
 					</FormField>
 
-					<FormField label="Dogovoreni broj sati" horizontal>
+					<FormField :error="getFirstErrorForField(v$, 'dogovoreni_broj_sati')" label="Dogovoreni broj sati" horizontal>
 						<FormField addons>
-							<FormControl v-model="form.dogovoreni_broj_sati" type="number" :min="1" :icon-left="mdiClockTimeFiveOutline" placeholder="Dogovoreni broj sati" :error="getFirstErrorForField(v$, 'dogovoreni_broj_sati')" expanded />
+							<FormControl v-model="form.dogovoreni_broj_sati" type="number" :min="1" :icon-left="mdiClockTimeFiveOutline" placeholder="Dogovoreni broj sati" expanded />
 						</FormField>
 					</FormField>
 
 					<!-- Date pickers with fipu blue hover effects and cursor pointer -->
 					<!-- Note: Translation of native "Clear"/"Today" buttons requires custom date picker component -->
-					<FormField label="Datum početka" horizontal>
-						<FormControl v-model="form.pocetak_prakse" :error="getFirstErrorForField(v$, 'pocetak_prakse')" type="date" class="fipu-date-picker" :icon-left="mdiCalendar" />
+					<FormField :error="getFirstErrorForField(v$, 'pocetak_prakse')" label="Datum početka" horizontal>
+						<FormControl v-model="form.pocetak_prakse" type="date" class="fipu-date-picker" :icon-left="mdiCalendar" />
 					</FormField>
 
-					<FormField label="Datum završetka" horizontal>
-						<FormControl v-model="form.kraj_prakse" :error="getFirstErrorForField(v$, 'kraj_prakse')" type="date" class="fipu-date-picker" :icon-left="mdiCalendar" />
-					</FormField>
-
-					<BaseDivider />
-
-					<FormField label="Praksu ću izvršavati" horizontal>
-						<FormCheckRadioGroup v-model="form.mjesto_izvrsavanja" name="sample-radio-two" type="radio" :error="getFirstErrorForField(v$, 'mjesto_izvrsavanja')" :options="nacinIzvrsavanjeRadioOptions" />
+					<FormField :error="getFirstErrorForField(v$, 'kraj_prakse')" label="Datum završetka" horizontal>
+						<FormControl v-model="form.kraj_prakse" type="date" class="fipu-date-picker" :icon-left="mdiCalendar" />
 					</FormField>
 
 					<BaseDivider />
 
-					<FormField label="Potvrda" horizontal>
-						<FormCheckRadio
-							v-model="form.kontakt_potvrda"
-							name="sample-checkbox-two"
-							:options="checkboxOptions"
-							:error="getFirstErrorForField(v$, 'kontakt_potvrda')"
-							label="Potvrđujem da sam kontaktirao poslodavca i dogovorio detalje koji su ovdje uneseni."
-							is-column />
+					<FormField :error="getFirstErrorForField(v$, 'mjesto_izvrsavanja')" label="Praksu ću izvršavati" horizontal>
+						<FormCheckRadioGroup v-model="form.mjesto_izvrsavanja" name="sample-radio-two" type="radio" :options="nacinIzvrsavanjeRadioOptions" />
+					</FormField>
+
+					<BaseDivider />
+
+					<FormField :error="getFirstErrorForField(v$, 'kontakt_potvrda')" label="Potvrda" horizontal>
+						<FormCheckRadio v-model="form.kontakt_potvrda" name="sample-checkbox-two" label="Potvrđujem da sam kontaktirao poslodavca i dogovorio detalje koji su ovdje uneseni." is-column />
 					</FormField>
 					<BaseDivider />
 

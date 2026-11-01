@@ -164,25 +164,25 @@ async function submit_diary_form() {
 			<hr />
 
 			<div class="mb-6 grid grid-cols-1 gap-6">
-				<CardBox :icon="mdiBallot" class="mb-6 lg:col-span-2 lg:mb-0 xl:col-span-3" is-form @submit.prevent="submit_diary_form">
+				<CardBox :icon="mdiBallot" class="mb-6 lg:col-span-2 lg:mb-0 xl:col-span-3" is-form novalidate @submit.prevent="submit_diary_form">
 					<CardBoxComponentTitle title="📓 Dnevnik prakse" />
 
-					<FormField label="PDF dnevnika prakse" help="obavezno PDF format, maksimalno 10 MB" horizontal>
-						<FormFilePicker v-model="form.dnevnik_attachment" pdf :error="getFirstErrorForField(v$, 'dnevnik_attachment')" label="Prenesi" required />
+					<FormField :error="getFirstErrorForField(v$, 'dnevnik_attachment')" label="PDF dnevnika prakse" help="obavezno PDF format, maksimalno 10 MB" horizontal>
+						<FormFilePicker v-model="form.dnevnik_attachment" pdf label="Prenesi" required />
 					</FormField>
 
-					<FormField label="PDF ispunjene potvrde o obavljenoj praksi" help="obavezno PDF format, maksimalno 10 MB" horizontal>
-						<FormFilePicker v-model="form.potvrda_attachment" pdf :error="getFirstErrorForField(v$, 'potvrda_attachment')" label="Prenesi" required />
+					<FormField :error="getFirstErrorForField(v$, 'potvrda_attachment')" label="PDF ispunjene potvrde o obavljenoj praksi" help="obavezno PDF format, maksimalno 10 MB" horizontal>
+						<FormFilePicker v-model="form.potvrda_attachment" pdf label="Prenesi" required />
 					</FormField>
 
 					<BaseDivider />
 
-					<FormField label="Datum ispitnog roka" horizontal>
-						<FormControl v-model="form.prijavljen_rok" :error="getFirstErrorForField(v$, 'prijavljen_rok')" type="date" />
+					<FormField :error="getFirstErrorForField(v$, 'prijavljen_rok')" label="Datum ispitnog roka" horizontal>
+						<FormControl v-model="form.prijavljen_rok" type="date" />
 					</FormField>
 
-					<FormField horizontal>
-						<FormCheckRadio v-model="form.nastavak_radnog_odnosa" name="sample-checkbox-two" :options="checkboxOptions" label="Označi ako nastavljaš i dalje raditi u tvrtci ili ćeš ubrzo početi raditi honorarno." is-column />
+					<FormField name="nastavak_radnog_odnosa" horizontal>
+						<FormCheckRadio v-model="form.nastavak_radnog_odnosa" name="sample-checkbox-two" label="Označi ako nastavljaš i dalje raditi u tvrtci ili ćeš ubrzo početi raditi honorarno." is-column />
 					</FormField>
 
 					<BaseDivider />

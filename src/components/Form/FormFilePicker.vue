@@ -1,10 +1,15 @@
 <script setup>
-import { mdiUpload } from "@mdi/js";
-import { computed, ref, watch } from "vue";
+import { FieldControl, FieldRoot, Primitive, injectFieldRootContext } from "reka-ui";
+const fieldContext = injectFieldRootContext(null);
 import BaseButton from "@/components/Base/BaseButton.vue";
+import { computed, ref, watch } from "vue";
 import { snackBarStore } from "@/main";
+import { mdiUpload } from "@mdi/js";
 
 const props = defineProps({
+	disabled: Boolean,
+	required: Boolean,
+	name: { type: String, default: undefined },
 	modelValue: {
 		type: [Object, File, Array],
 		default: null,
@@ -46,7 +51,7 @@ watch(modelValueProp, (value) => {
 	file.value = value;
 
 	if (!value) {
-		root.value.input.value = null;
+		if (root.value) root.value.value = "";
 	}
 });
 
@@ -90,15 +95,19 @@ const upload = async (event) => {
 </script>
 
 <template>
-	<div class="flex items-stretch justify-start relative">
-		<label class="inline-flex">
-			<BaseButton as="a" :class="{ 'w-12 h-12': isRoundIcon, 'rounded-r-none': showFilename }" :icon-size="isRoundIcon ? 24 : undefined" :label="isRoundIcon ? null : label" :icon="icon" :color="color" :rounded-full="isRoundIcon" />
-			<input ref="root" type="file" class="absolute top-0 left-0 w-full h-full opacity-0 outline-none cursor-pointer -z-1" :accept="pdf ? 'application/pdf' : accept" @input="upload" />
-		</label>
-		<div v-if="showFilename" class="px-4 py-2 bg-gray-100 dark:bg-slate-800 border-gray-200 dark:border-slate-700 border rounded-r">
-			<span class="text-ellipsis line-clamp-1">
-				{{ file.name }}
-			</span>
+	<component :is="fieldContext ? Primitive : FieldRoot" as-child>
+		<div class="relative flex items-stretch justify-start rounded focus-within:ring focus-within:ring-fipu_blue">
+			<label class="inline-flex">
+				<BaseButton as="a" :class="{ 'h-12 w-12': isRoundIcon, 'rounded-r-none': showFilename }" :icon-size="isRoundIcon ? 24 : undefined" :label="isRoundIcon ? null : label" :icon="icon" :color="color" :rounded-full="isRoundIcon" />
+				<FieldControl as-child :name="name" :required="required" :disabled="disabled">
+					<input ref="root" type="file" class="absolute left-0 top-0 -z-1 h-full w-full cursor-pointer opacity-0 outline-none" :accept="pdf ? 'application/pdf' : accept" @input="upload" />
+				</FieldControl>
+			</label>
+			<div v-if="showFilename" class="rounded-r border border-gray-200 bg-gray-100 px-4 py-2 dark:border-slate-700 dark:bg-slate-800">
+				<span class="line-clamp-1 text-ellipsis">
+					{{ file.name }}
+				</span>
+			</div>
 		</div>
-	</div>
+	</component>
 </template>
