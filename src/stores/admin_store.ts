@@ -201,7 +201,7 @@ export const useAdminStore = defineStore("admin", {
 				if (!students || students.length === 0) {
 					this.students = [];
 					this.studentsFetched = true;
-					return;
+					return true;
 				}
 
 				this.dashboard_data = {
@@ -252,8 +252,10 @@ export const useAdminStore = defineStore("admin", {
 				await Promise.all(promises);
 
 				this.students = students;
+				return true;
 			} catch (error) {
 				console.log("[admin_store].getStudents(): ", error);
+				return false;
 			} finally {
 				this.studentsFetched = true;
 			}

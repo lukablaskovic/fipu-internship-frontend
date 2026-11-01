@@ -22,7 +22,6 @@ import CardBox from "@/components/Cardbox/CardBox.vue";
 
 import { mainStore, snackBarStore, studentStore } from "@/main.js";
 import { UserTaskMappings } from "@/helpers/maps";
-import Utils from "@/helpers/utils.js";
 
 const allocated_assignment = ref(null);
 onMounted(async () => {
@@ -148,6 +147,7 @@ let isLoading = ref(false);
 const v$ = useVuelidate(rules, form);
 
 async function submit_application_form() {
+	if (isLoading.value) return;
 	isLoading.value = true;
 
 	v$.value.$touch();
@@ -155,14 +155,21 @@ async function submit_application_form() {
 		isLoading.value = false;
 		return;
 	}
-	await studentStore.submitApplicationForm(form);
-	isLoading.value = false;
-
-	if (UserTaskMappings.getTaskProperty(studentStore.student_process_instance_data.pending[0], "snackbar_msg")) {
-		snackBarStore.pushMessage(UserTaskMappings.getTaskProperty(studentStore.student_process_instance_data.pending[0], "snackbar_msg"), UserTaskMappings.getTaskProperty(studentStore.student_process_instance_data.pending[0], "snackbar_color"));
+	const task = studentStore.student_process_instance_data.pending[0];
+	let saved = false;
+	try {
+		const result = await studentStore.submitApplicationForm(form);
+		if (result?.status !== "OK") throw new Error("Submission failed");
+		saved = true;
+		if (UserTaskMappings.getTaskProperty(task, "snackbar_msg")) {
+			snackBarStore.pushMessage(UserTaskMappings.getTaskProperty(task, "snackbar_msg"), UserTaskMappings.getTaskProperty(task, "snackbar_color"));
+		}
+		await studentStore.getPendingUserTask(mainStore.currentUser.internship_process.id);
+	} catch (error) {
+		snackBarStore.pushMessage(saved ? "Podaci su spremljeni, ali stanje prakse nije osvježeno. Ponovno otvorite Moju praksu." : "Podaci nisu poslani. Molimo pokušajte ponovno ili kontaktirajte voditelja prakse.", "danger");
+	} finally {
+		isLoading.value = false;
 	}
-	await Utils.wait(2);
-	location.reload();
 }
 </script>
 

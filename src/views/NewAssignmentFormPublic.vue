@@ -23,7 +23,6 @@ import { required, email, helpers } from "@vuelidate/validators";
 import { getFirstErrorForField } from "@/helpers/validators";
 import { useVuelidate } from "@vuelidate/core";
 
-import Utils from "@/helpers/utils";
 
 import { mainStore, snackBarStore } from "@/main.js";
 
@@ -118,15 +117,16 @@ const isLoading = ref(false);
 
 const v$ = useVuelidate(rules, form);
 
-function resetForm() {
+function resetForm(notify = true) {
 	for (const key in DEFAULT_FORM_VALUES) {
 		form[key] = DEFAULT_FORM_VALUES[key];
 	}
 	v$.value.$reset();
-	snackBarStore.pushMessage("Forma resetirana.", "success");
+	if (notify) snackBarStore.pushMessage("Forma resetirana.", "success");
 }
 
 async function onSubmit() {
+	if (isLoading.value) return;
 	isLoading.value = true;
 	v$.value.$touch();
 	if (v$.value.$invalid) {
@@ -142,13 +142,18 @@ async function onSubmit() {
 		form.proces_selekcije = "Nema";
 	}
 
-	let result = await mainStore.submitNewInternshipProject(form);
-	isLoading.value = false;
-
-	if (result) {
+	let saved = false;
+	try {
+		const result = await mainStore.submitNewInternshipProject(form);
+		if (!result) throw new Error("Project submission failed");
+		saved = true;
+		resetForm(false);
 		snackBarStore.pushMessage("Uspješno ste prijavili zadatak!", "success");
-		await Utils.wait(1);
-		location.reload();
+		await refreshCompanies();
+	} catch (error) {
+		snackBarStore.pushMessage(saved ? "Zadatak je prijavljen, ali popis poduzeća nije osvježen. Pokušajte ponovno otvoriti obrazac." : "Zadatak nije prijavljen. Molimo pokušajte ponovno.", "danger");
+	} finally {
+		isLoading.value = false;
 	}
 }
 
@@ -158,15 +163,17 @@ const mappedCompanies = ref([]);
 const angazmanSelect = { true: "Da", false: "Ne" };
 const selectionSelect = { true: "Da", false: "Ne" };
 
-onMounted(async () => {
-	let results = await mainStore.fetchCompanies();
+async function refreshCompanies() {
+	let results = await mainStore.fetchCompanies("", true);
 	allCompanies.value = results;
 
 	mappedCompanies.value = allCompanies.value.map((items, index) => ({
 		id: index + 1,
 		label: items.naziv,
 	}));
-});
+}
+
+onMounted(refreshCompanies);
 
 watch(
 	() => form.selekcija,

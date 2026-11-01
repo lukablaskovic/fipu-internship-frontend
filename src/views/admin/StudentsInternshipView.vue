@@ -7,7 +7,6 @@ import axios from "axios";
 
 import { UserTaskMappings, SendTaskMappings } from "@/helpers/maps";
 import { adminStore, mainStore, snackBarStore } from "@/main.js";
-import Utils from "@/helpers/utils.js";
 
 import SectionTitleLineWithButton from "@/components/Section/SectionTitleLineWithButton.vue";
 import TableInstanceData from "@/components/BPMN/TableInstanceData.vue";
@@ -209,13 +208,32 @@ onMounted(async () => {
 	await adminStore.getStudents();
 });
 
+const isSubmitting = ref(false);
 async function handleNewInstance() {
-	adminStore.handleNewInstance(process_instance_data.value.id, process_instance_data.value.pending[0], formDynamicValues.value);
-	if (UserTaskMappings.getTaskProperty(process_instance_data.value.pending[0], "snackbar_msg")) {
-		snackBarStore.pushMessage(UserTaskMappings.getTaskProperty(process_instance_data.value.pending[0], "snackbar_msg"), UserTaskMappings.getTaskProperty(process_instance_data.value.pending[0], "snackbar_color"));
+	if (isSubmitting.value) return;
+	isSubmitting.value = true;
+	let saved = false;
+	const instanceId = process_instance_data.value.id;
+	const task = process_instance_data.value.pending[0];
+	try {
+		const result = await adminStore.handleNewInstance(instanceId, task, formDynamicValues.value);
+		if (result?.status !== "OK") throw new Error("Process update failed");
+		saved = true;
+		if (UserTaskMappings.getTaskProperty(task, "snackbar_msg")) {
+			snackBarStore.pushMessage(UserTaskMappings.getTaskProperty(task, "snackbar_msg"), UserTaskMappings.getTaskProperty(task, "snackbar_color"));
+		}
+		if (!(await adminStore.getStudents())) throw new Error("Students could not be fetched");
+		const student = adminStore.students.find((student) => student.process_instance_id === instanceId);
+		if (!student) throw new Error("Student could not be fetched");
+		adminStore.setSelectedStudent(student);
+		process_instance_data.value = student.process_instance_data;
+		formDynamicValues.value = {};
+		disabledCondition.value = true;
+	} catch (error) {
+		snackBarStore.pushMessage(saved ? "Promjena je spremljena, ali popis studenata nije osvježen. Pokušajte ponovno otvoriti popis." : "Promjena nije spremljena. Molimo pokušajte ponovno.", "danger");
+	} finally {
+		isSubmitting.value = false;
 	}
-	await Utils.wait(2);
-	location.reload();
 }
 
 onMounted(loadDataForStudent);
@@ -269,7 +287,7 @@ onMounted(loadDataForStudent);
 					:title="UserTaskMappings.getTaskProperty(process_instance_data.pending[0], 'form_title', process_instance_data['state'])"
 					button-label="Potvrda"
 					has-cancel
-					:disabled-condition="disabledCondition"
+					:disabled-condition="disabledCondition || isSubmitting"
 					@confirm="handleNewInstance()">
 					<p v-if="process_instance_data.pending[0] == 'odabiranje_zadatka_student' || process_instance_data.pending[0] == 'ispunjavanje_prijavnice_student' || process_instance_data.pending[0] == 'predavanje_dnevnika_student'" class="mb-4">
 						{{ UserTaskMappings.getTaskProperty(adminStore.bpmn_diagram.clicked_task_id, "bpmn_pending_info_msg", process_instance_data["state"]) }}

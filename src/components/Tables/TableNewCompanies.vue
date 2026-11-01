@@ -8,8 +8,8 @@ import { FieldRoot, FieldLabel } from "reka-ui";
 import TableCheckboxCell from "@/components/Tables/TableCheckboxCell.vue";
 import { mainStore, adminStore, snackBarStore } from "@/main.js";
 import BaseButtons from "@/components/Base/BaseButtons.vue";
-import BaseButton from "@/components/Base/BaseButton.vue";
 import UserAvatar from "@/components/User/UserAvatar.vue";
+import BaseButton from "@/components/Base/BaseButton.vue";
 import BaseLevel from "@/components/Base/BaseLevel.vue";
 import CardBoxModal from "../Cardbox/CardBoxModal.vue";
 import { mdiContentSaveCheckOutline } from "@mdi/js";
@@ -64,16 +64,22 @@ watch(() => route.params.naziv, loadData, {
 
 const companyForms = ref({});
 
-onMounted(async () => {
-	let results = await mainStore.fetchCompanies();
+async function refreshCompanies(notify = false) {
+	let results = await mainStore.fetchCompanies("", true);
 	const filteredCompanies = results.filter((company) => {
-		return (company.web === "" || company.web === null) && (company.OIB === "" || company.OIB === null) && (company.adresa === "" || company.adresa === null) && (company.maticni_broj === "" || company.maticni_broj === null) && (company.direktor === "" || company.direktor === null);
+		return (
+			(company.web === "" || company.web === null) &&
+			(company.OIB === "" || company.OIB === null) &&
+			(company.adresa === "" || company.adresa === null) &&
+			(company.maticni_broj === "" || company.maticni_broj === null) &&
+			(company.direktor === "" || company.direktor === null)
+		);
 	});
 	if (Utils.isArrayEmpty(filteredCompanies)) {
-		snackBarStore.pushMessage("Nema novih poduzeća", "info");
+		if (notify) snackBarStore.pushMessage("Nema novih poduzeća", "info");
 		adminStore.newCompaniesFound = false;
 	} else {
-		snackBarStore.pushMessage("Pronađena su nova poduzeća, molimo ažurirajte podatke", "info");
+		if (notify) snackBarStore.pushMessage("Pronađena su nova poduzeća, molimo ažurirajte podatke", "info");
 		adminStore.newCompaniesFound = true;
 	}
 	for (const company of filteredCompanies) {
@@ -87,7 +93,10 @@ onMounted(async () => {
 		};
 	}
 	newCompanies.value = filteredCompanies;
-});
+	mainStore.allCompanies = results;
+}
+
+onMounted(() => refreshCompanies(true));
 const companiesValidationState = reactive({});
 
 const computedCompanyForms = computed(() => {
@@ -122,30 +131,27 @@ function previewCompany(companyId) {
 	confirmationModal.value.isActive = true;
 }
 
-function confirmTaskAction() {
-	saveUpdatedCompany();
-	confirmationModal.value.isActive = false;
+async function confirmTaskAction() {
+	await saveUpdatedCompany();
 }
 
 async function saveUpdatedCompany() {
+	if (isLoading.value) return;
 	isLoading.value = true;
-
-	const validationResult = await v$.value.$validate();
-
-	if (!validationResult) {
-		isLoading.value = false;
-		return;
-	}
-
-	const postData = companyForms.value[selectedCompany.value];
-	let result = adminStore.saveUpdatedCompany(postData);
-
-	if (result) {
+	let saved = false;
+	try {
+		if (!(await v$.value.$validate())) return;
+		const postData = companyForms.value[selectedCompany.value];
+		const result = await adminStore.saveUpdatedCompany(postData);
+		if (!result) throw new Error("Company update failed");
+		saved = true;
+		confirmationModal.value.isActive = false;
 		snackBarStore.pushMessage("Podaci su uspješno ažurirani", "success");
-		await Utils.wait(1);
-		location.reload();
-	} else {
-		snackBarStore.pushMessage("Podaci nisu ažurirani", "error");
+		await refreshCompanies();
+	} catch (error) {
+		snackBarStore.pushMessage(saved ? "Podaci su spremljeni, ali popis poduzeća nije osvježen. Pokušajte ponovno otvoriti popis." : "Podaci nisu ažurirani. Molimo pokušajte ponovno.", "danger");
+	} finally {
+		isLoading.value = false;
 	}
 }
 
@@ -229,7 +235,7 @@ const { perPage, currentPage, itemsPaginated: companiesPaginated, numPages, curr
 
 				<td class="whitespace-nowrap before:hidden lg:w-1">
 					<BaseButtons type="justify-start lg:justify-end" no-wrap>
-						<BaseButton color="fipu_blue" :icon="mdiContentSaveCheckOutline" small @click="previewCompany(company.id)" />
+						<BaseButton :disabled="isLoading" color="fipu_blue" :icon="mdiContentSaveCheckOutline" small @click="previewCompany(company.id)" />
 					</BaseButtons>
 				</td>
 			</tr>
@@ -237,7 +243,7 @@ const { perPage, currentPage, itemsPaginated: companiesPaginated, numPages, curr
 	</table>
 	<CardBoxComponentEmpty v-if="!newCompanies.length" />
 
-	<CardBoxModal v-model="confirmationModal.isActive" title="Potvrda akcije" button-label="Ažuriraj" has-cancel @confirm="confirmTaskAction">
+	<CardBoxModal v-model="confirmationModal.isActive" :disabled-condition="isLoading" title="Potvrda akcije" button-label="Ažuriraj" has-cancel @confirm="confirmTaskAction">
 		<div class="mb-4">
 			<div v-if="selectedCompany">
 				<strong>Naziv:</strong> {{ companyForms[selectedCompany].naziv }}<br />

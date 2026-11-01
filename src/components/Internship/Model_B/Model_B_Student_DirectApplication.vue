@@ -17,7 +17,6 @@ import FormControl from "@/components/Form/FormControl.vue";
 import BaseButtons from "@/components/Base/BaseButtons.vue";
 import BaseButton from "@/components/Base/BaseButton.vue";
 import FormField from "@/components/Form/FormField.vue";
-import Utils from "@/helpers/utils";
 
 const prviOdabir = ref(null);
 let prviOdabirDetails = ref(null);
@@ -62,20 +61,25 @@ const modalConfirmApplication = ref(false);
 const napomena = ref(null);
 
 const directApplication = async () => {
+	if (isLoading.value) return;
 	isLoading.value = true;
 	if (!mainStore.userAuthenticated) {
 		snackBarStore.pushMessage("Morate biti prijavljeni da biste prijavili preferencije.", "warning");
 		isLoading.value = false;
 		return;
 	}
-	const result = await studentStore.direct_application_B(prviOdabirDetails.value, napomena.value);
-	const message = result?.status === "OK" ? "Uspješno ste prijavili zadatak." : "Zadatak nije prijavljen. Molimo kontaktirajte voditelja prakse.";
-	const type = result?.status === "OK" ? "success" : "danger";
-
-	snackBarStore.pushMessage(message, type);
-	isLoading.value = false;
-	await Utils.wait(2);
-	location.reload();
+	let saved = false;
+	try {
+		const result = await studentStore.direct_application_B(prviOdabirDetails.value, napomena.value);
+		if (result?.status !== "OK") throw new Error("Submission failed");
+		saved = true;
+		snackBarStore.pushMessage("Uspješno ste prijavili zadatak.", "success");
+		await studentStore.getPendingUserTask(mainStore.currentUser.internship_process.id);
+	} catch (error) {
+		snackBarStore.pushMessage(saved ? "Podaci su spremljeni, ali stanje prakse nije osvježeno. Ponovno otvorite Moju praksu." : "Podaci nisu poslani. Molimo pokušajte ponovno ili kontaktirajte voditelja prakse.", "danger");
+	} finally {
+		isLoading.value = false;
+	}
 };
 </script>
 

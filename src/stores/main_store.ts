@@ -88,7 +88,7 @@ export const useMainStore = defineStore("main", {
 					prezime: data.prezime,
 					JMBAG: data.JMBAG,
 					email: data.email,
-					godina_studija: data.godina_studija.value,
+					godina_studija: data.godina_studija?.value || "",
 					avatar: data.avatar,
 					baserow_id: data.id,
 					loggedAt: new Date(),
@@ -173,11 +173,13 @@ export const useMainStore = defineStore("main", {
 			this.helpModalActive = state;
 		},
 
-		async fetchCompanies(search = "") {
+		async fetchCompanies(search = "", throwOnError = false) {
 			try {
 				const response = await Guest.fetchCompanies(search);
-				return response?.data?.results || [];
+				if (!response?.data?.results) throw new Error("Companies could not be fetched");
+				return response.data.results;
 			} catch (error) {
+				if (throwOnError) throw error;
 				console.log("Error:", error);
 				return [];
 			}
@@ -203,12 +205,14 @@ export const useMainStore = defineStore("main", {
 				}
 				const response_bpmn_engine = await ProcessInstance.create(`${bpmn_model}.bpmn`);
 
+				if (!response_bpmn_engine?.id) return null;
+
 				const response_bw = await Student.setProcessData(this.currentUser.email, response_bpmn_engine.id, selected_model, godina_studija, jmbag);
 
 				await this.fetchCurrentUser();
 				return response_bw;
 			} catch (error) {
-				return error;
+				return null;
 			}
 		},
 
@@ -271,7 +275,7 @@ export const useMainStore = defineStore("main", {
 				return response;
 			} catch (error) {
 				console.log("Error:", error);
-				return error;
+				return null;
 			}
 		},
 	},

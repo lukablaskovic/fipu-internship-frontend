@@ -61,7 +61,6 @@ import SelectProcessButton from "@/components/SelectProcessButton.vue";
 
 import { useVuelidate } from "@vuelidate/core";
 
-import Utils from "@/helpers/utils";
 
 import CardBox from "@/components/Cardbox/CardBox.vue";
 import { computed, ref, reactive, onMounted } from "vue";
@@ -125,6 +124,7 @@ const isLoading = ref(false);
 const v$ = useVuelidate(rules, form);
 
 async function onSubmit() {
+	if (isLoading.value) return;
 	isLoading.value = true;
 	v$.value.$touch();
 	if (v$.value.$invalid) {
@@ -136,8 +136,6 @@ async function onSubmit() {
 	if (!fixedUserData.ime_prezime || fixedUserData.ime_prezime === "" || !fixedUserData.email || fixedUserData.email === "") {
 		snackBarStore.pushMessage("Greška! Molimo pokušajte ponovo.", "danger");
 		isLoading.value = false;
-		await Utils.wait(1);
-		router.go();
 		return;
 	}
 
@@ -147,12 +145,15 @@ async function onSubmit() {
 		return;
 	}
 
-	const response = await mainStore.createInternshipInstance(selectedProcess.value, form.godina_studija, form.jmbag);
-	if (response) {
+	try {
+		const response = await mainStore.createInternshipInstance(selectedProcess.value, form.godina_studija, form.jmbag);
+		if (!response) throw new Error("Process creation failed");
 		snackBarStore.pushMessage("Uspješno ste započeli proces prakse!", "success");
+		await router.push("/moja-praksa");
+	} catch (error) {
+		snackBarStore.pushMessage("Proces prakse nije pokrenut. Molimo pokušajte ponovno.", "danger");
+	} finally {
 		isLoading.value = false;
-		await Utils.wait(1);
-		router.push("/moja-praksa");
 	}
 }
 

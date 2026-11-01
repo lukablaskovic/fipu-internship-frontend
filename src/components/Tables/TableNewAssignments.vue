@@ -43,21 +43,24 @@ watch(() => route.params.id_zadatak, loadData, {
 	immediate: true,
 });
 
-onMounted(async () => {
+async function refreshAssignments(notify = false) {
 	const result = await mainStore.fetchAvailableAssignments();
+	if (!result) throw new Error("Assignments could not be fetched");
 	allAvailableAssignments.value = result.filter((task) => task.dostupno_mjesta > 0 && task.voditelj_odobrio.value == "u razradi");
 
 	if (Utils.isArrayEmpty(allAvailableAssignments.value)) {
-		snackBarStore.pushMessage("Nema novih zadataka", "info");
+		if (notify) snackBarStore.pushMessage("Nema novih zadataka", "info");
 		adminStore.newAssignmentsFound = false;
 	} else {
-		snackBarStore.pushMessage("Pronađeni su novi zadaci, molimo da ih pregledate", "info");
+		if (notify) snackBarStore.pushMessage("Pronađeni su novi zadaci, molimo da ih pregledate", "info");
 		adminStore.newAssignmentsFound = true;
 	}
 
 	adminStore.newAssignments = allAvailableAssignments.value;
 	mainStore.resetAssignments();
-});
+}
+
+onMounted(() => refreshAssignments(true));
 
 const { perPage, currentPage, itemsPaginated: assignmentsPaginated, numPages, currentPageHuman } = usePagination(allAvailableAssignments, 5);
 
@@ -104,15 +107,24 @@ const handleConfirmation = (action, assignment) => {
 	};
 };
 
+const isLoading = ref(false);
 const confirmTaskAction = async () => {
-	const actionStr = confirmationModal.value.action === "accept" ? "odobreno" : "odbijeno";
-	let result = adminStore.handleTask(confirmationModal.value.assignment["id_zadatak"], actionStr);
-	if (result) {
+	if (isLoading.value) return;
+	isLoading.value = true;
+	let saved = false;
+	try {
+		const actionStr = confirmationModal.value.action === "accept" ? "odobreno" : "odbijeno";
+		const result = await adminStore.handleTask(confirmationModal.value.assignment["id_zadatak"], actionStr);
+		if (!result) throw new Error("Approval failed");
+		saved = true;
+		confirmationModal.value.isActive = false;
 		snackBarStore.pushMessage("Ažurirano stanje zadatka", "success");
-		await Utils.wait(0.5);
-		location.reload();
+		await refreshAssignments();
+	} catch (error) {
+		snackBarStore.pushMessage(saved ? "Stanje je spremljeno, ali popis zadataka nije osvježen. Pokušajte ponovno otvoriti popis." : "Stanje zadatka nije ažurirano. Molimo pokušajte ponovno.", "danger");
+	} finally {
+		isLoading.value = false;
 	}
-	confirmationModal.value.isActive = false;
 };
 
 const cancelTaskAction = () => {
@@ -129,7 +141,7 @@ const cancelTaskAction = () => {
 		<br />
 	</CardBoxModal>
 
-	<CardBoxModal v-model="confirmationModal.isActive" title="Potvrda akcije" :button-label="confirmationModal.action === 'accept' ? 'Prihvati' : 'Odbij'" has-cancel @cancel="cancelTaskAction" @confirm="confirmTaskAction">
+	<CardBoxModal v-model="confirmationModal.isActive" :disabled-condition="isLoading" title="Potvrda akcije" :button-label="confirmationModal.action === 'accept' ? 'Prihvati' : 'Odbij'" has-cancel @cancel="cancelTaskAction" @confirm="confirmTaskAction">
 		<div v-if="confirmationModal.action === 'accept'" class="mb-4">
 			Jeste li sigurni da želite prihvatiti zadatak -
 			<b>{{ confirmationModal.assignment["id_zadatak"] }}</b> ?
@@ -192,12 +204,12 @@ const cancelTaskAction = () => {
 				</td>
 				<td class="whitespace-nowrap before:hidden lg:w-1">
 					<BaseButtons type="justify-start lg:justify-end" no-wrap>
-						<BaseButton color="success" :icon="mdiCheckCircle" small @click="handleConfirmation('accept', assignment)" />
+						<BaseButton :disabled="isLoading" color="success" :icon="mdiCheckCircle" small @click="handleConfirmation('accept', assignment)" />
 					</BaseButtons>
 				</td>
 				<td class="whitespace-nowrap before:hidden lg:w-1">
 					<BaseButtons type="justify-start lg:justify-end" no-wrap>
-						<BaseButton color="danger" :icon="mdiCloseBox" small @click="handleConfirmation('decline', assignment)" />
+						<BaseButton :disabled="isLoading" color="danger" :icon="mdiCloseBox" small @click="handleConfirmation('decline', assignment)" />
 					</BaseButtons>
 				</td>
 			</tr>

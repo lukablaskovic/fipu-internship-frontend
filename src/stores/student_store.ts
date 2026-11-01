@@ -72,6 +72,8 @@ export const useStudentStore = defineStore("student", {
 				_frontend_url: endpoints.VITE_FRONTEND_URL,
 			});
 
+			if (!response?.id_alokacija) return null;
+
 			const post_data = {
 				JMBAG: mainStore.currentUser["JMBAG"],
 				Student: [mainStore.currentUser["JMBAG"]],
@@ -133,12 +135,14 @@ export const useStudentStore = defineStore("student", {
 				const process_instance_id = mainStore.currentUser.internship_process.id;
 				const pending_user_task = mainStore.currentUser.internship_process.pending_user_task;
 
-				combinedResponses.handleNewInstance = await ProcessInstance.handleNewInstance(process_instance_id, pending_user_task, post_data);
-
 				const dnevnik_prakse_id = this.student_process_instance_data.variables["id_dnevnik_prakse"];
 				combinedResponses.storeDnevnik = await Student.storeDnevnik(dnevnik_prakse_id, diary_data.dnevnik_attachment);
+				if (!combinedResponses.storeDnevnik) return null;
 				combinedResponses.storeIspunjenaPotvrda = await Student.storeIspunjenaPotvrda(dnevnik_prakse_id, diary_data.potvrda_attachment);
 
+				if (!combinedResponses.storeIspunjenaPotvrda) return null;
+				combinedResponses.handleNewInstance = await ProcessInstance.handleNewInstance(process_instance_id, pending_user_task, post_data);
+				if (combinedResponses.handleNewInstance?.status !== "OK") return null;
 				return combinedResponses;
 			} catch (error) {
 				console.log("[student_store].submitDiaryForm error: ", error);
@@ -156,17 +160,11 @@ export const useStudentStore = defineStore("student", {
 		},
 
 		async getPendingUserTask(process_instance_id: number) {
-			try {
-				const response = await this.getInstanceInfo(process_instance_id);
-				let pendingUserTask = null;
-				if (response.pending && response.pending.length) {
-					pendingUserTask = response.pending[0];
-					mainStore.currentUser.internship_process.pending_user_task = pendingUserTask;
-					return pendingUserTask;
-				}
-			} catch (error) {
-				console.log("Error:", error);
-			}
+			const response = await this.getInstanceInfo(process_instance_id);
+			if (!response) throw new Error("Process instance could not be fetched");
+			const pendingUserTask = response.pending?.[0] || null;
+			mainStore.currentUser.internship_process.pending_user_task = pendingUserTask;
+			return pendingUserTask;
 		},
 
 		async getAllocationsPublic() {

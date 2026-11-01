@@ -1,6 +1,5 @@
 <script setup>
 import { mdiAccountTie, mdiAccount, mdiClipboardCheck, mdiCloseCircle } from "@mdi/js";
-import Utils from "@/helpers/utils.js";
 import { useRoute } from "vue-router";
 import { ref, onMounted } from "vue";
 import { router } from "@/router";
@@ -56,18 +55,23 @@ const formDynamicValues = ref({});
 const isLoading = ref(false);
 
 async function handleNewInstance() {
+	if (isLoading.value) return;
 	isLoading.value = true;
-
-	adminStore.handleNewInstance(process_instance_id.value, instanceInfo.value.pending[0], formDynamicValues.value);
-
-	if (UserTaskMappings.getTaskProperty(instanceInfo.value.pending[0], "snackbar_msg")) {
-		snackBarStore.pushMessage(UserTaskMappings.getTaskProperty(instanceInfo.value.pending[0], "snackbar_msg"), UserTaskMappings.getTaskProperty(instanceInfo.value.pending[0], "snackbar_color"));
+	try {
+		const task = instanceInfo.value.pending[0];
+		const result = await adminStore.handleNewInstance(process_instance_id.value, task, formDynamicValues.value);
+		if (result?.status !== "OK") throw new Error("Evaluation failed");
+		if (UserTaskMappings.getTaskProperty(task, "snackbar_msg")) {
+			snackBarStore.pushMessage(UserTaskMappings.getTaskProperty(task, "snackbar_msg"), UserTaskMappings.getTaskProperty(task, "snackbar_color"));
+		}
+		await router.push("/");
+	} catch (error) {
+		snackBarStore.pushMessage("Evaluacija nije spremljena. Molimo pokušajte ponovno.", "danger");
+	} finally {
+		isLoading.value = false;
 	}
-	await Utils.wait(2);
-	isLoading.value = false;
-
-	router.push("/");
 }
+
 const disabledCondition = ref(true);
 
 const updateDisabledCondition = (allFilled) => {
@@ -103,7 +107,7 @@ const updateDisabledCondition = (allFilled) => {
 
 				<FormDynamic v-if="pendingTaskInfo != null" v-model="formDynamicValues" class="mb-4 rounded-md p-1" :form-fields="pendingTaskInfo.form_fields" :variables="instanceInfo.variables" :documentation="pendingTaskInfo.documentation" @all-fields-filled="updateDisabledCondition" />
 
-				<BaseButton v-if="formDynamicValues['kandidat_odobren']" class="mb-4" label="Potvrdi" :loading="isLoading" color="fipu_blue" @disabled="disabledCondition" @click="handleNewInstance()" />
+				<BaseButton v-if="formDynamicValues['kandidat_odobren']" class="mb-4" label="Potvrdi" :loading="isLoading" color="fipu_blue" :disabled="disabledCondition" @click="handleNewInstance()" />
 			</div>
 			<div v-else>
 				<SectionMain>
