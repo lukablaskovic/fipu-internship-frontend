@@ -4,7 +4,7 @@ import { router } from "@/router";
 
 import { ProcessInstance } from "@/services/bpmn_engine_api";
 import { CurrentUser } from "@/models/CurrentUser";
-import { MAINTENANCE_MODE } from "@/config";
+import { MAINTENANCE_MODE, LOCAL_DEV } from "@/config";
 import { studentStore } from "@/main";
 
 export interface Assignment {
@@ -17,7 +17,7 @@ export const useMainStore = defineStore("main", {
 		academicYear: "2025/2026",
 		voditelj_prakse: "doc. dr. sc. Ivan Lorencin",
 
-		admin_emails: ["ntankov@unipu.hr", "ilorencin@unipu.hr", "lblaskovi@unipu.hr", "mmilicevi@unipu.hr"],
+		admin_emails: LOCAL_DEV ? ["admin@local.test"] : ["ntankov@unipu.hr", "ilorencin@unipu.hr", "lblaskovi@unipu.hr", "mmilicevi@unipu.hr"],
 
 		fipulab_web: "https://web.fipulab.unipu.hr/",
 
@@ -136,7 +136,7 @@ export const useMainStore = defineStore("main", {
 						const processInstance = response_student.data.results[0].process_instance_id;
 						// Has active process instance, so redirect to moja-praksa
 						if (processInstance) {
-							const pendingProcessTask = await studentStore.getPendingUserTask(processInstance);
+							await studentStore.getPendingUserTask(processInstance);
 							if (this.userHasActiveInstance) {
 								await router.push("/moja-praksa");
 							} else {

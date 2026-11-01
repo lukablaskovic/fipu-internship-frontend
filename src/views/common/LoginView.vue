@@ -37,7 +37,11 @@
 					<p class="mx-auto mb-4 max-w-md p-2 py-8 text-center text-lg text-gray-600 sm:mb-5 sm:max-w-2xl sm:p-0 lg:text-lg">Prijavite se kako biste pregledali stanje vaše prakse ili prijavili zadatke.</p>
 
 					<div class="mb-4 flex w-full justify-center sm:my-6">
-						<GoogleLogin :callback="loginCallback" />
+						<div v-if="LOCAL_DEV" class="flex flex-wrap justify-center gap-3">
+							<BaseButton label="Lokalni student" color="info" type="button" @click="localLogin('student')" />
+							<BaseButton label="Lokalni administrator" color="info" type="button" @click="localLogin('admin')" />
+						</div>
+						<GoogleLogin v-else :callback="loginCallback" />
 					</div>
 
 					<p class="mx-auto mb-4 max-w-md text-center text-lg font-light text-gray-600 sm:mb-5 sm:max-w-2xl sm:p-0 lg:text-lg">
@@ -69,6 +73,78 @@
 		<SnackBar />
 	</div>
 </template>
+
+<script setup>
+import BaseButton from "@/components/Base/BaseButton.vue";
+import SnackBar from "@/components/Premium/SnackBar.vue";
+import CardBox from "@/components/Cardbox/CardBox.vue";
+import { decodeCredential, GoogleLogin } from "vue3-google-login";
+import { isUnipuEmail } from "@/helpers/validators";
+import { mainStore, snackBarStore } from "@/main";
+import { LOCAL_DEV } from "@/config";
+import fipu_unipu from "/fipu_unipu.png";
+import { useRouter } from "vue-router";
+
+import { onMounted } from "vue";
+import { ref } from "vue";
+import AOS from "aos";
+
+onMounted(() => {
+	AOS.init();
+});
+
+const router = useRouter();
+
+const localLogin = async (role) => {
+	if (!LOCAL_DEV) return;
+	const result = await mainStore.handleLogin({ email: `${role}@local.test`, given_name: "Demo", family_name: role, picture: "" });
+	if (result.status === "success") {
+		window.location.href = "/";
+	} else {
+		snackBarStore.pushMessage("Lokalna prijava nije uspjela. Provjerite lokalne servise.", "error");
+	}
+};
+
+const isBouncing = ref(false);
+const startBounce = () => {
+	isBouncing.value = true;
+
+	setTimeout(() => {
+		isBouncing.value = false;
+	}, 2000);
+};
+
+const loginCallback = async (response) => {
+	try {
+		const decodedToken = decodeCredential(response.credential);
+
+		if (!decodedToken) {
+			snackBarStore.pushMessage("Prijava nije uspjela! Molimo kontaktirajte voditelja prakse.", "error");
+			return;
+		}
+		if (isUnipuEmail(decodedToken.email) || decodedToken.email === "lukablaskovic2000@gmail.com") {
+			const result = await mainStore.handleLogin(decodedToken);
+			if (result.status === "success") {
+				const ime = decodedToken.given_name || "";
+				const prezime = decodedToken.family_name || "";
+				snackBarStore.pushMessage(`Dobrodošli, ${ime} ${prezime}!`, "success");
+
+				// Add a small delay to allow browser state to settle before reload
+				await new Promise((resolve) => setTimeout(resolve, 500));
+
+				window.location.href = router.currentRoute.value.fullPath;
+			} else {
+				snackBarStore.pushMessage("Prijava nije uspjela! Molimo pokušajte ponovno.", "error");
+			}
+		} else {
+			snackBarStore.pushMessage("Molimo koristite UNIPU e-mail za prijavu", "warning");
+		}
+	} catch (error) {
+		console.error("Login error:", error);
+		snackBarStore.pushMessage("Prijava nije uspjela! Molimo pokušajte ponovno.", "error");
+	}
+};
+</script>
 
 <style scoped>
 html,
@@ -133,64 +209,3 @@ body {
 	}
 }
 </style>
-
-<script setup>
-import BaseButton from "@/components/Base/BaseButton.vue";
-import SnackBar from "@/components/Premium/SnackBar.vue";
-import CardBox from "@/components/Cardbox/CardBox.vue";
-import { decodeCredential } from "vue3-google-login";
-import { isUnipuEmail } from "@/helpers/validators";
-import { mainStore, snackBarStore } from "@/main";
-import fipu_unipu from "/fipu_unipu.png";
-import { useRouter } from "vue-router";
-import Utils from "@/helpers/utils";
-import { onMounted } from "vue";
-import { ref } from "vue";
-import AOS from "aos";
-
-onMounted(() => {
-	AOS.init();
-});
-
-const router = useRouter();
-
-const isBouncing = ref(false);
-const startBounce = () => {
-	isBouncing.value = true;
-
-	setTimeout(() => {
-		isBouncing.value = false;
-	}, 2000);
-};
-
-const loginCallback = async (response) => {
-	try {
-		const decodedToken = decodeCredential(response.credential);
-
-		if (!decodedToken) {
-			snackBarStore.pushMessage("Prijava nije uspjela! Molimo kontaktirajte voditelja prakse.", "error");
-			return;
-		}
-		if (isUnipuEmail(decodedToken.email) || decodedToken.email === "lukablaskovic2000@gmail.com") {
-			const result = await mainStore.handleLogin(decodedToken);
-			if (result.status === "success") {
-				const ime = decodedToken.given_name || "";
-				const prezime = decodedToken.family_name || "";
-				snackBarStore.pushMessage(`Dobrodošli, ${ime} ${prezime}!`, "success");
-
-				// Add a small delay to allow browser state to settle before reload
-				await new Promise((resolve) => setTimeout(resolve, 500));
-
-				window.location.href = router.currentRoute.value.fullPath;
-			} else {
-				snackBarStore.pushMessage("Prijava nije uspjela! Molimo pokušajte ponovno.", "error");
-			}
-		} else {
-			snackBarStore.pushMessage("Molimo koristite UNIPU e-mail za prijavu", "warning");
-		}
-	} catch (error) {
-		console.error("Login error:", error);
-		snackBarStore.pushMessage("Prijava nije uspjela! Molimo pokušajte ponovno.", "error");
-	}
-};
-</script>

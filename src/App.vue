@@ -1,6 +1,7 @@
 <script setup>
 import Tooltip from "@/components/Base/Tooltip.vue";
 import MaintenanceNotice from "@/components/Notification/MaintenanceNotice.vue";
+import { LOCAL_DEV } from "@/config";
 </script>
 
 <template>
@@ -8,7 +9,7 @@ import MaintenanceNotice from "@/components/Notification/MaintenanceNotice.vue";
 
 	<Tooltip />
 	<router-view :key="$route.fullPath"></router-view>
-	<MaintenanceNotice v-if="$route.name && $route.name !== 'maintenance'" />
+	<MaintenanceNotice v-if="!LOCAL_DEV && $route.name && $route.name !== 'maintenance'" />
 </template>
 
 <style scoped>

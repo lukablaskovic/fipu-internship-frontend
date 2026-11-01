@@ -3,9 +3,20 @@ const assert = require('node:assert/strict');
 const { readFileSync } = require('node:fs');
 const { transformSync } = require('esbuild');
 const configModule = { exports: {} };
-new Function('module', transformSync(readFileSync(`${__dirname}/../src/config.js`, 'utf8'), { format: 'cjs' }).code)(configModule);
+const configSource = readFileSync(`${__dirname}/../src/config.js`, 'utf8');
+function loadConfig(dev, local) {
+	const module = { exports: {} };
+	new Function('module', transformSync(configSource, { format: 'cjs', define: { 'import.meta.env': JSON.stringify({ DEV: dev, VITE_LOCAL_DEV: local }) } }).code)(module);
+	return module.exports;
+}
+configModule.exports = loadConfig(false, 'true');
 const config = configModule.exports;
 assert.equal(config.MAINTENANCE_MODE, true);
+assert.equal(config.LOCAL_DEV, false, 'Production builds must never enable local login');
+assert.equal(loadConfig(true, undefined).MAINTENANCE_MODE, true, 'Local mode must be explicitly enabled');
+const local = loadConfig(true, 'true');
+assert.equal(local.MAINTENANCE_MODE, false);
+for (const url of Object.values(local.endpoints)) assert.equal(new URL(url).hostname, 'localhost');
 let guard;
 const mainStore = { maintenanceMode: false, userAuthenticated: false, userAdmin: false };
 const dependencies = {
