@@ -8,7 +8,10 @@ import BaseIcon from "@/components/Base/BaseIcon.vue";
 import { getButtonColor } from "@/colors.js";
 import { ref, computed, watch } from "vue";
 import { RouterLink } from "vue-router";
-import { styleStore } from "@/main.js";
+import { useUiStore } from "@/stores/ui_store";
+
+const uiStore = useUiStore();
+
 
 const props = defineProps({
 	item: {
@@ -25,11 +28,11 @@ const props = defineProps({
 
 const emit = defineEmits(["menu-click"]);
 
-const asideMenuItemInactiveStyle = computed(() => (hasColor.value ? "" : `${styleStore.asideMenuItemInactiveStyle} dark:text-gray-300`));
+const asideMenuItemInactiveStyle = computed(() => (hasColor.value ? "" : `${uiStore.asideMenuItemInactiveStyle} dark:text-gray-300`));
 
-const asideMenuItemActiveBgStyle = computed(() => `${styleStore.asideMenuItemActiveBgStyle} dark:bg-slate-700/25`);
+const asideMenuItemActiveBgStyle = computed(() => `${uiStore.asideMenuItemActiveBgStyle} dark:bg-slate-700/25`);
 
-const asideMenuItemActiveStyle = computed(() => (hasColor.value ? "" : styleStore.asideMenuItemActiveStyle));
+const asideMenuItemActiveStyle = computed(() => (hasColor.value ? "" : uiStore.asideMenuItemActiveStyle));
 
 const isAsideCompact = computed(() => props.isCompact);
 
@@ -46,7 +49,7 @@ const isSecondaryMenuActive = computed(() => props.activeSecondaryMenuKey && pro
 const hasColor = computed(() => props.item && props.item.color);
 
 const componentClass = computed(() => {
-	const base = [props.isDropdownList ? "py-3 px-6 text-sm" : "py-3", hasColor.value ? getButtonColor(props.item.color, false, true) : `${styleStore.asideMenuItemStyle} dark:hover:bg-gray-700/75`];
+	const base = [props.isDropdownList ? "py-3 px-6 text-sm" : "py-3", hasColor.value ? getButtonColor(props.item.color, false, true) : `${uiStore.asideMenuItemStyle} dark:hover:bg-gray-700/75`];
 
 	if (!hasColor.value && (isDropdownActive.value || isSecondaryMenuActive.value)) {
 		base.push(asideMenuItemActiveBgStyle.value);
@@ -122,6 +125,6 @@ const menuClick = (event) => {
 				</component>
 			</RovingFocusItem>
 		</Tooltip>
-		<AsideMenuList v-if="hasDropdown" :menu="item.menu" is-dropdown-list :class="[styleStore.asideMenuDropdownStyle, isDropdownActive ? 'block dark:bg-slate-800/50' : 'hidden']" />
+		<AsideMenuList v-if="hasDropdown" :menu="item.menu" is-dropdown-list :class="[uiStore.asideMenuDropdownStyle, isDropdownActive ? 'block dark:bg-slate-800/50' : 'hidden']" />
 	</li>
 </template>

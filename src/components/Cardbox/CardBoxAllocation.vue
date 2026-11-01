@@ -86,9 +86,12 @@
 
 <script setup>
 import { ref, onMounted } from "vue";
-import { mainStore } from "@/main";
+import { useMainStore } from "@/stores/main_store";
+
 import ExpandableText from "@/components/ExpandableText.vue";
 import UserAvatar from "@/components/User/UserAvatar.vue";
+
+const mainStore = useMainStore();
 
 const props = defineProps({
 	data: {

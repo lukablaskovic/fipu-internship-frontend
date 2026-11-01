@@ -1,19 +1,15 @@
+const { mockStores } = require("./mock-stores.cjs");
 const { test, expect } = require("@playwright/test");
 
 test.beforeEach(async ({ page }) => {
 	page.on("pageerror", (error) => {
 		throw error;
 	});
-	await page.route(/\/src\/main(?:\.js)?(?:\?.*)?$/, (route) =>
-		route.fulfill({
-			contentType: "application/javascript",
-			body: `
+	await mockStores(page, { contentType: "application/javascript", body: `
  import {reactive} from '/node_modules/.vite/deps/vue.js';
  export const mainStore=reactive({userAuthenticated:true,userAdmin:false,currentUser:{ime:'Demo',prezime:'Student',email:'test@example.com',internship_process:{id:1}},academicYear:'2026./2027.',fetchCompanies:async()=>[1,2].map(id=>({id,naziv:"Test "+id,logo:[],web:"",OIB:"",adresa:"",maticni_broj:"",direktor:""})),fetchAvailableAssignments:async()=>[],logout(){}});
  export const studentStore=reactive({allocated_assignment:{id_zadatak:'Test',Poslodavac:[{value:'Test'}],opis_zadatka:'Test'},student_process_instance_data:{variables:{poslodavac_naziv:'Test',Alocirani_zadatak:'Test'},pending:[]},getInstanceInfo:async()=>({variables:{pdf_attachment_url:'#'}})});
- export const snackBarStore={pushMessage(){}}; export const adminStore={},styleStore={},layoutStore={};`,
-		}),
-	);
+ export const snackBarStore={pushMessage(){}}; export const adminStore={},styleStore={},layoutStore={};` });
 	await page.route(/\/src\/helpers\/maps\.js/, (route) =>
 		route.fulfill({ contentType: "application/javascript", body: "export const UserTaskMappings={getTaskProperty(){return null;}}; export const StudentMappings={getGodinaStudija(value){return value;}};" }),
 	);

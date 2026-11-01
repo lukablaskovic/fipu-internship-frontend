@@ -1,11 +1,12 @@
 const { test, expect } = require("@playwright/test");
+const { mockStores } = require("./mock-stores.cjs");
 
 test.beforeEach(async ({ page }) => {
 	// Keep the actual components isolated from application startup and remote services.
-	await page.route("**/src/main.js", (route) => route.fulfill({
+	await mockStores(page, {
 		contentType: "application/javascript",
 		body: 'export const mainStore = { fetchCompanies: async () => [{ logo: [{ url: "/No-Logo.png" }] }] };',
-	}));
+	});
 	await page.goto("/tests/assignment-details.html");
 	await page.getByRole("button", { name: "Otvori zadatak" }).click();
 });

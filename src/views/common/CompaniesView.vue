@@ -2,7 +2,8 @@
 import { mdiDomain, mdiDomainPlus, mdiClipboardCheck, mdiContentCopy } from "@mdi/js";
 import SectionMain from "@/components/Section/SectionMain.vue";
 import CardBox from "@/components/Cardbox/CardBox.vue";
-import { mainStore } from "@/main.js";
+import { useMainStore } from "@/stores/main_store";
+
 import { computed, ref } from "vue";
 
 import SectionTitleLineWithButton from "@/components/Section/SectionTitleLineWithButton.vue";
@@ -18,6 +19,8 @@ const userAuthenticated = computed(() => mainStore.userAuthenticated);
 const userAdmin = computed(() => mainStore.userAdmin);
 
 import { endpoints } from "@/config.js";
+
+const mainStore = useMainStore();
 
 const VITE_FRONTEND_URL = endpoints.VITE_FRONTEND_URL;
 

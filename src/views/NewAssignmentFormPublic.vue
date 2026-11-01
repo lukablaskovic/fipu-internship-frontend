@@ -1,4 +1,6 @@
 <script setup>
+import { submitNewInternshipProject } from "@/services/baserow_client_api";
+import { appConfig } from "@/config";
 import { mdiBallot, mdiNewBox, mdiEmail, mdiLaptop, mdiDomain, mdiMapMarker, mdiClipboardTextClockOutline, mdiAccountGroup, mdiSchool, mdiTextLong, mdiXml, mdiThumbsUpDown, mdiClockTimeFiveOutline, mdiNoteTextOutline } from "@mdi/js";
 import { ref, reactive, onMounted, watch, computed } from "vue";
 import SectionMain from "@/components/Section/SectionMain.vue";
@@ -24,9 +26,13 @@ import { getFirstErrorForField } from "@/helpers/validators";
 import { useVuelidate } from "@vuelidate/core";
 
 
-import { mainStore, snackBarStore } from "@/main.js";
+import { useMainStore } from "@/stores/main_store";
+import { useSnackBarStore } from "@/stores/snackbar_store";
 
 import FIPU_praksa_logo_transparent from "/FIPU_praksa_logo_transparent.svg";
+
+const mainStore = useMainStore();
+const snackBarStore = useSnackBarStore();
 
 const DEFAULT_FORM_VALUES = {
 	Poslodavac: "",
@@ -144,7 +150,7 @@ async function onSubmit() {
 
 	let saved = false;
 	try {
-		const result = await mainStore.submitNewInternshipProject(form);
+		const result = await submitNewInternshipProject(form);
 		if (!result) throw new Error("Project submission failed");
 		saved = true;
 		resetForm(false);
@@ -193,7 +199,7 @@ watch(
 					<img :src="FIPU_praksa_logo_transparent" class="max-h-14 object-contain" />
 				</a>
 			</SectionTitleLineWithButton>
-			<p><b>Akademska godina:</b> {{ mainStore.academicYear }}</p>
+			<p><b>Akademska godina:</b> {{ appConfig.academicYear }}</p>
 			<p><b>Voditelj:</b> doc. dr. sc. Ivan Lorencin</p>
 			<hr />
 			<br />
@@ -381,7 +387,7 @@ watch(
 		</SectionMain>
 		<FooterBar
 			><br />
-			Made with <span style="color: #e25555">&#9829;</span> at <a :href="mainStore.fipulab_web" target="_blank" class="hover-underline-animation cursor-pointer text-fipu_text_blue hover:text-fipu_blue">FIPUlab</a></FooterBar
+			Made with <span style="color: #e25555">&#9829;</span> at <a :href="appConfig.fipulab_web" target="_blank" class="hover-underline-animation cursor-pointer text-fipu_text_blue hover:text-fipu_blue">FIPUlab</a></FooterBar
 		>
 		<SnackBar />
 	</div>

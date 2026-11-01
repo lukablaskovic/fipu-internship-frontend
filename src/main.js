@@ -1,5 +1,4 @@
-
-import { createApp, markRaw } from "vue";
+import { createApp } from "vue";
 import { createPinia } from "pinia";
 import { router } from "./router";
 import App from "./App.vue";
@@ -7,13 +6,7 @@ import "aos/dist/aos.css";
 import "./css/main.css";
 import "animate.css";
 
-/* Pinia global stores */
-import { useSnackBarStore } from "@/stores/snackbar_store.ts";
-import { useStudentStore } from "@/stores/student_store.ts";
-import { useLayoutStore } from "@/stores/layout_store.ts";
-import { useStyleStore } from "@/stores/style_store.ts";
-import { useAdminStore } from "@/stores/admin_store.ts";
-import { useMainStore } from "@/stores/main_store.ts";
+import { useUiStore } from "@/stores/ui_store";
 import { darkModeKey, LOCAL_DEV } from "@/config.js";
 
 import NotificationBar from "@/components/Notification/NotificationBar.vue";
@@ -21,14 +14,10 @@ import piniaPluginPersistedstate from "pinia-plugin-persistedstate";
 
 import vue3GoogleLogin from "vue3-google-login";
 
-
 /* Init Pinia */
 const pinia = createPinia();
 /* Init Pinia Persisted state plugin */
 pinia.use(piniaPluginPersistedstate);
-pinia.use(({ store }) => {
-	store.router = markRaw(router);
-});
 
 const app = createApp(App);
 app.component("NotificationBar", NotificationBar);
@@ -40,13 +29,9 @@ if (!LOCAL_DEV) {
 	});
 }
 
-/* Init Pinia stores BEFORE setting up the router */
-const mainStore = useMainStore(pinia);
-const studentStore = useStudentStore(pinia);
-const adminStore = useAdminStore(pinia);
-const styleStore = useStyleStore(pinia);
-const layoutStore = useLayoutStore(pinia);
-const snackBarStore = useSnackBarStore(pinia);
+const uiStore = useUiStore(pinia);
+uiStore.responsiveLayoutControl();
+uiStore.setStyle("basic");
 
 let darkMode = window.matchMedia("(prefers-color-scheme: dark)").matches;
 try {
@@ -55,7 +40,7 @@ try {
 } catch {
 	// Use the device preference when browser storage is unavailable.
 }
-styleStore.setDarkMode(darkMode, false);
+uiStore.setDarkMode(darkMode, false);
 
 app.use(router);
 
@@ -67,12 +52,7 @@ if (mountPoint && mountPoint.__vue_app__ !== undefined) {
 }
 
 /* Responsive layout control */
-layoutStore.responsiveLayoutControl();
-window.onresize = () => layoutStore.responsiveLayoutControl();
-
-/* App style */
-//styleStore.setStyle(localStorage[styleKey] ?? "basic");
-styleStore.setStyle("basic");
+window.onresize = () => uiStore.responsiveLayoutControl();
 
 /* Default title tag */
 const defaultDocumentTitle = "FIPU Praksa";
@@ -81,5 +61,3 @@ const defaultDocumentTitle = "FIPU Praksa";
 router.afterEach((to) => {
 	document.title = to.meta?.title ? `${to.meta.title} — ${defaultDocumentTitle}` : defaultDocumentTitle;
 });
-
-export { mainStore, studentStore, adminStore, styleStore, layoutStore, snackBarStore };

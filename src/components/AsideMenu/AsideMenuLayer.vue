@@ -1,7 +1,7 @@
 <template>
 	<aside id="aside" :class="[zIndex, 'fixed top-0 flex h-screen overflow-hidden transition-position lg:py-2 lg:pl-2', isCompact ? 'sm:w-20' : 'sm:w-64']">
-		<div :class="styleStore.asideStyle" class="flex flex-1 flex-col overflow-hidden dark:bg-slate-900 lg:rounded-2xl">
-			<div :class="styleStore.asideBrandStyle" class="flex w-full shrink-0 flex-row items-center dark:bg-slate-900">
+		<div :class="uiStore.asideStyle" class="flex flex-1 flex-col overflow-hidden dark:bg-slate-900 lg:rounded-2xl">
+			<div :class="uiStore.asideBrandStyle" class="flex w-full shrink-0 flex-row items-center dark:bg-slate-900">
 				<slot />
 			</div>
 			<div class="fipu_vertical_scrollbar flex-1 overflow-y-auto overflow-x-hidden">
@@ -14,8 +14,11 @@
 
 <script setup>
 import AsideMenuList from "@/components/AsideMenu/AsideMenuList.vue";
-import { mainStore, styleStore } from "@/main.js";
+import { useUiStore } from "@/stores/ui_store";
+
 import { useRouter } from "vue-router";
+
+const uiStore = useUiStore();
 
 const router = useRouter();
 defineProps({
@@ -41,7 +44,7 @@ const emit = defineEmits(["menu-click"]);
 
 const menuClick = (event, item) => {
 	if (item.logoutModalActive) {
-		mainStore.activateLogoutModal(true);
+		emit("menu-click", event, { ...item, isLogout: true });
 		return;
 	}
 	if (item.label == "Prijava") {

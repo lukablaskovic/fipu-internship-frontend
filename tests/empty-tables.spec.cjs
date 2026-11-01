@@ -1,4 +1,5 @@
 const { test, expect } = require('@playwright/test');
+const { mockStores } = require('./mock-stores.cjs');
 
 async function openTable(page, table, populated = false) {
 	const errors = [];
@@ -7,7 +8,7 @@ async function openTable(page, table, populated = false) {
 		contentType: 'application/javascript',
 		body: "import { h } from '/node_modules/.vite/deps/vue.js'; export default { setup(_, { slots }) { return () => h('main', slots.default()); } };",
 	}));
-	await page.route('**/src/main.js', route => route.fulfill({
+	await mockStores(page, {
 		contentType: 'application/javascript',
 		body: `
 			import { reactive } from '/node_modules/.vite/deps/vue.js';
@@ -27,8 +28,8 @@ async function openTable(page, table, populated = false) {
 				getPreferencesDetailed: async () => ({ data: { Prvi_odabir: [], Drugi_odabir: populated ? [{ details: assignment }] : [], Treci_odabir: [] } }),
 				getStudents: async () => {}, searchModels: async () => {}, dashboard_data: {},
 				getEvents: async () => populated ? [
-					{ instance_id: 1, student_ime: 'Željko', student_JMBAG: '002', student_email: 'a@example.test', model_name: 'A.bpmn', activity_id: 'start_event_student', timestamp: '2026-01-01T12:00:00Z' },
-					{ instance_id: 2, student_ime: 'Ana', student_JMBAG: '001', student_email: 'z@example.test', model_name: 'B.bpmn', activity_id: 'end_event_student', timestamp: '2026-02-01T12:00:00Z' },
+					{ instance_id: 1, student_ime: 'Željko', student_JMBAG: '002', student_email: 'a@example.test', model_name: 'strucna_praksa_A.bpmn', activity_id: 'start_event_student', timestamp: '2026-01-01T12:00:00Z' },
+					{ instance_id: 2, student_ime: 'Ana', student_JMBAG: '001', student_email: 'z@example.test', model_name: 'strucna_praksa_B.bpmn', activity_id: 'end_event_student', timestamp: '2026-02-01T12:00:00Z' },
 				] : [],
 			});
 			export const studentStore = { getAllocationsPublic: async () => [] };
@@ -36,12 +37,12 @@ async function openTable(page, table, populated = false) {
 			export const styleStore = {};
 			export const layoutStore = {};
 		`,
-	}));
+	});
 	await page.goto(`/tests/empty-tables.html?table=${table}`);
 	return errors;
 }
 
-for (const table of ['TableCompanies', 'TableNewCompanies', 'TableAvailableAssignments', 'TableNewAssignments', 'TableRejectedAssignments', 'TableStudents', 'TableAllocations', 'TableSampleClients', 'TableStudentPreferences', 'TableInstanceData', 'DashboardView']) {
+for (const table of ['TableCompanies', 'TableNewCompanies', 'TableAvailableAssignments', 'TableAssignments', 'TableStudents', 'TableAllocations', 'TableSampleClients', 'TableStudentPreferences', 'TableInstanceData', 'DashboardView']) {
 	test(`${table} shows the shared empty state without pagination`, async ({ page }) => {
 		const errors = await openTable(page, table);
 		if (table === 'DashboardView') await page.getByRole('tab', { name: 'Tablica', exact: true }).click();
@@ -89,6 +90,63 @@ test('dashboard event headers toggle sorting and stay in sync with the dropdown'
 	await expect(page.locator('tbody tr')).toHaveCount(1);
 	expect(errors).toEqual([]);
 });
+
+for (const width of [1440, 390]) {
+	for (const dark of [false, true]) {
+		test(`event multiselect matches adjacent controls and preserves selection at ${width}px (${dark ? 'dark' : 'light'})`, async ({ page }) => {
+			await page.setViewportSize({ width, height: 900 });
+			const errors = await openTable(page, 'DashboardView', true);
+			await page.evaluate((enabled) => document.documentElement.classList.toggle('dark', enabled), dark);
+			const trigger = page.getByRole('button', { name: 'Događaji', exact: true });
+			const neighbor = page.getByRole('combobox', { name: 'Format vremena', exact: true });
+			const styles = (element) => {
+				const style = getComputedStyle(element);
+				return [style.height, style.borderRadius, style.backgroundColor, style.fontSize, style.color];
+			};
+			expect(await trigger.evaluate(styles)).toEqual(await neighbor.evaluate(styles));
+			await trigger.focus();
+			await trigger.press('Enter');
+			const options = page.getByRole('menuitemcheckbox');
+			await expect(options.first()).toHaveText('Pokrenut proces');
+			await expect(options.nth(1)).toHaveText('Prijavljene preferencije');
+			await expect(options.last()).toHaveText('Student se prijavio');
+			const reset = page.getByRole('menuitem', { name: 'Resetiraj', exact: true });
+			await expect(reset).toBeVisible();
+			const resetPosition = await reset.boundingBox();
+			const eventList = page.getByRole('menu').locator('.fipu_vertical_scrollbar');
+			await eventList.evaluate((element) => { element.scrollTop = element.scrollHeight; });
+			expect((await reset.boundingBox()).y).toBeCloseTo(resetPosition.y, 0);
+			await eventList.evaluate((element) => { element.scrollTop = 0; });
+			await expect(options.first()).toBeFocused();
+			await expect(options.first()).toHaveAttribute('aria-checked', 'true');
+			await page.keyboard.press('Space');
+			await expect(options.first()).toHaveAttribute('aria-checked', 'false');
+			await expect(page.getByRole('menu')).toBeVisible();
+			await expect(options.first().locator('[data-state="checked"]')).toHaveCount(0);
+			await expect(page.getByText('1 događaja', { exact: true })).toBeVisible();
+			await options.nth(1).click();
+			await expect(options.nth(1)).toHaveAttribute('aria-checked', 'false');
+			await expect(options.first()).toHaveAttribute('aria-checked', 'false');
+			await expect(page.getByRole('menu')).toBeVisible();
+			await page.getByRole('menuitem', { name: 'Resetiraj', exact: true }).click();
+			await expect(options.first()).toHaveAttribute('aria-checked', 'true');
+			await expect(options.first().locator('[data-state="checked"]')).toHaveCount(1);
+			await expect(options.nth(1)).toHaveAttribute('aria-checked', 'true');
+			await expect(page.getByText('2 događaja', { exact: true })).toBeVisible();
+			await page.keyboard.press('Escape');
+			await expect(trigger).toBeFocused();
+			await expect(page.getByRole('menu')).toHaveCount(0);
+			await trigger.click();
+			await expect(page.getByRole('menu')).toHaveCSS('opacity', '1');
+			const bounds = await page.getByRole('menu').boundingBox();
+			expect(bounds.x).toBeGreaterThanOrEqual(0);
+			expect(bounds.x + bounds.width).toBeLessThanOrEqual(width);
+			expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
+			await page.screenshot({ path: `/tmp/event-filter-${width}-${dark ? 'dark' : 'light'}.png` });
+			expect(errors).toEqual([]);
+		});
+	}
+}
 
 test('searching to zero rows hides pagination, and clearing search restores it', async ({ page }) => {
 	const errors = await openTable(page, 'TableAvailableAssignments', true);

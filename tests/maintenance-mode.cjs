@@ -46,7 +46,7 @@ let guard;
 const mainStore = { maintenanceMode: false, userAuthenticated: false, userAdmin: false };
 const dependencies = {
 	'vue-router': { createWebHistory() {}, createRouter: () => ({ beforeEach: (callback) => { guard = callback; } }) },
-	'@/main.js': { mainStore, layoutStore: { tooltip: {} } },
+	'@/stores/main_store': { useMainStore: () => mainStore },
 	'@/config.js': config,
 	'./routes.js': { routes: [] },
 };
@@ -77,5 +77,5 @@ for (const selectedConfig of [local, real, production]) {
 	const menuModule = { exports: {} };
 	new Function('require', 'module', adminMenuSource)((name) => name === '@/config.js' ? selectedConfig : require(name), menuModule);
 	const adminMenu = menuModule.exports.default.find((item) => item.label === 'Admin');
-	assert.equal(adminMenu.menu.find((item) => item.label === 'Baserow DB').externalURL, selectedConfig.BASEROW_URL);
+	assert.equal(adminMenu.menu.find((item) => item.label === 'Baserow').externalURL, selectedConfig.BASEROW_URL);
 }

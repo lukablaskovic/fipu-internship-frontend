@@ -10,8 +10,8 @@ import { computed, ref, onMounted, onBeforeUnmount } from "vue";
 import { controlTextColor } from "@/colorsPremium.js";
 import TipTag from "@/components/Premium/TipTag.vue";
 import BaseIcon from "@/components/BaseIcon.vue";
-import { useMainStore } from "@/stores/main.js";
 import { getButtonColor } from "@/colors.js";
+
 
 const props = defineProps({
 	disabled: Boolean,
@@ -276,13 +276,12 @@ const openPasswordToggle = (e) => {
 	}
 };
 
-const mainStore = useMainStore();
 
 const inputEl = ref(null);
 
 if (props.ctrlKFocus) {
 	const fieldFocusHook = (e) => {
-		if (e.ctrlKey && e.key === "k") {
+		if (e.ctrlKey && e.key === "k" && !e.defaultPrevented) {
 			e.preventDefault();
 			inputEl.value.focus();
 		} else if (e.key === "Escape") {
@@ -291,17 +290,11 @@ if (props.ctrlKFocus) {
 	};
 
 	onMounted(() => {
-		if (!mainStore.isFieldFocusRegistered) {
-			window.addEventListener("keydown", fieldFocusHook);
-			mainStore.isFieldFocusRegistered = true;
-		} else {
-			console.error("Duplicate field focus event");
-		}
+		window.addEventListener("keydown", fieldFocusHook);
 	});
 
 	onBeforeUnmount(() => {
 		window.removeEventListener("keydown", fieldFocusHook);
-		mainStore.isFieldFocusRegistered = false;
 	});
 }
 </script>

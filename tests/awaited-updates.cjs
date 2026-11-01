@@ -18,7 +18,7 @@ function handler(path, name, env) {
 	return new Function(...Object.keys(env), `${declaration(path, name)}; return ${name};`)(...Object.values(env));
 }
 const cases = [
-	['src/components/Tables/TableNewAssignments.vue', 'confirmTaskAction', 'handleTask'],
+	['src/components/Tables/TableAssignments.vue', 'confirmTaskAction', 'handleTask'],
 	['src/components/Tables/TableNewCompanies.vue', 'saveUpdatedCompany', 'saveUpdatedCompany'],
 	['src/views/admin/StudentsInternshipView.vue', 'handleNewInstance', 'handleNewInstance'],
 	['src/views/EvaluationView.vue', 'handleNewInstance', 'handleNewInstance'],
@@ -45,9 +45,10 @@ function fixture() {
 		for (const [, , method] of cases) store[method] = mutate;
 	}
 	const env = {
-		mainStore, adminStore, studentStore,
+		mainStore, adminStore, studentStore, submitNewInternshipProject: mutate, selectedStudent: ref(student),
 		snackBarStore: { pushMessage: (...message) => calls.messages.push(message) },
 		UserTaskMappings: { getTaskProperty: (_, property) => property === 'snackbar_msg' ? 'Saved' : 'success' },
+		currentStep: ref(3), steps: [{}, {}, {}],
 		isLoading: ref(false), isSubmitting: ref(false), disabledCondition: ref(false),
 		confirmationModal: ref({ isActive: true, action: 'accept', assignment: { id_zadatak: 'assignment' } }),
 		selectedCompany: ref(1), companyForms: ref({ 1: { naziv: 'Company' } }),
@@ -103,7 +104,7 @@ function storeOptions(path, imports) {
 	const source = readFileSync(path, 'utf8');
 	const { code } = transformSync(source, { loader: 'ts', format: 'cjs' });
 	const module = { exports: {} };
-	new Function('require', 'module', 'exports', 'sessionStorage', code)((name) => name === 'pinia' ? { defineStore: (_, options) => options } : imports[name] || {}, module, module.exports, {});
+	new Function('require', 'module', 'exports', 'sessionStorage', code)((name) => name === 'pinia' ? { defineStore: (_, options) => options } : name === '@/helpers/persist-session' ? { persistSession: () => ({}) } : imports[name] || {}, module, module.exports, {});
 	return Object.values(module.exports)[0];
 }
 async function checkStoreAndRendering() {
@@ -111,7 +112,7 @@ async function checkStoreAndRendering() {
 	const calls = [];
 	let uploadResult = null;
 	const options = storeOptions('src/stores/student_store.ts', {
-		'@/main': { mainStore },
+		'@/stores/main_store': { useMainStore: () => mainStore },
 		'@/services/bpmn_engine_api': { ProcessInstance: { handleNewInstance: async () => { calls.push('advance'); return { status: 'OK' }; } } },
 		'@/services/baserow_client_api': { Student: {
 			storeDnevnik: async () => { calls.push('diary'); return uploadResult; },

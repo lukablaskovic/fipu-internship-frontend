@@ -66,11 +66,16 @@ import CardBox from "@/components/Cardbox/CardBox.vue";
 import { computed, ref, reactive, onMounted } from "vue";
 
 // Public images
-import { mainStore, snackBarStore } from "@/main.js";
+import { useMainStore } from "@/stores/main_store";
+import { useSnackBarStore } from "@/stores/snackbar_store";
+
 import fipu_unipu from "/fipu_unipu.png";
 import { useRouter } from "vue-router";
 const router = useRouter();
 import { googleLogout } from "vue3-google-login";
+
+const mainStore = useMainStore();
+const snackBarStore = useSnackBarStore();
 
 const studyYears = [
 	{ id: "1_prijediplomski", label: "1. prijediplomski" },

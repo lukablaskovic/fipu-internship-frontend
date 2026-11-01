@@ -154,7 +154,7 @@ test.describe("local authenticated workflows", () => {
 			await setStatus("u razradi");
 			await page.getByRole("button", { name: "Lokalni administrator", exact: true }).click();
 			await expect(page).toHaveURL(/\/dashboard$/);
-			await page.goto(new URL("/dostupni-zadaci", process.env.LOCAL_AUTH_URL).href);
+			await page.goto(new URL("/zadaci", process.env.LOCAL_AUTH_URL).href);
 			const row = page.getByRole("row").filter({ has: page.getByRole("cell", { name: assignment.id_zadatak, exact: true }) });
 			const trigger = row.getByRole("button").nth(action === "accept" ? 1 : 2);
 			const dialog = page.getByRole("dialog", { name: "Potvrda akcije", exact: true });

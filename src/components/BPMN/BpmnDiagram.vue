@@ -1,10 +1,12 @@
 <script setup>
 import { computed, shallowRef, watch } from "vue";
+import { mdiFitToScreenOutline, mdiMinus, mdiPlus } from "@mdi/js";
+import { Toolbar } from "reka-ui/namespaced";
+import BaseButton from "@/components/Base/BaseButton.vue";
 import Diagram from "@fipu/bpmn/BpmnDiagram.vue";
 import { parseModel } from "@fipu/bpmn/model";
 import { UserTaskMappings, SendTaskMappings } from "@/helpers/maps";
 import { pathToTask, taskAction } from "@/helpers/bpmn-state";
-import { adminStore } from "@/main";
 
 const props = defineProps({
 	xml: { type: String, required: true },
@@ -13,6 +15,7 @@ const props = defineProps({
 	currentOrder: { type: Number, required: true },
 });
 const emit = defineEmits(["currentTaskModal", "pastTaskModal", "sendTaskModal"]);
+const diagram = shallowRef(null);
 const model = shallowRef(null);
 const error = shallowRef("");
 watch(() => props.xml, (xml) => {
@@ -45,7 +48,6 @@ function select(id) {
 	if (!node) return;
 	const action = taskAction(node, props.currentOrder, UserTaskMappings.tasks, completedSendIds.value);
 	if (action) {
-		adminStore.bpmn_diagram.clicked_task_id = id;
 		emit(action, { id, type: `bpmn:${node.type[0].toUpperCase()}${node.type.slice(1)}` });
 	}
 }
@@ -54,11 +56,20 @@ function select(id) {
 <template>
 	<div class="bpmn-container">
 		<p v-if="error" role="alert">{{ error }}</p>
-		<Diagram v-else-if="model" :model="model" :highlights="highlights" @select="select" />
+		<template v-else-if="model">
+			<Diagram ref="diagram" :model="model" :highlights="highlights" @select="select" />
+			<Toolbar.Root class="bpmn-zoom-controls" aria-label="Prikaz dijagrama">
+				<Toolbar.Button as-child><BaseButton :icon="mdiMinus" :icon-size="22" aria-label="Umanji" title="Umanji" @click="diagram?.zoomOut()" /></Toolbar.Button>
+				<Toolbar.Button as-child><BaseButton :icon="mdiFitToScreenOutline" :icon-size="22" aria-label="Prikaži cijeli model" title="Prikaži cijeli model" @click="diagram?.fit()" /></Toolbar.Button>
+				<Toolbar.Button as-child><BaseButton :icon="mdiPlus" :icon-size="22" aria-label="Uvećaj" title="Uvećaj" @click="diagram?.zoomIn()" /></Toolbar.Button>
+			</Toolbar.Root>
+		</template>
 	</div>
 </template>
 
 <style scoped>
-.bpmn-container { height: 70vh; width: 100%; min-height: 320px; }
-@media (max-width: 600px) { .bpmn-container { height: 50vh; } }
+.bpmn-container { position: relative; height: 70vh; width: 100%; min-height: 320px; }
+.bpmn-zoom-controls { position: absolute; right: 18px; bottom: 18px; display: flex; padding: 3px; border: 1px solid #d4e0e9; border-radius: 8px; background: #fff; }
+.bpmn-zoom-controls :deep(button) { width: 40px; height: 40px; border: 0; color: #294358; }
+@media (max-width: 600px) { .bpmn-container { position: relative; height: 50vh; } }
 </style>

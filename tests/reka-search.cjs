@@ -15,7 +15,9 @@ const helpers = evaluate(readFileSync(`${__dirname}/../src/helpers/search-utils.
 const { descriptor } = parse(readFileSync(`${__dirname}/../src/components/SearchOptions.vue`, "utf8"));
 const component = evaluate(compileScript(descriptor, { id: "search-state" }).content, (name) => {
 	if (name === "vue") return { ...vue, onMounted() {}, onUnmounted() {} };
-	if (name === "@/main") return stores;
+	if (name === "@/stores/main_store") return { useMainStore: () => stores.mainStore };
+	if (name === "@/stores/admin_store") return { useAdminStore: () => stores.adminStore };
+	if (name === "@/services/baserow_client_api") return {};
 	if (name === "@/router") return { router: { push: (value) => pushes.push(value) } };
 	if (name.endsWith("search-utils.js")) return helpers;
 	if (name.endsWith(".vue")) return {};

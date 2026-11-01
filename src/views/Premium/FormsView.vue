@@ -1,6 +1,6 @@
 <script setup>
 import { ref, reactive } from "vue";
-import { useMainStore } from "@/stores/main.js";
+import { useMainStore } from "@/stores/main_store";
 import { mdiBallot, mdiBallotOutline, mdiAccount, mdiMail, mdiCheck, mdiProgressCheck, mdiReload, mdiCreditCardOutline } from "@mdi/js";
 import { buttonMenuOptions } from "@/sampleButtonMenuOptions.js";
 import SectionMain from "@/components/SectionMain.vue";
@@ -16,6 +16,8 @@ import BaseButton from "@/components/BaseButton.vue";
 import SectionTitle from "@/components/SectionTitle.vue";
 import LayoutAuthenticated from "@/layouts/LayoutAuthenticated.vue";
 import CardBoxComponentTitle from "../../components/CardBoxComponentTitle.vue";
+
+const mainStore = useMainStore();
 
 const selectFieldOptions = [
 	{ id: 1, label: "Business development" },
@@ -67,7 +69,6 @@ const formLower = reactive({
 
 const passShowHideClicked = ref(false);
 
-const mainStore = useMainStore();
 
 const submit = () => {
 	mainStore.pushMessage("Done! Demo only...", "contrast");

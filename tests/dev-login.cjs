@@ -11,7 +11,10 @@ async function renderLogin(dev, local) {
 	const componentModule = { exports: {} };
 	const testRequire = (name) => {
 		if (name === "@/config") return { DEV_MODE: dev, LOCAL_DEV: local };
-		if (name === "@/main" || name === "@/helpers/validators") return {};
+		if (name === "@/stores/ui_store") return { useUiStore: () => ({ darkMode: false }) };
+		if (name === "@/stores/main_store") return { useMainStore: () => ({}) };
+		if (name === "@/stores/snackbar_store") return { useSnackBarStore: () => ({}) };
+		if (name === "@/helpers/validators") return {};
 		if (name === "vue-router") return { useRouter: () => ({}) };
 		if (name === "vue3-google-login") return { GoogleLogin: { render: () => h("button", "Google sign-in") } };
 		if (name.endsWith("BaseButton.vue")) return { props: ["label"], render() { return h("button", this.label); } };

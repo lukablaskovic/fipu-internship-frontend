@@ -1,11 +1,7 @@
 <script setup>
 import BaseLevel from "@/components/Base/BaseLevel.vue";
-import { containerMaxW } from "@/config.js";
-import { mainStore } from "@/main.js";
-import { ref } from "vue";
+import { appConfig, containerMaxW } from "@/config.js";
 const year = new Date().getFullYear();
-
-const mainstore = ref(mainStore);
 </script>
 
 <template>
@@ -16,7 +12,7 @@ const mainstore = ref(mainStore);
 				<slot />
 			</div>
 			<div class="flex items-center justify-center md:justify-end md:py-2">
-				<p class="mr-4">FIPU Praksa {{ mainstore.praksa_version }}</p>
+				<p class="mr-4">FIPU Praksa {{ appConfig.praksa_version }}</p>
 				<a href="https://fipu.unipu.hr/" target="_blank" class="flex-shrink-0">
 					<img src="/fipu_unipu.png" alt="Fakultet informatike u Puli - Sveučilište Jurja Dobrile u Puli" class="h-8 w-auto transition-opacity hover:opacity-80" />
 				</a>

@@ -7,7 +7,7 @@ import { createRouter, createMemoryHistory } from 'vue-router';
 import StudentsInternshipView from '../src/views/admin/StudentsInternshipView.vue';
 import '../src/css/main.css';
 const router = createRouter({ history: createMemoryHistory(), routes: [{ path: '/studenti/:process_instance_id?', component: StudentsInternshipView }] });
-await router.push(new URLSearchParams(location.search).has('direct') ? '/studenti/demo' : '/studenti');
+await router.push(new URLSearchParams(location.search).has('direct') ? '/studenti/demo' : '/studenti' + location.search);
 createApp(StudentsInternshipView).use(router).mount('#app');
 </script></body>
 </html>

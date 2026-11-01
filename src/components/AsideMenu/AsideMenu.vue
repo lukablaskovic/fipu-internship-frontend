@@ -5,10 +5,13 @@ import BaseButton from "@/components/Base/BaseButton.vue";
 import OverlayLayer from "@/components/OverlayLayer.vue";
 import BaseIcon from "@/components/Base/BaseIcon.vue";
 import { useRouter } from "vue-router";
-import { layoutStore } from "@/main";
+import { useUiStore } from "@/stores/ui_store";
+
 import { computed, ref } from "vue";
 
 import FIPU_praksa_logo_transparent from "/FIPU_praksa_logo_transparent.svg";
+
+const uiStore = useUiStore();
 
 defineProps({
 	menu: {
@@ -83,7 +86,7 @@ router.afterEach(() => {
 <template>
 	<AsideMenuLayer
 		:menu="menu"
-		:class="[layoutStore.isAsideMobileExpanded ? 'left-0' : '-left-60 lg:left-0', isPrimaryMenuCompact ? '' : '', { 'lg:hidden xl:flex': !layoutStore.isAsideLgActive }]"
+		:class="[uiStore.isAsideMobileExpanded ? 'left-0' : '-left-60 lg:left-0', isPrimaryMenuCompact ? '' : '', { 'lg:hidden xl:flex': !uiStore.isAsideLgActive }]"
 		:is-compact="isPrimaryMenuCompact"
 		:z-index="secondaryMenuItem ? 'z-40 md:z-50' : 'z-50'"
 		:active-secondary-menu-key="secondaryMenuItem?.key"

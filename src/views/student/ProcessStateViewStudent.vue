@@ -6,18 +6,21 @@ import { computed } from "vue";
 import axios from "axios";
 
 import { UserTaskMappings } from "@/helpers/maps";
-import { adminStore, mainStore } from "@/main.js";
+import { useMainStore } from "@/stores/main_store";
+
+import { ProcessInstance } from "@/services/bpmn_engine_api";
 
 import SectionTitleLineWithButton from "@/components/Section/SectionTitleLineWithButton.vue";
-import CardBoxComponentEmpty from "@/components/Cardbox/CardBoxComponentEmpty.vue";
 import TableInstanceData from "@/components/BPMN/TableInstanceData.vue";
 import LoadingAnimatedIcon from "@/components/LoadingAnimatedIcon.vue";
 import LayoutAuthenticated from "@/layouts/LayoutAuthenticated.vue";
 import CardBoxModal from "@/components/Cardbox/CardBoxModal.vue";
 import BpmnDiagram from "@/components/BPMN/BpmnDiagram.vue";
 
-import CardBox from "@/components/Cardbox/CardBox.vue";
 
+const mainStore = useMainStore();
+
+const selectedTaskId = ref("");
 const modal_select_bpmn_task = ref(false);
 const modal_past_bpmn_task = ref(false);
 const modal_send_task = ref(false);
@@ -41,10 +44,13 @@ const bpmnKey = ref(0);
 
 async function loadDataForStudent(process_instance_id) {
 	if (process_instance_id) {
-		const student = { process_instance_id: process_instance_id };
 
-		process_instance_data.value = await adminStore.getProcessInstanceData(student); //ok
-		mainStore.currentUserProcessInstanceData = process_instance_data.value; //ok
+
+		try {
+			process_instance_data.value = await ProcessInstance.get(process_instance_id);
+		} catch (error) {
+			console.error("Failed to fetch process instance data:", error);
+		}
 	}
 }
 
@@ -54,7 +60,8 @@ const bpmn_model = ref(null);
 onMounted(async () => {
 	process_instance_id.value = mainStore.currentUser.internship_process.id; //ok
 	await loadDataForStudent(process_instance_id.value);
-	let model = mainStore.currentUserProcessInstanceData.model.model_path.split(".")[0];
+	if (!process_instance_data.value) return;
+	let model = process_instance_data.value.model.model_path.split(".")[0];
 
 	bpmn_model.value = await fetchXML(model);
 });
@@ -72,18 +79,10 @@ onMounted(async () => {
 					<p><span class="font-bold text-red-500">Crvenom</span> bojom je označena trenutna aktivnost koju mora izvršiti voditelj prakse ili poslodavac.</p>
 					<hr class="my-4" />
 					<p>Pronašli ste pogrešku? Molimo da kontaktirate voditelja prakse.</p>
-					<CardBox v-if="adminStore.studentsFetched && !adminStore.students.length">
-						<CardBoxComponentEmpty />
-					</CardBox>
-					<p v-if="adminStore.selectedStudent != null" class="mt-2">
-						Trenutno se prikazuje:
-						<b>{{ adminStore.selectedStudent.ime }} {{ adminStore.selectedStudent.prezime }}</b>
-					</p>
-
 					<!-- Modal for past tasks (without FormDynamic) -->
-					<CardBoxModal v-if="modal_past_bpmn_task" v-model="modal_past_bpmn_task" :title="UserTaskMappings.getTaskProperty(adminStore.bpmn_diagram.clicked_task_id, 'form_title', process_instance_data['state'])" button-label="Povratak">
+					<CardBoxModal v-if="modal_past_bpmn_task" v-model="modal_past_bpmn_task" :title="UserTaskMappings.getTaskProperty(selectedTaskId, 'form_title', process_instance_data['state'])" button-label="Povratak">
 						<p class="mb-2">Ovaj zadatak je već obavljen.</p>
-						<TableInstanceData></TableInstanceData>
+						<TableInstanceData :task-id="selectedTaskId" :variables="process_instance_data.variables" />
 					</CardBoxModal>
 				</div>
 				<p class="block sm:hidden">BPMN graf je moguće pregledati samo u Desktop prikazu aplikacije. Sorry!</p>
@@ -98,7 +97,7 @@ onMounted(async () => {
 					:highlight-color="UserTaskMappings.getTaskProperty(process_instance_data.pending[0], 'bpmn_task_color', process_instance_data['state'])"
 					:highlight-element-id="process_instance_data.pending[0] || UserTaskMappings.getTaskProperty(process_instance_data.pending[0], '_id', process_instance_data['state'])"
 					@current-task-modal="modal_select_bpmn_task = true"
-					@past-task-modal="modal_past_bpmn_task = true"
+					@past-task-modal="selectedTaskId = $event.id; modal_past_bpmn_task = true"
 					@send-task-modal="modal_send_task = true" />
 				<div v-else-if="process_instance_data" class="flex items-center justify-center pt-36">
 					<LoadingAnimatedIcon></LoadingAnimatedIcon>

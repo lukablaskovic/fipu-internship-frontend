@@ -1,4 +1,6 @@
 <script setup>
+import { appConfig } from "@/config";
+
 import { mdiProgressClock, mdiLaptop, mdiNumeric } from "@mdi/js";
 import { ref, computed, onMounted } from "vue";
 
@@ -12,7 +14,12 @@ import CardBoxModal from "@/components/Cardbox/CardBoxModal.vue";
 import SectionMain from "@/components/Section/SectionMain.vue";
 
 
-import { mainStore, studentStore } from "@/main.js";
+import { useMainStore } from "@/stores/main_store";
+import { useStudentStore } from "@/stores/student_store";
+
+const mainStore = useMainStore();
+const studentStore = useStudentStore();
+
 
 const prviOdabir = ref(null);
 const drugiOdabir = ref(null);
@@ -73,8 +80,8 @@ function openModal(assignmentDetails) {
 	<component :is="Layout">
 		<SectionMain class="relative">
 			<SectionTitleLineWithButton :icon="mdiLaptop" title="Moja Praksa" main> </SectionTitleLineWithButton>
-			<p><b>Akademska godina:</b> {{ mainStore.academicYear }}</p>
-			<p><b>Voditelj:</b> {{ mainStore.voditelj_prakse }}</p>
+			<p><b>Akademska godina:</b> {{ appConfig.academicYear }}</p>
+			<p><b>Voditelj:</b> {{ appConfig.voditelj_prakse }}</p>
 
 			<br />
 

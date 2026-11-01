@@ -1,10 +1,11 @@
+import { persistSession } from "@/helpers/persist-session";
+import { appConfig } from "@/config";
 import { defineStore } from "pinia";
-import { mainStore } from "@/main";
 
 import { Model, ProcessInstance } from "@/services/bpmn_engine_api";
 import { Admin, Student } from "@/services/baserow_client_api";
 import { SendGrid } from "@/services/sendgrid_client_api";
-import { snackBarStore } from "@/main";
+import { useSnackBarStore } from "@/stores/snackbar_store";
 import Utils from "@/helpers/utils";
 
 // Define interfaces for state properties
@@ -24,11 +25,6 @@ interface DashboardData {
 	b_ongoing_internships: number;
 }
 
-interface BPMNDiagram {
-	clicked_task_id: string | null;
-	selected_send_task_id: string | null;
-}
-
 interface StudentProcessData {
 	variables: {
 		id_alokacija: number;
@@ -42,7 +38,7 @@ interface StudentProcessData {
 	};
 }
 
-interface Student {
+interface InternshipStudent {
 	process_instance_data: StudentProcessData;
 	process_instance_id: string;
 	ime: string;
@@ -69,12 +65,8 @@ interface InstanceRemovalData {
 
 export const useAdminStore = defineStore("admin", {
 	state: () => ({
-		students: [] as Student[],
-		selectedStudent: null as Student | null,
-		selectedStudentForDelete: null as Student | null,
-		companies: [] as any[],
+		students: [] as InternshipStudent[],
 		studentsFetched: false,
-		newAssignments: [] as any[],
 
 		//dashboard_data
 		dashboard_data: {
@@ -99,19 +91,9 @@ export const useAdminStore = defineStore("admin", {
 		filterActiveInstances: false,
 
 		filterFinishedInstances: false,
-		availableAssignmentsFilter: true,
 
 		filterModelState: "AB",
 		filterInternshipStage: "all",
-
-		bpmn_diagram: {
-			clicked_task_id: null,
-			selected_send_task_id: null,
-		} as BPMNDiagram,
-
-		pdfModalActive: false,
-		modalTitle: "",
-		pdfSource: "",
 
 		newCompaniesFound: false,
 		newAssignmentsFound: false,
@@ -135,27 +117,13 @@ export const useAdminStore = defineStore("admin", {
 				return null;
 			}
 		},
-		openPDF(allocation: any, type: string) {
-			const student = this.students.find((stud) => {
-				return stud.process_instance_data.variables.id_alokacija === allocation.id_alokacija;
-			});
-
-			if (type === "Potvrda") {
-				this.modalTitle = "Potvrda o praksi (nepotpisano)";
-				if (student) {
-					this.pdfSource = student.process_instance_data.variables.pdf_attachment_url;
-					window.open(this.pdfSource, "_blank");
-				} else {
-					console.error("Student not found");
-					return;
-				}
-			} else if (type === "Dnevnik") {
-				this.modalTitle = "Dnevnik prakse";
-			} else {
-				console.error("Invalid type passed to openPDF");
+		openPDF(allocation: any) {
+			const student = this.students.find((student) => student.process_instance_data.variables.id_alokacija === allocation.id_alokacija);
+			if (!student) {
+				console.error("Student not found");
 				return;
 			}
-			this.pdfModalActive = true;
+			window.open(student.process_instance_data.variables.pdf_attachment_url, "_blank");
 		},
 
 		async fetchPDF(query: string = "") {
@@ -167,15 +135,7 @@ export const useAdminStore = defineStore("admin", {
 			}
 		},
 
-		setSelectedStudent(student: Student | null) {
-			this.selectedStudent = student;
-		},
-
-		setSelectedStudentForDelete(student: Student | null) {
-			this.selectedStudentForDelete = student;
-		},
-
-		async getProcessInstanceData(student: Student) {
+		async getProcessInstanceData(student: InternshipStudent) {
 			try {
 				const response = await ProcessInstance.get(student.process_instance_id);
 
@@ -197,7 +157,7 @@ export const useAdminStore = defineStore("admin", {
 				this.studentsFetched = false;
 				const response = await Student.fetch();
 				// only students with process_instance_id are relevant
-				const students = response.data.results.filter((student: Student) => student.process_instance_id);
+				const students = response.data.results.filter((student: InternshipStudent) => student.process_instance_id);
 				if (!students || students.length === 0) {
 					this.students = [];
 					this.studentsFetched = true;
@@ -229,7 +189,7 @@ export const useAdminStore = defineStore("admin", {
 					model_b_direktna_prijava_student: "b_waiting_for_direct_assignment",
 				};
 
-				const promises = students.map(async (student: Student) => {
+				const promises = students.map(async (student: InternshipStudent) => {
 					const data = await this.getProcessInstanceData(student);
 					student.process_instance_data = data;
 
@@ -241,9 +201,9 @@ export const useAdminStore = defineStore("admin", {
 						this.dashboard_data[taskToDashboardMapping[pendingTask]]++;
 					} else if (student.process_instance_data.state === "finished") {
 						this.dashboard_data.finished_internships++;
-						if (student.process_instance_data.model.model_path === `${mainStore.bpmn_process_name_A}.bpmn`) {
+						if (student.process_instance_data.model.model_path === `${appConfig.bpmn_process_name_A}.bpmn`) {
 							this.dashboard_data.a_finished_internships++;
-						} else if (student.process_instance_data.model.model_path === `${mainStore.bpmn_process_name_B}.bpmn`) {
+						} else if (student.process_instance_data.model.model_path === `${appConfig.bpmn_process_name_B}.bpmn`) {
 							this.dashboard_data.b_finished_internships++;
 						}
 					}
@@ -273,8 +233,8 @@ export const useAdminStore = defineStore("admin", {
 			try {
 				const response = await Model.search();
 
-				const model_a = response.results.find((result: any) => result.model_path === `${mainStore.bpmn_process_name_A}.bpmn`);
-				const model_b = response.results.find((result: any) => result.model_path === `${mainStore.bpmn_process_name_B}.bpmn`);
+				const model_a = response.results.find((result: any) => result.model_path === `${appConfig.bpmn_process_name_A}.bpmn`);
+				const model_b = response.results.find((result: any) => result.model_path === `${appConfig.bpmn_process_name_B}.bpmn`);
 
 				let model_a_instances = model_a?.instances || [];
 				let model_b_instances = model_b?.instances || [];
@@ -341,13 +301,14 @@ export const useAdminStore = defineStore("admin", {
 				console.log("[admin_store].sendAnAdditionalEmail(): ", error);
 			}
 		},
-		async removeInstanceData() {
+		async removeInstanceData(student: InternshipStudent) {
+			if (!student?.process_instance_id) return false;
 			const data = {
-				process_instance_id: this.selectedStudentForDelete.process_instance_id,
-				id_alokacija: this.selectedStudentForDelete?.process_instance_data?.variables?.id_alokacija,
-				id_preferencije: this.selectedStudentForDelete?.process_instance_data?.variables?.id_preferencije,
-				id_prijavnica: this.selectedStudentForDelete?.process_instance_data?.variables?.id_prijavnica,
-				id_dnevnik_prakse: this.selectedStudentForDelete?.process_instance_data?.variables?.id_dnevnik_prakse,
+				process_instance_id: student.process_instance_id,
+				id_alokacija: student?.process_instance_data?.variables?.id_alokacija,
+				id_preferencije: student?.process_instance_data?.variables?.id_preferencije,
+				id_prijavnica: student?.process_instance_data?.variables?.id_prijavnica,
+				id_dnevnik_prakse: student?.process_instance_data?.variables?.id_dnevnik_prakse,
 			} as InstanceRemovalData;
 
 			console.log("data:::", data);
@@ -363,7 +324,7 @@ export const useAdminStore = defineStore("admin", {
 				}
 
 				if (response_engine && (response_baserow !== null || data.id_alokacija === undefined)) {
-					snackBarStore.pushMessage("Uspješno izbrisana instanca!", "success");
+					useSnackBarStore().pushMessage("Uspješno izbrisana instanca!", "success");
 					return true;
 				} else {
 					return false;
@@ -374,19 +335,5 @@ export const useAdminStore = defineStore("admin", {
 			}
 		},
 	},
-	persist: {
-		storage: sessionStorage,
-		omit: ["companies"],
-		debug: true,
-		beforeRestore: (ctx: any) => {
-			// Only restore companies if user is authenticated
-			const token = sessionStorage.getItem("token");
-			if (!token) {
-				// For non-authenticated users, prevent restoring companies data
-				if (ctx.store && ctx.store.companies) {
-					ctx.store.companies = [];
-				}
-			}
-		},
-	},
+	persist: persistSession(["selectedEvents", "relativeToNowTimestmap", "filterActiveInstances", "filterFinishedInstances", "filterModelState", "filterInternshipStage"]),
 });

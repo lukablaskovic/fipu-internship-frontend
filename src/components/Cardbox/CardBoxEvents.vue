@@ -1,11 +1,13 @@
 <script setup>
+import { appConfig } from "@/config";
+
 import CardBox from "@/components/Cardbox/CardBox.vue";
 import PillTag from "@/components/PillTag/PillTag.vue";
 import BaseIcon from "@/components/Base/BaseIcon.vue";
 import { colorsText } from "@/colors.js";
 import { ActivityEventMappings } from "@/helpers/maps";
 import { mdiCreditCardOutline } from "@mdi/js";
-import { mainStore } from "@/main.js";
+
 import { computed } from "vue";
 
 const props = defineProps({
@@ -59,7 +61,7 @@ const icon = computed(() => {
 			<div class="min-w-0 flex-1 space-y-1">
 				<div class="flex flex-wrap items-center gap-x-2 gap-y-1">
 					<h4 class="break-words text-sm font-semibold">{{ student }}</h4>
-					<PillTag :color="model === mainStore.bpmn_process_name_A + '.bpmn' ? 'danger' : 'success'" :label="model === mainStore.bpmn_process_name_A + '.bpmn' ? 'Model A' : 'Model B'" small />
+					<PillTag :color="model === appConfig.bpmn_process_name_A + '.bpmn' ? 'danger' : 'success'" :label="model === appConfig.bpmn_process_name_A + '.bpmn' ? 'Model A' : 'Model B'" small />
 				</div>
 				<div class="flex flex-wrap gap-x-3 gap-y-0.5 text-xs text-gray-500 dark:text-slate-400">
 					<p class="min-w-0 break-words">JMBAG: {{ jmbag }}</p>

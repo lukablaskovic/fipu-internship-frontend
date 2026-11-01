@@ -57,12 +57,17 @@ import ThemeToggle from "@/components/Navbar/ThemeToggle.vue";
 import FormCheckRadio from "@/components/Form/FormCheckRadio.vue";
 import SnackBar from "@/components/Premium/SnackBar.vue";
 import { isUnipuEmail } from "@/helpers/validators";
-import { mainStore, snackBarStore } from "@/main";
+import { useMainStore } from "@/stores/main_store";
+import { useSnackBarStore } from "@/stores/snackbar_store";
+
 import fipu_unipu from "/fipu_unipu.png";
 import { useRouter } from "vue-router";
 import { DEV_MODE, LOCAL_DEV, setLocalDevelopment } from "@/config";
 
 import { ref } from "vue";
+
+const mainStore = useMainStore();
+const snackBarStore = useSnackBarStore();
 
 const router = useRouter();
 

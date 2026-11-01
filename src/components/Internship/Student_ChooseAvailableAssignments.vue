@@ -1,9 +1,14 @@
 <script setup>
+import { appConfig } from "@/config";
+
 import SectionTitleLineWithButton from "@/components/Section/SectionTitleLineWithButton.vue";
 import TableAvailableAssignments from "@/components/Tables/TableAvailableAssignments.vue";
 import { mdiNumeric, mdiClipboardTextOutline, mdiLaptop } from "@mdi/js";
 import LayoutAuthenticated from "@/layouts/LayoutAuthenticated.vue";
-import { mainStore, studentStore, snackBarStore } from "@/main.js";
+import { useMainStore } from "@/stores/main_store";
+import { useStudentStore } from "@/stores/student_store";
+import { useSnackBarStore } from "@/stores/snackbar_store";
+
 import CardBoxModal from "@/components/Cardbox/CardBoxModal.vue";
 import SectionMain from "@/components/Section/SectionMain.vue";
 import FormControl from "@/components/Form/FormControl.vue";
@@ -20,13 +25,17 @@ import draggable from "vuedraggable";
 
 import AOS from "aos";
 
+const mainStore = useMainStore();
+const studentStore = useStudentStore();
+const snackBarStore = useSnackBarStore();
+
 onMounted(() => {
 	AOS.init();
 });
 
 const Layout = computed(() => (mainStore.userAuthenticated ? LayoutAuthenticated : LayoutGuest));
 
-const checkedAssignments = computed(() => mainStore.checkedAssignments);
+const checkedAssignments = ref([]);
 const modalConfirmPreferences = ref(false);
 const vueDraggableDragging = ref(false);
 const isLoading = ref(false);
@@ -139,7 +148,7 @@ const assignmentsForDrag = computed({
 		return [...assignments, ...emptySlots];
 	},
 	set(newVal) {
-		mainStore.checkedAssignments = newVal.filter((item) => !isEmptySlot(item));
+		checkedAssignments.value = newVal.filter((item) => !isEmptySlot(item));
 	},
 });
 
@@ -158,8 +167,8 @@ const handleDragEnd = () => {
 		<SectionMain class="relative">
 			<SectionTitleLineWithButton :icon="mdiLaptop" title="Moja Praksa" main />
 
-			<p><b>Akademska godina:</b> {{ mainStore.academicYear }}</p>
-			<p><b>Voditelj:</b> {{ mainStore.voditelj_prakse }}</p>
+			<p><b>Akademska godina:</b> {{ appConfig.academicYear }}</p>
+			<p><b>Voditelj:</b> {{ appConfig.voditelj_prakse }}</p>
 
 			<img src="/illustrations/selection.svg" class="absolute right-0 top-0 mr-6 mt-4 hidden w-1/4 max-w-full md:block" />
 
@@ -173,7 +182,7 @@ const handleDragEnd = () => {
 			<p><b>Napomena:</b> Da biste prijavili preferencije, morate biti prijavljeni u aplikaciji!</p>
 			<br />
 			<CardBox has-table>
-				<TableAvailableAssignments checkable />
+				<TableAvailableAssignments v-model="checkedAssignments" checkable />
 			</CardBox>
 			<hr />
 			<br />

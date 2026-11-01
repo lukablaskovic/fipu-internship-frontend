@@ -26,7 +26,7 @@ const menuAsideAdmin: MenuItem[] = [
 		label: "Alokacije",
 	},
 	{
-		to: "/dostupni-zadaci",
+		to: "/zadaci",
 		icon: mdiClipboardText,
 		label: "Zadaci",
 	},
@@ -42,16 +42,16 @@ const menuAsideAdmin: MenuItem[] = [
 		menu: [
 			...(LOCAL_DEV ? [{ label: "Arhiva akademskih godina", to: "/arhiva" }] : []),
 			{
-				label: "PDF Generator",
-				externalURL: "https://html-to-pdf-maker.netlify.app/",
-			},
-			{
 				to: "/poslodavci/novi-zadatak",
-				label: "Forma za prijavu zadatka",
+				label: "Prijava zadatka",
 			},
 			{
-				label: "Baserow DB",
+				label: "Baserow",
 				externalURL: BASEROW_URL,
+			},
+			{
+				label: "BPMN Studio",
+				externalURL: "http://localhost:5174",
 			},
 		],
 	},

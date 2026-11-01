@@ -1,5 +1,4 @@
-import axios, { type AxiosInstance as Axios, type AxiosRequestConfig, type AxiosResponse } from "axios";
-import { mainStore } from "@/main.js";
+import axios, { type AxiosInstance as Axios, type AxiosResponse } from "axios";
 
 interface RequestHeaders {
 	[key: string]: string;
@@ -16,16 +15,6 @@ interface APIClient {
 function createAxiosInstance(API_URL: string): APIClient {
 	const instance: Axios = axios.create({ baseURL: API_URL, timeout: 10000 });
 
-	instance.interceptors.request.use(
-		(config: AxiosRequestConfig) => {
-			const token = mainStore.access_token;
-			if (token && config.headers) {
-				config.headers["Authorization"] = `Bearer ${token}`;
-			}
-			return config;
-		},
-		(error) => Promise.reject(error),
-	);
 
 	return {
 		async get<T = any>(endpoint: string, params: object = {}, headers: RequestHeaders = {}): Promise<T> {

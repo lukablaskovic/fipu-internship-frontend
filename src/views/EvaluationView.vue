@@ -4,7 +4,10 @@ import { useRoute } from "vue-router";
 import { ref, onMounted } from "vue";
 import { router } from "@/router";
 
-import { adminStore, studentStore, snackBarStore } from "@/main.js";
+import { useAdminStore } from "@/stores/admin_store";
+import { useStudentStore } from "@/stores/student_store";
+import { useSnackBarStore } from "@/stores/snackbar_store";
+
 import { UserTaskMappings } from "@/helpers/maps";
 import { StudentMappings } from "@/helpers/maps";
 
@@ -17,6 +20,10 @@ import SnackBar from "@/components/Premium/SnackBar.vue";
 import FooterBar from "@/components/FooterBar.vue";
 
 import FIPU_praksa_logo_transparent from "/FIPU_praksa_logo_transparent.svg";
+
+const adminStore = useAdminStore();
+const studentStore = useStudentStore();
+const snackBarStore = useSnackBarStore();
 
 const process_instance_id = ref(null);
 

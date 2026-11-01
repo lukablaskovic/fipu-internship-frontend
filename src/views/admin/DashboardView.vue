@@ -1,4 +1,6 @@
 <script setup>
+import { appConfig } from "@/config";
+
 import { Tabs } from "reka-ui/namespaced";
 import FormControlListbox from "@/components/Premium/FormControlListbox.vue";
 import { searchAndSortEvents } from "@/helpers/log-events.js";
@@ -20,7 +22,10 @@ import {
 	mdiSortDescending,
 } from "@mdi/js";
 import BaseIcon from "@/components/Base/BaseIcon.vue";
-import { adminStore, mainStore, snackBarStore } from "@/main.js";
+import { useAdminStore } from "@/stores/admin_store";
+import { useMainStore } from "@/stores/main_store";
+import { useSnackBarStore } from "@/stores/snackbar_store";
+
 
 import { ref, computed, onMounted, watch } from "vue";
 import { useRouter } from "vue-router";
@@ -39,6 +44,10 @@ import PillTag from "@/components/PillTag/PillTag.vue";
 
 import { ActivityEventMappings } from "@/helpers/maps.js";
 import { latestEvents } from "@/filterOptions.js";
+
+const adminStore = useAdminStore();
+const mainStore = useMainStore();
+const snackBarStore = useSnackBarStore();
 
 const router = useRouter();
 
@@ -107,7 +116,7 @@ const logColumns = [
 	{ id: "student", label: "Student", value: studentName },
 	{ id: "jmbag", label: "JMBAG", value: (event) => event.student_JMBAG || "—" },
 	{ id: "email", label: "Email", value: (event) => event.student_email || "—" },
-	{ id: "model", label: "Model", value: (event) => event.model_name === mainStore.bpmn_process_name_A + ".bpmn" ? "A" : "B" },
+	{ id: "model", label: "Model", value: (event) => event.model_name === appConfig.bpmn_process_name_A + ".bpmn" ? "A" : "B" },
 	{ id: "event", label: "Događaj", value: (event) => ActivityEventMappings.getEvent(event.activity_id)?.message || event.activity_id },
 	{ id: "time", label: "Vrijeme", value: (event) => new Date(event.timestamp).getTime() },
 ];
@@ -144,9 +153,9 @@ const filteredEvents = computed(() => {
 	}
 
 	if (adminStore.filterModelState === "A") {
-		filtered = filtered.filter((event) => event.model_name === mainStore.bpmn_process_name_A + ".bpmn");
+		filtered = filtered.filter((event) => event.model_name === appConfig.bpmn_process_name_A + ".bpmn");
 	} else if (adminStore.filterModelState === "B") {
-		filtered = filtered.filter((event) => event.model_name === mainStore.bpmn_process_name_B + ".bpmn");
+		filtered = filtered.filter((event) => event.model_name === appConfig.bpmn_process_name_B + ".bpmn");
 	}
 
 	return searchAndSortEvents(filtered, logSearch.value, logSort.value.compare);
@@ -173,7 +182,7 @@ const { perPage, currentPage, itemsPaginated, numPages, currentPageHuman } = use
 		<LayoutAuthenticated v-if="mainStore.userAuthenticated">
 			<SectionMain>
 				<SectionTitleLineWithButton :icon="mdiViewDashboard" title="Nadzorna ploča" main> </SectionTitleLineWithButton>
-				<p class="mb-4"><b>Akademska godina:</b> {{ mainStore.academicYear }}</p>
+				<p class="mb-4"><b>Akademska godina:</b> {{ appConfig.academicYear }}</p>
 				<Tabs.Root v-model="statisticsModel">
 					<Tabs.List aria-label="Statistika po modelu prakse" class="mb-4 inline-flex rounded-lg bg-white p-1 text-sm dark:bg-slate-800">
 						<Tabs.Trigger v-for="model in [{ id: 'A', label: 'A' }, { id: 'B', label: 'B' }, { id: 'AB', label: 'Sve' }]" :key="model.id" :value="model.id" class="rounded px-3 py-1.5 focus-visible:outline focus-visible:outline-2 focus-visible:outline-fipu_blue data-[state=active]:bg-fipu_blue data-[state=active]:text-white">{{ model.label }}</Tabs.Trigger>
@@ -304,7 +313,7 @@ const { perPage, currentPage, itemsPaginated, numPages, currentPageHuman } = use
 							<tbody><tr v-for="(event, index) in itemsPaginated" :key="index" class="border-b last:border-0 hover:bg-fipu_blue/10 dark:border-slate-700">
 								<td class="px-3 py-2"><RouterLink :to="`/studenti/${event.instance_id}`" class="font-semibold text-fipu_blue underline">{{ studentName(event) }}</RouterLink></td>
 								<td class="px-3 py-2">{{ event.student_JMBAG || '—' }}</td><td class="px-3 py-2">{{ event.student_email || '—' }}</td>
-								<td class="px-3 py-2">{{ event.model_name === mainStore.bpmn_process_name_A + '.bpmn' ? 'A' : 'B' }}</td>
+								<td class="px-3 py-2">{{ event.model_name === appConfig.bpmn_process_name_A + '.bpmn' ? 'A' : 'B' }}</td>
 								<td class="px-3 py-2">{{ ActivityEventMappings.getEvent(event.activity_id)?.message || event.activity_id }}</td><td class="whitespace-nowrap px-3 py-2">{{ formattedDate(event.timestamp) }}</td>
 							</tr></tbody>
 						</table>

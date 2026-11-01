@@ -1,7 +1,8 @@
 <script setup>
-import { mainStore } from "@/main.js";
+const emit = defineEmits(["select"]);
 
 defineProps({
+	selected: Boolean,
 	name: {
 		type: String,
 		default: "",
@@ -9,7 +10,7 @@ defineProps({
 });
 </script>
 <template>
-	<div :class="mainStore.storeSelected == name ? 'text-fipu_blue underline' : 'hover:text-white cursor-pointer'" class="px-4 py-1 font-medium" @click="mainStore.storeSelected = name">
+	<div :class="selected ? 'text-fipu_blue underline' : 'hover:text-white cursor-pointer'" class="px-4 py-1 font-medium" @click="emit('select')">
 		{{ name }}
 	</div>
 </template>

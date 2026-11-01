@@ -3,7 +3,8 @@ import CardBoxComponentEmpty from "@/components/Cardbox/CardBoxComponentEmpty.vu
 import BasePagination from "@/components/Base/BasePagination.vue";
 import { usePagination } from "@/composables/usePagination.js";
 import { computed, ref } from "vue";
-import { mainStore } from "@/main.js";
+import { useMainStore } from "@/stores/main_store";
+
 import { mdiEye, mdiTrashCan } from "@mdi/js";
 import CardBoxModal from "@/components/Cardbox/CardBoxModal.vue";
 import TableCheckboxCell from "@/components/Tables/TableCheckboxCell.vue";
@@ -11,6 +12,8 @@ import BaseLevel from "@/components/Base/BaseLevel.vue";
 import BaseButtons from "@/components/Base/BaseButtons.vue";
 import BaseButton from "@/components/Base/BaseButton.vue";
 import UserAvatar from "@/components/User/UserAvatar.vue";
+
+const mainStore = useMainStore();
 
 defineProps({
 	checkable: Boolean,

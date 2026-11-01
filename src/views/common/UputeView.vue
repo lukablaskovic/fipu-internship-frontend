@@ -1,4 +1,6 @@
 <script setup>
+import { appConfig } from "@/config";
+
 import UserAvatar from "@/components/User/UserAvatar.vue";
 import { mdiCalendarRange, mdiChatQuestionOutline, mdiAlphaACircle, mdiNewBox, mdiAlphaBCircle, mdiInformation, mdiLaptop, mdiDomain } from "@mdi/js";
 import SectionMain from "@/components/Section/SectionMain.vue";
@@ -10,9 +12,12 @@ import LayoutGuest from "@/layouts/LayoutGuest.vue";
 
 import IconTextLink from "@/components/IconTextLink.vue";
 
-import { mainStore } from "@/main.js";
+import { useMainStore } from "@/stores/main_store";
+
 
 import FIPU_praksa_logo_transparent from "/FIPU_praksa_logo_transparent.svg";
+
+const mainStore = useMainStore();
 
 const userAuthenticated = computed(() => mainStore.userAuthenticated);
 
@@ -39,7 +44,7 @@ onMounted(async () => {
 						<img :src="FIPU_praksa_logo_transparent" class="max-h-14 object-contain" />
 					</a>
 				</SectionTitleLineWithButton>
-				<p><b>Akademska godina:</b> {{ mainStore.academicYear }}</p>
+				<p><b>Akademska godina:</b> {{ appConfig.academicYear }}</p>
 				<p><b>Voditelj:</b> doc. dr. sc. Ivan Lorencin</p>
 
 				<hr />
@@ -234,7 +239,7 @@ onMounted(async () => {
 						<img :src="FIPU_praksa_logo_transparent" class="max-h-14 object-contain" />
 					</a>
 				</SectionTitleLineWithButton>
-				<p><b>Akademska godina:</b> {{ mainStore.academicYear }}</p>
+				<p><b>Akademska godina:</b> {{ appConfig.academicYear }}</p>
 				<p><b>Voditelj:</b> doc. dr. sc. Ivan Lorencin</p>
 
 				<hr />

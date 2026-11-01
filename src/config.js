@@ -55,3 +55,13 @@ export const endpoints = LOCAL_DEV ? {
 
 // Maintenance mode configuration
 export const MAINTENANCE_MODE = !DEV_MODE;
+
+export const appConfig = Object.freeze({
+	praksa_version: "v1.5.1",
+	academicYear: "2026./2027.",
+	voditelj_prakse: "doc. dr. sc. Ivan Lorencin",
+	admin_emails: LOCAL_DEV ? ["admin@local.test"] : ["ntankov@unipu.hr", "ilorencin@unipu.hr", "lblaskovi@unipu.hr", "mmilicevi@unipu.hr"],
+	fipulab_web: "https://web.fipulab.unipu.hr/",
+	bpmn_process_name_A: "strucna_praksa_A",
+	bpmn_process_name_B: "strucna_praksa_B",
+});

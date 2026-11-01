@@ -2,7 +2,10 @@
 import SectionBanner from "@/components/Section/SectionBanner.vue";
 import BaseButton from "@/components/Base/BaseButton.vue";
 import { mdiLaptop, mdiAccountMultiple } from "@mdi/js";
-import { mainStore } from "@/main.js";
+import { useMainStore } from "@/stores/main_store";
+
+const mainStore = useMainStore();
+
 </script>
 
 <template>

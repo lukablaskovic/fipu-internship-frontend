@@ -1,4 +1,6 @@
 <script setup>
+import { appConfig } from "@/config";
+
 import { mdiFileDocumentEdit, mdiLaptop, mdiBallot, mdiAccount, mdiMail, mdiClipboardCheck, mdiPhone, mdiCardAccountDetailsOutline, mdiDomain, mdiClockTimeFiveOutline, mdiTextLong, mdiCalendar } from "@mdi/js";
 import { croatianAlpha, getFirstErrorForField, exactLength, containsNumeric } from "@/helpers/validators";
 import { required, email, helpers, numeric, minLength } from "@vuelidate/validators";
@@ -20,8 +22,15 @@ import BaseButton from "@/components/Base/BaseButton.vue";
 import FormField from "@/components/Form/FormField.vue";
 import CardBox from "@/components/Cardbox/CardBox.vue";
 
-import { mainStore, snackBarStore, studentStore } from "@/main.js";
+import { useMainStore } from "@/stores/main_store";
+import { useSnackBarStore } from "@/stores/snackbar_store";
+import { useStudentStore } from "@/stores/student_store";
+
 import { UserTaskMappings } from "@/helpers/maps";
+
+const mainStore = useMainStore();
+const snackBarStore = useSnackBarStore();
+const studentStore = useStudentStore();
 
 const allocated_assignment = ref(null);
 onMounted(async () => {
@@ -177,8 +186,8 @@ async function submit_application_form() {
 	<component :is="Layout">
 		<SectionMain v-if="allocated_assignment != null" class="relative">
 			<SectionTitleLineWithButton :icon="mdiLaptop" title="Moja Praksa" main> </SectionTitleLineWithButton>
-			<p><b>Akademska godina:</b> {{ mainStore.academicYear }}</p>
-			<p><b>Voditelj:</b> {{ mainStore.voditelj_prakse }}</p>
+			<p><b>Akademska godina:</b> {{ appConfig.academicYear }}</p>
+			<p><b>Voditelj:</b> {{ appConfig.voditelj_prakse }}</p>
 			<img src="/illustrations/prijavnica.svg" class="absolute right-0 top-0 mr-6 hidden w-1/4 max-w-full md:block" />
 			<br />
 			<div class="sm:mt-32">

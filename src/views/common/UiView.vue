@@ -1,6 +1,7 @@
 <script setup>
 import { ref, computed } from "vue";
-import { styleStore } from "@/main.js";
+import { useUiStore } from "@/stores/ui_store";
+
 import { mdiContrastCircle, mdiInformation, mdiCheckCircle, mdiAlert, mdiAlertCircle, mdiOpenInNew, mdiClose, mdiReload, mdiTrendingUp } from "@mdi/js";
 import SectionMain from "@/components/Section/SectionMain.vue";
 import CardBox from "@/components/Cardbox/CardBox.vue";
@@ -17,6 +18,8 @@ import SectionTitleLineWithButton from "@/components/Section/SectionTitleLineWit
 import CardBoxComponentEmpty from "@/components/Cardbox/CardBoxComponentEmpty.vue";
 import CardBoxComponentTitle from "@/components/Cardbox/CardBoxComponentTitle.vue";
 import PillTag from "@/components/PillTag/PillTag.vue";
+
+const uiStore = useUiStore();
 
 const modalOneActive = ref(false);
 
@@ -69,7 +72,7 @@ const pillsIcon = computed(() => (pillsSettingsModel.value.indexOf("icon") > -1 
 		<SectionMain>
 			<CardBox class="md:w-7/12 lg:w-5/12 xl:w-4/12 shadow-2xl md:mx-auto">
 				<div class="text-center py-24 lg:py-12 text-gray-500 dark:text-slate-400">
-					<BaseButton label="Toggle" color="contrast" @click="styleStore.setDarkMode()" />
+					<BaseButton label="Toggle" color="contrast" @click="uiStore.setDarkMode()" />
 				</div>
 			</CardBox>
 		</SectionMain>

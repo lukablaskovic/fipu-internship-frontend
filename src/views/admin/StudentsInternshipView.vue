@@ -1,12 +1,15 @@
 <script setup>
-import { mdiAccountMultiple, mdiAccount, mdiProgressClock, mdiAccountGroup, mdiAbTesting, mdiAlphaACircle, mdiAlphaBCircleOutline, mdiClose } from "@mdi/js";
+import { mdiAccountMultiple, mdiAccount, mdiClose } from "@mdi/js";
 import { useRouter, useRoute } from "vue-router";
-import { ref, onMounted, watch } from "vue";
+import { computed, ref, onMounted, watch } from "vue";
 import { Dialog } from "reka-ui/namespaced";
 import axios from "axios";
 
 import { UserTaskMappings, SendTaskMappings } from "@/helpers/maps";
-import { adminStore, mainStore, snackBarStore } from "@/main.js";
+import { useAdminStore } from "@/stores/admin_store";
+import { useMainStore } from "@/stores/main_store";
+import { useSnackBarStore } from "@/stores/snackbar_store";
+
 
 import SectionTitleLineWithButton from "@/components/Section/SectionTitleLineWithButton.vue";
 import TableInstanceData from "@/components/BPMN/TableInstanceData.vue";
@@ -19,10 +22,12 @@ import FormDynamic from "@/components/Form/FormDynamic.vue";
 import FormControl from "@/components/Form/FormControl.vue";
 import BpmnDiagram from "@/components/BPMN/BpmnDiagram.vue";
 import FormField from "@/components/Form/FormField.vue";
-import PillTag from "@/components/PillTag/PillTag.vue";
+import FormControlListbox from "@/components/Premium/FormControlListbox.vue";
 import CardBox from "@/components/Cardbox/CardBox.vue";
 import BaseButton from "@/components/Base/BaseButton.vue";
 const bpmn_diagram_active = ref(false);
+const selectedStudent = ref(null);
+const selectedTaskId = ref("");
 let diagramTrigger;
 function restoreDiagramFocus(event) {
 	if (diagramTrigger?.isConnected) {
@@ -35,6 +40,10 @@ import BPMN_red from "/BPMN/red_bpmn_professor_pending.png";
 import BPMN_blue from "/BPMN/blue_bpmn_default.png";
 import BPMN_green from "/BPMN/green_bpmn_done.png";
 import BPMN_msg_event from "/BPMN/msg_event.png";
+
+const adminStore = useAdminStore();
+const mainStore = useMainStore();
+const snackBarStore = useSnackBarStore();
 
 const modal_select_bpmn_task = ref(false);
 const modal_past_bpmn_task = ref(false);
@@ -62,10 +71,12 @@ const router = useRouter();
 const process_instance_data = ref(null);
 const bpmn_model = ref(null);
 
-async function handleProcessDiagram() {
+async function handleProcessDiagram(student) {
+	selectedStudent.value = student;
+	selectedTaskId.value = "";
 	diagramTrigger = document.activeElement;
 	try {
-		process_instance_data.value = await adminStore.getProcessInstanceData(adminStore.selectedStudent);
+		process_instance_data.value = await adminStore.getProcessInstanceData(selectedStudent.value);
 		let model = process_instance_data.value.model.model_path.split(".")[0];
 
 		bpmn_model.value = await fetchXML(model);
@@ -91,71 +102,46 @@ async function loadDataForStudent() {
 const newEmail = ref(null);
 function getPostDataForSendEmail() {
 	// Find the task based on clicked_task_id
-	const taskMapping = SendTaskMappings.tasks.find((task) => task._id === adminStore.bpmn_diagram.clicked_task_id);
+	const taskMapping = SendTaskMappings.tasks.find((task) => task._id === selectedTaskId.value);
 
 	if (!taskMapping) return { postData: null, template: null, to: null };
 
 	const postData = {};
 	for (let key in taskMapping.body) {
 		if (typeof taskMapping.body[key] === "function") {
-			postData[key] = taskMapping.body[key](adminStore.selectedStudent.process_instance_data.variables.process_instance_id);
+			postData[key] = taskMapping.body[key](selectedStudent.value.process_instance_data.variables.process_instance_id);
 		} else {
-			postData[key] = adminStore.selectedStudent.process_instance_data.variables[key] || "";
+			postData[key] = selectedStudent.value.process_instance_data.variables[key] || "";
 		}
 	}
 
-	const to = adminStore.selectedStudent.process_instance_data.variables[taskMapping.to] || "";
+	const to = selectedStudent.value.process_instance_data.variables[taskMapping.to] || "";
 
 	return { postData, template: taskMapping.template, to };
 }
 
-const toggleActiveEventsFilter = () => {
-	adminStore.filterFinishedInstances = !adminStore.filterFinishedInstances;
-};
-
-const toggleBetweenModelsFilter = () => {
-	// Cycle through the states A -> B -> AB -> A...
-	if (adminStore.filterModelState === "A") {
-		adminStore.filterModelState = "B";
-	} else if (adminStore.filterModelState === "B") {
-		adminStore.filterModelState = "AB";
-	} else {
-		adminStore.filterModelState = "A";
-	}
-
-	let newModel = adminStore.filterModelState;
-
-	const query = { ...route.query };
-
-	if (!newModel || newModel === "AB") {
-		delete query.model;
-	} else {
-		query.model = newModel;
-	}
-
-	router.replace({ query });
-};
-
-const toggleBetweenInternshipStages = () => {
-	console.log(adminStore.filterInternshipStage);
-	if (adminStore.filterInternshipStage === "ceka_alokaciju") {
-		adminStore.filterInternshipStage = "ceka_odobrenje";
-	} else if (adminStore.filterInternshipStage === "ceka_odobrenje") {
-		adminStore.filterInternshipStage = "all";
-	} else {
-		adminStore.filterInternshipStage = "ceka_alokaciju";
-	}
-	let newStage = adminStore.filterInternshipStage;
-	const query = { ...route.query };
-
-	if (!newStage || newStage === "all") {
-		delete query.stage;
-	} else {
-		query.stage = newStage;
-	}
-
-	router.replace({ query });
-};
+const studentSearch = ref("");
+const modelOptions = [{ id: "AB", label: "Svi modeli" }, { id: "A", label: "Model A" }, { id: "B", label: "Model B" }];
+const processOptions = [{ id: true, label: "Sve instance" }, { id: false, label: "Aktivne instance" }];
+const stageOptions = [{ id: "all", label: "Sve faze procesa" }, { id: "ceka_alokaciju", label: "Čeka alokaciju (A)" }, { id: "ceka_odobrenje", label: "Čeka odobrenje (B)" }];
+const modelFilter = computed({
+	get: () => modelOptions.find((option) => option.id === adminStore.filterModelState),
+	set: (option) => {
+		adminStore.filterModelState = option.id;
+		router.replace({ query: { ...route.query, model: option.id === "AB" ? undefined : option.id } });
+	},
+});
+const processFilter = computed({
+	get: () => processOptions.find((option) => option.id === adminStore.filterFinishedInstances),
+	set: (option) => { adminStore.filterFinishedInstances = option.id; },
+});
+const stageFilter = computed({
+	get: () => stageOptions.find((option) => option.id === adminStore.filterInternshipStage),
+	set: (option) => {
+		adminStore.filterInternshipStage = option.id;
+		router.replace({ query: { ...route.query, stage: option.id === "all" ? undefined : option.id } });
+	},
+});
 
 let email_postData = ref(null);
 let email_template = ref(null);
@@ -190,27 +176,14 @@ watch(modal_send_task, (newValue) => {
 	}
 });
 
-const setModelFilterFromQuery = () => {
-	const modelParam = route.query.model;
-	if (["A", "B", "AB"].includes(modelParam)) {
-		adminStore.filterModelState = modelParam;
-	}
-};
+watch(() => route.query.model, (model) => {
+	adminStore.filterModelState = modelOptions.some((option) => option.id === model) ? model : "AB";
+}, { immediate: true });
+watch(() => route.query.stage, (stage) => {
+	adminStore.filterInternshipStage = stageOptions.some((option) => option.id === stage) ? stage : "all";
+}, { immediate: true });
 
-const setStageFilterFromQuery = () => {
-	const stageParam = route.query.stage;
-	if (["ceka_alokaciju", "ceka_odobrenje", "all", ""].includes(stageParam)) {
-		adminStore.filterInternshipStage = stageParam;
-	} else {
-		adminStore.filterInternshipStage = "all";
-	}
-};
-
-onMounted(async () => {
-	setModelFilterFromQuery();
-	setStageFilterFromQuery();
-	await adminStore.getStudents();
-});
+onMounted(() => adminStore.getStudents());
 
 const isSubmitting = ref(false);
 async function handleNewInstance() {
@@ -229,7 +202,7 @@ async function handleNewInstance() {
 		if (!(await adminStore.getStudents())) throw new Error("Students could not be fetched");
 		const student = adminStore.students.find((student) => student.process_instance_id === instanceId);
 		if (!student) throw new Error("Student could not be fetched");
-		adminStore.setSelectedStudent(student);
+		selectedStudent.value = student;
 		process_instance_data.value = student.process_instance_data;
 		formDynamicValues.value = {};
 		disabledCondition.value = true;
@@ -248,36 +221,15 @@ onMounted(loadDataForStudent);
 		<LayoutAuthenticated v-if="mainStore.userAuthenticated">
 			<SectionMain>
 				<SectionTitleLineWithButton :icon="mdiAccountMultiple" title="Studenti u procesu prakse" button-enabled main @click="bpmn_help_modal = true"> </SectionTitleLineWithButton>
-				<div class="flex flex-wrap">
-					<div class="mb-4">
-						<PillTag
-							class="cursor-pointer"
-							:left="false"
-							:icon="adminStore.filterFinishedInstances ? mdiAccountGroup : mdiAccountMultiple"
-							:color="adminStore.filterFinishedInstances ? 'info' : 'success'"
-							:label="adminStore.filterFinishedInstances ? 'Sve instance' : 'Aktivne instance'"
-							@click="toggleActiveEventsFilter" />
-					</div>
-					<div class="mb-4">
-						<PillTag
-							class="cursor-pointer"
-							:icon="adminStore.filterModelState === 'A' ? mdiAlphaACircle : adminStore.filterModelState === 'B' ? mdiAlphaBCircleOutline : mdiAbTesting"
-							:color="adminStore.filterModelState === 'A' ? 'danger' : adminStore.filterModelState === 'B' ? 'success' : 'info'"
-							:label="adminStore.filterModelState === 'A' ? 'Model A' : adminStore.filterModelState === 'B' ? 'Model B' : 'Modeli AB'"
-							@click="toggleBetweenModelsFilter" />
-					</div>
-					<div class="mb-4">
-						<PillTag
-							class="cursor-pointer"
-							:icon="adminStore.filterInternshipStage === 'ceka_alokaciju' ? mdiProgressClock : adminStore.filterInternshipStage === 'ceka_odobrenje' ? mdiProgressClock : mdiProgressClock"
-							:color="adminStore.filterInternshipStage === 'ceka_alokaciju' ? 'danger' : adminStore.filterInternshipStage === 'ceka_odobrenje' ? 'success' : 'info'"
-							:label="adminStore.filterInternshipStage === 'ceka_alokaciju' ? 'Čeka alokaciju (A)' : adminStore.filterInternshipStage === 'ceka_odobrenje' ? 'Čeka odobrenje (B)' : 'Sve faze procesa'"
-							@click="toggleBetweenInternshipStages" />
-					</div>
+				<div class="mb-3 flex flex-wrap items-center gap-2 text-sm">
+					<input v-model="studentSearch" type="search" aria-label="Pretraži studente" placeholder="Ime, JMBAG ili email…" class="min-w-0 basis-full rounded-lg border-gray-300 py-1.5 text-sm dark:border-slate-700 dark:bg-slate-800 sm:flex-1 sm:basis-0" />
+					<FormControlListbox v-model="modelFilter" :options="modelOptions" aria-label="Model prakse" button-class="rounded-lg bg-white px-3 py-2 dark:bg-slate-800" />
+					<FormControlListbox v-model="processFilter" :options="processOptions" aria-label="Status instance" button-class="rounded-lg bg-white px-3 py-2 dark:bg-slate-800" />
+					<FormControlListbox v-model="stageFilter" :options="stageOptions" aria-label="Faza procesa" button-class="rounded-lg bg-white px-3 py-2 dark:bg-slate-800" />
 				</div>
 
 				<CardBox has-table>
-					<TableStudents @show-student-diagram="handleProcessDiagram" />
+					<TableStudents :search="studentSearch" @show-student-diagram="handleProcessDiagram" />
 				</CardBox>
 
 				<CardBoxModal v-if="bpmn_help_modal" v-model="bpmn_help_modal" :title="'BPMN Graf - Legenda'" button-label="Povratak">
@@ -316,7 +268,7 @@ onMounted(loadDataForStudent);
 						<header class="flex shrink-0 items-center justify-between gap-4 border-b border-slate-200 p-4 dark:border-slate-700">
 							<div class="min-w-0">
 								<Dialog.Title class="text-xl font-semibold">BPMN dijagram</Dialog.Title>
-								<p v-if="adminStore.selectedStudent" class="truncate text-sm text-slate-600 dark:text-slate-300">{{ adminStore.selectedStudent.ime }} {{ adminStore.selectedStudent.prezime }}</p>
+								<p v-if="selectedStudent" class="truncate text-sm text-slate-600 dark:text-slate-300">{{ selectedStudent.ime }} {{ selectedStudent.prezime }}</p>
 							</div>
 							<Dialog.Close as-child><BaseButton :icon="mdiClose" aria-label="Zatvori BPMN prikaz" /></Dialog.Close>
 						</header>
@@ -327,9 +279,9 @@ onMounted(loadDataForStudent);
 							:current-order="UserTaskMappings.getTaskProperty(process_instance_data.pending[0], 'order', process_instance_data['state'])"
 							:highlight-color="UserTaskMappings.getTaskProperty(process_instance_data.pending[0], 'bpmn_task_color', process_instance_data['state'])"
 							:highlight-element-id="process_instance_data.pending[0] || UserTaskMappings.getTaskProperty(process_instance_data.pending[0], '_id', process_instance_data['state'])"
-							@current-task-modal="modal_select_bpmn_task = true"
-							@past-task-modal="modal_past_bpmn_task = true"
-							@send-task-modal="modal_send_task = true" />
+							@current-task-modal="selectedTaskId = $event.id; modal_select_bpmn_task = true"
+							@past-task-modal="selectedTaskId = $event.id; modal_past_bpmn_task = true"
+							@send-task-modal="selectedTaskId = $event.id; modal_send_task = true" />
 						<div v-else class="flex flex-1 items-center justify-center" role="status">
 							<LoadingAnimatedIcon />
 						</div>
@@ -343,23 +295,23 @@ onMounted(loadDataForStudent);
 							:disabled-condition="disabledCondition || isSubmitting"
 							@confirm="handleNewInstance()">
 							<p v-if="process_instance_data.pending[0] == 'odabiranje_zadatka_student' || process_instance_data.pending[0] == 'ispunjavanje_prijavnice_student' || process_instance_data.pending[0] == 'predavanje_dnevnika_student'" class="mb-4">
-								{{ UserTaskMappings.getTaskProperty(adminStore.bpmn_diagram.clicked_task_id, "bpmn_pending_info_msg", process_instance_data["state"]) }}
+								{{ UserTaskMappings.getTaskProperty(selectedTaskId, "bpmn_pending_info_msg", process_instance_data["state"]) }}
 							</p>
 
 							<FormDynamic
 								v-else
 								v-model="formDynamicValues"
-								:form-fields="adminStore.selectedStudent.process_instance_data.pending_task_info.form_fields"
-								:variables="adminStore.selectedStudent.process_instance_data.variables"
-								:documentation="adminStore.selectedStudent.process_instance_data.pending_task_info.documentation"
+								:form-fields="selectedStudent.process_instance_data.pending_task_info.form_fields"
+								:variables="selectedStudent.process_instance_data.variables"
+								:documentation="selectedStudent.process_instance_data.pending_task_info.documentation"
 								:current-task-id="process_instance_data.pending[0]"
 								@all-fields-filled="updateDisabledCondition" />
 						</CardBoxModal>
 
 						<!-- Modal for past tasks (without FormDynamic) -->
-						<CardBoxModal v-if="modal_past_bpmn_task" v-model="modal_past_bpmn_task" :title="UserTaskMappings.getTaskProperty(adminStore.bpmn_diagram.clicked_task_id, 'form_title', process_instance_data['state'])" button-label="Povratak">
+						<CardBoxModal v-if="modal_past_bpmn_task" v-model="modal_past_bpmn_task" :title="UserTaskMappings.getTaskProperty(selectedTaskId, 'form_title', process_instance_data['state'])" button-label="Povratak">
 							<p class="mb-2">Ovaj zadatak je već obavljen.</p>
-							<TableInstanceData></TableInstanceData>
+							<TableInstanceData :task-id="selectedTaskId" :variables="process_instance_data.variables" />
 						</CardBoxModal>
 
 						<CardBoxModal v-if="modal_send_task" v-model="modal_send_task" :title="'Ponovno slanje emaila'" has-cancel button-label="Pošalji" @confirm="sendAnAdditionalEmail()">

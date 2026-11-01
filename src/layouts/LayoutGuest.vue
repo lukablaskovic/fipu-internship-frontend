@@ -1,7 +1,10 @@
 <script setup>
+import { appConfig } from "@/config";
+
 import { mdiForwardburger, mdiBackburger, mdiMenu } from "@mdi/js";
 import { useRouter } from "vue-router";
-import { styleStore } from "@/main.js";
+import { useUiStore } from "@/stores/ui_store";
+
 import { computed } from "vue";
 
 import menuAsideGuest from "@/menus/menuAsideGuest";
@@ -16,18 +19,19 @@ import menuNavBarGuest from "@/menus/menuNavBarGuest";
 import FooterBar from "@/components/FooterBar.vue";
 
 import SnackBar from "@/components/Premium/SnackBar.vue";
-import { layoutStore, mainStore } from "@/main.js";
 
-const layoutAsidePadding = computed(() => (layoutStore.isAsideLgActive ? "lg:pl-22" : "xl:pl-22"));
+const uiStore = useUiStore();
+
+const layoutAsidePadding = computed(() => (uiStore.isAsideLgActive ? "lg:pl-22" : "xl:pl-22"));
 const router = useRouter();
 
 router.beforeEach(() => {
-	layoutStore.isAsideMobileExpanded = false;
+	uiStore.isAsideMobileExpanded = false;
 });
 
 const menuClick = (event, item) => {
 	if (item.isToggleLightDark) {
-		styleStore.setDarkMode();
+		uiStore.setDarkMode();
 	}
 
 	if (item.label == "Prijava") {
@@ -38,16 +42,16 @@ const menuClick = (event, item) => {
 <template name="fade">
 	<div
 		:class="{
-			dark: styleStore.darkMode,
-			'overflow-hidden lg:overflow-visible': layoutStore.isAsideMobileExpanded,
+			dark: uiStore.darkMode,
+			'overflow-hidden lg:overflow-visible': uiStore.isAsideMobileExpanded,
 		}">
-		<div :class="[layoutAsidePadding, { 'ml-60 lg:ml-0': layoutStore.isAsideMobileExpanded }]" class="flex min-h-screen w-screen flex-col bg-gray-50 pt-14 transition-position dark:bg-slate-800 dark:text-slate-100 lg:w-auto">
-			<NavBar :menu="menuNavBarGuest" :class="[layoutAsidePadding, { 'ml-60 lg:ml-0': layoutStore.isAsideMobileExpanded }]" @menu-click="menuClick">
-				<NavBarItemPlain display="flex lg:hidden" @click.prevent="layoutStore.asideMobileToggle()">
-					<BaseIcon :path="layoutStore.isAsideMobileExpanded ? mdiBackburger : mdiForwardburger" size="24" />
+		<div :class="[layoutAsidePadding, { 'ml-60 lg:ml-0': uiStore.isAsideMobileExpanded }]" class="flex min-h-screen w-screen flex-col bg-gray-50 pt-14 transition-position dark:bg-slate-800 dark:text-slate-100 lg:w-auto">
+			<NavBar :menu="menuNavBarGuest" :class="[layoutAsidePadding, { 'ml-60 lg:ml-0': uiStore.isAsideMobileExpanded }]" @menu-click="menuClick">
+				<NavBarItemPlain display="flex lg:hidden" @click.prevent="uiStore.asideMobileToggle()">
+					<BaseIcon :path="uiStore.isAsideMobileExpanded ? mdiBackburger : mdiForwardburger" size="24" />
 				</NavBarItemPlain>
-				<NavBarItemPlain display="hidden lg:flex xl:hidden" @click.prevent="layoutStore.asideLgToggle()">
-					<BaseIcon :path="layoutStore.isAsideLgActive ? mdiBackburger : mdiMenu" size="24" />
+				<NavBarItemPlain display="hidden lg:flex xl:hidden" @click.prevent="uiStore.asideLgToggle()">
+					<BaseIcon :path="uiStore.isAsideLgActive ? mdiBackburger : mdiMenu" size="24" />
 				</NavBarItemPlain>
 			</NavBar>
 
@@ -56,7 +60,7 @@ const menuClick = (event, item) => {
 			<div class="mt-6">
 				<FooterBar
 					><br />
-					Made with <span style="color: #e25555">&#9829;</span> at <a :href="mainStore.fipulab_web" target="_blank" class="hover-underline-animation cursor-pointer text-fipu_text_blue hover:text-fipu_blue">FIPUlab</a></FooterBar
+					Made with <span style="color: #e25555">&#9829;</span> at <a :href="appConfig.fipulab_web" target="_blank" class="hover-underline-animation cursor-pointer text-fipu_text_blue hover:text-fipu_blue">FIPUlab</a></FooterBar
 				>
 			</div>
 			<SnackBar />

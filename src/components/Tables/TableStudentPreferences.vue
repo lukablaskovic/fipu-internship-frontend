@@ -9,9 +9,13 @@ import CardboxAllocation from "@/components/Cardbox/CardBoxAllocation.vue";
 import LoadingOverlay from "@/components/LoadingOverlay.vue";
 import BaseButtons from "@/components/Base/BaseButtons.vue";
 import BaseButton from "@/components/Base/BaseButton.vue";
-import { adminStore } from "@/main.js";
+import { useAdminStore } from "@/stores/admin_store";
 
-defineProps({
+const adminStore = useAdminStore();
+
+
+const props = defineProps({
+	preferencesId: { type: [Number, String], default: null },
 	checkable: Boolean,
 });
 
@@ -34,7 +38,7 @@ const selectAssignment = (assignment) => {
 };
 
 onMounted(async () => {
-	registeredPreferences.value = await adminStore.getPreferencesDetailed(adminStore.selectedStudent.process_instance_data.variables.id_preferencije);
+	registeredPreferences.value = await adminStore.getPreferencesDetailed(props.preferencesId);
 	registeredPreferences.value = registeredPreferences.value.data;
 	prviOdabir.value = registeredPreferences.value["Prvi_odabir"]?.[0]?.details;
 	drugiOdabir.value = registeredPreferences.value["Drugi_odabir"]?.[0]?.details;
@@ -48,7 +52,7 @@ onMounted(async () => {
 </script>
 
 <template>
-	<CardBoxModal v-if="isModalActive" v-model="isModalActive" large button-label="Zatvori" button="fipu_blue" has-cancel:false @cancel="mainStore.activateLogoutModal(false)">
+	<CardBoxModal v-if="isModalActive" v-model="isModalActive" large button-label="Zatvori" button="fipu_blue" has-cancel:false @cancel="isModalActive = null">
 		<CardboxAllocation :data="isModalActive"></CardboxAllocation>
 
 		<br />

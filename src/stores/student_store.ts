@@ -2,7 +2,7 @@ import { ProcessInstance } from "@/services/bpmn_engine_api";
 import { Student } from "@/services/baserow_client_api";
 import { endpoints } from "@/config";
 import { defineStore } from "pinia";
-import { mainStore } from "@/main";
+import { useMainStore } from "@/stores/main_store";
 
 interface AssignmentData {
 	id_zadatak: number;
@@ -38,6 +38,7 @@ export const useStudentStore = defineStore("student", {
 
 	actions: {
 		async registerPreferences(assignmentsData: AssignmentData[], napomena: string) {
+			const mainStore = useMainStore();
 			const post_data = {
 				JMBAG: mainStore.currentUser["JMBAG"],
 				Student: [mainStore.currentUser["JMBAG"]],
@@ -64,6 +65,7 @@ export const useStudentStore = defineStore("student", {
 		},
 
 		async direct_application_B(assignment_data: AssignmentData, napomena: string) {
+			const mainStore = useMainStore();
 			let response = await Student.directAllocation({
 				JMBAG: mainStore.currentUser["JMBAG"],
 				Student: [mainStore.currentUser["JMBAG"]],
@@ -99,6 +101,7 @@ export const useStudentStore = defineStore("student", {
 		},
 
 		async submitApplicationForm(application_data: ApplicationData) {
+			const mainStore = useMainStore();
 			const post_data = {
 				student_broj_mobitela: application_data.student_broj_mobitela,
 				student_OIB: application_data.student_OIB,
@@ -125,6 +128,7 @@ export const useStudentStore = defineStore("student", {
 		},
 
 		async submitDiaryForm(diary_data: DiaryData) {
+			const mainStore = useMainStore();
 			const post_data = {
 				nastavak_radnog_odnosa: diary_data.nastavak_radnog_odnosa,
 				prijavljen_rok: diary_data.prijavljen_rok,
@@ -160,6 +164,7 @@ export const useStudentStore = defineStore("student", {
 		},
 
 		async getPendingUserTask(process_instance_id: number) {
+			const mainStore = useMainStore();
 			const response = await this.getInstanceInfo(process_instance_id);
 			if (!response) throw new Error("Process instance could not be fetched");
 			const pendingUserTask = response.pending?.[0] || null;
@@ -196,9 +201,5 @@ export const useStudentStore = defineStore("student", {
 				return null;
 			}
 		},
-	},
-	persist: {
-		storage: sessionStorage,
-		debug: true,
 	},
 });

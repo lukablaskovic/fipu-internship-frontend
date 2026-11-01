@@ -12,7 +12,10 @@ import BaseIcon from "@/components/Base/BaseIcon.vue";
 import { controlTextColor } from "@/colorsPremium.js";
 import TipTag from "@/components/Premium/TipTag.vue";
 import { getButtonColor } from "@/colors.js";
-import { mainStore } from "@/main";
+import { useMainStore } from "@/stores/main_store";
+
+const mainStore = useMainStore();
+
 
 const props = defineProps({
 	firstAddon: Boolean,
@@ -144,7 +147,7 @@ const copyToClipboard = async () => {
 
 if (props.ctrlKFocus) {
 	const fieldFocusHook = (e) => {
-		if (e.ctrlKey && e.key === "k") {
+		if (e.ctrlKey && e.key === "k" && !e.defaultPrevented) {
 			e.preventDefault();
 			inputEl.value.focus();
 		} else if (e.key === "Escape") {
@@ -153,15 +156,11 @@ if (props.ctrlKFocus) {
 	};
 
 	onMounted(() => {
-		if (!mainStore.isFieldFocusRegistered) {
-			window.addEventListener("keydown", fieldFocusHook);
-			mainStore.isFieldFocusRegistered = true;
-		}
+		window.addEventListener("keydown", fieldFocusHook);
 	});
 
 	onBeforeUnmount(() => {
 		window.removeEventListener("keydown", fieldFocusHook);
-		mainStore.isFieldFocusRegistered = false;
 	});
 }
 </script>

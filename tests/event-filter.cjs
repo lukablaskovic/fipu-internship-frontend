@@ -7,11 +7,11 @@ const read = (file) => fs.readFileSync(path.join(__dirname, "../src", file), "ut
 const maps = read("helpers/maps.js");
 const method = maps.slice(maps.indexOf("static shouldSkipEvent("), maps.indexOf("// Existing method to get event"));
 const adminStore = reactive({ selectedEvents: null, filterActiveInstances: true, filterModelState: "AB" });
-const ActivityEventMappings = vm.runInNewContext(`(class { static skipEvents = ["hidden"]; static isGatewayEvent(id) { return id.startsWith("Gateway_"); } ${method} })`, { adminStore });
+const ActivityEventMappings = vm.runInNewContext(`(class { static skipEvents = ["hidden"]; static isGatewayEvent(id) { return id.startsWith("Gateway_"); } ${method} })`, { useAdminStore: () => adminStore });
 const events = ref([{ activity_id: "start", instance_id: 1 }, { activity_id: "end_event_student", instance_id: 1 }, { activity_id: "start", instance_id: 2 }, { activity_id: "hidden", instance_id: 2 }]);
 const dashboard = read("views/admin/DashboardView.vue");
 const expression = dashboard.slice(dashboard.indexOf("const filteredEvents = computed("), dashboard.indexOf("watch(filteredEvents"));
-const filtered = vm.runInNewContext(`${expression}; filteredEvents`, { computed, events, adminStore, ActivityEventMappings, mainStore: {}, logSearch: ref(""), logSort: ref({ id: "newest" }), searchAndSortEvents: (items) => items });
+const filtered = vm.runInNewContext(`${expression}; filteredEvents`, { computed, events, adminStore, ActivityEventMappings, appConfig: {}, logSearch: ref(""), logSort: ref({ id: "newest" }), searchAndSortEvents: (items) => items });
 assert.equal(filtered.value.length, 3);
 adminStore.selectedEvents = ["start"];
 assert.equal(filtered.value.length, 2);

@@ -7,7 +7,10 @@ import BaseButton from "@/components/BaseButton.vue";
 import { useRoute, RouterLink } from "vue-router";
 import { computed } from "vue";
 
-import { styleStore } from "@/main";
+import { useUiStore } from "@/stores/ui_store";
+
+const uiStore = useUiStore();
+
 
 const props = defineProps({
 	bg: {
@@ -19,7 +22,7 @@ const props = defineProps({
 });
 
 const colorClass = computed(() => {
-	if (styleStore.darkMode) {
+	if (uiStore.darkMode) {
 		return gradientBgDark;
 	}
 

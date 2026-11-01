@@ -1,7 +1,8 @@
 <script setup>
 import { computed, ref } from "vue";
 import { Popover } from "reka-ui/namespaced";
-import { mainStore } from "@/main.js";
+import { useMainStore } from "@/stores/main_store";
+
 import { mdiAccountCircle, mdiDomain, mdiLaptop, mdiCameraOutline } from "@mdi/js";
 import UserAvatarCurrentUser from "@/components/User/UserAvatarCurrentUser.vue";
 import UserAvatar from "@/components/User/UserAvatar.vue";
@@ -15,6 +16,8 @@ import { StudentMappings } from "@/helpers/maps.js";
 import FormField from "@/components/Form/FormField.vue";
 import FormControl from "@/components/Form/FormControl.vue";
 import { Student } from "@/services/baserow_client_api";
+
+const mainStore = useMainStore();
 
 const editing = ref(false);
 const avatarUrl = ref("");

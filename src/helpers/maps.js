@@ -65,7 +65,7 @@ import Student_PrijavnicaForm from "@/components/Internship/Student_PrijavnicaFo
 import Model_B_Student_WaitingForApproval from "@/components/Internship/Model_B/Model_B_Student_WaitingForApproval.vue";
 import Model_B_Student_DirectApplication from "@/components/Internship/Model_B/Model_B_Student_DirectApplication.vue";
 
-import { adminStore } from "@/main";
+import { useAdminStore } from "@/stores/admin_store";
 
 // Custom - Hardcoded frontend functionality
 class SendTaskMappings {
@@ -454,6 +454,7 @@ class ActivityEventMappings {
 	}
 
 	static shouldSkipEvent(activityId) {
+		const adminStore = useAdminStore();
 		if (adminStore.selectedEvents == null) {
 			return this.skipEvents.includes(activityId) || this.isGatewayEvent(activityId);
 		}

@@ -1,4 +1,6 @@
 <script setup>
+import { appConfig } from "@/config";
+
 import { mdiProgressClock, mdiLaptop, mdiClipboardCheck } from "@mdi/js";
 import { ref, computed, onMounted } from "vue";
 
@@ -9,7 +11,12 @@ import SectionTitleLineWithButton from "@/components/Section/SectionTitleLineWit
 import CardboxAllocation from "@/components/Cardbox/CardBoxAllocation.vue";
 import SectionMain from "@/components/Section/SectionMain.vue";
 
-import { mainStore, studentStore } from "@/main.js";
+import { useMainStore } from "@/stores/main_store";
+import { useStudentStore } from "@/stores/student_store";
+
+const mainStore = useMainStore();
+const studentStore = useStudentStore();
+
 
 const allocated_assignment = ref(null);
 onMounted(async () => {
@@ -38,8 +45,8 @@ const Layout = computed(() => {
 	<component :is="Layout">
 		<SectionMain v-if="allocated_assignment != null" class="relative">
 			<SectionTitleLineWithButton :icon="mdiLaptop" title="Moja Praksa" main> </SectionTitleLineWithButton>
-			<p><b>Akademska godina:</b> {{ mainStore.academicYear }}</p>
-			<p><b>Voditelj:</b> {{ mainStore.voditelj_prakse }}</p>
+			<p><b>Akademska godina:</b> {{ appConfig.academicYear }}</p>
+			<p><b>Voditelj:</b> {{ appConfig.voditelj_prakse }}</p>
 
 			<img src="/illustrations/evaluation.svg" class="absolute right-0 top-0 mr-6 mt-4 hidden w-1/5 max-w-full md:block" />
 

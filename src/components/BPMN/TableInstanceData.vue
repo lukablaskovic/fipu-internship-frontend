@@ -1,44 +1,36 @@
 <script setup>
 import CardBoxComponentEmpty from "@/components/Cardbox/CardBoxComponentEmpty.vue";
-import { ref, onMounted, computed } from "vue";
-import { adminStore } from "@/main.js";
-import { mainStore } from "@/main.js";
+import { computed } from "vue";
 
-const variables = ref({});
-
-const tableAttributes = ref([]);
-
-onMounted(async () => {
-	if (mainStore.userAdmin) {
-		variables.value = adminStore.selectedStudent.process_instance_data.variables;
-	} else {
-		variables.value = mainStore.currentUserProcessInstanceData.variables;
+const props = defineProps({
+	taskId: { type: String, default: "" },
+	variables: { type: Object, default: () => ({}) },
+});
+const tableAttributes = computed(() => {
+	if (props.taskId == "odabiranje_zadatka_student") {
+		return ["Prvi_odabir", "Drugi_odabir", "Treci_odabir", "napomena"];
+	} else if (props.taskId == "alociranje_profesor") {
+		return ["Alocirani_zadatak"];
+	} else if (props.taskId == "model_b_odobrenje_zadatka") {
+		return ["zadatak_odobren"];
+	} else if (props.taskId == "ispunjavanje_prijavnice_student") {
+		return ["mentor_ime", "mentor_prezime", "mentor_email", "student_broj_mobitela", "student_OIB", "dogovoreni_broj_sati", "pocetak_prakse", "kraj_prakse", "mjesto_izvrsavanja"];
+	} else if (props.taskId == "predavanje_dnevnika_student") {
+		return ["prijavljen_rok", "nastavak_radnog_odnosa"];
+	} else if (props.taskId == "evaluacija_poslodavac") {
+		return ["kandidat_odobren"];
+	} else if (props.taskId == "upis_ocjene") {
+		return ["ocjena_unesena_studomat"];
 	}
-
-	//Znam ružno je ali bit ce bolje
-	if (adminStore.bpmn_diagram.clicked_task_id == "odabiranje_zadatka_student") {
-		tableAttributes.value = ["Prvi_odabir", "Drugi_odabir", "Treci_odabir", "napomena"];
-	} else if (adminStore.bpmn_diagram.clicked_task_id == "alociranje_profesor") {
-		tableAttributes.value = ["Alocirani_zadatak"];
-	} else if (adminStore.bpmn_diagram.clicked_task_id == "model_b_odobrenje_zadatka") {
-		tableAttributes.value = ["zadatak_odobren"];
-	} else if (adminStore.bpmn_diagram.clicked_task_id == "ispunjavanje_prijavnice_student") {
-		tableAttributes.value = ["mentor_ime", "mentor_prezime", "mentor_email", "student_broj_mobitela", "student_OIB", "dogovoreni_broj_sati", "pocetak_prakse", "kraj_prakse", "mjesto_izvrsavanja"];
-	} else if (adminStore.bpmn_diagram.clicked_task_id == "predavanje_dnevnika_student") {
-		tableAttributes.value = ["prijavljen_rok", "nastavak_radnog_odnosa"];
-	} else if (adminStore.bpmn_diagram.clicked_task_id == "evaluacija_poslodavac") {
-		tableAttributes.value = ["kandidat_odobren"];
-	} else if (adminStore.bpmn_diagram.clicked_task_id == "upis_ocjene") {
-		tableAttributes.value = ["ocjena_unesena_studomat"];
-	}
+	return [];
 });
 
 const formattedVariables = computed(() => {
-	return Object.keys(variables.value).reduce((acc, key) => {
-		if (Array.isArray(variables.value[key])) {
-			acc[key] = variables.value[key].join(", ");
+	return Object.keys(props.variables).reduce((acc, key) => {
+		if (Array.isArray(props.variables[key])) {
+			acc[key] = props.variables[key].join(", ");
 		} else {
-			acc[key] = variables.value[key];
+			acc[key] = props.variables[key];
 		}
 		return acc;
 	}, {});

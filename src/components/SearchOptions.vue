@@ -1,4 +1,6 @@
 <script setup>
+import { fetchAvailableAssignments } from "@/services/baserow_client_api";
+
 import { Combobox } from "reka-ui/namespaced";
 import MdiPagePreviousOutline from "vue-material-design-icons/PagePreviousOutline.vue";
 import { ref, computed, onMounted, onUnmounted, watch, nextTick } from "vue";
@@ -6,7 +8,9 @@ import MdiClipboardText from "vue-material-design-icons/ClipboardText.vue";
 import MdiMagnify from "vue-material-design-icons/Magnify.vue";
 import MdiAccount from "vue-material-design-icons/Account.vue";
 import MdiDomain from "vue-material-design-icons/Domain.vue";
-import { adminStore, mainStore } from "@/main";
+import { useAdminStore } from "@/stores/admin_store";
+import { useMainStore } from "@/stores/main_store";
+
 import { router } from "@/router";
 
 const osKey = computed(() => {
@@ -25,7 +29,7 @@ const query = ref("");
 const allCompanies = ref([]);
 const allAssignments = ref([]);
 
-const routes = ["dashboard", "studenti", "alokacije", "dostupni-zadaci", "poslodavci", "profil", "poruke", "poslodavci/novi-zadatak"];
+const routes = ["dashboard", "studenti", "alokacije", "zadaci", "poslodavci", "profil", "poruke", "poslodavci/novi-zadatak"];
 const helpItems = [
 	{ prefix: "student:", aliases: ["studenti", "ime", "name", "s"], description: "Student po imenu", example: "Ana Anić" },
 	{ prefix: "jmbag:", aliases: ["sj"], description: "Student po JMBAG-u", example: "0303000000" },
@@ -51,6 +55,9 @@ const displayValue = computed({
 });
 
 import { normalizeString, filterByEmail, filterStudentsByName, filterByJMBAG, filterByAssignmentId, filterByCompany } from "@/helpers/search-utils.js";
+
+const adminStore = useAdminStore();
+const mainStore = useMainStore();
 
 const filteredResults = computed(() => {
 	const searchTerm = query.value ? normalizeString(query.value.slice(query.value.indexOf(":") + 1)) : "";
@@ -105,7 +112,7 @@ watch(selectedValue, (newValue) => {
 		} else if (newValue.naziv && !newValue.ime && !newValue.prezime) {
 			router.push(`/poslodavci/${newValue.naziv}`);
 		} else if (newValue.id_zadatak) {
-			router.push(`/dostupni-zadaci/${newValue.id_zadatak}`);
+			router.push(`/zadaci/${newValue.id_zadatak}`);
 		}
 		query.value = "";
 		selectedValue.value = "";
@@ -130,7 +137,7 @@ onMounted(async () => {
 	onUnmounted(() => document.removeEventListener("keydown", onKeydown));
 
 	allCompanies.value = await mainStore.fetchCompanies();
-	allAssignments.value = await mainStore.fetchAvailableAssignments();
+	allAssignments.value = await fetchAvailableAssignments();
 });
 </script>
 

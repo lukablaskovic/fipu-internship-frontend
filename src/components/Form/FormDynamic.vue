@@ -13,7 +13,7 @@
 
 			<template v-if="field.type === 'var-string'"> </template>
 
-			<component :is="tableComponent" v-if="field.type.startsWith('selectFromTable') && isTableComponentVisible" :data="getTableType(field.type)" @row-selected="handleRowSelected" />
+			<component :is="tableComponent" v-if="field.type.startsWith('selectFromTable') && isTableComponentVisible" :data="getTableType(field.type)" :variables="variables" @row-selected="handleRowSelected" />
 
 			<p v-if="field.type.startsWith('selectFromTable') && isTableComponentVisible" class="mb-4 mt-2">
 				Odabrali ste: <b> {{ formValues["Alocirani_zadatak"] }} </b>
@@ -23,6 +23,8 @@
 </template>
 
 <script setup>
+import { fetchAvailableAssignments } from "@/services/baserow_client_api";
+
 import { onMounted, computed, reactive, watch, ref } from "vue";
 
 import FormCheckRadioGroup from "./FormCheckRadioGroup.vue";
@@ -31,7 +33,10 @@ import CardBox from "../Cardbox/CardBox.vue";
 import FormControl from "./FormControl.vue";
 import FormField from "./FormField.vue";
 
-import { mainStore, snackBarStore } from "@/main.js";
+import { useSnackBarStore } from "@/stores/snackbar_store";
+
+const snackBarStore = useSnackBarStore();
+
 
 const emit = defineEmits(["update:modelValue", "allFieldsFilled"]);
 
@@ -70,7 +75,7 @@ onMounted(async () => {
 
 	// Fetch available assignments for validation if this is model_b_odobrenje_zadatka
 	if (props.currentTaskId === "model_b_odobrenje_zadatka") {
-		const assignments = await mainStore.fetchAvailableAssignments();
+		const assignments = await fetchAvailableAssignments();
 		if (assignments) {
 			availableAssignments.value = assignments;
 		}

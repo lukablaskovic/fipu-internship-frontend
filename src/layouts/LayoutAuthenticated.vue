@@ -1,8 +1,12 @@
 <script setup>
+import { appConfig } from "@/config";
+
 import { BASEROW_URL } from "@/config.js";
 
 import { mdiForwardburger, mdiChartTimeline, mdiInformation, mdiBackburger, mdiMenu, mdiMagnify, mdiLaptop, mdiClipboardCheck, mdiDomain, mdiClipboardText } from "@mdi/js";
-import { mainStore, styleStore } from "@/main.js";
+import { useMainStore } from "@/stores/main_store";
+import { useUiStore } from "@/stores/ui_store";
+
 import { ref, onMounted, computed } from "vue";
 
 import AsideMenu from "@/components/AsideMenu/AsideMenu.vue";
@@ -20,24 +24,20 @@ import BaseIcon from "@/components/Base/BaseIcon.vue";
 import NavBar from "@/components/Navbar/NavBar.vue";
 import FooterBar from "@/components/FooterBar.vue";
 
-import { layoutStore } from "@/main.js";
 
 import SnackBar from "@/components/Premium/SnackBar.vue";
 
-const layoutAsidePadding = computed(() => (layoutStore.isAsideLgActive ? "lg:pl-22" : "xl:pl-22"));
+const layoutAsidePadding = computed(() => (uiStore.isAsideLgActive ? "lg:pl-22" : "xl:pl-22"));
 
 import { useRouter } from "vue-router";
 
+const mainStore = useMainStore();
+const uiStore = useUiStore();
+
 const router = useRouter();
 
-const logoutModalActive = computed({
-	get: () => mainStore.logoutModalActive,
-	set: (open) => mainStore.activateLogoutModal(open),
-});
-const helpModalActive = computed({
-	get: () => mainStore.helpModalActive,
-	set: (open) => mainStore.activateHelpModal(open),
-});
+const logoutModalActive = ref(false);
+const helpModalActive = ref(false);
 
 const userAdmin = ref(false);
 
@@ -53,20 +53,20 @@ onMounted(() => {
 	}
 }),
 	router.beforeEach(() => {
-		layoutStore.isAsideMobileExpanded = false;
+		uiStore.isAsideMobileExpanded = false;
 	});
 
 const menuClick = (event, item) => {
 	if (item.isToggleLightDark) {
-		styleStore.setDarkMode();
+		uiStore.setDarkMode();
 	}
 
 	if (item.isLogout) {
-		mainStore.activateLogoutModal(true);
+		logoutModalActive.value = true;
 	}
 
 	if (item.isHelp) {
-		mainStore.activateHelpModal(true);
+		helpModalActive.value = true;
 	}
 };
 </script>
@@ -74,25 +74,25 @@ const menuClick = (event, item) => {
 <template name="fade">
 	<div
 		:class="{
-			dark: styleStore.darkMode,
-			'overflow-hidden lg:overflow-visible': layoutStore.isAsideMobileExpanded,
+			dark: uiStore.darkMode,
+			'overflow-hidden lg:overflow-visible': uiStore.isAsideMobileExpanded,
 		}">
-		<div :class="[layoutAsidePadding, { 'ml-60 lg:ml-0': layoutStore.isAsideMobileExpanded }]" class="flex min-h-screen w-screen flex-col bg-gray-50 pt-14 transition-position dark:bg-slate-800 dark:text-slate-100 lg:w-auto">
-			<NavBar :menu="menuNavBar" :class="[layoutAsidePadding, { 'ml-60 lg:ml-0': layoutStore.isAsideMobileExpanded }]" @menu-click="menuClick">
-				<NavBarItemPlain display="flex lg:hidden" @click.prevent="layoutStore.asideMobileToggle()">
-					<BaseIcon :path="layoutStore.isAsideMobileExpanded ? mdiBackburger : mdiForwardburger" size="24" />
+		<div :class="[layoutAsidePadding, { 'ml-60 lg:ml-0': uiStore.isAsideMobileExpanded }]" class="flex min-h-screen w-screen flex-col bg-gray-50 pt-14 transition-position dark:bg-slate-800 dark:text-slate-100 lg:w-auto">
+			<NavBar :menu="menuNavBar" :class="[layoutAsidePadding, { 'ml-60 lg:ml-0': uiStore.isAsideMobileExpanded }]" @menu-click="menuClick">
+				<NavBarItemPlain display="flex lg:hidden" @click.prevent="uiStore.asideMobileToggle()">
+					<BaseIcon :path="uiStore.isAsideMobileExpanded ? mdiBackburger : mdiForwardburger" size="24" />
 				</NavBarItemPlain>
-				<NavBarItemPlain display="hidden lg:flex xl:hidden" @click.prevent="layoutStore.asideLgToggle()">
-					<BaseIcon :path="layoutStore.isAsideLgActive ? mdiBackburger : mdiMenu" size="24" />
+				<NavBarItemPlain display="hidden lg:flex xl:hidden" @click.prevent="uiStore.asideLgToggle()">
+					<BaseIcon :path="uiStore.isAsideLgActive ? mdiBackburger : mdiMenu" size="24" />
 				</NavBarItemPlain>
 				<NavBarItemPlain v-if="mainStore.userAdmin">
 					<FormControl :icon="mdiMagnify" search-bar />
 				</NavBarItemPlain>
 			</NavBar>
 
-			<CardBoxModal v-model="logoutModalActive" has-cancel is-logout title="Jeste li sigurni da se želite odjaviti?" button-label="Odjava" class="z-100" @cancel="mainStore.activateLogoutModal(false)" @confirm="mainStore.logout()"> </CardBoxModal>
+			<CardBoxModal v-model="logoutModalActive" has-cancel is-logout title="Jeste li sigurni da se želite odjaviti?" button-label="Odjava" class="z-100" @cancel="logoutModalActive = false" @confirm="mainStore.logout()"> </CardBoxModal>
 
-			<CardBoxModal v-if="!mainStore.userAdmin" v-model="helpModalActive" has-cancel :has-confirm="false" title="ℹ️ Upute za korištenje aplikacije" button-label="Povratak" @cancel="mainStore.activateHelpModal(false)">
+			<CardBoxModal v-if="!mainStore.userAdmin" v-model="helpModalActive" has-cancel :has-confirm="false" title="ℹ️ Upute za korištenje aplikacije" button-label="Povratak" @cancel="helpModalActive = false">
 				<BaseDivider></BaseDivider>
 				<div class="mb-2 text-xl">O kolegiju</div>
 				<div>
@@ -108,7 +108,7 @@ const menuClick = (event, item) => {
 					<li><b>Proces B</b>: Student unaprijed dogovara s poslodavcem i voditeljem prakse kako će istu izvoditi, nakon toga poslodavac prijavljuje zadatak, a student se prijavljuje direktno.</li>
 					<li>
 						Detaljan opis svakog od procesa možete pronaći
-						<div class="inline-flex">na <IconTextLink :to="'/upute'" :icon="mdiInformation" :text="'Upute'" @click="mainStore.activateHelpModal(false)"></IconTextLink>.</div>
+						<div class="inline-flex">na <IconTextLink :to="'/upute'" :icon="mdiInformation" :text="'Upute'" @click="helpModalActive = false"></IconTextLink>.</div>
 					</li>
 				</ol>
 				<BaseDivider></BaseDivider>
@@ -141,7 +141,7 @@ const menuClick = (event, item) => {
 					<li>
 						<div class="flex flex-wrap text-base">
 							Ovisno o stanju vaše prakse,
-							<span class="inline-flex cursor-pointer items-center whitespace-normal text-fipu_blue" @click="router.push('/moja-praksa') && mainStore.activateHelpModal(false)">
+							<span class="inline-flex cursor-pointer items-center whitespace-normal text-fipu_blue" @click="helpModalActive = false; router.push('/moja-praksa')">
 								<BaseIcon :path="mdiLaptop" class="flex-none align-middle" :size="18"></BaseIcon>
 								Moja praksa
 							</span>
@@ -150,7 +150,7 @@ const menuClick = (event, item) => {
 					</li>
 					<li>
 						BPMN graf koji predstavlja stanje vaše prakse možete vidjeti
-						<div class="inline-flex">na <IconTextLink :to="'/stanje-procesa'" :icon="mdiChartTimeline" :text="'Stanje procesa'" @click="mainStore.activateHelpModal(false)"></IconTextLink>.</div>
+						<div class="inline-flex">na <IconTextLink :to="'/stanje-procesa'" :icon="mdiChartTimeline" :text="'Stanje procesa'" @click="helpModalActive = false"></IconTextLink>.</div>
 					</li>
 					<li>
 						<div class="flex flex-wrap text-base">Komunikaciju s voditeljem prakse vodite putem Google Chata</div>
@@ -171,7 +171,7 @@ const menuClick = (event, item) => {
 				<p class="mt-2">Hvala! 😁</p>
 			</CardBoxModal>
 
-			<CardBoxModal v-else v-model="helpModalActive" has-cancel :has-confirm="false" title="ℹ️ Upute za korištenje aplikacije" button-label="Povratak" @cancel="mainStore.activateHelpModal(false)">
+			<CardBoxModal v-else v-model="helpModalActive" has-cancel :has-confirm="false" title="ℹ️ Upute za korištenje aplikacije" button-label="Povratak" @cancel="helpModalActive = false">
 				<BaseDivider></BaseDivider>
 				<div class="mb-2 text-xl">O kolegiju</div>
 				<div>
@@ -187,7 +187,7 @@ const menuClick = (event, item) => {
 					<li><b>Proces B</b>: Student unaprijed dogovara s poslodavcem i voditeljem prakse kako će istu izvoditi, nakon toga poslodavac prijavljuje zadatak, voditelj ga odobrava, a student se prijavljuje direktno.</li>
 					<li>
 						Detaljan opis svakog od procesa možete pronaći
-						<div class="inline-flex">na <IconTextLink :to="'/upute'" :icon="mdiInformation" :text="'Upute'" @click="mainStore.activateHelpModal(false)"></IconTextLink>.</div>
+						<div class="inline-flex">na <IconTextLink :to="'/upute'" :icon="mdiInformation" :text="'Upute'" @click="helpModalActive = false"></IconTextLink>.</div>
 					</li>
 				</ol>
 				<BaseDivider></BaseDivider>
@@ -207,7 +207,7 @@ const menuClick = (event, item) => {
 					<li>
 						<div class="flex flex-wrap text-base">
 							Alokacije možete provjeriti u
-							<span class="inline-flex cursor-pointer items-center whitespace-normal text-fipu_blue" @click="router.push('/alokacije') && mainStore.activateHelpModal(false)">
+							<span class="inline-flex cursor-pointer items-center whitespace-normal text-fipu_blue" @click="helpModalActive = false; router.push('/alokacije')">
 								<BaseIcon :path="mdiClipboardCheck" class="flex-none align-middle" :size="18"></BaseIcon>
 								Alokacije </span
 							>.
@@ -223,7 +223,7 @@ const menuClick = (event, item) => {
 					<li>
 						<div class="flex flex-wrap text-base">
 							Sve prijavljene poslodavce možete pronaći u
-							<span class="inline-flex cursor-pointer items-center whitespace-normal text-fipu_blue" @click="router.push('/poslodavci') && mainStore.activateHelpModal(false)">
+							<span class="inline-flex cursor-pointer items-center whitespace-normal text-fipu_blue" @click="helpModalActive = false; router.push('/poslodavci')">
 								<BaseIcon :path="mdiDomain" class="flex-none align-middle" :size="18"></BaseIcon>
 								Poslodavci </span
 							>.
@@ -239,9 +239,9 @@ const menuClick = (event, item) => {
 					<li>
 						<div class="flex flex-wrap text-base">
 							Novoprijavljene zadatke možete pronaći u
-							<span class="inline-flex cursor-pointer items-center whitespace-normal text-fipu_blue" @click="router.push('/dostupni-zadaci') && mainStore.activateHelpModal(false)">
+							<span class="inline-flex cursor-pointer items-center whitespace-normal text-fipu_blue" @click="helpModalActive = false; router.push('/zadaci')">
 								<BaseIcon :path="mdiClipboardText" class="flex-none align-middle" :size="18"></BaseIcon>
-								Dostupni zadaci </span
+								Zadaci </span
 							>.
 						</div>
 					</li>
@@ -272,7 +272,7 @@ const menuClick = (event, item) => {
 			<div class="mt-6">
 				<FooterBar
 					><br />
-					Made with <span style="color: #e25555">&#9829;</span> at <a :href="mainStore.fipulab_web" target="_blank" class="hover-underline-animation cursor-pointer text-fipu_text_blue hover:text-fipu_blue">FIPUlab</a></FooterBar
+					Made with <span style="color: #e25555">&#9829;</span> at <a :href="appConfig.fipulab_web" target="_blank" class="hover-underline-animation cursor-pointer text-fipu_text_blue hover:text-fipu_blue">FIPUlab</a></FooterBar
 				>
 			</div>
 			<SnackBar />

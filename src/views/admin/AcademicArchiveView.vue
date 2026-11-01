@@ -1,7 +1,8 @@
 <script setup>
 import { computed, onMounted, ref, watch } from "vue";
 import axios from "axios";
-import { mainStore } from "@/main.js";
+import { useMainStore } from "@/stores/main_store";
+
 import { endpoints, LOCAL_DEV } from "@/config.js";
 import { archiveDocuments, displayArchiveValue } from "@/helpers/academic-archive.js";
 import LayoutAuthenticated from "@/layouts/LayoutAuthenticated.vue";
@@ -10,6 +11,8 @@ import CardBox from "@/components/Cardbox/CardBox.vue";
 import FormField from "@/components/Form/FormField.vue";
 import FormControl from "@/components/Form/FormControl.vue";
 import BaseButton from "@/components/Base/BaseButton.vue";
+
+const mainStore = useMainStore();
 
 const index = ref(null);
 const year = ref("");

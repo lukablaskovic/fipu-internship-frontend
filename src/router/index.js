@@ -1,5 +1,5 @@
 import { createRouter, createWebHistory } from "vue-router";
-import { mainStore } from "@/main.js";
+import { useMainStore } from "@/stores/main_store";
 import { MAINTENANCE_MODE, DEV_MODE } from "@/config.js";
 
 import { routes } from "./routes.js";
@@ -17,6 +17,7 @@ const router = createRouter({
 });
 
 router.beforeEach((to, from, next) => {
+	const mainStore = useMainStore();
 	const userAuthenticated = mainStore.userAuthenticated;
 	const userAdmin = mainStore.userAdmin;
 

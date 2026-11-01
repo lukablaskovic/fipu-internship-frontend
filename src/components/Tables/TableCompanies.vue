@@ -15,7 +15,10 @@ import LoadingOverlay from "../LoadingOverlay.vue";
 import { mdiWeb, mdiMenuDown } from "@mdi/js";
 
 import { useRoute } from "vue-router";
-import { mainStore } from "@/main.js";
+import { useMainStore } from "@/stores/main_store";
+
+const mainStore = useMainStore();
+
 
 defineProps({
 	checkable: Boolean,

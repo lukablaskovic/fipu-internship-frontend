@@ -6,13 +6,20 @@ import { computed, ref, onMounted } from "vue";
 
 import TableCheckboxCell from "@/components/Tables/TableCheckboxCell.vue";
 import { tableButtonMenuOptions } from "@/tableButtonMenuOptions.js";
-import { mainStore, studentStore, adminStore } from "@/main.js";
+import { useMainStore } from "@/stores/main_store";
+import { useStudentStore } from "@/stores/student_store";
+import { useAdminStore } from "@/stores/admin_store";
+
 import ButtonMenu from "@/components/Premium/ButtonMenu.vue";
 import BaseLevel from "@/components/Base/BaseLevel.vue";
 import LoadingOverlay from "../LoadingOverlay.vue";
 import { StudentMappings } from "@/helpers/maps";
 import PillTag from "../PillTag/PillTag.vue";
 import { mdiMenuDown } from "@mdi/js";
+
+const mainStore = useMainStore();
+const studentStore = useStudentStore();
+const adminStore = useAdminStore();
 
 defineProps({
 	checkable: Boolean,
@@ -83,7 +90,7 @@ const { perPage, currentPage, itemsPaginated: allocationsPaginated, numPages, cu
 					{{ allocation["JMBAG"] }}
 				</td>
 				<td data-label="Alocirani zadatak" class="underline hover:text-fipu_blue">
-					<router-link :to="`/dostupni-zadaci/${allocation['Alocirani_zadatak']}`">{{ allocation["Alocirani_zadatak"] }}</router-link>
+					<router-link :to="`/zadaci/${allocation['Alocirani_zadatak']}`">{{ allocation["Alocirani_zadatak"] }}</router-link>
 				</td>
 
 				<td data-label="Kontakt">
@@ -95,7 +102,7 @@ const { perPage, currentPage, itemsPaginated: allocationsPaginated, numPages, cu
 				<td data-label="Prijavnica ispunjena">
 					<div class="flex items-center">
 						<TableCheckboxCell readonly :value="allocation['popunjena_prijavnica']" />
-						<a v-if="allocation['popunjena_prijavnica'] && mainStore.userAdmin" class="ml-8 cursor-pointer text-sm underline hover:text-fipu_light_blue" @click="adminStore.openPDF(allocation, 'Potvrda', 'source_url_for_potvrda')">
+						<a v-if="allocation['popunjena_prijavnica'] && mainStore.userAdmin" class="ml-8 cursor-pointer text-sm underline hover:text-fipu_light_blue" @click="adminStore.openPDF(allocation)">
 							Generirana potvrda</a
 						>
 					</div>

@@ -6,7 +6,10 @@ import { computed, ref, onMounted, watch, reactive } from "vue";
 import { FieldRoot, FieldLabel } from "reka-ui";
 
 import TableCheckboxCell from "@/components/Tables/TableCheckboxCell.vue";
-import { mainStore, adminStore, snackBarStore } from "@/main.js";
+import { useMainStore } from "@/stores/main_store";
+import { useAdminStore } from "@/stores/admin_store";
+import { useSnackBarStore } from "@/stores/snackbar_store";
+
 import BaseButtons from "@/components/Base/BaseButtons.vue";
 import UserAvatar from "@/components/User/UserAvatar.vue";
 import BaseButton from "@/components/Base/BaseButton.vue";
@@ -21,6 +24,10 @@ import Utils from "@/helpers/utils";
 import { required, helpers, numeric } from "@vuelidate/validators";
 
 import { getFirstErrorForField } from "@/helpers/validators";
+
+const mainStore = useMainStore();
+const adminStore = useAdminStore();
+const snackBarStore = useSnackBarStore();
 
 defineProps({
 	checkable: Boolean,

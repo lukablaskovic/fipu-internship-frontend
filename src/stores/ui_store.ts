@@ -1,3 +1,4 @@
+import { persistSession } from "@/helpers/persist-session";
 import { darkModeKey, styleKey } from "@/config";
 import { defineStore } from "pinia";
 import * as styles from "@/styles";
@@ -6,7 +7,10 @@ import * as styles from "@/styles";
 type StylePayload = keyof typeof styles; // Extracting keys from styles to restrict payload to valid styles
 
 // Define an interface for the state structure
-interface StyleState {
+interface UiState {
+	isAsideMobileExpanded: boolean;
+	isAsideLgActive: boolean;
+	isLg: boolean;
 	/* Styles */
 	asideStyle: string;
 	asideScrollbarsStyle: string;
@@ -25,8 +29,11 @@ interface StyleState {
 	darkMode: boolean;
 }
 
-export const useStyleStore = defineStore("style", {
-	state: (): StyleState => ({
+export const useUiStore = defineStore("ui", {
+	state: (): UiState => ({
+		isAsideMobileExpanded: false,
+		isAsideLgActive: true,
+		isLg: false,
 		/* Styles */
 		asideStyle: "",
 		asideScrollbarsStyle: "",
@@ -46,6 +53,17 @@ export const useStyleStore = defineStore("style", {
 	}),
 
 	actions: {
+		asideMobileToggle() {
+			this.isAsideMobileExpanded = !this.isAsideMobileExpanded;
+		},
+
+		asideLgToggle() {
+			this.isAsideLgActive = !this.isAsideLgActive;
+		},
+
+		responsiveLayoutControl() {
+			this.isLg = window.innerWidth >= 1024;
+		},
 		setStyle(payload: StylePayload) {
 			if (!styles[payload]) {
 				return;
@@ -82,5 +100,5 @@ export const useStyleStore = defineStore("style", {
 		},
 	},
 
-	persist: false,
+	persist: persistSession(["isAsideLgActive"], "layout"),
 });

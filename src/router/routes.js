@@ -84,13 +84,17 @@ const routes = [
 		component: () => import("@/views/student/AllocationsView.vue"),
 	},
 	{
+		path: "/dostupni-zadaci/:id_zadatak?",
+		redirect: (to) => ({ name: to.params.id_zadatak ? "zadatak" : "zadaci", params: to.params, query: to.query, hash: to.hash }),
+	},
+	{
 		meta: {
-			title: "Dostupni zadaci",
+			title: "Zadaci",
 			requiresAuth: true,
 			requiresAdmin: true,
 		},
-		path: "/dostupni-zadaci",
-		name: "dostupni-zadaci",
+		path: "/zadaci",
+		name: "zadaci",
 		component: () => import("@/views/admin/AvailableAssignments.vue"),
 	},
 	{
@@ -99,7 +103,7 @@ const routes = [
 			requiresAuth: true,
 			requiresAdmin: true,
 		},
-		path: "/dostupni-zadaci/:id_zadatak",
+		path: "/zadaci/:id_zadatak",
 		name: "zadatak",
 		component: () => import("@/views/admin/AvailableAssignments.vue"),
 	},

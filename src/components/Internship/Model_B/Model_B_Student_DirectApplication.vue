@@ -1,4 +1,6 @@
 <script setup>
+import { appConfig } from "@/config";
+
 import { mdiClipboardText, mdiLaptop } from "@mdi/js";
 import { ref, computed, onMounted } from "vue";
 
@@ -12,11 +14,18 @@ import CardBoxModal from "@/components/Cardbox/CardBoxModal.vue";
 import SectionMain from "@/components/Section/SectionMain.vue";
 
 import CardBoxWidget from "@/components/Cardbox/CardBoxWidget.vue";
-import { mainStore, studentStore, snackBarStore } from "@/main.js";
+import { useMainStore } from "@/stores/main_store";
+import { useStudentStore } from "@/stores/student_store";
+import { useSnackBarStore } from "@/stores/snackbar_store";
+
 import FormControl from "@/components/Form/FormControl.vue";
 import BaseButtons from "@/components/Base/BaseButtons.vue";
 import BaseButton from "@/components/Base/BaseButton.vue";
 import FormField from "@/components/Form/FormField.vue";
+
+const mainStore = useMainStore();
+const studentStore = useStudentStore();
+const snackBarStore = useSnackBarStore();
 
 const prviOdabir = ref(null);
 let prviOdabirDetails = ref(null);
@@ -87,8 +96,8 @@ const directApplication = async () => {
 	<component :is="Layout">
 		<SectionMain class="relative">
 			<SectionTitleLineWithButton :icon="mdiLaptop" title="Moja Praksa" main> </SectionTitleLineWithButton>
-			<p><b>Akademska godina:</b> {{ mainStore.academicYear }}</p>
-			<p><b>Voditelj:</b> {{ mainStore.voditelj_prakse }}</p>
+			<p><b>Akademska godina:</b> {{ appConfig.academicYear }}</p>
+			<p><b>Voditelj:</b> {{ appConfig.voditelj_prakse }}</p>
 
 			<br />
 			<img src="/illustrations/selection.svg" class="absolute right-0 top-0 mb-12 mr-6 mt-4 hidden w-1/5 max-w-full md:block" />

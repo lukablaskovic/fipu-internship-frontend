@@ -3,8 +3,11 @@ import { FieldControl, FieldRoot, Primitive, injectFieldRootContext } from "reka
 const fieldContext = injectFieldRootContext(null);
 import BaseButton from "@/components/Base/BaseButton.vue";
 import { computed, ref, watch } from "vue";
-import { snackBarStore } from "@/main";
+import { useSnackBarStore } from "@/stores/snackbar_store";
+
 import { mdiUpload } from "@mdi/js";
+
+const snackBarStore = useSnackBarStore();
 
 const props = defineProps({
 	disabled: Boolean,

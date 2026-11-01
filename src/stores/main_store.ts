@@ -1,51 +1,18 @@
+import { persistSession } from "@/helpers/persist-session";
 import { Guest, Student } from "@/services/baserow_client_api";
 import { defineStore } from "pinia";
 import { router } from "@/router";
 
 import { ProcessInstance } from "@/services/bpmn_engine_api";
 import { CurrentUser } from "@/models/CurrentUser";
-import { MAINTENANCE_MODE, LOCAL_DEV, clearSession } from "@/config";
-import { studentStore } from "@/main";
-
-export interface Assignment {
-	id_zadatak: number;
-}
+import { MAINTENANCE_MODE, appConfig, clearSession } from "@/config";
+import { useStudentStore } from "@/stores/student_store";
 
 export const useMainStore = defineStore("main", {
 	state: () => ({
-		praksa_version: "v1.5.1",
-		academicYear: "2026./2027.",
-		voditelj_prakse: "doc. dr. sc. Ivan Lorencin",
-
-		admin_emails: LOCAL_DEV ? ["admin@local.test"] : ["ntankov@unipu.hr", "ilorencin@unipu.hr", "lblaskovi@unipu.hr", "mmilicevi@unipu.hr"],
-
-		fipulab_web: "https://web.fipulab.unipu.hr/",
-
-		// Debugger
-		depth: 5,
-		debug: false,
-		storeSelected: "mainStore",
-
 		allCompanies: [] as any[],
 
-		bpmn_process_name_A: "strucna_praksa_A",
-		bpmn_process_name_B: "strucna_praksa_B",
-
 		currentUser: new CurrentUser(),
-		currentUserProcessInstanceData: {} as any,
-
-		// Modal states
-		logoutModalActive: false,
-		helpModalActive: false,
-
-		isFieldFocusRegistered: false,
-		table_items_per_page: 10,
-
-		// from guest store
-		assignments: [] as Assignment[],
-		checkedAssignments: [] as Assignment[],
-		isLoading: false,
-		error: null as string | null,
 
 		// Maintenance mode
 		maintenanceMode: MAINTENANCE_MODE,
@@ -57,13 +24,13 @@ export const useMainStore = defineStore("main", {
 			return token ? true : false;
 		},
 		userAdmin(state): boolean {
-			return !!state.currentUser.email && state.admin_emails.includes(state.currentUser.email);
+			return !!state.currentUser.email && appConfig.admin_emails.includes(state.currentUser.email);
 		},
 		userHasActiveInstance(state): boolean {
 			return !!state.currentUser.internship_process.id && state.currentUser.internship_process.pending_user_task !== "end_event_student";
 		},
 		get_userModelPrakse(state): string {
-			return state.currentUser.model_prakse == "A" ? state.bpmn_process_name_A : state.bpmn_process_name_B;
+			return state.currentUser.model_prakse == "A" ? appConfig.bpmn_process_name_A : appConfig.bpmn_process_name_B;
 		},
 	},
 
@@ -137,7 +104,7 @@ export const useMainStore = defineStore("main", {
 						const processInstance = response_student.data.results[0].process_instance_id;
 						// Has active process instance, so redirect to moja-praksa
 						if (processInstance) {
-							await studentStore.getPendingUserTask(processInstance);
+							await useStudentStore().getPendingUserTask(processInstance);
 							if (this.userHasActiveInstance) {
 								await router.push("/moja-praksa");
 							} else {
@@ -160,17 +127,8 @@ export const useMainStore = defineStore("main", {
 
 		logout() {
 			this.currentUser.reset();
-			this.logoutModalActive = false;
 			clearSession();
 			router.go(0); // Refresh the page
-		},
-
-		activateLogoutModal(state: boolean) {
-			this.logoutModalActive = state;
-		},
-
-		activateHelpModal(state: boolean) {
-			this.helpModalActive = state;
 		},
 
 		async fetchCompanies(search = "", throwOnError = false) {
@@ -199,9 +157,9 @@ export const useMainStore = defineStore("main", {
 			try {
 				let bpmn_model: string | null = null;
 				if (selected_model === "A") {
-					bpmn_model = this.bpmn_process_name_A;
+					bpmn_model = appConfig.bpmn_process_name_A;
 				} else {
-					bpmn_model = this.bpmn_process_name_B;
+					bpmn_model = appConfig.bpmn_process_name_B;
 				}
 				const response_bpmn_engine = await ProcessInstance.create(`${bpmn_model}.bpmn`);
 
@@ -216,36 +174,6 @@ export const useMainStore = defineStore("main", {
 			}
 		},
 
-		async fetchAvailableAssignments() {
-			this.isLoading = true;
-			this.error = null;
-			try {
-				const result = await Guest.fetchAvailableAssignments();
-				this.assignments = result.data.results;
-				return this.assignments;
-			} catch (e: any) {
-				this.error = e.message;
-			} finally {
-				this.isLoading = false;
-			}
-		},
-
-		addAssignment(assignment: Assignment) {
-			const assignmentExists = this.checkedAssignments.some((a) => a.id_zadatak === assignment.id_zadatak);
-			if (!assignmentExists) {
-				this.checkedAssignments.push(assignment);
-			}
-		},
-
-		removeAssignment(assignment: Assignment) {
-			this.checkedAssignments = this.checkedAssignments.filter((a) => a.id_zadatak !== assignment.id_zadatak);
-		},
-
-		resetAssignments() {
-			this.checkedAssignments = [];
-		},
-
-		// Maintenance mode actions
 		enableMaintenanceMode() {
 			this.maintenanceMode = true;
 		},
@@ -253,45 +181,6 @@ export const useMainStore = defineStore("main", {
 		disableMaintenanceMode() {
 			this.maintenanceMode = false;
 		},
-
-		async submitNewInternshipProject(formData: any) {
-			const postData = { ...formData, Poslodavac: [] as string[] };
-
-			if (formData.Poslodavac) {
-				postData.Poslodavac = [formData.Poslodavac];
-			} else if (formData.Poslodavac_novi_naziv) {
-				postData.Poslodavac = [formData.Poslodavac_novi_naziv];
-			}
-
-			delete postData.Poslodavac_novi_naziv;
-
-			if (formData.angazman_selekcija === "false") {
-				postData.angazman_fipu = "Ne";
-			} else if (formData.angazman_selekcija === "true" && !formData.angazman_fipu) {
-				postData.angazman_fipu = "";
-			}
-			try {
-				const response = await Guest.submitNewInternshipProject(postData);
-				return response;
-			} catch (error) {
-				console.log("Error:", error);
-				return null;
-			}
-		},
 	},
-	persist: {
-		storage: sessionStorage,
-		omit: ["assignments", "checkedAssignments", "allCompanies", "praksa_version", "academicYear"],
-		debug: true,
-		beforeRestore: (ctx: any) => {
-			// Only restore allCompanies if user is authenticated
-			const token = sessionStorage.getItem("token");
-			if (!token) {
-				// For non-authenticated users, prevent restoring companies data
-				if (ctx.store && ctx.store.allCompanies) {
-					ctx.store.allCompanies = [];
-				}
-			}
-		},
-	},
+	persist: persistSession(["currentUser", "maintenanceMode"]),
 });

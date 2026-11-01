@@ -1,4 +1,6 @@
 <script setup>
+import { appConfig } from "@/config";
+
 import { mdiProgressClock, mdiLaptop, mdiNewBox } from "@mdi/js";
 import IconTextLink from "@/components/IconTextLink.vue";
 import { computed, onMounted } from "vue";
@@ -10,7 +12,12 @@ import SectionTitleLineWithButton from "@/components/Section/SectionTitleLineWit
 
 import SectionMain from "@/components/Section/SectionMain.vue";
 
-import { mainStore, studentStore } from "@/main.js";
+import { useMainStore } from "@/stores/main_store";
+import { useStudentStore } from "@/stores/student_store";
+
+const mainStore = useMainStore();
+const studentStore = useStudentStore();
+
 
 onMounted(async () => {
 	await studentStore.getInstanceInfo(mainStore.currentUser.internship_process.id);
@@ -29,8 +36,8 @@ const Layout = computed(() => {
 	<component :is="Layout">
 		<SectionMain class="relative">
 			<SectionTitleLineWithButton :icon="mdiLaptop" title="Moja Praksa" main> </SectionTitleLineWithButton>
-			<p><b>Akademska godina:</b> {{ mainStore.academicYear }}</p>
-			<p><b>Voditelj:</b> {{ mainStore.voditelj_prakse }}</p>
+			<p><b>Akademska godina:</b> {{ appConfig.academicYear }}</p>
+			<p><b>Voditelj:</b> {{ appConfig.voditelj_prakse }}</p>
 			<br />
 			<img src="/illustrations/selection.svg" class="absolute right-0 top-0 mr-6 mt-4 w-1/5 max-w-full" />
 			<SectionTitleLineWithButton :icon="mdiProgressClock" main title="Postupak odobrenja je u tijeku"></SectionTitleLineWithButton>

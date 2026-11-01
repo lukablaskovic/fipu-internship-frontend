@@ -1,7 +1,10 @@
 <script setup>
 import UserAvatar from "@/components/User/UserAvatar.vue";
 import small_loading_gif from "/small_loading_gif.gif";
-import { mainStore } from "@/main.js";
+import { useMainStore } from "@/stores/main_store";
+
+const mainStore = useMainStore();
+
 </script>
 
 <template>

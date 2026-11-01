@@ -3,7 +3,7 @@
 
 	<LoadingOverlay :is-active="!dataLoaded" title="Učitavanje..." description="Može potrajati nekoliko sekundi, molimo ne zatvarajte stranicu."> </LoadingOverlay>
 
-	<CardBoxModal v-if="isModalActive" v-model="isModalActive" large button-label="Zatvori" button="fipu_blue" has-cancel:false @cancel="mainStore.activateLogoutModal(false)">
+	<CardBoxModal v-if="isModalActive" v-model="isModalActive" large button-label="Zatvori" button="fipu_blue" has-cancel:false @cancel="isModalActive = null">
 		<CardboxAllocation :data="isModalActive"></CardboxAllocation>
 		<br />
 	</CardBoxModal>
@@ -87,6 +87,8 @@
 </template>
 
 <script setup>
+import { fetchAvailableAssignments } from "@/services/baserow_client_api";
+
 import CardBoxComponentEmpty from "@/components/Cardbox/CardBoxComponentEmpty.vue";
 import BasePagination from "@/components/Base/BasePagination.vue";
 import { usePagination } from "@/composables/usePagination.js";
@@ -103,13 +105,16 @@ import BaseButtons from "@/components/Base/BaseButtons.vue";
 import UserAvatar from "@/components/User/UserAvatar.vue";
 import BaseButton from "@/components/Base/BaseButton.vue";
 import BaseLevel from "@/components/Base/BaseLevel.vue";
-import { mainStore, adminStore } from "@/main.js";
+import { useMainStore } from "@/stores/main_store";
+
 import { mdiEye, mdiMenuDown } from "@mdi/js";
 import { DEFAULT_COMPANY_LOGO, fetchCompanyForAssignment, findCompanyForAssignment, getCompanyLogoKey, getCompanyLogoUrl, rememberCompany } from "@/helpers/company-logo.js";
 
 import { useRoute } from "vue-router";
 
-defineProps({ checkable: Boolean });
+const mainStore = useMainStore();
+
+const props = defineProps({ checkable: Boolean, availableOnly: { type: Boolean, default: true } });
 
 const searchQuery = ref("");
 const companiesLoaded = ref(false);
@@ -140,7 +145,7 @@ const assignmentLimitActive = ref(false);
 
 const dataLoaded = ref(false);
 
-let checkedAssignments = computed(() => mainStore.checkedAssignments);
+const checkedAssignments = defineModel({ type: Array, default: () => [] });
 let assignment_highlight = ref("");
 
 const route = useRoute();
@@ -148,9 +153,9 @@ const route = useRoute();
 async function loadData() {
 	const id_zadatak = route.params.id_zadatak;
 
-	const resultAssignments = await mainStore.fetchAvailableAssignments();
+	const resultAssignments = await fetchAvailableAssignments();
 	allAvailableAssignments.value = resultAssignments.filter((task) => {
-		const condition = adminStore.availableAssignmentsFilter ? task.dostupno_mjesta > 0 : task.dostupno_mjesta >= 0;
+		const condition = props.availableOnly ? task.dostupno_mjesta > 0 : task.dostupno_mjesta >= 0;
 		return condition && task.voditelj_odobrio.value == "odobreno";
 	});
 
@@ -165,12 +170,11 @@ async function loadData() {
 watch(() => route.params.id_zadatak, loadData, { immediate: true });
 
 onMounted(async () => {
-	const result = await mainStore.fetchAvailableAssignments();
+	const result = await fetchAvailableAssignments();
 	allAvailableAssignments.value = result.filter((task) => {
-		const condition = adminStore.availableAssignmentsFilter ? task.dostupno_mjesta > 0 : task.dostupno_mjesta >= 0;
+		const condition = props.availableOnly ? task.dostupno_mjesta > 0 : task.dostupno_mjesta >= 0;
 		return condition && task.voditelj_odobrio.value == "odobreno";
 	});
-	mainStore.resetAssignments();
 });
 
 onMounted(async () => {
@@ -238,12 +242,12 @@ watch(checkedAssignments, (newVals) => {
 });
 
 watch(
-	() => adminStore.availableAssignmentsFilter,
+	() => props.availableOnly,
 	async () => {
-		const result = await mainStore.fetchAvailableAssignments();
+		const result = await fetchAvailableAssignments();
 
 		allAvailableAssignments.value = result.filter((task) => {
-			const condition = adminStore.availableAssignmentsFilter ? task.dostupno_mjesta > 0 : task.dostupno_mjesta >= 0;
+			const condition = props.availableOnly ? task.dostupno_mjesta > 0 : task.dostupno_mjesta >= 0;
 			return condition && task.voditelj_odobrio.value == "odobreno";
 		});
 	},
@@ -258,12 +262,12 @@ const checked = (value, assignment) => {
 	if (value) {
 		if (checkedAssignments.value.length >= MAX_NUM_ASSIGNMENTS) {
 			assignmentLimitActive.value = true;
-			assignmentCheckedStates[assignment["id_zadatak"]] = false;
+			assignmentCheckedStates.value[assignment["id_zadatak"]] = false;
 			return;
 		}
-		mainStore.addAssignment(assignment);
+		if (!isCheckedAssignment(assignment)) checkedAssignments.value = [...checkedAssignments.value, assignment];
 	} else {
-		mainStore.removeAssignment(assignment);
+		checkedAssignments.value = checkedAssignments.value.filter((item) => item.id_zadatak !== assignment.id_zadatak);
 	}
 };
 </script>

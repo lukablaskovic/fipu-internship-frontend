@@ -1,3 +1,4 @@
+const { mockStores } = require("./mock-stores.cjs");
 const { test, expect } = require("@playwright/test");
 
 for (const width of [1280, 390]) {
@@ -28,12 +29,12 @@ for (const width of [1280, 390]) {
 }
 
 async function openProfile(page, admin = false) {
-	await page.route(/\/src\/main(?:\.js)?(?:\?.*)?$/, route => route.fulfill({ contentType: "application/javascript", body: `
+	await mockStores(page, { contentType: "application/javascript", body: `
 		import { reactive } from '/node_modules/.vite/deps/vue.js';
 		export const adminStore = {}, studentStore = {}, styleStore = {}, layoutStore = {}, snackBarStore = {};
 		export const mainStore = reactive({ userAdmin: ${admin}, currentUser: {
 			ime: 'Demo', prezime: 'Korisnik', email: 'student@local.test', JMBAG: '1234567890', godina_studija: '3_prijediplomski', avatar: 'https://images.example/old.png'
-		} });` }));
+		} });` });
 	await page.route("**/src/layouts/LayoutAuthenticated.vue", route => route.fulfill({ contentType: "application/javascript", body: "import { h } from '/node_modules/.vite/deps/vue.js'; export default { setup(_, { slots }) { return () => h('main', slots.default()); } };" }));
 	await page.route("https://images.example/**", route => route.fulfill({ contentType: "image/svg+xml", body: '<svg xmlns="http://www.w3.org/2000/svg" width="80" height="80"><rect width="80" height="80" fill="#2563eb"/></svg>' }));
 	await page.goto("/tests/profile.html");

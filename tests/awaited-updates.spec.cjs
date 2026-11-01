@@ -1,10 +1,11 @@
 const { test, expect } = require('@playwright/test');
+const { mockStores } = require('./mock-stores.cjs');
 
 for (const [action, outcome] of [['accept', true], ['decline', true], ['accept', false]]) {
 	test(`assignment ${action} waits for ${outcome ? 'success' : 'failure'} without reloading`, async ({ page }) => {
 		const errors = [];
 		page.on('pageerror', (error) => errors.push(error.message));
-		await page.route('**/src/main.js', (route) => route.fulfill({
+		await mockStores(page, {
 			contentType: 'application/javascript',
 			body: `
 				import { reactive } from '/node_modules/.vite/deps/vue.js';
@@ -28,8 +29,8 @@ for (const [action, outcome] of [['accept', true], ['decline', true], ['accept',
 				export const snackBarStore = { pushMessage(text, type) { window.messages.push({ text, type }); } };
 				export const studentStore = {}, layoutStore = {}, styleStore = {};
 			`,
-		}));
-		await page.goto('/tests/empty-tables.html?table=TableNewAssignments');
+		});
+		await page.goto('/tests/empty-tables.html?table=TableAssignments');
 		const row = page.getByRole('row').filter({ has: page.getByRole('cell', { name: 'Test task', exact: true }) });
 		await expect(row).toBeVisible();
 		let navigations = 0;

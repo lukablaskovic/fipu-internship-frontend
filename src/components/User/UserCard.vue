@@ -5,10 +5,13 @@ import { mdiCheckDecagram, mdiSchool, mdiShieldAccount } from "@mdi/js";
 import BaseLevel from "@/components/Base/BaseLevel.vue";
 import CardBox from "@/components/Cardbox/CardBox.vue";
 import PillTag from "@/components/PillTag/PillTag.vue";
-import { mainStore } from "@/main.js";
+import { useMainStore } from "@/stores/main_store";
+
 import { computed } from "vue";
 
 import moment from "@/moment-setup";
+
+const mainStore = useMainStore();
 
 const loggeddTimeAgo = computed(() => moment(mainStore.currentUser.loggedAt).fromNow());
 

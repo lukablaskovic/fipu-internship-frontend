@@ -7,6 +7,7 @@ import { createRouter, createMemoryHistory } from 'vue-router';
 import '../src/css/main.css';
 const tables = import.meta.glob('../src/components/Tables/Table*.vue');
 tables.TableInstanceData = () => import('../src/components/BPMN/TableInstanceData.vue');
+tables.AvailableAssignments = () => import('../src/views/admin/AvailableAssignments.vue');
 tables.DashboardView = () => import('../src/views/admin/DashboardView.vue');
 const name = new URLSearchParams(location.search).get('table');
 const load = tables[`../src/components/Tables/${name}.vue`] || tables[name];

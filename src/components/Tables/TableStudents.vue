@@ -17,10 +17,13 @@ import PillTag from "@/components/PillTag/PillTag.vue";
 import BaseIcon from "@/components/Base/BaseIcon.vue";
 import { computed, ref, watch } from "vue";
 import LoadingOverlay from "../LoadingOverlay.vue";
-import { adminStore } from "@/main.js";
+import { useAdminStore } from "@/stores/admin_store";
+
 import { useRoute } from "vue-router";
 
-defineProps({ checkable: Boolean });
+const adminStore = useAdminStore();
+
+const props = defineProps({ checkable: Boolean, search: { type: String, default: "" } });
 
 const route = useRoute();
 const emit = defineEmits(["show-student-diagram"]);
@@ -32,7 +35,7 @@ const sortDirection = ref("asc");
 const sortColumn = ref("ime");
 
 const selectedStudentInstanceID = ref(null);
-const selectedStudentInstanceIDForDelete = ref(null);
+const selectedStudentForDelete = ref(null);
 const instanceDeleteModalActive = ref(false);
 
 // --- Sorting ---
@@ -88,7 +91,8 @@ function getFilteredStudents(studentsToFilter) {
 		}
 	}
 
-	return filtered;
+	const search = props.search.trim().toLocaleLowerCase("hr");
+	return filtered.filter((student) => [student.ime, student.prezime, student.JMBAG, student.email].join(" ").toLocaleLowerCase("hr").includes(search));
 }
 
 // --- Computed properties for display ---
@@ -99,18 +103,17 @@ const filteredAndSortedStudents = computed(() => {
 
 const { perPage, currentPage, itemsPaginated: studentsPaginated, numPages, currentPageHuman, handlePerPageChange } = usePagination(filteredAndSortedStudents);
 
+watch(filteredAndSortedStudents, () => { currentPage.value = 0; });
+
 // --- Actions ---
 function showDiagram(student) {
 	selectedStudentInstanceID.value = student["process_instance_id"];
-	adminStore.setSelectedStudent(student);
 	emit("show-student-diagram", student);
 }
 
 function deleteProcessInstance(student) {
-	selectedStudentInstanceIDForDelete.value = student["process_instance_id"];
-	adminStore.setSelectedStudentForDelete(student);
+	selectedStudentForDelete.value = student;
 	instanceDeleteModalActive.value = true;
-	console.log(adminStore.selectedStudentForDelete);
 }
 
 // --- Lifecycle and Watchers ---
@@ -119,12 +122,10 @@ watch(students, () => {
 		selectedStudentInstanceID.value = route.params.process_instance_id;
 		const selectedStudent = students.value.find((student) => student["process_instance_id"] === route.params.process_instance_id);
 		if (selectedStudent) {
-			adminStore.setSelectedStudent(selectedStudent);
 			emit("show-student-diagram", selectedStudent);
 		}
 	} else {
 		selectedStudentInstanceID.value = null;
-		adminStore.setSelectedStudent(null);
 	}
 }, { immediate: true });
 
@@ -140,6 +141,7 @@ watch(selectedStudentInstanceID, (newVal) => {
 </script>
 
 <template>
+	<p v-if="studentsFetched" class="px-4 py-2 text-xs text-gray-500 dark:text-slate-400" role="status">{{ filteredAndSortedStudents.length }} studenata</p>
 	<LoadingOverlay :is-active="!studentsFetched" title="Učitavanje..." description="Može potrajati nekoliko sekundi, molimo ne zatvarajte stranicu."> </LoadingOverlay>
 	<table v-if="filteredAndSortedStudents.length || !studentsFetched">
 		<thead>
@@ -223,17 +225,17 @@ watch(selectedStudentInstanceID, (newVal) => {
 	</table>
 	<CardBoxComponentEmpty v-if="!filteredAndSortedStudents.length && studentsFetched" />
 	<div v-if="instanceDeleteModalActive">
-		<CardBoxModal v-model="instanceDeleteModalActive" title="Brisanje procesne instance" button="danger" has-cancel button-label="Obriši" @confirm="adminStore.removeInstanceData()">
+		<CardBoxModal v-model="instanceDeleteModalActive" title="Brisanje procesne instance" button="danger" has-cancel button-label="Obriši" @confirm="adminStore.removeInstanceData(selectedStudentForDelete)">
 			<p>
-				<b>OPREZ!</b> Ova radnja će obrisati kompletnu procesnu instancu prakse za studenta: <b>{{ adminStore.selectedStudentForDelete.ime }} {{ adminStore.selectedStudentForDelete.prezime }}</b> uključujući sve podatke koje je student unio,
+				<b>OPREZ!</b> Ova radnja će obrisati kompletnu procesnu instancu prakse za studenta: <b>{{ selectedStudentForDelete.ime }} {{ selectedStudentForDelete.prezime }}</b> uključujući sve podatke koje je student unio,
 				generirane prijavnice i dnevnik prakse. <b>Radnja je nepovratna.</b>
 			</p>
 			<br />
-			<p><b>ID procesne instance:</b> {{ adminStore.selectedStudentForDelete.process_instance_id }}</p>
-			<p><b>Baserow id_preferencije:</b> {{ adminStore.selectedStudentForDelete["process_instance_data"]["variables"]["id_preferencije"] }}</p>
-			<p><b>Baserow id_alokacija:</b> {{ adminStore.selectedStudentForDelete["process_instance_data"]["variables"]["id_alokacija"] }}</p>
-			<p><b>Baserow id_prijavnica:</b> {{ adminStore.selectedStudentForDelete["process_instance_data"]["variables"]["id_prijavnica"] }}</p>
-			<p><b>Baserow id_dnevnik_prakse:</b> {{ adminStore.selectedStudentForDelete["process_instance_data"]["variables"]["id_dnevnik_prakse"] }}</p>
+			<p><b>ID procesne instance:</b> {{ selectedStudentForDelete.process_instance_id }}</p>
+			<p><b>Baserow id_preferencije:</b> {{ selectedStudentForDelete["process_instance_data"]["variables"]["id_preferencije"] }}</p>
+			<p><b>Baserow id_alokacija:</b> {{ selectedStudentForDelete["process_instance_data"]["variables"]["id_alokacija"] }}</p>
+			<p><b>Baserow id_prijavnica:</b> {{ selectedStudentForDelete["process_instance_data"]["variables"]["id_prijavnica"] }}</p>
+			<p><b>Baserow id_dnevnik_prakse:</b> {{ selectedStudentForDelete["process_instance_data"]["variables"]["id_dnevnik_prakse"] }}</p>
 			<p class="mt-2">Jeste li sigurni da želite obrisati instancu i sve podatke?</p>
 			<br />
 		</CardBoxModal>

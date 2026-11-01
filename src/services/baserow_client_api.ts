@@ -135,3 +135,39 @@ const Admin = {
 };
 
 export { Guest, Admin, Student };
+
+// Return page data without keeping a second global copy of each response.
+export async function fetchAvailableAssignments() {
+	try {
+		const result = await Guest.fetchAvailableAssignments();
+		return result?.data?.results;
+	} catch (error) {
+		console.error("Assignments could not be fetched:", error);
+		return undefined;
+	}
+}
+
+export async function submitNewInternshipProject(formData: any) {
+	const postData = { ...formData, Poslodavac: [] as string[] };
+
+	if (formData.Poslodavac) {
+		postData.Poslodavac = [formData.Poslodavac];
+	} else if (formData.Poslodavac_novi_naziv) {
+		postData.Poslodavac = [formData.Poslodavac_novi_naziv];
+	}
+
+	delete postData.Poslodavac_novi_naziv;
+
+	if (formData.angazman_selekcija === "false") {
+		postData.angazman_fipu = "Ne";
+	} else if (formData.angazman_selekcija === "true" && !formData.angazman_fipu) {
+		postData.angazman_fipu = "";
+	}
+	try {
+		const response = await Guest.submitNewInternshipProject(postData);
+		return response;
+	} catch (error) {
+		console.log("Error:", error);
+		return null;
+	}
+}

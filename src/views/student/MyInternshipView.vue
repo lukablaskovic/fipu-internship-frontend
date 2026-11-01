@@ -1,9 +1,14 @@
 <script setup>
-import { mainStore, studentStore } from "@/main.js";
+import { useMainStore } from "@/stores/main_store";
+import { useStudentStore } from "@/stores/student_store";
+
 import { UserTaskMappings } from "@/helpers/maps";
 import { ref, computed, onMounted } from "vue";
 
 import LoadingOverlay from "@/components/LoadingOverlay.vue";
+
+const mainStore = useMainStore();
+const studentStore = useStudentStore();
 
 const processInstance = ref(null);
 const pendingProcessTask = computed(() => studentStore.student_process_instance_data.pending?.[0]);

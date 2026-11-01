@@ -1,4 +1,6 @@
 <script setup>
+import { appConfig } from "@/config";
+
 import { mdiLaptop, mdiBallot, mdiNotebook, mdiBriefcase } from "@mdi/js";
 import { ref, computed, onMounted, reactive } from "vue";
 
@@ -21,9 +23,16 @@ import BaseButton from "@/components/Base/BaseButton.vue";
 import FormField from "@/components/Form/FormField.vue";
 import CardBox from "@/components/Cardbox/CardBox.vue";
 
-import { mainStore, snackBarStore, studentStore } from "@/main.js";
+import { useMainStore } from "@/stores/main_store";
+import { useSnackBarStore } from "@/stores/snackbar_store";
+import { useStudentStore } from "@/stores/student_store";
+
 
 import { UserTaskMappings } from "@/helpers/maps";
+
+const mainStore = useMainStore();
+const snackBarStore = useSnackBarStore();
+const studentStore = useStudentStore();
 const studentData = ref(null);
 const allocated_assignment = ref(null);
 onMounted(async () => {
@@ -144,8 +153,8 @@ async function submit_diary_form() {
 	<component :is="Layout">
 		<SectionMain v-if="allocated_assignment != null" class="relative">
 			<SectionTitleLineWithButton :icon="mdiLaptop" title="Moja Praksa" main> </SectionTitleLineWithButton>
-			<p><b>Akademska godina:</b> {{ mainStore.academicYear }}</p>
-			<p><b>Voditelj: </b> {{ mainStore.voditelj_prakse }}</p>
+			<p><b>Akademska godina:</b> {{ appConfig.academicYear }}</p>
+			<p><b>Voditelj: </b> {{ appConfig.voditelj_prakse }}</p>
 			<img src="/illustrations/in_progress.svg" class="absolute right-0 top-0 mr-6 mt-4 hidden w-1/5 max-w-full md:block" />
 
 			<SectionTitleLineWithButton :icon="mdiBriefcase" main class="mt-24" title="Izvođenje prakse u tijeku"></SectionTitleLineWithButton>

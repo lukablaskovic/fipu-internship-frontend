@@ -9,7 +9,12 @@ import { mdiChevronUp, mdiChevronDown } from "@mdi/js";
 import BaseIcon from "@/components/Base/BaseIcon.vue";
 import Tooltip from "@/components/Base/Tooltip.vue";
 import { RouterLink, useRoute } from "vue-router";
-import { layoutStore, mainStore, styleStore } from "@/main.js";
+import { useUiStore } from "@/stores/ui_store";
+import { useMainStore } from "@/stores/main_store";
+
+const uiStore = useUiStore();
+const mainStore = useMainStore();
+
 
 const props = defineProps({
 	item: {
@@ -39,7 +44,7 @@ const componentClass = computed(() => {
 	const isActive = isDropdownActive.value || (props.item.isCurrentUser && route.path === "/profil");
 
 	const base = [
-		isActive ? `${styleStore.navBarItemLabelActiveColorStyle} dark:text-slate-400` : `${styleStore.navBarItemLabelStyle} dark:text-white dark:hover:text-slate-400 ${styleStore.navBarItemLabelHoverStyle}`,
+		isActive ? `${uiStore.navBarItemLabelActiveColorStyle} dark:text-slate-400` : `${uiStore.navBarItemLabelStyle} dark:text-white dark:hover:text-slate-400 ${uiStore.navBarItemLabelHoverStyle}`,
 		props.item.menu ? "lg:py-2 lg:px-3" : "py-2 px-3",
 	];
 
@@ -142,7 +147,7 @@ onBeforeUnmount(() => {
 			</component>
 		</RovingFocusItem>
 	</Tooltip>
-	<RovingFocusItem v-if="item.isCurrentUser && layoutStore.isLg" as-child>
+	<RovingFocusItem v-if="item.isCurrentUser && uiStore.isLg" as-child>
 		<ThemeToggle class="mx-1 self-center" />
 	</RovingFocusItem>
 </template>
