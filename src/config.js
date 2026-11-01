@@ -4,8 +4,30 @@ export const styleKey = "style";
 
 export const containerMaxW = "xl:max-w-8xl xl:mx-auto";
 
-// Local accounts and endpoints require the explicitly enabled Vite dev server.
-export const LOCAL_DEV = import.meta.env.DEV && import.meta.env.VITE_LOCAL_DEV === "true";
+export const DEV_MODE = import.meta.env.DEV;
+const dataModeKey = "dev-data-mode";
+let dataMode;
+if (DEV_MODE) {
+	try {
+		dataMode = sessionStorage.getItem(dataModeKey);
+	} catch {
+		// Use the configured default when browser storage is unavailable.
+	}
+}
+export const LOCAL_DEV = DEV_MODE && (dataMode === "local" || (dataMode !== "real" && import.meta.env.VITE_LOCAL_DEV === "true"));
+
+export function clearSession() {
+	const mode = DEV_MODE ? sessionStorage.getItem(dataModeKey) : null;
+	sessionStorage.clear();
+	if (mode) sessionStorage.setItem(dataModeKey, mode);
+}
+
+export function setLocalDevelopment(enabled) {
+	if (!DEV_MODE || typeof enabled !== "boolean") return;
+	sessionStorage.setItem(dataModeKey, enabled ? "local" : "real");
+	clearSession();
+	window.location.assign("/prijava");
+}
 
 export const endpoints = LOCAL_DEV ? {
 	VITE_FRONTEND_URL: "http://localhost:5173",
@@ -30,4 +52,4 @@ export const endpoints = LOCAL_DEV ? {
 };
 
 // Maintenance mode configuration
-export const MAINTENANCE_MODE = !LOCAL_DEV;
+export const MAINTENANCE_MODE = !DEV_MODE;

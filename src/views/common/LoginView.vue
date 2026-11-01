@@ -42,6 +42,7 @@
 				<RouterLink to="/poslodavci/novi-zadatak">Prijavite zadatak <span aria-hidden="true">→</span></RouterLink>
 			</footer>
 		</main>
+		<FormCheckRadio v-if="DEV_MODE" class="fixed bottom-4 right-4 z-50" name="Testni podaci (lokalno)" type="switch" :model-value="LOCAL_DEV" @update:model-value="switchDataMode" />
 		<SnackBar />
 	</div>
 </template>
@@ -49,16 +50,25 @@
 <script setup>
 import { decodeCredential, GoogleLogin } from "vue3-google-login";
 import BaseButton from "@/components/Base/BaseButton.vue";
+import FormCheckRadio from "@/components/Form/FormCheckRadio.vue";
 import SnackBar from "@/components/Premium/SnackBar.vue";
 import { isUnipuEmail } from "@/helpers/validators";
 import { mainStore, snackBarStore } from "@/main";
 import fipu_unipu from "/fipu_unipu.png";
 import { useRouter } from "vue-router";
-import { LOCAL_DEV } from "@/config";
+import { DEV_MODE, LOCAL_DEV, setLocalDevelopment } from "@/config";
 
 import { ref } from "vue";
 
 const router = useRouter();
+
+const switchDataMode = (enabled) => {
+	try {
+		setLocalDevelopment(enabled);
+	} catch {
+		snackBarStore.pushMessage("Promjena načina rada nije uspjela. Omogućite pohranu u pregledniku.", "error");
+	}
+};
 
 const localLogin = async (role) => {
 	if (!LOCAL_DEV) return;

@@ -4,7 +4,7 @@ import { router } from "@/router";
 
 import { ProcessInstance } from "@/services/bpmn_engine_api";
 import { CurrentUser } from "@/models/CurrentUser";
-import { MAINTENANCE_MODE, LOCAL_DEV } from "@/config";
+import { MAINTENANCE_MODE, LOCAL_DEV, clearSession } from "@/config";
 import { studentStore } from "@/main";
 
 export interface Assignment {
@@ -160,7 +160,7 @@ export const useMainStore = defineStore("main", {
 		logout() {
 			this.currentUser.reset();
 			this.logoutModalActive = false;
-			sessionStorage.clear();
+			clearSession();
 			router.go(0); // Refresh the page
 		},
 

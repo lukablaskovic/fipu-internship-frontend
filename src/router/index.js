@@ -1,6 +1,6 @@
 import { createRouter, createWebHistory } from "vue-router";
 import { mainStore } from "@/main.js";
-import { MAINTENANCE_MODE } from "@/config.js";
+import { MAINTENANCE_MODE, DEV_MODE } from "@/config.js";
 
 import { routes } from "./routes.js";
 
@@ -24,7 +24,7 @@ router.beforeEach((to, from, next) => {
 	const requiresAdmin = to.matched.some((record) => record.meta.requiresAdmin);
 
 	// Check if maintenance mode is enabled
-	if ((MAINTENANCE_MODE || mainStore.maintenanceMode) && to.path !== "/odrzavanje") {
+	if (!DEV_MODE && (MAINTENANCE_MODE || mainStore.maintenanceMode) && to.path !== "/odrzavanje") {
 		return next("/odrzavanje");
 	}
 
