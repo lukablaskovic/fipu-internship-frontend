@@ -1,11 +1,12 @@
 <script setup>
+import { Tabs } from "reka-ui/namespaced";
+import FormControlListbox from "@/components/Premium/FormControlListbox.vue";
+import { searchAndSortEvents } from "@/helpers/log-events.js";
+import CardBoxComponentEmpty from "@/components/Cardbox/CardBoxComponentEmpty.vue";
 import BasePagination from "@/components/Base/BasePagination.vue";
 import {
-	mdiAlphaACircle,
-	mdiAbTesting,
 	mdiNoteAlert,
 	mdiAccountTie,
-	mdiAlphaBCircleOutline,
 	mdiAccountMultiple,
 	mdiAccountSchoolOutline,
 	mdiProgressClock,
@@ -13,10 +14,11 @@ import {
 	mdiCardSearch,
 	mdiAccountCancel,
 	mdiAlphaSBox,
-	mdiClockTimeEight,
-	mdiCalendarClock,
-	mdiAccountGroup,
+	mdiSort,
+	mdiSortAscending,
+	mdiSortDescending,
 } from "@mdi/js";
+import BaseIcon from "@/components/Base/BaseIcon.vue";
 import { adminStore, mainStore, snackBarStore } from "@/main.js";
 
 import { ref, computed, onMounted, watch } from "vue";
@@ -24,7 +26,6 @@ import { useRouter } from "vue-router";
 import moment from "@/moment-setup";
 
 import SectionTitleLineWithButton from "@/components/Section/SectionTitleLineWithButton.vue";
-import SkeletonLoaderEvent from "@/components/SkeletonLoaderEvent.vue";
 import LayoutAuthenticated from "@/layouts/LayoutAuthenticated.vue";
 import PillTagFilter from "@/components/PillTag/PillTagFilter.vue";
 import CardBoxWidget from "@/components/Cardbox/CardBoxWidget.vue";
@@ -37,7 +38,7 @@ import PillTag from "@/components/PillTag/PillTag.vue";
 
 import { ActivityEventMappings } from "@/helpers/maps.js";
 import { latestEvents } from "@/filterOptions.js";
-import Utils from "@/helpers/utils";
+
 
 const router = useRouter();
 
@@ -59,6 +60,7 @@ const b_ongoing_internships = ref(0);
 
 let events = ref([]);
 let eventsFetchError = ref(false);
+const eventsLoading = ref(true);
 
 onMounted(async () => {
 	try {
@@ -87,30 +89,53 @@ onMounted(async () => {
 			eventsFetchError.value = true;
 			snackBarStore.pushMessage("Nakon više ponovljenih pokušaja, nije moguće dohvatiti evente.", "danger");
 		} else {
-			events.value = fetchedEvents.filter((event) => !ActivityEventMappings.shouldSkipEvent(event.activity_id)).sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+			events.value = fetchedEvents;
 		}
 	} catch (error) {
 		console.error("Dashboard rendering error:", error);
+		eventsFetchError.value = true;
+	} finally {
+		eventsLoading.value = false;
 	}
 });
 
-const toggleActiveEventsFilter = () => {
-	adminStore.filterActiveInstances = !adminStore.filterActiveInstances;
+const logView = ref("list");
+const logSearch = ref("");
+const studentName = (event) => [event.student_ime, event.student_prezime].filter(Boolean).join(" ") || "Nepoznat student";
+const logColumns = [
+	{ id: "student", label: "Student", value: studentName },
+	{ id: "jmbag", label: "JMBAG", value: (event) => event.student_JMBAG || "—" },
+	{ id: "email", label: "Email", value: (event) => event.student_email || "—" },
+	{ id: "model", label: "Model", value: (event) => event.model_name === mainStore.bpmn_process_name_A + ".bpmn" ? "A" : "B" },
+	{ id: "event", label: "Događaj", value: (event) => ActivityEventMappings.getEvent(event.activity_id)?.message || event.activity_id },
+	{ id: "time", label: "Vrijeme", value: (event) => new Date(event.timestamp).getTime() },
+];
+const sortOptions = logColumns.flatMap((column) => ["asc", "desc"].map((direction) => ({
+	id: `${column.id}-${direction}`,
+	column: column.id,
+	direction,
+	label: column.id === "time" ? (direction === "asc" ? "Najstariji prvo" : "Najnoviji prvo") : `${column.label} ${direction === "asc" ? "↑" : "↓"}`,
+	compare: (a, b) => {
+		const valueA = column.value(a);
+		const valueB = column.value(b);
+		const result = typeof valueA === "number" ? valueA - valueB : valueA.localeCompare(valueB, "hr");
+		return direction === "asc" ? result : -result;
+	},
+})));
+const logSort = ref(sortOptions.find((option) => option.id === "time-desc"));
+const sortByColumn = (column) => {
+	const direction = logSort.value.column === column && logSort.value.direction === "asc" ? "desc" : "asc";
+	logSort.value = sortOptions.find((option) => option.id === `${column}-${direction}`);
 };
-
-const toggleModelEventsFilter = () => {
-	// Cycle through the states A -> B -> AB -> A...
-	if (adminStore.filterModelState === "A") {
-		adminStore.filterModelState = "B";
-	} else if (adminStore.filterModelState === "B") {
-		adminStore.filterModelState = "AB";
-	} else {
-		adminStore.filterModelState = "A";
-	}
-};
+const modelOptions = [{ id: "AB", label: "Svi modeli" }, { id: "A", label: "Model A" }, { id: "B", label: "Model B" }];
+const modelFilter = computed({ get: () => modelOptions.find((option) => option.id === adminStore.filterModelState), set: (option) => { adminStore.filterModelState = option.id; } });
+const processOptions = [{ id: true, label: "Sve instance" }, { id: false, label: "Aktivne instance" }];
+const processFilter = computed({ get: () => processOptions.find((option) => option.id === adminStore.filterActiveInstances), set: (option) => { adminStore.filterActiveInstances = option.id; } });
+const dateOptions = [{ id: true, label: "Relativno vrijeme" }, { id: false, label: "Datum i vrijeme" }];
+const dateFormat = computed({ get: () => dateOptions.find((option) => option.id === adminStore.relativeToNowTimestmap), set: (option) => { adminStore.relativeToNowTimestmap = option.id; } });
 
 const filteredEvents = computed(() => {
-	let filtered = events.value;
+	let filtered = events.value.filter((event) => !ActivityEventMappings.shouldSkipEvent(event.activity_id));
 
 	if (!adminStore.filterActiveInstances) {
 		const endedInstances = events.value.filter((event) => event.activity_id === "end_event_student").map((event) => event.instance_id);
@@ -123,14 +148,13 @@ const filteredEvents = computed(() => {
 		filtered = filtered.filter((event) => event.model_name === mainStore.bpmn_process_name_B + ".bpmn");
 	}
 
-	return filtered;
+	return searchAndSortEvents(filtered, logSearch.value, logSort.value.compare);
 });
 
 watch(filteredEvents, () => {
 	currentPage.value = 0;
 });
 
-const eventsOptionsActive = ref(false);
 const formattedDate = (timestamp) => {
 	if (adminStore.relativeToNowTimestmap == true) {
 		return moment(timestamp).fromNow();
@@ -142,18 +166,8 @@ const formattedDate = (timestamp) => {
 const perPage = ref(10);
 const currentPage = ref(0);
 const itemsPaginated = computed(() => filteredEvents.value.slice(perPage.value * currentPage.value, perPage.value * (currentPage.value + 1)));
-const leftItems = computed(() => {
-	return itemsPaginated.value.slice(0, 5);
-});
-const rightItems = computed(() => {
-	return itemsPaginated.value.slice(5, 10);
-});
 const numPages = computed(() => Math.ceil(filteredEvents.value.length / perPage.value));
 const currentPageHuman = computed(() => numPages.value ? currentPage.value + 1 : 0);
-
-const toggleDateType = () => {
-	adminStore.relativeToNowTimestmap = !adminStore.relativeToNowTimestmap;
-};
 
 </script>
 
@@ -250,88 +264,50 @@ const toggleDateType = () => {
 					<SkeletonLoader v-else></SkeletonLoader>
 				</div>
 
-				<SectionTitleLineWithButton :icon="mdiCardSearch" title="Najnoviji događaji" main @click="eventsOptionsActive = true"> </SectionTitleLineWithButton>
+				<SectionTitleLineWithButton :icon="mdiCardSearch" title="Događaji (logs)" main> </SectionTitleLineWithButton>
 
-				<div v-if="!eventsFetchError" class="flex flex-wrap md:flex-row">
-					<div class="mb-4">
-						<PillTagFilter class="cursor-pointer" trend-type="filter" :trend="'Događaji'" :options="latestEvents" :left="true" />
+				<Tabs.Root v-if="!eventsFetchError" v-model="logView">
+					<div class="mb-3 flex flex-wrap items-center gap-2 text-sm">
+						<Tabs.List aria-label="Prikaz događaja" class="flex rounded-lg bg-white p-1 dark:bg-slate-800">
+							<Tabs.Trigger v-for="view in [{ id: 'list', label: 'Popis' }, { id: 'table', label: 'Tablica' }]" :key="view.id" :value="view.id" class="rounded px-3 py-1.5 focus-visible:outline focus-visible:outline-2 focus-visible:outline-fipu_blue data-[state=active]:bg-fipu_blue data-[state=active]:text-white">{{ view.label }}</Tabs.Trigger>
+						</Tabs.List>
+						<input v-model="logSearch" type="search" aria-label="Pretraži događaje" placeholder="Ime, JMBAG ili email…" class="min-w-0 flex-1 rounded-lg border-gray-300 py-1.5 text-sm dark:border-slate-700 dark:bg-slate-800" />
+						<FormControlListbox v-if="logView === 'list'" v-model="logSort" :options="sortOptions" aria-label="Sortiranje događaja" button-class="rounded-lg bg-white px-3 py-2 dark:bg-slate-800" />
+						<FormControlListbox v-model="modelFilter" :options="modelOptions" aria-label="Model prakse" button-class="rounded-lg bg-white px-3 py-2 dark:bg-slate-800" />
+						<FormControlListbox v-model="processFilter" :options="processOptions" aria-label="Status instance" button-class="rounded-lg bg-white px-3 py-2 dark:bg-slate-800" />
+						<FormControlListbox v-model="dateFormat" :options="dateOptions" aria-label="Format vremena" button-class="rounded-lg bg-white px-3 py-2 dark:bg-slate-800" />
+						<PillTagFilter trend-type="filter" trend="Događaji" :options="latestEvents" :left="true" small />
 					</div>
-
-					<div class="flex flex-row">
-						<div class="mb-4">
-							<PillTag
-								class="cursor-pointer"
-								:left="false"
-								:icon="adminStore.filterActiveInstances ? mdiAccountGroup : mdiAccountMultiple"
-								:color="adminStore.filterActiveInstances ? 'info' : 'success'"
-								:label="adminStore.filterActiveInstances ? 'Sve instance' : 'Aktivne instance'"
-								@click="toggleActiveEventsFilter" />
-						</div>
-					</div>
-					<div class="flex flex-row">
-						<div class="mb-4">
-							<PillTag
-								class="cursor-pointer"
-								:icon="adminStore.filterModelState === 'A' ? mdiAlphaACircle : adminStore.filterModelState === 'B' ? mdiAlphaBCircleOutline : mdiAbTesting"
-								:color="adminStore.filterModelState === 'A' ? 'danger' : adminStore.filterModelState === 'B' ? 'success' : 'info'"
-								:label="adminStore.filterModelState === 'A' ? 'Model A' : adminStore.filterModelState === 'B' ? 'Model B' : 'Modeli AB'"
-								@click="toggleModelEventsFilter" />
-						</div>
-					</div>
-					<div class="flex flex-row">
-						<div class="mb-4">
-							<PillTag
-								class="cursor-pointer"
-								:left="false"
-								:icon="adminStore.relativeToNowTimestmap ? mdiClockTimeEight : mdiCalendarClock"
-								:color="adminStore.relativeToNowTimestmap ? 'info' : 'success'"
-								:label="adminStore.relativeToNowTimestmap ? 'Relativno vrijeme' : 'Datum'"
-								@click="toggleDateType" />
-						</div>
-					</div>
-				</div>
-				<div v-if="!eventsFetchError && !Utils.isArrayEmpty(events)" class="mb-6 grid grid-cols-1 gap-6 lg:grid-cols-2">
-					<div class="flex flex-col">
-						<CardBoxEvents
-							v-for="(event, index) in leftItems"
-							:key="'left-' + index"
-							:student="event.student_ime + ' ' + event.student_prezime"
-							:date="formattedDate(event.timestamp)"
-							:type="event.activity_id"
-							:jmbag="event.student_JMBAG == undefined ? 'Greška u dohvatu podataka - JMBAG' : event.student_JMBAG"
-							:email="event.student_email == undefined ? 'Greška u dohvatu podataka - email' : event.student_email"
-							class="cursor-pointer rounded-lg hover:bg-fipu_blue/10"
-							:model="event.model_name"
-							@click="router.push(`/studenti/${event.instance_id}`)" />
-					</div>
-					<div class="flex flex-col">
-						<CardBoxEvents
-							v-for="(event, index) in rightItems"
-							:key="'right-' + index"
-							:student="event.student_ime + ' ' + event.student_prezime"
-							:date="formattedDate(event.timestamp)"
-							:type="event.activity_id"
-							:jmbag="event.student_JMBAG == undefined ? 'Greška u dohvatu podataka - JMBAG' : event.student_JMBAG"
-							:email="event.student_email == undefined ? 'Greška u dohvatu podataka - email' : event.student_email"
-							:model="event.model_name"
-							class="cursor-pointer rounded-lg hover:bg-fipu_blue/10"
-							@click="router.push(`/studenti/${event.instance_id}`)" />
-					</div>
-				</div>
-				<div v-else-if="!eventsFetchError && Utils.isArrayEmpty(events)" class="mb-6 grid grid-cols-1 gap-6 lg:grid-cols-2">
-					<div class="flex flex-col">
-						<SkeletonLoaderEvent />
-						<SkeletonLoaderEvent />
-						<SkeletonLoaderEvent />
-					</div>
-					<div class="flex flex-col">
-						<SkeletonLoaderEvent />
-						<SkeletonLoaderEvent />
-						<SkeletonLoaderEvent />
-					</div>
-				</div>
+					<p class="mb-2 text-xs text-gray-500 dark:text-slate-400" role="status">{{ filteredEvents.length }} događaja</p>
+					<Tabs.Content value="list">
+						<CardBoxEvents v-for="(event, index) in itemsPaginated" :key="index" :student="studentName(event)" :date="formattedDate(event.timestamp)" :type="event.activity_id" :jmbag="event.student_JMBAG || '—'" :email="event.student_email || '—'" :model="event.model_name" class="cursor-pointer rounded-lg hover:bg-fipu_blue/10 focus-visible:outline focus-visible:outline-2 focus-visible:outline-fipu_blue" role="link" tabindex="0" @click="router.push(`/studenti/${event.instance_id}`)" @keydown.enter="router.push(`/studenti/${event.instance_id}`)" />
+					</Tabs.Content>
+					<Tabs.Content value="table" class="overflow-x-auto rounded-lg bg-white dark:bg-slate-900/70">
+						<table v-if="filteredEvents.length" class="w-full text-left text-xs">
+							<caption class="sr-only">Događaji stručne prakse</caption>
+							<thead class="border-b dark:border-slate-700">
+								<tr>
+									<th v-for="column in logColumns" :key="column.id" scope="col" class="px-3 py-2" :aria-sort="logSort.column === column.id ? (logSort.direction === 'asc' ? 'ascending' : 'descending') : 'none'">
+										<button type="button" class="flex items-center gap-2 rounded hover:text-fipu_blue focus-visible:outline focus-visible:outline-2 focus-visible:outline-fipu_blue" @click="sortByColumn(column.id)">
+											{{ column.label }}
+											<BaseIcon :path="logSort.column === column.id ? (logSort.direction === 'asc' ? mdiSortAscending : mdiSortDescending) : mdiSort" w="w-4" h="h-4" :size="16" aria-hidden="true" />
+										</button>
+									</th>
+								</tr>
+							</thead>
+							<tbody><tr v-for="(event, index) in itemsPaginated" :key="index" class="border-b last:border-0 hover:bg-fipu_blue/10 dark:border-slate-700">
+								<td class="px-3 py-2"><RouterLink :to="`/studenti/${event.instance_id}`" class="font-semibold text-fipu_blue underline">{{ studentName(event) }}</RouterLink></td>
+								<td class="px-3 py-2">{{ event.student_JMBAG || '—' }}</td><td class="px-3 py-2">{{ event.student_email || '—' }}</td>
+								<td class="px-3 py-2">{{ event.model_name === mainStore.bpmn_process_name_A + '.bpmn' ? 'A' : 'B' }}</td>
+								<td class="px-3 py-2">{{ ActivityEventMappings.getEvent(event.activity_id)?.message || event.activity_id }}</td><td class="whitespace-nowrap px-3 py-2">{{ formattedDate(event.timestamp) }}</td>
+							</tr></tbody>
+						</table>
+					</Tabs.Content>
+					<p v-if="eventsLoading" class="py-6 text-center text-sm text-gray-500 dark:text-slate-400" role="status">Učitavanje događaja…</p>
+					<CardBoxComponentEmpty v-else-if="!filteredEvents.length" />
+				</Tabs.Root>
 				<div v-else class="mb-6 text-red-500">Nakon više ponovljenih pokušaja, nije moguće dohvatiti evente.</div>
-				<div v-if="!eventsFetchError" class="border-t border-gray-100 p-3 dark:border-slate-800 lg:px-6">
+				<div v-if="!eventsFetchError && filteredEvents.length" class="border-t border-gray-100 p-3 dark:border-slate-800 lg:px-6">
 					<BaseLevel>
 						<div class="flex flex-wrap items-center justify-center gap-3">
 							<BasePagination :page="currentPage + 1" :total="filteredEvents.length" :items-per-page="perPage" @update:page="currentPage = $event - 1" />

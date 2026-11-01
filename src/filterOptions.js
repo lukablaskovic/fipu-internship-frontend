@@ -10,10 +10,6 @@ export const latestEvents = [
 	transformedEvents,
 	[
 		{
-			label: "Spremi",
-		},
-
-		{
 			label: "Resetiraj",
 		},
 	],

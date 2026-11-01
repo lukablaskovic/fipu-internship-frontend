@@ -1,4 +1,3 @@
-import Utils from "./utils";
 
 function getMappedProperty(arr, key, keyValue, prop) {
 	const item = arr.find((item) => item[key] === keyValue);
@@ -455,7 +454,7 @@ class ActivityEventMappings {
 	}
 
 	static shouldSkipEvent(activityId) {
-		if (Utils.isArrayEmpty(adminStore.selectedEvents)) {
+		if (adminStore.selectedEvents == null) {
 			return this.skipEvents.includes(activityId) || this.isGatewayEvent(activityId);
 		}
 

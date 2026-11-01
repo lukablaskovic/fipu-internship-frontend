@@ -1,8 +1,8 @@
 <script setup>
-import BaseLevel from "@/components/Base/BaseLevel.vue";
 import CardBox from "@/components/Cardbox/CardBox.vue";
 import PillTag from "@/components/PillTag/PillTag.vue";
-import IconRounded from "@/components/IconRounded.vue";
+import BaseIcon from "@/components/Base/BaseIcon.vue";
+import { colorsText } from "@/colors.js";
 import { ActivityEventMappings } from "@/helpers/maps";
 import { mdiCreditCardOutline } from "@mdi/js";
 import { mainStore } from "@/main.js";
@@ -53,31 +53,23 @@ const icon = computed(() => {
 </script>
 
 <template>
-	<CardBox class="mb-6 last:mb-0" is-hoverable>
-		<BaseLevel>
-			<BaseLevel type="justify-start">
-				<IconRounded :icon="icon.icon" :color="icon.type" class="md:mr-6" />
-				<div class="space-y-1 text-center md:mr-6 md:text-left">
-					<h4 class="text-xl">{{ student }}</h4>
-					<p class="text-gray-500 dark:text-slate-400">
-						<b>JMBAG: {{ jmbag }}</b>
-					</p>
-					<p class="text-gray-500 dark:text-slate-400">
-						<em>Email: {{ email }}</em>
-					</p>
-					<p class="text-gray-500 dark:text-slate-400">
-						<em>Model: <PillTag :color="model === mainStore.bpmn_process_name_A + '.bpmn' ? 'danger' : 'success'" :label="model === mainStore.bpmn_process_name_A + '.bpmn' ? 'A' : 'B'" /></em>
-					</p>
+	<CardBox class="mb-2 last:mb-0" is-hoverable has-component-layout>
+		<div class="flex w-full min-w-0 items-start gap-3 px-4 py-3">
+			<BaseIcon :path="icon.icon" :class="colorsText[icon.type]" class="mt-0.5 shrink-0" w="w-6" h="h-6" :size="24" />
+			<div class="min-w-0 flex-1 space-y-1">
+				<div class="flex flex-wrap items-center gap-x-2 gap-y-1">
+					<h4 class="break-words text-sm font-semibold">{{ student }}</h4>
+					<PillTag :color="model === mainStore.bpmn_process_name_A + '.bpmn' ? 'danger' : 'success'" :label="model === mainStore.bpmn_process_name_A + '.bpmn' ? 'Model A' : 'Model B'" small />
 				</div>
-			</BaseLevel>
-			<div class="space-y-2 text-center md:text-right">
-				<p class="text-sm text-gray-500">
-					{{ props.date }}
-				</p>
-				<div>
+				<div class="flex flex-wrap gap-x-3 gap-y-0.5 text-xs text-gray-500 dark:text-slate-400">
+					<p class="min-w-0 break-words">JMBAG: {{ jmbag }}</p>
+					<p class="min-w-0 break-words">Email: {{ email }}</p>
+				</div>
+				<div class="flex flex-wrap items-center justify-between gap-x-3 gap-y-1 pt-1">
 					<PillTag :color="icon.type" :label="ActivityEventMappings.getEvent(type).message" small />
+					<p class="text-xs text-gray-500 dark:text-slate-400">{{ props.date }}</p>
 				</div>
 			</div>
-		</BaseLevel>
+		</div>
 	</CardBox>
 </template>

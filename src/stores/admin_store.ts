@@ -93,7 +93,7 @@ export const useAdminStore = defineStore("admin", {
 			b_ongoing_internships: 0,
 		} as DashboardData,
 		//dashboard_data_filters
-		selectedEvents: [] as any[], // Assuming events are not yet typed
+		selectedEvents: null as string[] | null,
 		events: [] as Event[], // Typed array of Event
 		relativeToNowTimestmap: true,
 		filterActiveInstances: false,

@@ -5,7 +5,7 @@ import { computed, ref, onMounted } from "vue";
 
 import { DropdownMenu } from "reka-ui/namespaced";
 import BaseIcon from "@/components/Base/BaseIcon.vue";
-import { adminStore, snackBarStore } from "@/main";
+import { adminStore } from "@/main";
 
 import Utils from "@/helpers/utils.js";
 
@@ -65,9 +65,7 @@ const props = defineProps({
 
 onMounted(() => {
 	if (props.trendType === "filter") {
-		const preSelectedEvents = adminStore.selectedEvents;
-		selectedOptions.value = [...preSelectedEvents];
-		if (Utils.isArrayEmpty(preSelectedEvents)) {
+		if (adminStore.selectedEvents == null) {
 			setDefaultFilters();
 		}
 	}
@@ -76,7 +74,7 @@ onMounted(() => {
 const defualtEventsSet = computed(() => {
 	const defaultEvents = ActivityEventMappings.events.filter((event) => !ActivityEventMappings.skipEvents.includes(event.activity_id) && !ActivityEventMappings.isGatewayEvent(event.activity_id)).map((event) => event.activity_id);
 
-	return Utils.arraysEqual(adminStore.selectedEvents, defaultEvents);
+	return Utils.arraysEqual(adminStore.selectedEvents ?? defaultEvents, defaultEvents);
 });
 
 const trendStyle = computed(() => {
@@ -113,16 +111,8 @@ const trendStyle = computed(() => {
 	};
 });
 
-const selectedOptions = ref([]);
+const selectedOptions = computed(() => adminStore.selectedEvents ?? []);
 const open = ref(false);
-
-const saveSelectedEvents = async () => {
-	console.log("saveSelectedEvents triggered!");
-	adminStore.selectedEvents = selectedOptions.value;
-	snackBarStore.pushMessage("Event-Filteri ažurirani!", "success");
-	await Utils.wait(0.5);
-	location.reload();
-};
 
 const capitalizeAndReplace = (inputString) => {
 	let replacedString = inputString.replace(/_/g, " ");
@@ -137,8 +127,6 @@ const capitalizeAndReplace = (inputString) => {
 
 const setDefaultFilters = () => {
 	const defaultEvents = ActivityEventMappings.events.filter((event) => !ActivityEventMappings.skipEvents.includes(event.activity_id) && !ActivityEventMappings.isGatewayEvent(event.activity_id)).map((event) => event.activity_id);
-
-	selectedOptions.value = defaultEvents;
 
 	adminStore.selectedEvents = defaultEvents;
 };
@@ -167,19 +155,18 @@ const toggleSelection = (option) => {
 					<div class="p-2 text-sm">Odaberite događaje koje želite prikazivati</div>
 					<DropdownMenu.Group v-for="(optionsGroup, index) in options" :key="index" class="px-1 py-1">
 						<component
-							:is="['Spremi', 'Resetiraj'].includes(option.label) ? DropdownMenu.Item : DropdownMenu.CheckboxItem"
+							:is="option.label === 'Resetiraj' ? DropdownMenu.Item : DropdownMenu.CheckboxItem"
 							v-for="option in optionsGroup"
 							:key="option.id"
 							:model-value="selectedOptions.includes(option.label)"
 							:text-value="capitalizeAndReplace(option.label)"
-							:disabled="option.disabled || (option.label === 'Spremi' && Utils.arraysEqual(selectedOptions, adminStore.selectedEvents))"
+							:disabled="option.disabled"
 							class="group my-1 flex w-full cursor-pointer items-center gap-2 rounded-md px-1 py-1 text-sm outline-none transition-all data-[disabled]:pointer-events-none data-[highlighted]:bg-gray-300 data-[disabled]:opacity-50 dark:data-[highlighted]:bg-gray-900 md:gap-3 md:px-2 md:py-2"
 							:class="[
 								selectedOptions.includes(option.label) ? 'bg-fipu_blue font-medium text-gray-950' : '',
-								option.label === 'Spremi' ? 'data-[highlighted]:bg-emerald-600 data-[highlighted]:text-white' : '',
 								option.label === 'Resetiraj' ? 'data-[highlighted]:bg-rose-500 data-[highlighted]:text-white' : '',
 							]"
-							@select.prevent="option.label === 'Spremi' ? saveSelectedEvents() : option.label === 'Resetiraj' ? setDefaultFilters() : toggleSelection(option)">
+							@select.prevent="option.label === 'Resetiraj' ? setDefaultFilters() : toggleSelection(option)">
 							<BaseIcon :path="option.icon" />
 							<span class="flex grow items-center justify-start text-left">{{ capitalizeAndReplace(option.label) }}</span>
 						</component>
