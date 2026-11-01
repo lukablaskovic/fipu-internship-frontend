@@ -1,7 +1,7 @@
 <script setup>
-import { mdiClose, mdiChevronRightCircleOutline, mdiChevronLeftCircleOutline } from "@mdi/js";
+import { mdiClose, mdiChevronRight, mdiChevronLeft } from "@mdi/js";
 import AsideMenuLayer from "@/components/AsideMenu/AsideMenuLayer.vue";
-import AsideMenuList from "@/components/AsideMenu/AsideMenuList.vue";
+import BaseButton from "@/components/Base/BaseButton.vue";
 import OverlayLayer from "@/components/OverlayLayer.vue";
 import BaseIcon from "@/components/Base/BaseIcon.vue";
 import { useRouter } from "vue-router";
@@ -78,12 +78,6 @@ router.afterEach(() => {
 	isPrimaryMenuCompact.value = true;
 });
 
-const expandCollapseItem = computed(() => ({
-	label: isPrimaryMenuCompact.value ? "Proširi" : "Smanji",
-	icon: isPrimaryMenuCompact.value ? mdiChevronRightCircleOutline : mdiChevronLeftCircleOutline,
-	color: "info",
-	size: 24,
-}));
 </script>
 
 <template>
@@ -100,9 +94,19 @@ const expandCollapseItem = computed(() => ({
 			</div>
 		</router-link>
 
-		<!--Expand strelica-->
 		<template #footer>
-			<AsideMenuList :menu="[expandCollapseItem]" :is-compact="isPrimaryMenuCompact" class="hidden lg:block" @menu-click="isPrimaryMenuCompact = !isPrimaryMenuCompact" />
+			<div class="hidden shrink-0 p-3 lg:block">
+				<BaseButton
+					:icon="isPrimaryMenuCompact ? mdiChevronRight : mdiChevronLeft"
+					:icon-size="22"
+					:label="isPrimaryMenuCompact ? null : 'Smanji'"
+					:aria-label="isPrimaryMenuCompact ? 'Proširi izbornik' : 'Smanji izbornik'"
+					:aria-expanded="!isPrimaryMenuCompact"
+					:title="isPrimaryMenuCompact ? 'Proširi izbornik' : 'Smanji izbornik'"
+					color="border-transparent bg-fipu_blue/10 text-fipu_blue hover:bg-fipu_blue/20 hover:text-fipu_light_blue"
+					class="h-11 w-full !rounded-xl text-sm font-medium focus:ring-inset motion-reduce:transition-none"
+					@click="isPrimaryMenuCompact = !isPrimaryMenuCompact" />
+			</div>
 		</template>
 	</AsideMenuLayer>
 

@@ -38,7 +38,7 @@
 					<FormField label="Godina studija">
 						<FormControl v-model="selectedStudyYear" name="godina_studija_selection" :error="getFirstErrorForField(v$, 'godina_studija')" :options="studyYears" />
 					</FormField>
-					<BaseButton label="Započni proces prakse" type="submit" :disabled="isLoading" :loading="isLoading" color="fipu_blue" class="start-button" />
+					<BaseButton label="Započni proces prakse" icon="M8,19V5l11,7L8,19Zm2-7Zm0,3.35L15.25,12L10,8.65v6.7Z" icon-size="24" type="submit" :disabled="isLoading" :loading="isLoading" color="fipu_blue" class="start-button" />
 				</section>
 			</CardBox>
 

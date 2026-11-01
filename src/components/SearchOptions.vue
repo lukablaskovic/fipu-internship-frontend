@@ -12,9 +12,9 @@ import { router } from "@/router";
 const osKey = computed(() => {
 	const userAgent = navigator.userAgent.toLowerCase();
 	if (userAgent.includes("mac")) {
-		return "CMD";
+		return "⌘";
 	} else {
-		return "CTRL";
+		return "Ctrl";
 	}
 });
 
@@ -27,15 +27,18 @@ const allAssignments = ref([]);
 
 const routes = ["dashboard", "studenti", "alokacije", "dostupni-zadaci", "poslodavci", "profil", "poruke", "poslodavci/novi-zadatak"];
 const helpItems = [
-	{ prefix: "", description: "usmjeravanje po aplikaciji" },
-	{ prefix: "s:", description: "pretraži studenta po imenu i prezimenu" },
-	{ prefix: "sj:", description: "pretraži studenta po JMBAGu" },
-	{ prefix: "se:", description: "pretraži studenta po emailu" },
-	{ prefix: "p:", description: "pretraži poduzeće po nazivu" },
-	{ prefix: "z:", description: "pretraži zadatak po nazivu" },
+	{ prefix: "s:", description: "Student po imenu", example: "Ana Anić" },
+	{ prefix: "sj:", description: "Student po JMBAG-u", example: "0303000000" },
+	{ prefix: "se:", description: "Student po e-mailu", example: "ana@unipu.hr" },
+	{ prefix: "p:", description: "Poduzeće", example: "Naziv poduzeća" },
+	{ prefix: "z:", description: "Zadatak", example: "ID zadatka" },
 ];
-
-const prefixLabels = { "s:": "Ime", "sj:": "JMBAG", "se:": "Email", "p:": "Poduzeće", "z:": "Zadatak" };
+const suggestedFilters = computed(() => {
+	if (query.value.includes(":")) return [];
+	const term = normalizeString(query.value);
+	return helpItems.filter((item) => item.prefix.startsWith(term) || normalizeString(item.description).includes(term));
+});
+const activeFilter = computed(() => helpItems.find((item) => item.prefix === currentPrefix.value));
 
 const hasValidPrefix = computed(() => {
 	const input = query.value;
@@ -49,20 +52,9 @@ const currentPrefix = computed(() => {
 	return helpItems.some((item) => item.prefix === prefix) ? prefix : "";
 });
 
-const prefixLabel = computed(() => {
-	const prefix = currentPrefix.value;
-	return prefix ? prefixLabels[prefix] : "";
-});
-
 const displayValue = computed({
-	get: () => (hasValidPrefix.value ? query.value.slice(currentPrefix.value.length) : query.value),
-	set: (value) => {
-		if (hasValidPrefix.value) {
-			query.value = currentPrefix.value + value;
-		} else {
-			query.value = value;
-		}
-	},
+	get: () => query.value,
+	set: (value) => { query.value = value; },
 });
 
 import { normalizeString, filterByEmail, filterStudentsByName, filterByJMBAG, filterByAssignmentId, filterByCompany } from "@/helpers/search-utils.js";
@@ -94,9 +86,10 @@ const filteredResults = computed(() => {
 	}
 });
 
-function showHelp() {
-	query.value = "";
+async function showHelp() {
 	open.value = true;
+	await nextTick();
+	searchInput.value?.$el?.focus();
 }
 
 async function insertPrefix(prefix) {
@@ -127,18 +120,6 @@ watch(selectedValue, (newValue) => {
 	}
 });
 
-const prefixContainer = ref(null);
-const inputStyle = computed(() => {
-	let paddingLeft = "pl-3";
-	if (hasValidPrefix.value && prefixContainer.value) {
-		const prefixWidth = prefixContainer.value.offsetWidth;
-		paddingLeft = `${prefixWidth + 8}px`;
-	} else {
-		paddingLeft = "0";
-	}
-	return { paddingLeft };
-});
-
 function handleKeyDown(event) {
 	if (hasValidPrefix.value && (event.key === "Backspace" || event.key === "Delete") && query.value === currentPrefix.value) {
 		query.value = "";
@@ -163,50 +144,44 @@ onMounted(async () => {
 
 <template>
 	<Combobox.Root v-model="selectedValue" v-model:open="open" ignore-filter open-on-focus open-on-click :reset-search-term-on-select="false" :reset-search-term-on-blur="false">
-		<Combobox.Anchor class="relative w-full cursor-default overflow-hidden rounded-lg border border-gray-300 bg-transparent text-left dark:border-gray-600 sm:text-sm">
-			<div v-if="hasValidPrefix" ref="prefixContainer" class="absolute inset-y-0 left-0 flex items-center">
-				<span class="ml-2 rounded bg-fipu_blue px-2 py-1 text-sm text-white">{{ prefixLabel }}</span>
-			</div>
+		<Combobox.Anchor class="flex h-12 w-full items-center gap-3 rounded-xl border border-gray-200 bg-gray-50 px-4 text-left transition-colors focus-within:border-fipu_blue dark:border-neutral-700 dark:bg-neutral-900 md:w-96">
+			<Combobox.Trigger class="flex shrink-0 items-center text-gray-500 hover:text-gray-900 focus-visible:outline focus-visible:outline-fipu_blue dark:text-neutral-400 dark:hover:text-neutral-200" aria-label="Upute za pretraživanje" @click="showHelp">
+				<MdiMagnify :size="22" aria-hidden="true" />
+			</Combobox.Trigger>
 			<Combobox.Input
 				ref="searchInput"
 				v-model="displayValue"
 				aria-label="Pretraživanje"
-				:placeholder="`${osKey} + k za pretraživanje`"
-				class="inputClass ml-2 w-full pr-10 text-sm leading-5 text-gray-900 focus:ring-0 dark:text-gray-300 md:w-96"
-				:style="inputStyle"
-				style="overflow-x: auto; outline: none; border: none; background: transparent"
+				placeholder="Pretraživanje"
+				aria-describedby="search-keyboard-help"
+				class="min-w-0 flex-1 caret-fipu_blue border-0 bg-transparent p-0 text-base text-gray-900 placeholder:text-gray-500 focus:outline-none focus:ring-0 dark:text-neutral-200 dark:placeholder:text-neutral-400"
 				@keydown="handleKeyDown" />
-			<Combobox.Trigger class="absolute inset-y-0 right-0 flex items-center pr-2 focus-visible:outline focus-visible:outline-fipu_blue" aria-label="Upute za pretraživanje" @click="showHelp">
-				<MdiMagnify class="h-5 w-5 text-gray-700 hover:text-fipu_blue" aria-hidden="true" />
-			</Combobox.Trigger>
+			<kbd class="pointer-events-none shrink-0 whitespace-nowrap font-sans text-sm text-gray-500 dark:text-neutral-400" aria-hidden="true">{{ osKey }} K</kbd>
 		</Combobox.Anchor>
 		<Combobox.Portal>
 			<Combobox.Content
 				position="popper"
-				:side-offset="4"
-				class="reka-animated z-[10000] max-h-60 w-[var(--reka-combobox-trigger-width)] overflow-auto rounded-lg border bg-gray-50 py-1 text-base text-gray-900 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none dark:bg-gray-900 dark:text-gray-300 sm:text-sm">
-				<Combobox.Viewport>
-					<template v-if="query === ''">
-						<div class="px-4 py-2 text-sm text-gray-700 dark:text-gray-200 md:text-base">
-							<b>Kratke upute kako koristiti tražilicu</b>
-							<hr />
-							<br />
-							<p>ℹ️ Za brzo kretanje upišite naziv rute direktno.</p>
-							<p>ℹ️ Za pregled stavaka, prvo upišite odgovarajući prefix, nakon toga pojam.</p>
-						</div>
-						<Combobox.Item
-							v-for="helpItem in helpItems"
-							:key="helpItem.prefix"
-							:value="helpItem"
-							:text-value="helpItem.description"
-							class="group flex cursor-pointer gap-1 rounded px-2 py-1 outline-none data-[highlighted]:bg-fipu_blue data-[highlighted]:font-medium data-[highlighted]:text-white"
-							@select.prevent="insertPrefix(helpItem.prefix)">
-							<span class="flex w-6 items-center justify-center rounded bg-fipu_blue px-0.5 font-bold text-gray-900">{{ helpItem.prefix }}</span>
-							{{ helpItem.description }}
-						</Combobox.Item>
-					</template>
-					<div v-else-if="filteredResults.length === 0" role="status" class="px-4 py-2 text-gray-700 dark:text-gray-200">Nema rezultata.</div>
-					<Combobox.Item v-for="(result, index) in filteredResults" :key="result.id || index" :value="result" class="relative cursor-pointer select-none py-2 pl-10 pr-4 outline-none data-[highlighted]:bg-fipu_blue data-[highlighted]:text-white">
+				:side-offset="8"
+				align="start"
+				class="search-panel reka-animated z-[10000] w-[var(--reka-combobox-trigger-width)] overflow-hidden rounded-xl border border-gray-200 bg-white text-sm text-gray-900 focus:outline-none dark:border-neutral-700 dark:bg-neutral-900 dark:text-neutral-200">
+				<Combobox.Viewport class="max-h-[min(24rem,var(--reka-combobox-content-available-height))] overflow-y-auto p-1.5">
+					<p v-if="!query" class="px-3 py-2 text-gray-500 dark:text-neutral-400">Upišite stranicu ili odaberite filter.</p>
+					<Combobox.Item
+						v-for="helpItem in suggestedFilters"
+						:key="helpItem.prefix"
+						:value="helpItem"
+						:text-value="helpItem.description"
+						class="flex cursor-pointer items-center justify-between gap-3 rounded-lg px-3 py-2.5 outline-none data-[highlighted]:bg-gray-100 dark:data-[highlighted]:bg-neutral-800"
+						@select.prevent="insertPrefix(helpItem.prefix)">
+						<span>{{ helpItem.description }}</span>
+						<code class="shrink-0 text-gray-500 dark:text-neutral-400">{{ helpItem.prefix }}</code>
+					</Combobox.Item>
+					<div v-if="activeFilter && query === currentPrefix" role="status" class="px-3 py-3 text-gray-500 dark:text-neutral-400">
+						<p>{{ activeFilter.description }}</p>
+						<p class="mt-1">Primjer: <code class="text-gray-700 dark:text-neutral-200">{{ activeFilter.prefix }}{{ activeFilter.example }}</code></p>
+					</div>
+					<div v-else-if="query && !suggestedFilters.length && !filteredResults.length" role="status" class="px-3 py-3 text-gray-500 dark:text-neutral-400">Nema rezultata. Pokušajte s drugim pojmom ili filterom.</div>
+					<Combobox.Item v-for="(result, index) in filteredResults" :key="result.id || index" :value="result" class="relative cursor-pointer select-none rounded-lg py-2.5 pl-10 pr-3 outline-none data-[highlighted]:bg-gray-100 dark:data-[highlighted]:bg-neutral-800">
 						<MdiAccount v-if="result.ime && result.prezime" class="absolute left-3 h-5 w-5" aria-hidden="true" />
 						<MdiPagePreviousOutline v-else-if="routes.includes(result)" class="absolute left-3 h-5 w-5" aria-hidden="true" />
 						<MdiClipboardText v-else-if="result.id_zadatak" class="absolute left-3 h-5 w-5" aria-hidden="true" />
@@ -217,6 +192,11 @@ onMounted(async () => {
 						<span v-else class="block truncate">{{ result.naziv }}</span>
 					</Combobox.Item>
 				</Combobox.Viewport>
+				<div id="search-keyboard-help" class="flex flex-wrap gap-x-4 gap-y-1 border-t border-gray-200 px-4 py-2.5 text-xs text-gray-500 dark:border-neutral-700 dark:text-neutral-400">
+					<span><kbd>↑ ↓</kbd> odabir</span>
+					<span><kbd>Enter</kbd> potvrda</span>
+					<span><kbd>Esc</kbd> zatvori</span>
+				</div>
 			</Combobox.Content>
 		</Combobox.Portal>
 	</Combobox.Root>

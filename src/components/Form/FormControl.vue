@@ -1,7 +1,7 @@
 <script setup>
 import { inject } from "vue";
 const fieldLabelId = inject("formFieldLabelId", undefined);
-import { mdiUnfoldMoreHorizontal, mdiAlertCircle, mdiCheckCircle, mdiAsterisk, mdiLockOff, mdiContentCopy } from "@mdi/js";
+import { mdiUnfoldMoreHorizontal, mdiAlertCircle, mdiCheckCircle, mdiAsterisk, mdiLockOff, mdiContentCopy, mdiCheck } from "@mdi/js";
 import FormControlListbox from "@/components/Premium/FormControlListbox.vue";
 import FormControlIcon from "@/components/Premium/FormControlIcon.vue";
 import FormFieldHelp from "@/components/Premium/FormFieldHelp.vue";
@@ -11,7 +11,7 @@ import SearchOptions from "@/components/SearchOptions.vue";
 import BaseIcon from "@/components/Base/BaseIcon.vue";
 import { controlTextColor } from "@/colorsPremium.js";
 import TipTag from "@/components/Premium/TipTag.vue";
-import { snackBarStore, mainStore } from "@/main";
+import { mainStore } from "@/main";
 import { getButtonColor } from "@/colors.js";
 
 const props = defineProps({
@@ -85,9 +85,7 @@ const wrapperClass = computed(() => {
 		base.push(getButtonColor(props.buttonColor, props.buttonOutline, true));
 	}
 
-	if (props.searchBar) {
-		base.push("shadow-md");
-	} else {
+	if (!props.searchBar) {
 		base.push(borderColor.value, "dark:bg-slate-800", props.borderless ? "bg-gray-50" : "");
 		if (wrapperBorder.value) base.push("border-t border-b", !props.firstAddon && !props.lastAddon && !props.middleAddon ? "rounded border-l border-r" : "");
 		if (props.firstAddon) base.push("rounded-l border-l");
@@ -123,11 +121,19 @@ const openPasswordToggle = (e) => {
 	}
 };
 
+const copied = ref(false);
+let copyResetTimer;
+onBeforeUnmount(() => clearTimeout(copyResetTimer));
+
 const copyToClipboard = async () => {
 	if (props.copyable) {
 		try {
 			await navigator.clipboard.writeText(props.modelValue);
-			snackBarStore.pushMessage("Kopirano u međuspremnik.", "success");
+			copied.value = true;
+			clearTimeout(copyResetTimer);
+			copyResetTimer = setTimeout(() => {
+				copied.value = false;
+			}, 2000);
 		} catch (err) {
 			console.error("Failed to copy text: ", err);
 		}
@@ -160,7 +166,7 @@ if (props.ctrlKFocus) {
 
 <template>
 	<div :class="upperWrapperClass">
-		<div class="form-control-surface relative" :class="wrapperClass">
+		<div class="relative" :class="[wrapperClass, { 'form-control-surface': !showSearchBar }]">
 			<!-- Static Field -->
 			<div v-if="computedType === 'static'" :class="inputElClass" class="inline-flex items-center whitespace-nowrap">{{ modelValue }}</div>
 
@@ -217,11 +223,11 @@ if (props.ctrlKFocus) {
 			<FormControlIcon v-if="computedIconLeft" :icon="computedIconLeft" :h="controlIconH" :text-color="textColor" />
 			<FormControlIcon
 				v-if="computedIconRight || props.copyable"
-				:icon="props.copyable ? mdiContentCopy : computedIconRight"
+				:icon="props.copyable ? (copied ? mdiCheck : mdiContentCopy) : computedIconRight"
 				:h="controlIconH"
-				:text-color="textColor"
+				:text-color="props.copyable && copied ? 'text-green-600' : textColor"
 				:clickable="rightIconClickable || props.copyable"
-				:class="{ 'cursor-pointer hover:text-fipu_blue': props.copyable }"
+				:class="{ 'cursor-pointer': props.copyable, 'hover:text-fipu_blue': props.copyable && !copied }"
 				is-right
 				@icon-click="props.copyable ? copyToClipboard() : openPasswordToggle()" />
 			<TipTag v-if="tipLeft" :tip="tipLeft" left />

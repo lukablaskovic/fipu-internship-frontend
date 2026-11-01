@@ -23,13 +23,22 @@ const component = evaluate(compileScript(descriptor, { id: "search-state" }).con
 }).default;
 (async () => {
 	const state = component.setup({}, { expose() {} });
+	assert.equal(state.suggestedFilters.value.length, 5);
+	state.displayValue.value = "sj";
+	assert.deepEqual(state.suggestedFilters.value.map((item) => item.prefix), ["sj:"]);
+	state.displayValue.value = "poduzeće";
+	assert.deepEqual(state.suggestedFilters.value.map((item) => item.prefix), ["p:"]);
 	await state.insertPrefix("s:");
+	assert.equal(state.suggestedFilters.value.length, 0);
+	assert.equal(state.activeFilter.value.example, "Ana Anić");
 	assert.equal(state.query.value, "s:");
-	assert.equal(state.displayValue.value, "");
+	assert.equal(state.displayValue.value, "s:");
 	assert.equal(state.open.value, true);
-	state.displayValue.value = "ana";
+	state.displayValue.value = "s:ana";
 	assert.equal(state.query.value, "s:ana");
 	assert.deepEqual(state.filteredResults.value, [student]);
+	await state.showHelp();
+	assert.equal(state.query.value, "s:ana", "opening help must preserve the query");
 	state.selectedValue.value = student;
 	await vue.nextTick();
 	assert.deepEqual(pushes, ["/studenti/42"]);
