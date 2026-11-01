@@ -100,7 +100,7 @@ const directApplication = async () => {
 				<CardBoxWidget :class="!prviOdabirDetails ? 'cursor-wait' : 'cursor-pointer'" color="text-fipu_blue" hoverable :logo="PrviPoslodavacLogo" :number="null" :text="prviOdabir" label="Odobreni zadatak" @click="openModal(prviOdabirDetails)" />
 			</div>
 
-			<CardBoxModal v-if="isModalActive" v-model="isModalActive" button-label="Zatvori" button="fipu_blue" has-cancel:false>
+			<CardBoxModal v-if="isModalActive" v-model="isModalActive" large button-label="Zatvori" button="fipu_blue" has-cancel:false>
 				<CardboxAllocation :data="selectedAssignmentDetails"></CardboxAllocation>
 				<br />
 			</CardBoxModal>

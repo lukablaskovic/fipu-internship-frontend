@@ -176,15 +176,15 @@ const handleDragEnd = () => {
 			<p v-if="checkedAssignments.length != 3" class="mb-4">Potrebno je odabrati minimalno 3 zadatka za prijavu preferencija.</p>
 			<p v-if="checkedAssignments.length === 3" class="mb-4">Zadatke možete rasporediti po vašim preferencijama.</p>
 
-			<draggable v-model="assignmentsForDrag" :disabled="!isDraggableEnabled" item-key="id" class="list-group flex w-full space-x-2" @start="handleDragStart" @end="handleDragEnd">
+			<draggable v-model="assignmentsForDrag" :disabled="!isDraggableEnabled" item-key="id" class="list-group flex w-full max-w-2xl space-x-2" @start="handleDragStart" @end="handleDragEnd">
 				<template #item="{ element, index }">
 					<div class="flex-1">
 						<div
 							class="draggable-item aspect-h-1 aspect-w-1 relative flex items-center justify-center border-2 bg-gray-50"
 							:class="{ grab: isAssignment(element) && isDraggableEnabled, grabbing: vueDraggableDragging && isAssignment(element) && isDraggableEnabled }">
 							<transition name="image-fade">
-								<img v-if="isAssignment(element)" data-aos="zoom-out" class="rounded-full sm:p-22" :src="getCompanyLogo(element)" />
-								<img v-else class="sm:p-22" :src="getDefaultImage(index)" alt="Default Task" />
+								<img v-if="isAssignment(element)" data-aos="zoom-out" class="rounded-full p-4 sm:p-6" :src="getCompanyLogo(element)" />
+								<img v-else class="p-4 sm:p-6" :src="getDefaultImage(index)" alt="Default Task" />
 							</transition>
 							<div v-if="isAssignment(element)" class="absolute inset-0 flex items-center justify-center bg-black bg-opacity-50 text-sm font-bold text-white opacity-0 transition-opacity hover:opacity-100">ID: {{ element.id_zadatak }}</div>
 						</div>

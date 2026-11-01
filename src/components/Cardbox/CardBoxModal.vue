@@ -9,7 +9,7 @@ import { computed, watch } from "vue";
 const props = defineProps({
 	title: {
 		type: String,
-		required: true,
+		default: "",
 	},
 	button: {
 		type: String,
@@ -80,16 +80,17 @@ const cancel = () => confirmCancel("cancel");
 			<Dialog.Overlay class="reka-animated fixed inset-0 z-[5000] bg-gradient-to-tr from-gray-700 via-gray-800 to-gray-900 opacity-90" />
 			<div class="pointer-events-none fixed inset-0 z-[5001] flex items-center justify-center"><Dialog.Content class="reka-animated" as-child :aria-describedby="undefined" @close-auto-focus="restoreFocus">
 				<CardBox
-					class="pointer-events-auto"
+					class="pointer-events-auto [&>div]:min-w-0"
 					:class="{
 						'2xl:3/12 modal-scrollable fipu_vertical_scrollbar z-50 max-h-modal w-11/12 rounded shadow-lg md:w-3/5 lg:w-2/5 xl:w-6/12': !large && !isLogout,
-						'modal-scrollable fipu_vertical_scrollbar z-50 max-h-modal w-full rounded shadow-lg md:w-4/5 lg:w-3/5 xl:w-3/5': large && !isLogout,
+						'modal-scrollable fipu_vertical_scrollbar z-50 max-h-modal w-11/12 max-w-6xl rounded-xl shadow-lg': large && !isLogout,
 						'2xl:3/12 modal-scrollable fipu_vertical_scrollbar z-50 max-h-modal w-11/12 rounded shadow-lg md:w-3/5 lg:w-1/5 xl:w-4/12': isLogout,
 						'mobile-fullscreen': !isLogout,
 					}"
 					is-modal>
 					<div class="modal-content">
-						<Dialog.Title as-child><CardBoxComponentTitle :title="title" /></Dialog.Title>
+						<Dialog.Title v-if="title" as-child><CardBoxComponentTitle :title="title" /></Dialog.Title>
+						<Dialog.Title v-else class="sr-only">Detalji</Dialog.Title>
 
 						<slot v-if="modelValue != null" :assignment="modelValue"></slot>
 
@@ -116,6 +117,7 @@ const cancel = () => confirmCancel("cancel");
 		width: 100vw;
 		height: 100vh;
 		max-height: 100vh;
+		max-width: none;
 		top: 0;
 		left: 0;
 		position: fixed;
@@ -128,8 +130,7 @@ const cancel = () => confirmCancel("cancel");
 	.modal-content {
 		display: flex;
 		flex-direction: column;
-		justify-content: center;
-		align-items: center;
+		align-items: stretch;
 		min-height: 100%;
 	}
 }

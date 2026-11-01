@@ -91,7 +91,7 @@ function openModal(assignmentDetails) {
 				<CardBoxWidget :class="!treciOdabirDetails ? 'cursor-wait' : 'cursor-pointer'" color="text-fipu_blue" hoverable :logo="TreciPoslodavacLogo" :number="null" :text="treciOdabir" label="3. odabir" @click="openModal(treciOdabirDetails)" />
 			</div>
 
-			<CardBoxModal v-if="isModalActive" v-model="isModalActive" button-label="Zatvori" button="fipu_blue" has-cancel:false>
+			<CardBoxModal v-if="isModalActive" v-model="isModalActive" large button-label="Zatvori" button="fipu_blue" has-cancel:false>
 				<CardboxAllocation :data="selectedAssignmentDetails"></CardboxAllocation>
 				<br />
 			</CardBoxModal>

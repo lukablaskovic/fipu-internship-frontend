@@ -43,7 +43,7 @@ onMounted(async () => {
 </script>
 
 <template>
-	<CardBoxModal v-if="isModalActive" v-model="isModalActive" button-label="Zatvori" button="fipu_blue" has-cancel:false @cancel="mainStore.activateLogoutModal(false)">
+	<CardBoxModal v-if="isModalActive" v-model="isModalActive" large button-label="Zatvori" button="fipu_blue" has-cancel:false @cancel="mainStore.activateLogoutModal(false)">
 		<CardboxAllocation :data="isModalActive"></CardboxAllocation>
 
 		<br />
