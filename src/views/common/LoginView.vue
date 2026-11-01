@@ -98,7 +98,7 @@ const loginCallback = async (response) => {
 			return;
 		}
 		if (isUnipuEmail(decodedToken.email) || decodedToken.email === "lukablaskovic2000@gmail.com") {
-			const result = await mainStore.handleLogin(decodedToken);
+			const result = await mainStore.handleLogin(decodedToken, response.credential);
 			if (result.status === "success") {
 				const ime = decodedToken.given_name || "";
 				const prezime = decodedToken.family_name || "";

@@ -1,0 +1,23 @@
+<!doctype html>
+<html lang="hr">
+<head><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>Avatar</title></head>
+<body><div id="app"></div><script type="module">
+import { createApp, h, ref } from 'vue';
+import UserAvatar from '../src/components/User/UserAvatar.vue';
+import '../src/css/main.css';
+createApp({
+  setup() {
+    const avatar = ref('');
+    const status = ref('');
+    return () => h('main', [
+      h(UserAvatar, {
+        avatar: avatar.value, username: 'Demo Korisnik', class: 'h-24 w-24 lg:h-6 lg:w-6', referrerPolicy: 'no-referrer',
+        onLoadingStatusChange: value => { status.value = value; },
+      }, () => h('span', { 'data-testid': 'overlay', class: 'absolute bottom-0 right-0' }, '•')),
+      h('label', ['Avatar URL ', h('input', { value: avatar.value, onInput: event => { avatar.value = event.target.value; } })]),
+      h('output', status.value),
+    ]);
+  },
+}).mount('#app');
+</script></body>
+</html>

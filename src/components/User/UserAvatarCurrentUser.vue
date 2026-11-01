@@ -5,7 +5,7 @@ import { mainStore } from "@/main.js";
 </script>
 
 <template>
-	<UserAvatar :username="mainStore.currentUser.username" :avatar="mainStore.avatarChanging ? small_loading_gif : mainStore.currentUser.avatar">
+	<UserAvatar :username="`${mainStore.currentUser.ime} ${mainStore.currentUser.prezime}`" :avatar="mainStore.avatarChanging ? small_loading_gif : mainStore.currentUser.avatar">
 		<slot />
 	</UserAvatar>
 </template>

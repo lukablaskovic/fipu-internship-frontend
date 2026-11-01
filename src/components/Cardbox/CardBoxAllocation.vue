@@ -12,7 +12,7 @@
 			</div>
 
 			<div class="hidden sm:block sm:shrink-0">
-				<img :alt="props.data.Poslodavac[0].value" :src="companyLogo" class="h-20 w-20 object-contain" />
+				<UserAvatar :username="props.data.Poslodavac[0].value" :avatar="companyLogo" class="h-20 w-20 [&_img]:object-contain" />
 			</div>
 		</div>
 
@@ -88,6 +88,7 @@
 import { ref, onMounted } from "vue";
 import { mainStore } from "@/main";
 import ExpandableText from "@/components/ExpandableText.vue";
+import UserAvatar from "@/components/User/UserAvatar.vue";
 
 const props = defineProps({
 	data: {

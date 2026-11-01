@@ -1,4 +1,5 @@
 <script setup>
+import UserAvatar from "@/components/User/UserAvatar.vue";
 import { mdiCalendarRange, mdiChatQuestionOutline, mdiAlphaACircle, mdiNewBox, mdiAlphaBCircle, mdiInformation, mdiLaptop, mdiDomain } from "@mdi/js";
 import SectionMain from "@/components/Section/SectionMain.vue";
 import { ref, onMounted, computed } from "vue";
@@ -84,7 +85,7 @@ onMounted(async () => {
 							<div class="flex items-start">
 								<div class="shrink-0">
 									<div class="bg-primary-100 text-primary inline-block h-24 w-24 items-center rounded-md p-4">
-										<a href="https://fipu.unipu.hr/fipu/ivan.lorencin" target="_blank"><img class="h-16 w-16 rounded-full object-cover" src="https://fipu.unipu.hr/images/users_profiles/Ivan-Lorencin.jpg" alt="Ivan Lorencin" /></a>
+										<a href="https://fipu.unipu.hr/fipu/ivan.lorencin" target="_blank"><UserAvatar class="h-16 w-16" avatar="https://fipu.unipu.hr/images/users_profiles/Ivan-Lorencin.jpg" username="Ivan Lorencin" /></a>
 									</div>
 								</div>
 								<div class="ml-3 grow">
@@ -100,8 +101,7 @@ onMounted(async () => {
 								<div class="shrink-0">
 									<div class="bg-primary-100 text-primary inline-block h-24 w-24 items-center rounded-md p-4">
 										<a href="https://fipu.unipu.hr/fipu/marijela.milicevic" target="_blank"
-											><img class="h-16 w-16 rounded-full object-cover" src="https://i1.rgstatic.net/ii/profile.image/11431281279391644-1727018247353_Q512/Marijela-Milicevic-2.jpg" alt="Marijela Miličević"
-										/></a>
+											><UserAvatar class="h-16 w-16" avatar="https://i1.rgstatic.net/ii/profile.image/11431281279391644-1727018247353_Q512/Marijela-Milicevic-2.jpg" username="Marijela Miličević" /></a>
 									</div>
 								</div>
 								<div class="ml-3 grow">
@@ -115,7 +115,7 @@ onMounted(async () => {
 							<div class="flex items-start">
 								<div class="shrink-0">
 									<div class="bg-primary-100 text-primary inline-block h-24 w-24 items-center rounded-md p-4">
-										<a href="https://fipu.unipu.hr/fipu/luka.blaskovic" target="_blank"><img class="h-16 w-16 rounded-full object-cover" src="https://fipu.unipu.hr/images/users_profiles/1748527029profile_main.jpg" alt="Luka Blašković" /></a>
+										<a href="https://fipu.unipu.hr/fipu/luka.blaskovic" target="_blank"><UserAvatar class="h-16 w-16" avatar="https://fipu.unipu.hr/images/users_profiles/1748527029profile_main.jpg" username="Luka Blašković" /></a>
 									</div>
 								</div>
 								<div class="ml-3 grow">
@@ -280,7 +280,7 @@ onMounted(async () => {
 							<div class="flex items-start">
 								<div class="shrink-0">
 									<div class="bg-primary-100 text-primary inline-block h-24 w-24 items-center rounded-md p-4">
-										<a href="https://fipu.unipu.hr/fipu/ivan.lorencin" target="_blank"><img class="h-16 w-16 rounded-full object-cover" src="https://fipu.unipu.hr/images/users_profiles/Ivan-Lorencin.jpg" alt="Ivan Lorencin" /></a>
+										<a href="https://fipu.unipu.hr/fipu/ivan.lorencin" target="_blank"><UserAvatar class="h-16 w-16" avatar="https://fipu.unipu.hr/images/users_profiles/Ivan-Lorencin.jpg" username="Ivan Lorencin" /></a>
 									</div>
 								</div>
 								<div class="ml-3 grow">
@@ -296,8 +296,7 @@ onMounted(async () => {
 								<div class="shrink-0">
 									<div class="bg-primary-100 text-primary inline-block h-24 w-24 items-center rounded-md p-4">
 										<a href="https://fipu.unipu.hr/fipu/marijela.milicevic" target="_blank"
-											><img class="h-16 w-16 rounded-full object-cover" src="https://i1.rgstatic.net/ii/profile.image/11431281279391644-1727018247353_Q512/Marijela-Milicevic-2.jpg" alt="Marijela Miličević"
-										/></a>
+											><UserAvatar class="h-16 w-16" avatar="https://i1.rgstatic.net/ii/profile.image/11431281279391644-1727018247353_Q512/Marijela-Milicevic-2.jpg" username="Marijela Miličević" /></a>
 									</div>
 								</div>
 								<div class="ml-3 grow">
@@ -311,7 +310,7 @@ onMounted(async () => {
 							<div class="flex items-start">
 								<div class="shrink-0">
 									<div class="bg-primary-100 text-primary inline-block h-24 w-24 items-center rounded-md p-4">
-										<a href="https://fipu.unipu.hr/fipu/luka.blaskovic" target="_blank"><img class="h-16 w-16 rounded-full object-cover" src="https://fipu.unipu.hr/images/users_profiles/1748527029profile_main.jpg" alt="Luka Blašković" /></a>
+										<a href="https://fipu.unipu.hr/fipu/luka.blaskovic" target="_blank"><UserAvatar class="h-16 w-16" avatar="https://fipu.unipu.hr/images/users_profiles/1748527029profile_main.jpg" username="Luka Blašković" /></a>
 									</div>
 								</div>
 								<div class="ml-3 grow">

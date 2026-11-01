@@ -1,7 +1,9 @@
 <script setup>
-import { computed } from "vue";
+import { Avatar } from "reka-ui/namespaced";
+import { mdiAccount } from "@mdi/js";
+import BaseIcon from "@/components/Base/BaseIcon.vue";
 
-const props = defineProps({
+defineProps({
 	username: {
 		type: String,
 		default: null,
@@ -10,14 +12,21 @@ const props = defineProps({
 		type: String,
 		default: null,
 	},
+	referrerPolicy: {
+		type: String,
+		default: undefined,
+	},
 });
 
-const username = computed(() => props.username);
+defineEmits(["loadingStatusChange"]);
 </script>
 
 <template>
-	<div>
-		<img :src="avatar" :alt="username" class="rounded-full block h-auto w-full max-w-full bg-gray-100 dark:bg-slate-800 aspect-square" />
+	<Avatar.Root as="div" class="relative inline-block aspect-square shrink-0 rounded-full bg-gray-100 align-middle dark:bg-slate-800">
+		<Avatar.Image :src="avatar || ''" :alt="username || 'Profilna slika'" :referrer-policy="referrerPolicy" class="block h-full w-full max-w-full rounded-full object-cover" @loading-status-change="$emit('loadingStatusChange', $event)" />
+		<Avatar.Fallback role="img" :aria-label="username || 'Profilna slika'" class="flex h-full w-full items-center justify-center rounded-full text-gray-500 dark:text-gray-400">
+			<BaseIcon :path="mdiAccount" w="w-full" h="h-full" size="60%" aria-hidden="true" />
+		</Avatar.Fallback>
 		<slot />
-	</div>
+	</Avatar.Root>
 </template>

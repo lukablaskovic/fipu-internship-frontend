@@ -4,7 +4,7 @@ import { mdiDotsVertical } from "@mdi/js";
 import CardBox from "@/components/CardBox.vue";
 import BaseLevel from "@/components/BaseLevel.vue";
 import PillTag from "@/components/PillTag.vue";
-import UserAvatar from "@/components/UserAvatar.vue";
+import UserAvatar from "@/components/User/UserAvatar.vue";
 import ButtonMenu from "@/components/Premium/ButtonMenu.vue";
 import BaseButtons from "@/components/BaseButtons.vue";
 
@@ -21,7 +21,7 @@ defineProps({
 	<CardBox class="mb-6 last:mb-0" is-hoverable>
 		<BaseLevel>
 			<BaseLevel type="justify-start">
-				<UserAvatar class="w-12 h-12 md:mr-6" api="bottts" bg="" :username="product.name" />
+				<UserAvatar class="w-12 h-12 md:mr-6" :username="product.name" />
 				<div class="text-center md:text-left">
 					<h4 class="text-xl">
 						{{ product.name }}

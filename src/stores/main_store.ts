@@ -99,7 +99,8 @@ export const useMainStore = defineStore("main", {
 				console.error("[fetchCurrentUser] Error:", error);
 			}
 		},
-		async handleLogin(decodedToken: any) {
+		async handleLogin(decodedToken: any, credential = "") {
+			sessionStorage.setItem("google-id-token", credential);
 			const { iss, sub, hd, email, nbf, name, picture, iat, jti } = decodedToken;
 			const storageToken = { iss, sub, hd, email, nbf, name, picture, iat, jti };
 

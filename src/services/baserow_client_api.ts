@@ -1,5 +1,5 @@
 import { createAxiosInstance, safeRequest } from "@/helpers/axios-wrapper";
-import { endpoints } from "@/config.js";
+import { endpoints, LOCAL_DEV } from "@/config.js";
 
 interface ProcessData {
 	email: string;
@@ -44,6 +44,13 @@ const Guest = {
 };
 
 const Student = {
+	updateAvatar(avatar: string, email: string) {
+		const headers = LOCAL_DEV
+			? { "X-Local-User": email }
+			: { Authorization: `Bearer ${sessionStorage.getItem("google-id-token") || ""}` };
+		return AxiosWrapper.patch("/student/avatar", { avatar }, headers);
+	},
+
 	create(studentData: any) {
 		return safeRequest(() => AxiosWrapper.post("/student", studentData));
 	},
