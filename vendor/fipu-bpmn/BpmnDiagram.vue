@@ -47,7 +47,6 @@ function zoom(factor, anchor) {
 }
 function wheel(event) {
   if (event.ctrlKey || event.metaKey) zoom(event.deltaY > 0 ? 1.1 : 0.9, point(event));
-  else { view.value.x += event.deltaX * view.value.width / svg.value.clientWidth; view.value.y += event.deltaY * view.value.height / svg.value.clientHeight; }
 }
 function begin(event, node) {
   if (event.button !== 0) return;

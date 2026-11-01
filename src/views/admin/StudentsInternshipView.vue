@@ -1,8 +1,8 @@
 <script setup>
-import { mdiAccountMultiple, mdiAccount, mdiProgressClock, mdiAccountGroup, mdiAbTesting, mdiAlphaACircle, mdiAlphaBCircleOutline } from "@mdi/js";
+import { mdiAccountMultiple, mdiAccount, mdiProgressClock, mdiAccountGroup, mdiAbTesting, mdiAlphaACircle, mdiAlphaBCircleOutline, mdiClose } from "@mdi/js";
 import { useRouter, useRoute } from "vue-router";
 import { ref, onMounted, watch } from "vue";
-import { nextTick } from "vue";
+import { Dialog } from "reka-ui/namespaced";
 import axios from "axios";
 
 import { UserTaskMappings, SendTaskMappings } from "@/helpers/maps";
@@ -21,7 +21,15 @@ import BpmnDiagram from "@/components/BPMN/BpmnDiagram.vue";
 import FormField from "@/components/Form/FormField.vue";
 import PillTag from "@/components/PillTag/PillTag.vue";
 import CardBox from "@/components/Cardbox/CardBox.vue";
-let bpmn_diagram_active = ref(false);
+import BaseButton from "@/components/Base/BaseButton.vue";
+const bpmn_diagram_active = ref(false);
+let diagramTrigger;
+function restoreDiagramFocus(event) {
+	if (diagramTrigger?.isConnected) {
+		event.preventDefault();
+		diagramTrigger.focus();
+	}
+}
 
 import BPMN_red from "/BPMN/red_bpmn_professor_pending.png";
 import BPMN_blue from "/BPMN/blue_bpmn_default.png";
@@ -53,9 +61,9 @@ async function fetchXML(model) {
 const router = useRouter();
 const process_instance_data = ref(null);
 const bpmn_model = ref(null);
-const bpmnKey = ref(0);
 
 async function handleProcessDiagram() {
+	diagramTrigger = document.activeElement;
 	try {
 		process_instance_data.value = await adminStore.getProcessInstanceData(adminStore.selectedStudent);
 		let model = process_instance_data.value.model.model_path.split(".")[0];
@@ -63,10 +71,6 @@ async function handleProcessDiagram() {
 		bpmn_model.value = await fetchXML(model);
 
 		bpmn_diagram_active.value = true;
-
-		await nextTick();
-
-		bpmnKey.value++;
 
 		router.replace(`/studenti/${process_instance_data.value.id}`);
 	} catch (e) {
@@ -276,48 +280,6 @@ onMounted(loadDataForStudent);
 					<TableStudents @show-student-diagram="handleProcessDiagram" />
 				</CardBox>
 
-				<p v-if="adminStore.selectedStudent != null" class="mt-2">
-					Trenutno se prikazuje:
-					<b>{{ adminStore.selectedStudent.ime }} {{ adminStore.selectedStudent.prezime }}</b>
-				</p>
-				<!-- Modal for the current task -->
-				<CardBoxModal
-					v-if="modal_select_bpmn_task"
-					v-model="modal_select_bpmn_task"
-					:title="UserTaskMappings.getTaskProperty(process_instance_data.pending[0], 'form_title', process_instance_data['state'])"
-					button-label="Potvrda"
-					has-cancel
-					:disabled-condition="disabledCondition || isSubmitting"
-					@confirm="handleNewInstance()">
-					<p v-if="process_instance_data.pending[0] == 'odabiranje_zadatka_student' || process_instance_data.pending[0] == 'ispunjavanje_prijavnice_student' || process_instance_data.pending[0] == 'predavanje_dnevnika_student'" class="mb-4">
-						{{ UserTaskMappings.getTaskProperty(adminStore.bpmn_diagram.clicked_task_id, "bpmn_pending_info_msg", process_instance_data["state"]) }}
-					</p>
-
-					<FormDynamic
-						v-else
-						v-model="formDynamicValues"
-						:form-fields="adminStore.selectedStudent.process_instance_data.pending_task_info.form_fields"
-						:variables="adminStore.selectedStudent.process_instance_data.variables"
-						:documentation="adminStore.selectedStudent.process_instance_data.pending_task_info.documentation"
-						:current-task-id="process_instance_data.pending[0]"
-						@all-fields-filled="updateDisabledCondition" />
-				</CardBoxModal>
-
-				<!-- Modal for past tasks (without FormDynamic) -->
-				<CardBoxModal v-if="modal_past_bpmn_task" v-model="modal_past_bpmn_task" :title="UserTaskMappings.getTaskProperty(adminStore.bpmn_diagram.clicked_task_id, 'form_title', process_instance_data['state'])" button-label="Povratak">
-					<p class="mb-2">Ovaj zadatak je već obavljen.</p>
-					<TableInstanceData></TableInstanceData>
-				</CardBoxModal>
-
-				<CardBoxModal v-if="modal_send_task" v-model="modal_send_task" :title="'Ponovno slanje emaila'" has-cancel button-label="Pošalji" @confirm="sendAnAdditionalEmail()">
-					<p class="">E-mail je već poslan putem BPMN <i>enginea</i>, ali ga možete ponovo poslati klikom na gumb 'Pošalji'.</p>
-					<p class="mb-2">Ispod je prikazan e-mail koji je pohranjen u BPMN <i>engineu</i>, no možete unijeti novie-mail ispod i poslati ga ponovo. U tom slučaju, e-mail u <i>engineu</i> neće biti ažuriran.</p>
-
-					<FormField label="Novi E-mail">
-						<FormControl v-model="newEmail" :icon-left="mdiAccount" name="email" autocomplete="email" />
-					</FormField>
-				</CardBoxModal>
-
 				<CardBoxModal v-if="bpmn_help_modal" v-model="bpmn_help_modal" :title="'BPMN Graf - Legenda'" button-label="Povratak">
 					<div class="mb-4 flex items-center space-x-4">
 						<img :src="BPMN_blue" alt="Description 1" class="h-32 w-32 object-contain" />
@@ -344,19 +306,82 @@ onMounted(loadDataForStudent);
 				</CardBoxModal>
 			</SectionMain>
 
-			<BpmnDiagram
-				v-if="bpmn_model && process_instance_data"
-				:key="bpmnKey"
-				:xml="bpmn_model"
-				:current-order="UserTaskMappings.getTaskProperty(process_instance_data.pending[0], 'order', process_instance_data['state'])"
-				:highlight-color="UserTaskMappings.getTaskProperty(process_instance_data.pending[0], 'bpmn_task_color', process_instance_data['state'])"
-				:highlight-element-id="process_instance_data.pending[0] || UserTaskMappings.getTaskProperty(process_instance_data.pending[0], '_id', process_instance_data['state'])"
-				@current-task-modal="modal_select_bpmn_task = true"
-				@past-task-modal="modal_past_bpmn_task = true"
-				@send-task-modal="modal_send_task = true" />
-			<div v-else-if="process_instance_data" class="flex items-center justify-center pt-36">
-				<LoadingAnimatedIcon></LoadingAnimatedIcon>
-			</div>
+			<Dialog.Root v-model:open="bpmn_diagram_active">
+				<Dialog.Portal>
+					<Dialog.Overlay class="reka-animated fixed inset-0 z-[4000] bg-slate-950/80" />
+					<Dialog.Content
+						class="reka-animated fixed inset-0 z-[4001] flex min-h-0 flex-col overflow-hidden bg-white text-slate-900 shadow-lg dark:bg-slate-900 dark:text-slate-100 sm:inset-4 sm:rounded-xl"
+						:aria-describedby="undefined"
+						@close-auto-focus="restoreDiagramFocus">
+						<header class="flex shrink-0 items-center justify-between gap-4 border-b border-slate-200 p-4 dark:border-slate-700">
+							<div class="min-w-0">
+								<Dialog.Title class="text-xl font-semibold">BPMN dijagram</Dialog.Title>
+								<p v-if="adminStore.selectedStudent" class="truncate text-sm text-slate-600 dark:text-slate-300">{{ adminStore.selectedStudent.ime }} {{ adminStore.selectedStudent.prezime }}</p>
+							</div>
+							<Dialog.Close as-child><BaseButton :icon="mdiClose" aria-label="Zatvori BPMN prikaz" /></Dialog.Close>
+						</header>
+						<BpmnDiagram
+							v-if="bpmn_model && process_instance_data"
+							class="bpmn-dialog-canvas"
+							:xml="bpmn_model"
+							:current-order="UserTaskMappings.getTaskProperty(process_instance_data.pending[0], 'order', process_instance_data['state'])"
+							:highlight-color="UserTaskMappings.getTaskProperty(process_instance_data.pending[0], 'bpmn_task_color', process_instance_data['state'])"
+							:highlight-element-id="process_instance_data.pending[0] || UserTaskMappings.getTaskProperty(process_instance_data.pending[0], '_id', process_instance_data['state'])"
+							@current-task-modal="modal_select_bpmn_task = true"
+							@past-task-modal="modal_past_bpmn_task = true"
+							@send-task-modal="modal_send_task = true" />
+						<div v-else class="flex flex-1 items-center justify-center" role="status">
+							<LoadingAnimatedIcon />
+						</div>
+						<!-- Modal for the current task -->
+						<CardBoxModal
+							v-if="modal_select_bpmn_task"
+							v-model="modal_select_bpmn_task"
+							:title="UserTaskMappings.getTaskProperty(process_instance_data.pending[0], 'form_title', process_instance_data['state'])"
+							button-label="Potvrda"
+							has-cancel
+							:disabled-condition="disabledCondition || isSubmitting"
+							@confirm="handleNewInstance()">
+							<p v-if="process_instance_data.pending[0] == 'odabiranje_zadatka_student' || process_instance_data.pending[0] == 'ispunjavanje_prijavnice_student' || process_instance_data.pending[0] == 'predavanje_dnevnika_student'" class="mb-4">
+								{{ UserTaskMappings.getTaskProperty(adminStore.bpmn_diagram.clicked_task_id, "bpmn_pending_info_msg", process_instance_data["state"]) }}
+							</p>
+
+							<FormDynamic
+								v-else
+								v-model="formDynamicValues"
+								:form-fields="adminStore.selectedStudent.process_instance_data.pending_task_info.form_fields"
+								:variables="adminStore.selectedStudent.process_instance_data.variables"
+								:documentation="adminStore.selectedStudent.process_instance_data.pending_task_info.documentation"
+								:current-task-id="process_instance_data.pending[0]"
+								@all-fields-filled="updateDisabledCondition" />
+						</CardBoxModal>
+
+						<!-- Modal for past tasks (without FormDynamic) -->
+						<CardBoxModal v-if="modal_past_bpmn_task" v-model="modal_past_bpmn_task" :title="UserTaskMappings.getTaskProperty(adminStore.bpmn_diagram.clicked_task_id, 'form_title', process_instance_data['state'])" button-label="Povratak">
+							<p class="mb-2">Ovaj zadatak je već obavljen.</p>
+							<TableInstanceData></TableInstanceData>
+						</CardBoxModal>
+
+						<CardBoxModal v-if="modal_send_task" v-model="modal_send_task" :title="'Ponovno slanje emaila'" has-cancel button-label="Pošalji" @confirm="sendAnAdditionalEmail()">
+							<p class="">E-mail je već poslan putem BPMN <i>enginea</i>, ali ga možete ponovo poslati klikom na gumb 'Pošalji'.</p>
+							<p class="mb-2">Ispod je prikazan e-mail koji je pohranjen u BPMN <i>engineu</i>, no možete unijeti novie-mail ispod i poslati ga ponovo. U tom slučaju, e-mail u <i>engineu</i> neće biti ažuriran.</p>
+
+							<FormField label="Novi E-mail">
+								<FormControl v-model="newEmail" :icon-left="mdiAccount" name="email" autocomplete="email" />
+							</FormField>
+						</CardBoxModal>
+					</Dialog.Content>
+				</Dialog.Portal>
+			</Dialog.Root>
 		</LayoutAuthenticated>
 	</div>
 </template>
+
+<style scoped>
+.bpmn-dialog-canvas {
+	flex: 1;
+	height: auto;
+	min-height: 0;
+	overflow: hidden;
+}
+</style>

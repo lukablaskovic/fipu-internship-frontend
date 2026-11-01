@@ -15,7 +15,7 @@ import BaseButton from "@/components/Base/BaseButton.vue";
 import BaseLevel from "@/components/Base/BaseLevel.vue";
 import PillTag from "@/components/PillTag/PillTag.vue";
 import BaseIcon from "@/components/Base/BaseIcon.vue";
-import { computed, ref, onMounted, watch } from "vue";
+import { computed, ref, watch } from "vue";
 import LoadingOverlay from "../LoadingOverlay.vue";
 import { adminStore } from "@/main.js";
 import { useRoute } from "vue-router";
@@ -114,7 +114,7 @@ function deleteProcessInstance(student) {
 }
 
 // --- Lifecycle and Watchers ---
-onMounted(async () => {
+watch(students, () => {
 	if (route.params.process_instance_id) {
 		selectedStudentInstanceID.value = route.params.process_instance_id;
 		const selectedStudent = students.value.find((student) => student["process_instance_id"] === route.params.process_instance_id);
@@ -126,7 +126,7 @@ onMounted(async () => {
 		selectedStudentInstanceID.value = null;
 		adminStore.setSelectedStudent(null);
 	}
-});
+}, { immediate: true });
 
 watch(selectedStudentInstanceID, (newVal) => {
 	if (newVal) {
@@ -213,7 +213,7 @@ watch(selectedStudentInstanceID, (newVal) => {
 					</td>
 					<td class="whitespace-nowrap before:hidden lg:w-1">
 						<BaseButtons type="justify-start lg:justify-end" no-wrap>
-							<BaseButton color="fipu_blue" :icon="mdiEye" small @click="showDiagram(student)" />
+							<BaseButton color="fipu_blue" :icon="mdiEye" :aria-label="`Otvori BPMN prikaz: ${student.ime} ${student.prezime}`" small @click="showDiagram(student)" />
 							<BaseButton color="danger" :icon="mdiCloseOutline" small @click="deleteProcessInstance(student)" />
 						</BaseButtons>
 					</td>
