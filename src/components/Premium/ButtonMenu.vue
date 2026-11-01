@@ -82,7 +82,7 @@ function handleOptionSelect(option) {
 				<DropdownMenu.Content
 					:align="left ? 'start' : 'end'"
 					:side-offset="8"
-					class="z-[99999] max-h-[var(--reka-dropdown-menu-content-available-height)] w-56 divide-y divide-gray-100 overflow-y-auto rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none dark:divide-gray-700 dark:bg-slate-800">
+					class="reka-animated z-[99999] max-h-[var(--reka-dropdown-menu-content-available-height)] w-56 divide-y divide-gray-100 overflow-y-auto rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none dark:divide-gray-700 dark:bg-slate-800">
 					<DropdownMenu.Group v-for="(optionsGroup, index) in options" :key="index" class="px-1 py-1">
 						<DropdownMenu.Item
 							v-for="option in optionsGroup"

@@ -163,7 +163,7 @@ const toggleSelection = (option) => {
 				<DropdownMenu.Content
 					:align="left ? 'start' : 'end'"
 					:side-offset="8"
-					class="fipu_vertical_scrollbar z-[10000] h-96 max-h-[var(--reka-dropdown-menu-content-available-height)] w-64 divide-y divide-gray-100 overflow-y-auto overflow-x-hidden rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 drop-shadow focus:outline-none dark:divide-gray-700 dark:bg-slate-950 md:w-96">
+					class="reka-animated fipu_vertical_scrollbar z-[10000] h-96 max-h-[var(--reka-dropdown-menu-content-available-height)] w-64 divide-y divide-gray-100 overflow-y-auto overflow-x-hidden rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 drop-shadow focus:outline-none dark:divide-gray-700 dark:bg-slate-950 md:w-96">
 					<div class="p-2 text-sm">Odaberite događaje koje želite prikazivati</div>
 					<DropdownMenu.Group v-for="(optionsGroup, index) in options" :key="index" class="px-1 py-1">
 						<component

@@ -6,6 +6,7 @@
 @import "_progress.css";
 @import "_scrollbars.css";
 @import "_table.css";
+@import "_reka-animations.css";
 
 @layer components {
 	.fipu_vertical_scrollbar {

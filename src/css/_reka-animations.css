@@ -1,0 +1,17 @@
+@keyframes reka-fade-in {
+	from { opacity: 0; }
+}
+
+@keyframes reka-fade-out {
+	to { opacity: 0; }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+	.reka-animated:is([data-state="open"], [data-state="delayed-open"], [data-state="instant-open"]) {
+		animation: reka-fade-in 150ms ease-out both;
+	}
+
+	.reka-animated[data-state="closed"] {
+		animation: reka-fade-out 100ms ease-in both;
+	}
+}

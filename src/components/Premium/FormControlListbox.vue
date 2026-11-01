@@ -37,7 +37,7 @@ function update(value) {
 			<Select.Value :placeholder="placeholder" /><Select.Icon aria-hidden="true">⌄</Select.Icon>
 		</Select.Trigger>
 		<Select.Portal>
-			<Select.Content position="popper" :side-offset="4" class="z-[10000] max-h-60 min-w-[var(--reka-select-trigger-width)] overflow-auto rounded bg-white text-gray-700 shadow-lg ring-1 ring-black/10 dark:bg-slate-800 dark:text-white">
+			<Select.Content position="popper" :side-offset="4" class="reka-animated z-[10000] max-h-60 min-w-[var(--reka-select-trigger-width)] overflow-auto rounded bg-white text-gray-700 shadow-lg ring-1 ring-black/10 dark:bg-slate-800 dark:text-white">
 				<Select.Viewport>
 					<Select.Item
 						v-for="(option, index) in options"

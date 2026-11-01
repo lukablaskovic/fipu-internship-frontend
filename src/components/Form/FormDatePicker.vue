@@ -48,7 +48,7 @@ const selected = computed({
 			<DatePicker.Trigger :disabled="disabled || readonly" aria-label="Otvori kalendar" class="ml-auto rounded px-2 focus-visible:ring focus-visible:ring-fipu_blue">▦</DatePicker.Trigger>
 		</DatePicker.Field>
 		<Popover.Portal>
-			<DatePicker.Content :side-offset="4" class="z-[10000] rounded border border-gray-200 bg-white p-3 text-gray-700 shadow-lg dark:bg-slate-800 dark:text-white">
+			<DatePicker.Content :side-offset="4" class="reka-animated z-[10000] rounded border border-gray-200 bg-white p-3 text-gray-700 shadow-lg dark:bg-slate-800 dark:text-white">
 				<DatePicker.Calendar v-slot="{ grid, weekDays }">
 					<DatePicker.Header class="mb-2 flex items-center justify-between gap-3">
 						<DatePicker.Prev aria-label="Prethodni mjesec" class="rounded p-2 hover:bg-gray-100 focus-visible:ring">‹</DatePicker.Prev>

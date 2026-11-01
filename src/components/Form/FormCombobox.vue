@@ -36,7 +36,7 @@ const filteredList = computed(() => {
 				</Combobox.Trigger>
 			</Combobox.Anchor>
 			<Combobox.Portal>
-				<Combobox.Content position="popper" :side-offset="8" class="fipu_vertical_scrollbar z-[10000] max-h-64 w-[var(--reka-combobox-trigger-width)] overflow-y-auto rounded bg-gray-50 drop-shadow-lg">
+				<Combobox.Content position="popper" :side-offset="8" class="reka-animated fipu_vertical_scrollbar z-[10000] max-h-64 w-[var(--reka-combobox-trigger-width)] overflow-y-auto rounded bg-gray-50 drop-shadow-lg">
 					<Combobox.Viewport>
 						<Combobox.Empty class="px-3 py-2 text-sm text-gray-500">Nema rezultata.</Combobox.Empty>
 						<Combobox.Item

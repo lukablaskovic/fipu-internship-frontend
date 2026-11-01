@@ -184,7 +184,7 @@ onMounted(async () => {
 			<Combobox.Content
 				position="popper"
 				:side-offset="4"
-				class="z-[10000] max-h-60 w-[var(--reka-combobox-trigger-width)] overflow-auto rounded-lg border bg-gray-50 py-1 text-base text-gray-900 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none dark:bg-gray-900 dark:text-gray-300 sm:text-sm">
+				class="reka-animated z-[10000] max-h-60 w-[var(--reka-combobox-trigger-width)] overflow-auto rounded-lg border bg-gray-50 py-1 text-base text-gray-900 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none dark:bg-gray-900 dark:text-gray-300 sm:text-sm">
 				<Combobox.Viewport>
 					<template v-if="query === ''">
 						<div class="px-4 py-2 text-sm text-gray-700 dark:text-gray-200 md:text-base">
