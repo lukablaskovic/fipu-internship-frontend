@@ -17,6 +17,7 @@ assert.equal(loadConfig(true, undefined).LOCAL_DEV, false, 'Unconfigured dev def
 assert.equal(loadConfig(true, undefined).MAINTENANCE_MODE, false, 'Both dev modes must allow login');
 const local = loadConfig(true, 'true');
 assert.equal(local.MAINTENANCE_MODE, false);
+assert.equal(local.BASEROW_URL, "http://localhost:8085");
 for (const url of Object.values(local.endpoints)) assert.equal(new URL(url).hostname, 'localhost');
 const values = new Map([['token', 'old-token'], ['main', 'old-user'], ['student', 'old-data'], ['admin', 'old-data']]);
 const storage = { getItem: (key) => values.get(key) ?? null, setItem: (key, value) => values.set(key, value), clear: () => values.clear() };
@@ -26,6 +27,7 @@ assert.deepEqual([...values], [['dev-data-mode', 'real']], 'Changing modes must 
 assert.equal(destination, '/prijava');
 const real = loadConfig(true, 'true', storage);
 assert.equal(real.LOCAL_DEV, false);
+assert.equal(real.BASEROW_URL, "https://baserow.unipu.hr/dashboard");
 assert.equal(real.MAINTENANCE_MODE, false);
 for (const url of Object.values(real.endpoints)) assert.notEqual(new URL(url).hostname, 'localhost');
 values.set('token', 'real-token');
@@ -35,6 +37,7 @@ real.setLocalDevelopment(true);
 assert.equal(loadConfig(true, undefined, storage).LOCAL_DEV, true);
 const production = loadConfig(false, 'true', storage);
 assert.equal(production.LOCAL_DEV, false, 'Production ignores saved local mode');
+assert.equal(production.BASEROW_URL, "https://baserow.unipu.hr/dashboard");
 production.setLocalDevelopment(false);
 assert.equal(values.get('dev-data-mode'), 'local', 'Production cannot switch modes');
 assert.equal(loadConfig(true, 'true', { getItem() { throw new Error('blocked'); } }).LOCAL_DEV, true);
@@ -67,3 +70,12 @@ destination = 'not called';
 guard({ path: '/prijava', matched: [] }, {}, (value) => { destination = value; });
 assert.equal(destination, undefined, 'Real dev login must remain reachable even with stale maintenance state');
 console.log('Maintenance redirects pass, including stale browser state and loop prevention.');
+
+// The Admin submenu must use the selected Baserow instance too.
+const adminMenuSource = transformSync(readFileSync(`${__dirname}/../src/menus/menuAsideAdmin.ts`, 'utf8'), { loader: 'ts', format: 'cjs' }).code;
+for (const selectedConfig of [local, real, production]) {
+	const menuModule = { exports: {} };
+	new Function('require', 'module', adminMenuSource)((name) => name === '@/config.js' ? selectedConfig : require(name), menuModule);
+	const adminMenu = menuModule.exports.default.find((item) => item.label === 'Admin');
+	assert.equal(adminMenu.menu.find((item) => item.label === 'Baserow DB').externalURL, selectedConfig.BASEROW_URL);
+}

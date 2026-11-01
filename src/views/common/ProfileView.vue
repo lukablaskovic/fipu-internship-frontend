@@ -1,4 +1,6 @@
 <script setup>
+import { BASEROW_URL } from "@/config.js";
+
 
 import { reactive } from "vue";
 import { mainStore } from "@/main.js";
@@ -95,7 +97,7 @@ const profileForm = reactive({
 					<div v-if="mainStore.userAdmin">
 						<SectionBanner class="bg-gradient-to-tr from-blue-200 via-blue-400 to-gray-800">
 							<h1 class="mb-6 text-3xl text-white">Baserow baza podataka</h1>
-							<a href="https://baserow.unipu.hr/dashboard" target="_blank">
+							<a :href="BASEROW_URL" target="_blank">
 								<BaseButton :icon="mdiDatabase" label="Baserow" rounded-full />
 							</a>
 						</SectionBanner>

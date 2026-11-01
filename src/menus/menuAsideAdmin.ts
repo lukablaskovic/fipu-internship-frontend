@@ -1,3 +1,4 @@
+import { BASEROW_URL } from "@/config.js";
 import { mdiMonitor, mdiAccountMultiple, mdiSecurity, mdiDomain, mdiClipboardText, mdiClipboardCheck } from "@mdi/js";
 
 interface MenuItem {
@@ -49,7 +50,7 @@ const menuAsideAdmin: MenuItem[] = [
 			},
 			{
 				label: "Baserow DB",
-				externalURL: "https://baserow.unipu.hr/dashboard",
+				externalURL: BASEROW_URL,
 			},
 		],
 	},

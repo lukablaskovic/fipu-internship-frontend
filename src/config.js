@@ -16,6 +16,8 @@ if (DEV_MODE) {
 }
 export const LOCAL_DEV = DEV_MODE && (dataMode === "local" || (dataMode !== "real" && import.meta.env.VITE_LOCAL_DEV === "true"));
 
+export const BASEROW_URL = LOCAL_DEV ? "http://localhost:8085" : "https://baserow.unipu.hr/dashboard";
+
 export function clearSession() {
 	const mode = DEV_MODE ? sessionStorage.getItem(dataModeKey) : null;
 	sessionStorage.clear();

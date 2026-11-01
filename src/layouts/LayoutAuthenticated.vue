@@ -1,4 +1,6 @@
 <script setup>
+import { BASEROW_URL } from "@/config.js";
+
 import { mdiForwardburger, mdiChartTimeline, mdiInformation, mdiBackburger, mdiMenu, mdiMagnify, mdiLaptop, mdiClipboardCheck, mdiDomain, mdiClipboardText } from "@mdi/js";
 import { mainStore, styleStore } from "@/main.js";
 import { ref, onMounted, computed } from "vue";
@@ -223,7 +225,7 @@ const menuClick = (event, item) => {
 					</li>
 					<li>Poslodavci su podijeljeni u 2 tablice: <b>Novi Poslodavci</b> i <b>Svi Poslodavci</b>. U tablici <b>Novi Poslodavci</b> se prikazuju novi retci nakon što novo poduzeće (koje još nije partner) prijavi zadatak.</li>
 					<li>Tada je potrebno ručno unijeti podatke o poduzeću te realizirati Ugovor o praksi s poduzećem.</li>
-					<li>Podatke o poslodavcu je moguće i direktno ažurirati u <a href="https://baserow.unipu.hr/" target="_blank" class="text-fipu_blue">Baserow</a> bazi podataka</li>
+					<li>Podatke o poslodavcu je moguće i direktno ažurirati u <a :href="BASEROW_URL" target="_blank" class="text-fipu_blue">Baserow</a> bazi podataka</li>
 				</ol>
 				<BaseDivider></BaseDivider>
 				<div class="mb-2 text-xl">Dostupni Zadaci</div>
@@ -240,7 +242,7 @@ const menuClick = (event, item) => {
 					<li>Tu možete vidjeti podjelu na <b>Novi Zadaci</b>, <b>Aktivni Zadaci</b> te <b>Odbijeni Zadaci</b>.</li>
 					<li>Zadatak novog partnera je moguće odobriti i prije dopunjavanja podataka o tom poduzeću (ali nije preporuka).</li>
 					<li>Na ovoj stranici također možete pronaći javnu poveznicu koja se proslijeđuje poslodavcima za prijavu novog zadatka.</li>
-					<li>Podatke o zadacima je moguće i direktno ažurirati u <a href="https://baserow.unipu.hr/" target="_blank" class="text-fipu_blue">Baserow</a> bazi podataka</li>
+					<li>Podatke o zadacima je moguće i direktno ažurirati u <a :href="BASEROW_URL" target="_blank" class="text-fipu_blue">Baserow</a> bazi podataka</li>
 				</ol>
 				<BaseDivider></BaseDivider>
 				<p>
