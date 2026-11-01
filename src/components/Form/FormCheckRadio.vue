@@ -1,5 +1,5 @@
 <script setup>
-import { CheckboxRoot, SwitchRoot, RadioGroupItem } from "reka-ui";
+import { Checkbox, Switch, RadioGroup } from "reka-ui/namespaced";
 import { computed } from "vue";
 
 defineOptions({ inheritAttrs: false });
@@ -53,9 +53,9 @@ const checked = computed({
 
 <template>
 	<label :class="[type, $attrs.class]" class="flex items-center">
-		<RadioGroupItem v-if="type === 'radio'" v-bind="{ ...$attrs, class: undefined }" :value="inputValue" :disabled="disabled || readonly" :aria-label="label || name" class="check min-w-[20px]" />
+		<RadioGroup.Item v-if="type === 'radio'" v-bind="{ ...$attrs, class: undefined }" :value="inputValue" :disabled="disabled || readonly" :aria-label="label || name" class="check min-w-[20px]" />
 		<component
-			:is="type === 'switch' ? SwitchRoot : CheckboxRoot"
+			:is="type === 'switch' ? Switch.Root : Checkbox.Root"
 			v-else
 			v-bind="{ ...$attrs, class: undefined }"
 			v-model="checked"

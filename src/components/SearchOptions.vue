@@ -1,5 +1,5 @@
 <script setup>
-import { ComboboxRoot, ComboboxAnchor, ComboboxInput, ComboboxTrigger, ComboboxPortal, ComboboxContent, ComboboxViewport, ComboboxItem } from "reka-ui";
+import { Combobox } from "reka-ui/namespaced";
 import MdiPagePreviousOutline from "vue-material-design-icons/PagePreviousOutline.vue";
 import { ref, computed, onMounted, onUnmounted, watch, nextTick } from "vue";
 import MdiClipboardText from "vue-material-design-icons/ClipboardText.vue";
@@ -162,12 +162,12 @@ onMounted(async () => {
 </script>
 
 <template>
-	<ComboboxRoot v-model="selectedValue" v-model:open="open" ignore-filter open-on-focus open-on-click :reset-search-term-on-select="false" :reset-search-term-on-blur="false">
-		<ComboboxAnchor class="relative w-full cursor-default overflow-hidden rounded-lg border border-gray-300 bg-transparent text-left dark:border-gray-600 sm:text-sm">
+	<Combobox.Root v-model="selectedValue" v-model:open="open" ignore-filter open-on-focus open-on-click :reset-search-term-on-select="false" :reset-search-term-on-blur="false">
+		<Combobox.Anchor class="relative w-full cursor-default overflow-hidden rounded-lg border border-gray-300 bg-transparent text-left dark:border-gray-600 sm:text-sm">
 			<div v-if="hasValidPrefix" ref="prefixContainer" class="absolute inset-y-0 left-0 flex items-center">
 				<span class="ml-2 rounded bg-fipu_blue px-2 py-1 text-sm text-white">{{ prefixLabel }}</span>
 			</div>
-			<ComboboxInput
+			<Combobox.Input
 				ref="searchInput"
 				v-model="displayValue"
 				aria-label="Pretraživanje"
@@ -176,16 +176,16 @@ onMounted(async () => {
 				:style="inputStyle"
 				style="overflow-x: auto; outline: none; border: none; background: transparent"
 				@keydown="handleKeyDown" />
-			<ComboboxTrigger class="absolute inset-y-0 right-0 flex items-center pr-2 focus-visible:outline focus-visible:outline-fipu_blue" aria-label="Upute za pretraživanje" @click="showHelp">
+			<Combobox.Trigger class="absolute inset-y-0 right-0 flex items-center pr-2 focus-visible:outline focus-visible:outline-fipu_blue" aria-label="Upute za pretraživanje" @click="showHelp">
 				<MdiMagnify class="h-5 w-5 text-gray-700 hover:text-fipu_blue" aria-hidden="true" />
-			</ComboboxTrigger>
-		</ComboboxAnchor>
-		<ComboboxPortal>
-			<ComboboxContent
+			</Combobox.Trigger>
+		</Combobox.Anchor>
+		<Combobox.Portal>
+			<Combobox.Content
 				position="popper"
 				:side-offset="4"
 				class="z-[10000] max-h-60 w-[var(--reka-combobox-trigger-width)] overflow-auto rounded-lg border bg-gray-50 py-1 text-base text-gray-900 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none dark:bg-gray-900 dark:text-gray-300 sm:text-sm">
-				<ComboboxViewport>
+				<Combobox.Viewport>
 					<template v-if="query === ''">
 						<div class="px-4 py-2 text-sm text-gray-700 dark:text-gray-200 md:text-base">
 							<b>Kratke upute kako koristiti tražilicu</b>
@@ -194,7 +194,7 @@ onMounted(async () => {
 							<p>ℹ️ Za brzo kretanje upišite naziv rute direktno.</p>
 							<p>ℹ️ Za pregled stavaka, prvo upišite odgovarajući prefix, nakon toga pojam.</p>
 						</div>
-						<ComboboxItem
+						<Combobox.Item
 							v-for="helpItem in helpItems"
 							:key="helpItem.prefix"
 							:value="helpItem"
@@ -203,10 +203,10 @@ onMounted(async () => {
 							@select.prevent="insertPrefix(helpItem.prefix)">
 							<span class="flex w-6 items-center justify-center rounded bg-fipu_blue px-0.5 font-bold text-gray-900">{{ helpItem.prefix }}</span>
 							{{ helpItem.description }}
-						</ComboboxItem>
+						</Combobox.Item>
 					</template>
 					<div v-else-if="filteredResults.length === 0" role="status" class="px-4 py-2 text-gray-700 dark:text-gray-200">Nema rezultata.</div>
-					<ComboboxItem v-for="(result, index) in filteredResults" :key="result.id || index" :value="result" class="relative cursor-pointer select-none py-2 pl-10 pr-4 outline-none data-[highlighted]:bg-fipu_blue data-[highlighted]:text-white">
+					<Combobox.Item v-for="(result, index) in filteredResults" :key="result.id || index" :value="result" class="relative cursor-pointer select-none py-2 pl-10 pr-4 outline-none data-[highlighted]:bg-fipu_blue data-[highlighted]:text-white">
 						<MdiAccount v-if="result.ime && result.prezime" class="absolute left-3 h-5 w-5" aria-hidden="true" />
 						<MdiPagePreviousOutline v-else-if="routes.includes(result)" class="absolute left-3 h-5 w-5" aria-hidden="true" />
 						<MdiClipboardText v-else-if="result.id_zadatak" class="absolute left-3 h-5 w-5" aria-hidden="true" />
@@ -215,9 +215,9 @@ onMounted(async () => {
 						<span v-else-if="result.ime && result.prezime" class="block truncate">{{ result.ime }} {{ result.prezime }} ({{ result.JMBAG }}) - {{ result.email }}</span>
 						<span v-else-if="result.id_zadatak" class="block truncate">Zadatak ID: {{ result.id_zadatak }}</span>
 						<span v-else class="block truncate">{{ result.naziv }}</span>
-					</ComboboxItem>
-				</ComboboxViewport>
-			</ComboboxContent>
-		</ComboboxPortal>
-	</ComboboxRoot>
+					</Combobox.Item>
+				</Combobox.Viewport>
+			</Combobox.Content>
+		</Combobox.Portal>
+	</Combobox.Root>
 </template>

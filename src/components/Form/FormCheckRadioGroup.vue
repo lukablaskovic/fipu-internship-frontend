@@ -2,7 +2,7 @@
 import { inject } from "vue";
 const fieldLabelId = inject("formFieldLabelId", undefined);
 import FormCheckRadio from "@/components/Form/FormCheckRadio.vue";
-import { RadioGroupRoot } from "reka-ui";
+import { RadioGroup } from "reka-ui/namespaced";
 import { computed } from "vue";
 
 const props = defineProps({
@@ -45,7 +45,7 @@ const computedValue = computed({
 
 <template>
 	<component
-		:is="type === 'radio' ? RadioGroupRoot : 'div'"
+		:is="type === 'radio' ? RadioGroup.Root : 'div'"
 		:aria-labelledby="fieldLabelId"
 		:model-value="type === 'radio' ? computedValue : undefined"
 		:name="name"

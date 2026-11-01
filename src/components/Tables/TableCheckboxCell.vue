@@ -1,5 +1,5 @@
 <script setup>
-import { CheckboxRoot } from "reka-ui";
+import { Checkbox } from "reka-ui/namespaced";
 import { ref, watch } from "vue";
 
 const props = defineProps({
@@ -35,7 +35,7 @@ watch(
 <template>
 	<component :is="type" class="lg:w-1">
 		<label :class="{ 'opacity-50': disabled }" class="checkbox">
-			<CheckboxRoot v-model="checked" :disabled="disabled || readonly" :aria-label="type === 'th' ? 'Odaberi sve retke' : 'Odaberi redak'" class="check" />
+			<Checkbox.Root v-model="checked" :disabled="disabled || readonly" :aria-label="type === 'th' ? 'Odaberi sve retke' : 'Odaberi redak'" class="check" />
 		</label>
 	</component>
 </template>

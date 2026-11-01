@@ -1,5 +1,5 @@
 <script setup>
-import { DialogRoot, DialogPortal, DialogOverlay, DialogContent, DialogTitle } from "reka-ui";
+import { Dialog } from "reka-ui/namespaced";
 import CardBoxComponentTitle from "@/components/Cardbox/CardBoxComponentTitle.vue";
 import BaseButtons from "@/components/Base/BaseButtons.vue";
 import BaseButton from "@/components/Base/BaseButton.vue";
@@ -75,10 +75,10 @@ const cancel = () => confirmCancel("cancel");
 </script>
 
 <template>
-	<DialogRoot :open="!!value" @update:open="!$event && cancel()">
-		<DialogPortal>
-			<DialogOverlay class="fixed inset-0 z-[5000] bg-gradient-to-tr from-gray-700 via-gray-800 to-gray-900 opacity-90" />
-			<div class="pointer-events-none fixed inset-0 z-[5001] flex items-center justify-center"><DialogContent as-child :aria-describedby="undefined" @close-auto-focus="restoreFocus">
+	<Dialog.Root :open="!!value" @update:open="!$event && cancel()">
+		<Dialog.Portal>
+			<Dialog.Overlay class="fixed inset-0 z-[5000] bg-gradient-to-tr from-gray-700 via-gray-800 to-gray-900 opacity-90" />
+			<div class="pointer-events-none fixed inset-0 z-[5001] flex items-center justify-center"><Dialog.Content as-child :aria-describedby="undefined" @close-auto-focus="restoreFocus">
 				<CardBox
 					class="pointer-events-auto"
 					:class="{
@@ -89,7 +89,7 @@ const cancel = () => confirmCancel("cancel");
 					}"
 					is-modal>
 					<div class="modal-content">
-						<DialogTitle as-child><CardBoxComponentTitle :title="title" /></DialogTitle>
+						<Dialog.Title as-child><CardBoxComponentTitle :title="title" /></Dialog.Title>
 
 						<slot v-if="modelValue != null" :assignment="modelValue"></slot>
 
@@ -99,9 +99,9 @@ const cancel = () => confirmCancel("cancel");
 						</BaseButtons>
 					</div>
 				</CardBox>
-			</DialogContent></div>
-		</DialogPortal>
-	</DialogRoot>
+			</Dialog.Content></div>
+		</Dialog.Portal>
+	</Dialog.Root>
 </template>
 
 <style scoped>

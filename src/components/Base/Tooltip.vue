@@ -1,15 +1,15 @@
 <script setup>
-import { TooltipRoot, TooltipTrigger, TooltipPortal, TooltipContent } from "reka-ui";
+import { Tooltip } from "reka-ui/namespaced";
 defineOptions({ name: "BaseTooltip" });
 defineProps({ content: { type: String, default: "" }, side: { type: String, default: "bottom" }, disabled: Boolean });
 </script>
 <template>
-	<TooltipRoot :disabled="disabled || !content">
-		<TooltipTrigger as-child><slot /></TooltipTrigger>
-		<TooltipPortal>
-			<TooltipContent :side="side" :side-offset="8" :collision-padding="8" class="z-[10000] max-w-[calc(100vw-16px)] rounded-[5px] bg-[#333] p-[5px] text-sm text-white shadow-sm">
+	<Tooltip.Root :disabled="disabled || !content">
+		<Tooltip.Trigger as-child><slot /></Tooltip.Trigger>
+		<Tooltip.Portal>
+			<Tooltip.Content :side="side" :side-offset="8" :collision-padding="8" class="z-[10000] max-w-[calc(100vw-16px)] rounded-[5px] bg-[#333] p-[5px] text-sm text-white shadow-sm">
 				{{ content }}
-			</TooltipContent>
-		</TooltipPortal>
-	</TooltipRoot>
+			</Tooltip.Content>
+		</Tooltip.Portal>
+	</Tooltip.Root>
 </template>

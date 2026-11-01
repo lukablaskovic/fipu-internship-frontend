@@ -1,7 +1,7 @@
 <script setup>
 import { inject } from "vue";
 const fieldLabelId = inject("formFieldLabelId", undefined);
-import { SelectRoot, SelectTrigger, SelectValue, SelectIcon, SelectPortal, SelectContent, SelectViewport, SelectItem, SelectItemText, SelectItemIndicator } from "reka-ui";
+import { Select } from "reka-ui/namespaced";
 import { computed, ref } from "vue";
 const props = defineProps({
 	options: { type: Array, default: () => [] },
@@ -32,26 +32,26 @@ function update(value) {
 }
 </script>
 <template>
-	<SelectRoot :model-value="selected" :disabled="disabled || readonly" :required="required" @update:model-value="update">
-		<SelectTrigger v-bind="$attrs" :id="id" ref="trigger" :aria-labelledby="fieldLabelId" :class="buttonClass" class="form-select-trigger flex items-center justify-between gap-2 text-left" :aria-readonly="readonly || undefined">
-			<SelectValue :placeholder="placeholder" /><SelectIcon aria-hidden="true">⌄</SelectIcon>
-		</SelectTrigger>
-		<SelectPortal>
-			<SelectContent position="popper" :side-offset="4" class="z-[10000] max-h-60 min-w-[var(--reka-select-trigger-width)] overflow-auto rounded bg-white text-gray-700 shadow-lg ring-1 ring-black/10 dark:bg-slate-800 dark:text-white">
-				<SelectViewport>
-					<SelectItem
+	<Select.Root :model-value="selected" :disabled="disabled || readonly" :required="required" @update:model-value="update">
+		<Select.Trigger v-bind="$attrs" :id="id" ref="trigger" :aria-labelledby="fieldLabelId" :class="buttonClass" class="form-select-trigger flex items-center justify-between gap-2 text-left" :aria-readonly="readonly || undefined">
+			<Select.Value :placeholder="placeholder" /><Select.Icon aria-hidden="true">⌄</Select.Icon>
+		</Select.Trigger>
+		<Select.Portal>
+			<Select.Content position="popper" :side-offset="4" class="z-[10000] max-h-60 min-w-[var(--reka-select-trigger-width)] overflow-auto rounded bg-white text-gray-700 shadow-lg ring-1 ring-black/10 dark:bg-slate-800 dark:text-white">
+				<Select.Viewport>
+					<Select.Item
 						v-for="(option, index) in options"
 						:key="index"
 						:value="String(index)"
 						:disabled="!!(option?.unavailable || option?.disabled)"
 						:text-value="String(option?.label ?? option)"
 						class="relative flex cursor-default select-none items-center gap-2 px-3 py-2 outline-none data-[highlighted]:bg-gray-100 data-[disabled]:opacity-50 dark:data-[highlighted]:bg-slate-700">
-						<SelectItemIndicator class="absolute left-2">✓</SelectItemIndicator><SelectItemText class="pl-5">{{ option?.label ?? option }}</SelectItemText>
-					</SelectItem>
-				</SelectViewport>
-			</SelectContent>
-		</SelectPortal>
-	</SelectRoot>
+						<Select.ItemIndicator class="absolute left-2">✓</Select.ItemIndicator><Select.ItemText class="pl-5">{{ option?.label ?? option }}</Select.ItemText>
+					</Select.Item>
+				</Select.Viewport>
+			</Select.Content>
+		</Select.Portal>
+	</Select.Root>
 	<select :name="name" :value="modelValue == null ? '' : String(modelValue)" :required="required" :disabled="disabled || readonly" tabindex="-1" aria-hidden="true" class="sr-only" @invalid.prevent="trigger?.$el?.focus()">
 		<option value="" />
 		<option v-for="(option, index) in options" :key="index" :value="String(option)" :disabled="!!(option?.unavailable || option?.disabled)">{{ option?.label ?? option }}</option>

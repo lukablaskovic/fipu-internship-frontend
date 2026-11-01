@@ -1,26 +1,7 @@
 <script setup>
 import { inject } from "vue";
 const fieldLabelId = inject("formFieldLabelId", undefined);
-import {
-	DatePickerRoot,
-	DatePickerField,
-	DatePickerInput,
-	DatePickerTrigger,
-	DatePickerContent,
-	DatePickerCalendar,
-	DatePickerHeader,
-	DatePickerHeading,
-	DatePickerPrev,
-	DatePickerNext,
-	DatePickerGrid,
-	DatePickerGridHead,
-	DatePickerGridBody,
-	DatePickerGridRow,
-	DatePickerHeadCell,
-	DatePickerCell,
-	DatePickerCellTrigger,
-	PopoverPortal,
-} from "reka-ui";
+import { DatePicker, Popover } from "reka-ui/namespaced";
 import { parseDate } from "@internationalized/date";
 import { computed } from "vue";
 const props = defineProps({
@@ -49,7 +30,7 @@ const selected = computed({
 });
 </script>
 <template>
-	<DatePickerRoot
+	<DatePicker.Root
 		:id="id"
 		v-model="selected"
 		:aria-labelledby="fieldLabelId"
@@ -62,39 +43,39 @@ const selected = computed({
 		:min-value="date(min)"
 		:max-value="date(max)"
 		close-on-select>
-		<DatePickerField v-slot="{ segments }" :class="inputClass" class="form-control-surface flex items-center border-gray-700 bg-white dark:bg-slate-800">
-			<DatePickerInput v-for="item in segments" :key="item.part" :part="item.part" class="rounded focus:bg-fipu_blue/20 focus:outline-none">{{ item.value }}</DatePickerInput>
-			<DatePickerTrigger :disabled="disabled || readonly" aria-label="Otvori kalendar" class="ml-auto rounded px-2 focus-visible:ring focus-visible:ring-fipu_blue">▦</DatePickerTrigger>
-		</DatePickerField>
-		<PopoverPortal>
-			<DatePickerContent :side-offset="4" class="z-[10000] rounded border border-gray-200 bg-white p-3 text-gray-700 shadow-lg dark:bg-slate-800 dark:text-white">
-				<DatePickerCalendar v-slot="{ grid, weekDays }">
-					<DatePickerHeader class="mb-2 flex items-center justify-between gap-3">
-						<DatePickerPrev aria-label="Prethodni mjesec" class="rounded p-2 hover:bg-gray-100 focus-visible:ring">‹</DatePickerPrev>
-						<DatePickerHeading class="font-semibold" />
-						<DatePickerNext aria-label="Sljedeći mjesec" class="rounded p-2 hover:bg-gray-100 focus-visible:ring">›</DatePickerNext>
-					</DatePickerHeader>
-					<DatePickerGrid v-for="month in grid" :key="month.value.toString()" class="date-grid">
-						<DatePickerGridHead
-							><DatePickerGridRow
-								><DatePickerHeadCell v-for="day in weekDays" :key="day" class="p-1 text-xs font-normal text-gray-500">{{ day }}</DatePickerHeadCell></DatePickerGridRow
-							></DatePickerGridHead
+		<DatePicker.Field v-slot="{ segments }" :class="inputClass" class="form-control-surface flex items-center border-gray-700 bg-white dark:bg-slate-800">
+			<DatePicker.Input v-for="item in segments" :key="item.part" :part="item.part" class="rounded focus:bg-fipu_blue/20 focus:outline-none">{{ item.value }}</DatePicker.Input>
+			<DatePicker.Trigger :disabled="disabled || readonly" aria-label="Otvori kalendar" class="ml-auto rounded px-2 focus-visible:ring focus-visible:ring-fipu_blue">▦</DatePicker.Trigger>
+		</DatePicker.Field>
+		<Popover.Portal>
+			<DatePicker.Content :side-offset="4" class="z-[10000] rounded border border-gray-200 bg-white p-3 text-gray-700 shadow-lg dark:bg-slate-800 dark:text-white">
+				<DatePicker.Calendar v-slot="{ grid, weekDays }">
+					<DatePicker.Header class="mb-2 flex items-center justify-between gap-3">
+						<DatePicker.Prev aria-label="Prethodni mjesec" class="rounded p-2 hover:bg-gray-100 focus-visible:ring">‹</DatePicker.Prev>
+						<DatePicker.Heading class="font-semibold" />
+						<DatePicker.Next aria-label="Sljedeći mjesec" class="rounded p-2 hover:bg-gray-100 focus-visible:ring">›</DatePicker.Next>
+					</DatePicker.Header>
+					<DatePicker.Grid v-for="month in grid" :key="month.value.toString()" class="date-grid">
+						<DatePicker.GridHead
+							><DatePicker.GridRow
+								><DatePicker.HeadCell v-for="day in weekDays" :key="day" class="p-1 text-xs font-normal text-gray-500">{{ day }}</DatePicker.HeadCell></DatePicker.GridRow
+							></DatePicker.GridHead
 						>
-						<DatePickerGridBody>
-							<DatePickerGridRow v-for="(week, index) in month.rows" :key="index">
-								<DatePickerCell v-for="day in week" :key="day.toString()" :date="day">
-									<DatePickerCellTrigger
+						<DatePicker.GridBody>
+							<DatePicker.GridRow v-for="(week, index) in month.rows" :key="index">
+								<DatePicker.Cell v-for="day in week" :key="day.toString()" :date="day">
+									<DatePicker.CellTrigger
 										:day="day"
 										:month="month.value"
 										class="flex h-9 w-9 items-center justify-center rounded data-[disabled]:pointer-events-none data-[selected]:bg-fipu_blue data-[today]:font-bold data-[outside-view]:text-gray-400 data-[selected]:text-white data-[disabled]:opacity-30 hover:bg-gray-100 focus-visible:ring focus-visible:ring-fipu_blue" />
-								</DatePickerCell>
-							</DatePickerGridRow>
-						</DatePickerGridBody>
-					</DatePickerGrid>
-				</DatePickerCalendar>
-			</DatePickerContent>
-		</PopoverPortal>
-	</DatePickerRoot>
+								</DatePicker.Cell>
+							</DatePicker.GridRow>
+						</DatePicker.GridBody>
+					</DatePicker.Grid>
+				</DatePicker.Calendar>
+			</DatePicker.Content>
+		</Popover.Portal>
+	</DatePicker.Root>
 </template>
 
 <style scoped>

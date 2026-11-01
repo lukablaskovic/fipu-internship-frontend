@@ -1,7 +1,7 @@
 <script setup>
 import SelectProcessButton from "../src/components/SelectProcessButton.vue";
-import Tooltip from "../src/components/Base/Tooltip.vue";
-import { TooltipProvider } from "reka-ui";
+import BaseTooltip from "../src/components/Base/Tooltip.vue";
+import { Tooltip } from "reka-ui/namespaced";
 import Select from "../src/components/Premium/FormControlListbox.vue";
 import Group from "../src/components/Form/FormCheckRadioGroup.vue";
 import DatePicker from "../src/components/Form/FormDatePicker.vue";
@@ -30,7 +30,7 @@ const selected = ref({ ...options[0] }),
 	cancels = ref(0);
 </script>
 <template>
-	<TooltipProvider :delay-duration="1000"><main style="max-width: 640px; margin: auto; padding: 24px">
+	<Tooltip.Provider :delay-duration="1000"><main style="max-width: 640px; margin: auto; padding: 24px">
 		<SelectProcessButton button="A" :selected-process="selectedProcess" @click="selectedProcess = 'A'" />
 		<BaseButton label="Disabled link" href="#bad" disabled @click="clicks++" />
 		<BaseButton label="Loading" loading />
@@ -62,6 +62,6 @@ const selected = ref({ ...options[0] }),
 		<BaseButton label="Otvori modal" @click="open = true" />
 		<Modal v-model="open" title="Test modal" has-cancel @cancel="cancels++"><input aria-label="Modal input" /><Select v-model="selected" :options="options" button-class="w-full border" /></Modal>
 		<output data-testid="cancels">{{ cancels }}</output>
-	<Tooltip content="Pomoć za praksu"><button type="button">Tooltip test</button></Tooltip>
-</main></TooltipProvider>
+	<BaseTooltip content="Pomoć za praksu"><button type="button">Tooltip test</button></BaseTooltip>
+</main></Tooltip.Provider>
 </template>

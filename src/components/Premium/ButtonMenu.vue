@@ -1,5 +1,5 @@
 <script setup>
-import { DropdownMenuRoot, DropdownMenuTrigger, DropdownMenuPortal, DropdownMenuContent, DropdownMenuGroup, DropdownMenuItem } from "reka-ui";
+import { DropdownMenu } from "reka-ui/namespaced";
 import BaseButton from "@/components/Base/BaseButton.vue";
 import BaseIcon from "@/components/Base/BaseIcon.vue";
 import { mdiChevronDown } from "@mdi/js";
@@ -62,8 +62,8 @@ function handleOptionSelect(option) {
 
 <template>
 	<div class="relative inline-block text-left">
-		<DropdownMenuRoot v-model:open="open">
-			<DropdownMenuTrigger as-child :disabled="disabled">
+		<DropdownMenu.Root v-model:open="open">
+			<DropdownMenu.Trigger as-child :disabled="disabled">
 				<BaseButton
 					:label="label"
 					:icon="icon"
@@ -77,14 +77,14 @@ function handleOptionSelect(option) {
 					:color="color"
 					:outline="outline"
 					:disabled="disabled" />
-			</DropdownMenuTrigger>
-			<DropdownMenuPortal>
-				<DropdownMenuContent
+			</DropdownMenu.Trigger>
+			<DropdownMenu.Portal>
+				<DropdownMenu.Content
 					:align="left ? 'start' : 'end'"
 					:side-offset="8"
 					class="z-[99999] max-h-[var(--reka-dropdown-menu-content-available-height)] w-56 divide-y divide-gray-100 overflow-y-auto rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none dark:divide-gray-700 dark:bg-slate-800">
-					<DropdownMenuGroup v-for="(optionsGroup, index) in options" :key="index" class="px-1 py-1">
-						<DropdownMenuItem
+					<DropdownMenu.Group v-for="(optionsGroup, index) in options" :key="index" class="px-1 py-1">
+						<DropdownMenu.Item
 							v-for="option in optionsGroup"
 							:key="option.id"
 							:disabled="option.disabled || option.unavailable"
@@ -93,10 +93,10 @@ function handleOptionSelect(option) {
 							@select="handleOptionSelect(option)">
 							<BaseIcon :path="option.icon" class="mr-3" />
 							<span>{{ option.label }}</span>
-						</DropdownMenuItem>
-					</DropdownMenuGroup>
-				</DropdownMenuContent>
-			</DropdownMenuPortal>
-		</DropdownMenuRoot>
+						</DropdownMenu.Item>
+					</DropdownMenu.Group>
+				</DropdownMenu.Content>
+			</DropdownMenu.Portal>
+		</DropdownMenu.Root>
 	</div>
 </template>

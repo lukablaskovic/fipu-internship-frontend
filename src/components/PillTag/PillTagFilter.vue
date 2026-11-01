@@ -3,7 +3,7 @@ import { mdiChevronUp, mdiChevronDown, mdiAlertCircleOutline, mdiFilter, mdiFilt
 import PillTag from "@/components/PillTag/PillTag.vue";
 import { computed, ref, onMounted } from "vue";
 
-import { DropdownMenuRoot, DropdownMenuTrigger, DropdownMenuPortal, DropdownMenuContent, DropdownMenuGroup, DropdownMenuItem, DropdownMenuCheckboxItem } from "reka-ui";
+import { DropdownMenu } from "reka-ui/namespaced";
 import BaseIcon from "@/components/Base/BaseIcon.vue";
 import { adminStore, snackBarStore } from "@/main";
 
@@ -155,19 +155,19 @@ const toggleSelection = (option) => {
 
 <template>
 	<div class="relative inline-block text-left">
-		<DropdownMenuRoot v-model:open="open">
-			<DropdownMenuTrigger :disabled="disabled" class="rounded-full focus-visible:outline focus-visible:outline-2 focus-visible:outline-fipu_blue" :aria-label="trend">
+		<DropdownMenu.Root v-model:open="open">
+			<DropdownMenu.Trigger :disabled="disabled" class="rounded-full focus-visible:outline focus-visible:outline-2 focus-visible:outline-fipu_blue" :aria-label="trend">
 				<PillTag :label="trend" :color="trendStyle.style" :icon="trendStyle.icon" :small="small" />
-			</DropdownMenuTrigger>
-			<DropdownMenuPortal>
-				<DropdownMenuContent
+			</DropdownMenu.Trigger>
+			<DropdownMenu.Portal>
+				<DropdownMenu.Content
 					:align="left ? 'start' : 'end'"
 					:side-offset="8"
 					class="fipu_vertical_scrollbar z-[10000] h-96 max-h-[var(--reka-dropdown-menu-content-available-height)] w-64 divide-y divide-gray-100 overflow-y-auto overflow-x-hidden rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 drop-shadow focus:outline-none dark:divide-gray-700 dark:bg-slate-950 md:w-96">
 					<div class="p-2 text-sm">Odaberite događaje koje želite prikazivati</div>
-					<DropdownMenuGroup v-for="(optionsGroup, index) in options" :key="index" class="px-1 py-1">
+					<DropdownMenu.Group v-for="(optionsGroup, index) in options" :key="index" class="px-1 py-1">
 						<component
-							:is="['Spremi', 'Resetiraj'].includes(option.label) ? DropdownMenuItem : DropdownMenuCheckboxItem"
+							:is="['Spremi', 'Resetiraj'].includes(option.label) ? DropdownMenu.Item : DropdownMenu.CheckboxItem"
 							v-for="option in optionsGroup"
 							:key="option.id"
 							:model-value="selectedOptions.includes(option.label)"
@@ -183,9 +183,9 @@ const toggleSelection = (option) => {
 							<BaseIcon :path="option.icon" />
 							<span class="flex grow items-center justify-start text-left">{{ capitalizeAndReplace(option.label) }}</span>
 						</component>
-					</DropdownMenuGroup>
-				</DropdownMenuContent>
-			</DropdownMenuPortal>
-		</DropdownMenuRoot>
+					</DropdownMenu.Group>
+				</DropdownMenu.Content>
+			</DropdownMenu.Portal>
+		</DropdownMenu.Root>
 	</div>
 </template>
