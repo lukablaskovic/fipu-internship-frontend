@@ -29,7 +29,8 @@ async function renderLogin(dev, local) {
 (async () => {
 	for (const [dev, local] of [[true, true], [true, false], [false, false]]) {
 		const html = await renderLogin(dev, local);
-		assert.equal(html.includes('>Mock</button>'), dev);
+		assert.equal(html.includes('>Mock data</button>'), dev && local);
+		assert.equal(html.includes('>Real data</button>'), dev && !local);
 		if (dev) {
 			assert.ok(html.indexOf('role="switch"') > html.indexOf("</main>"));
 			assert.ok(html.includes('aria-checked="' + local + '"'));

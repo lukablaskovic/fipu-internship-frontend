@@ -42,7 +42,7 @@
 				<RouterLink to="/poslodavci/novi-zadatak">Prijavite zadatak <span aria-hidden="true">→</span></RouterLink>
 			</footer>
 		</main>
-		<FormCheckRadio v-if="DEV_MODE" class="fixed bottom-4 right-4 z-50 text-white" name="dev-data-mode" type="switch" label="Mock" :model-value="LOCAL_DEV" @update:model-value="switchDataMode" />
+		<FormCheckRadio v-if="DEV_MODE" class="fixed bottom-4 right-4 z-50 text-white" name="dev-data-mode" type="switch" :label="LOCAL_DEV ? 'Mock data' : 'Real data'" :model-value="LOCAL_DEV" @update:model-value="switchDataMode" />
 		<SnackBar />
 	</div>
 </template>
