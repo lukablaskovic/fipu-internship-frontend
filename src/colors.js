@@ -1,5 +1,5 @@
 export const gradientBgBase = "md:bg-gradient-to-tr";
-export const gradientBgBlue = `${gradientBgBase} md:from-blue-500 md:via-blue-300 md:to-fipu_blue`;
+export const gradientBgBlue = `${gradientBgBase} md:from-fipu_blue md:via-fipu_light_blue md:to-fipu_blue`;
 export const gradientBgDark = `${gradientBgBase} md:from-slate-700 md:via-slate-900 md:to-slate-800`;
 export const gradientBgPinkRed = `${gradientBgBase} md:from-pink-400 md:via-red-500 md:to-yellow-500`;
 
@@ -59,7 +59,7 @@ export const getButtonColor = (color, isOutlined, hasHover, isActive = false) =>
 			info: "bg-fipu_blue dark:bg-fipu_light_blue",
 			fipu_blue: "bg-fipu_blue dark:bg-fipu_light_blue",
 			fipu_light_blue: "bg-fipu_light_blue dark:bg-fipu_blue",
-			fipu_dark_blue: "bg-fipu_dark_blue dark:bg-fipu_light_blue",
+			fipu_dark_blue: "bg-fipu_blue dark:bg-fipu_light_blue",
 			fipu_text_blue: "bg-fipu_text_blue text-white",
 		},
 		bg: {
@@ -73,7 +73,7 @@ export const getButtonColor = (color, isOutlined, hasHover, isActive = false) =>
 			info: "bg-fipu_blue dark:fipu_light_blue text-white",
 			fipu_blue: "bg-fipu_blue text-white text-white",
 			fipu_light_blue: "bg-fipu_light_blue text-white",
-			fipu_dark_blue: "bg-fipu_dark_blue text-white",
+			fipu_dark_blue: "bg-fipu_blue text-white",
 			fipu_text_blue: "bg-fipu_text_blue text-white",
 		},
 		bgHover: {
@@ -85,7 +85,7 @@ export const getButtonColor = (color, isOutlined, hasHover, isActive = false) =>
 			danger: "hover:bg-red-700 hover:border-red-700 hover:dark:bg-red-600 hover:dark:border-red-600",
 			warning: "hover:bg-yellow-700 hover:border-yellow-700 hover:dark:bg-yellow-600 hover:dark:border-yellow-600",
 			info: "hover:bg-fipu_blue hover:border-fipu_blue hover:dark:bg-fipu_light_blue hover:dark:border-fipu_light_blue",
-			fipu_blue: "hover:bg-fipu_light_blue hover:border-fipu_dark_blue",
+			fipu_blue: "hover:bg-fipu_light_blue hover:border-fipu_blue",
 		},
 		borders: {
 			white: "border-white",
@@ -95,10 +95,10 @@ export const getButtonColor = (color, isOutlined, hasHover, isActive = false) =>
 			success: "border-green-600 dark:border-green-300",
 			danger: "border-red-600 dark:border-red-500",
 			warning: "border-yellow-600 dark:border-yellow-500",
-			info: "border-fipu_light_blue dark:border-fipu_dark_blue",
+			info: "border-fipu_light_blue dark:border-fipu_blue",
 			fipu_blue: "border-fipu_blue",
 			fipu_light_blue: "border-fipu_light_blue",
-			fipu_dark_blue: "border-fipu_dark_blue",
+			fipu_dark_blue: "border-fipu_blue",
 			fipu_text_blue: "border-fipu_text_blue",
 		},
 		text: {
@@ -108,7 +108,7 @@ export const getButtonColor = (color, isOutlined, hasHover, isActive = false) =>
 			warning: "text-yellow-600 dark:text-yellow-500",
 			info: "text-fipu_blue dark:fipu_light_blue",
 			fipu_blue: "text-fipu_blue",
-			fipu_dark_blue: "text-fipu_dark_blue",
+			fipu_dark_blue: "text-fipu_blue",
 			fipu_text_blue: "text-fipu_text_blue",
 		},
 		outlineHover: {

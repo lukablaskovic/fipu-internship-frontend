@@ -4,7 +4,7 @@
 	}
 
 	progress::-webkit-progress-bar {
-		@apply bg-blue-200;
+		@apply bg-fipu_light_blue;
 	}
 
 	progress::-webkit-progress-value {

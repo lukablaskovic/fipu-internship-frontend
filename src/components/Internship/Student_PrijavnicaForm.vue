@@ -279,7 +279,7 @@ async function submit_application_form() {
 <style scoped>
 .ghost {
 	opacity: 0.5;
-	background: #c8ebfb;
+	background: theme("colors.fipu_light_blue / 25%");
 }
 
 /* Date picker cursor pointer and icon hover */

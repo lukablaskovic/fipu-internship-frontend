@@ -34,7 +34,7 @@ module.exports = {
 				fipu_blue: "#46bae0", //"#74d4f4",
 				fipu_gray: "#212529",
 				fipu_light_blue: "#74d4f4", //#9de0f7",
-				fipu_dark_blue: "#2b91b3", //"#6EB9ED",
+				fipu_dark_blue: "#46bae0", // Legacy alias for the primary FIPU blue.
 				fipu_text_blue: "#31c4f5", //"#6dd0f6",
 				fipu_gray2: "#172234", //"#6dd0f6",
 				search_bar: "#c7c8c9",

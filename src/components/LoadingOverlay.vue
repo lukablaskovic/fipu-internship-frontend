@@ -27,7 +27,7 @@ defineProps({
 
 <style scoped>
 .loader {
-	border-top-color: #3498db;
+	border-top-color: theme("colors.fipu_blue");
 	-webkit-animation: spinner 1.5s linear infinite;
 	animation: spinner 1.5s linear infinite;
 }

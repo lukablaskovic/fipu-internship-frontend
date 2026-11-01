@@ -16,3 +16,39 @@
 td[data-label]::before {
 	white-space: nowrap;
 }
+
+.form-control-surface.rounded,
+.form-select-trigger,
+.form-control-surface :is(input, textarea).rounded {
+	border-radius: 10px;
+}
+.form-control-surface.border-gray-700:not(:focus-within),
+.form-control-surface textarea:not(:focus),
+.form-select-trigger:not(:focus) {
+	border-color: #dce4ea;
+}
+.form-select-trigger { background: white; }
+.form-control-surface :is(input, textarea), .form-select-trigger { caret-color: theme("colors.fipu_blue"); }
+.form-control-surface :is(input, textarea):disabled,
+.form-select-trigger:disabled { background: #f1f4f7; color: #4b5563; }
+.form-control-surface.border-red-600 textarea:not(:focus) { border-color: #dc2626; }
+.form-control-surface.border-green-600 textarea:not(:focus) { border-color: #16a34a; }
+.dark .form-control-surface.border-gray-700:not(:focus-within),
+.dark .form-control-surface:not(.border-red-600):not(.border-green-600) textarea:not(:focus),
+.dark .form-select-trigger:not(:focus) { border-color: #475569; }
+.dark .form-select-trigger { background: #1e293b; }
+.dark .form-control-surface :is(input, textarea):disabled,
+.dark .form-select-trigger:disabled { background: #1e293b; color: #cbd5e1; }
+.form-control-surface:focus-within,
+.form-select-trigger:focus {
+	border-color: theme("colors.fipu_blue");
+	outline: none;
+	box-shadow: none;
+}
+.form-control-surface :is(input, textarea, button, [tabindex]):focus {
+	outline: none;
+	box-shadow: none;
+}
+.form-control-surface textarea:focus {
+	border-color: theme("colors.fipu_blue");
+}

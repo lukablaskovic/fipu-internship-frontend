@@ -160,7 +160,7 @@ if (props.ctrlKFocus) {
 
 <template>
 	<div :class="upperWrapperClass">
-		<div class="relative" :class="wrapperClass">
+		<div class="form-control-surface relative" :class="wrapperClass">
 			<!-- Static Field -->
 			<div v-if="computedType === 'static'" :class="inputElClass" class="inline-flex items-center whitespace-nowrap">{{ modelValue }}</div>
 

@@ -201,7 +201,7 @@ watch(studentsPaginated, (newList) => {
 				<tr v-if="!studentsPaginated.length">
 					<td colspan="10" class="py-4 text-center">Nema rezultata...</td>
 				</tr>
-				<tr v-for="student in studentsPaginated" :key="student['process_instance_id']" :class="{ 'selected-row bg-blue-100 dark:bg-blue-900': selectedStudentInstanceID === student['process_instance_id'] }">
+				<tr v-for="student in studentsPaginated" :key="student['process_instance_id']" :class="{ 'selected-row bg-fipu_blue/10 dark:bg-fipu_blue/20': selectedStudentInstanceID === student['process_instance_id'] }">
 					<td class="border-b-0 before:hidden lg:w-6">
 						<UserAvatar :avatar="student['avatar']" class="mx-auto flex h-22 w-22 lg:h-12 lg:w-12" />
 					</td>

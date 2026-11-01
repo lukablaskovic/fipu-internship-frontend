@@ -306,7 +306,7 @@ if (props.ctrlKFocus) {
 
 <template>
 	<div :class="upperWrapperClass">
-		<div class="relative" :class="wrapperClass">
+		<div class="form-control-surface relative" :class="wrapperClass">
 			<div v-if="computedType === 'static'" :class="inputElClass" class="inline-flex items-center whitespace-nowrap">
 				{{ modelValue }}
 			</div>
@@ -314,7 +314,7 @@ if (props.ctrlKFocus) {
 			<FormControlListbox v-else-if="computedType === 'select'" :id="id" v-model="computedValue" :name="name" :options="options" :button-class="inputElClass" :disabled="disabled" :readonly="readonly" :required="required" :placeholder="placeholder" />
 			<FormDatePicker v-else-if="computedType === 'date'" :id="id" v-model="computedValue" :name="name" :input-class="inputElClass" :disabled="disabled" :readonly="readonly" :required="required" :min="min" :max="max" />
 			<textarea v-else-if="computedType === 'textarea'" :id="id" v-model="computedValue" :aria-labelledby="fieldLabelId" :class="inputElClass" :name="name" :placeholder="placeholder" :required="required" />
-			<button v-else-if="computedType === 'button'" :class="inputElClass" class="ring-blue-700">
+			<button v-else-if="computedType === 'button'" :class="inputElClass" class="ring-fipu_blue">
 				<BaseIcon v-if="buttonIcon" :path="buttonIcon" w="w-8" h="h-8" size="20" />
 				<span v-if="buttonLabel" :class="{ 'ml-1': buttonIcon }">{{ buttonLabel }}</span>
 			</button>

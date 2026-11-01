@@ -4,7 +4,12 @@ test.beforeEach(async ({ page }) => {
 });
 test("select keeps object values, keyboard selection and form value", async ({ page }) => {
 	await expect(page.locator("#select")).toContainText("Prva");
+	await expect(page.locator("#select")).toHaveCSS("border-color", "rgb(220, 228, 234)");
+	await expect(page.locator("#select")).toHaveCSS("border-radius", "10px");
 	await page.locator("#select").focus();
+	await expect(page.locator("#select")).toHaveCSS("border-color", "rgb(70, 186, 224)");
+	await expect(page.locator("#select")).toHaveCSS("outline-style", "none");
+	await expect(page.locator("#select")).toHaveCSS("box-shadow", "none");
 	await page.keyboard.press("Space");
 	await expect(page.getByRole("option", { name: "Prva", exact: true })).toBeFocused();
 	await page.keyboard.press("ArrowDown");
@@ -94,3 +99,13 @@ test('tooltip supports hover, keyboard focus, Escape and existing colors', async
  await expect(trigger).toHaveAttribute('aria-describedby', /.+/);
  await trigger.click(); await expect(page.getByRole('tooltip')).toHaveCount(0);
 });
+
+ test("process selection uses FIPU blue accents", async ({ page }) => {
+    const option = page.getByRole("button", { name: /Nemam poduzeće/ });
+    await option.click();
+    await expect(option).toHaveAttribute("aria-pressed", "true");
+    await expect(option).toHaveCSS("border-color", "rgb(70, 186, 224)");
+    await expect(option.locator(".option-check")).toHaveCSS("color", "rgb(70, 186, 224)");
+    await expect(option).toHaveCSS("background-color", "rgba(70, 186, 224, 0.1)");
+    await expect(page.locator('input[role="combobox"]')).toHaveCSS("caret-color", "rgb(70, 186, 224)");
+ });

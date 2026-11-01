@@ -198,6 +198,6 @@ async function submit_diary_form() {
 <style scoped>
 .ghost {
 	opacity: 0.5;
-	background: #c8ebfb;
+	background: theme("colors.fipu_light_blue / 25%");
 }
 </style>

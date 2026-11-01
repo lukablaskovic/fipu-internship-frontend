@@ -63,7 +63,7 @@ input:-webkit-autofill:active {
 }
 .slider {
 	--slider-bg: #f1f5f9;
-	--slider-connect-bg: #3b82f6;
-	--slider-tooltip-bg: #3b82f6;
+	--slider-connect-bg: theme("colors.fipu_blue");
+	--slider-tooltip-bg: theme("colors.fipu_blue");
 }
 </style>

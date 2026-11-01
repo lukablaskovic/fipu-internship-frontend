@@ -22,7 +22,7 @@ const filteredList = computed(() => {
 <template>
 	<div class="flex flex-col gap-2" :class="disabled ? 'opacity-75 contrast-[0.9]' : ''">
 		<ComboboxRoot :model-value="model" :disabled="disabled" :ignore-filter="true" open-on-focus open-on-click reset-model-value-on-clear @update:model-value="model = $event ?? ''">
-			<ComboboxAnchor class="relative rounded border" :class="important ? 'border-red-500' : 'border-gray-700'">
+			<ComboboxAnchor class="form-control-surface relative rounded border" :class="important ? 'border-red-500' : 'border-gray-700'">
 				<ComboboxInput
 					v-model="search"
 					:display-value="displayValue"
@@ -30,7 +30,7 @@ const filteredList = computed(() => {
 					:aria-invalid="important || undefined"
 					:aria-describedby="helpId"
 					aria-label="Odaberi opciju"
-					class="peer relative block w-full max-w-full cursor-text overflow-hidden rounded border-0 bg-white p-3 pr-10 text-left hover:border-cyan-700 focus:outline-none focus:ring focus:ring-fipu_blue" />
+					class="peer relative block w-full max-w-full cursor-text overflow-hidden rounded border-0 bg-white p-3 pr-10 text-left hover:border-fipu_blue focus:outline-none focus:ring focus:ring-fipu_blue" />
 				<ComboboxTrigger class="absolute right-1.5 top-0 flex h-full items-center px-2 focus-visible:outline focus-visible:outline-fipu_blue" aria-label="Prikaži opcije" :disabled="disabled">
 					<svg aria-hidden="true" viewBox="0 0 20 20" class="h-4 w-4" fill="currentColor"><path d="m5 7 5 5 5-5H5Z" /></svg>
 				</ComboboxTrigger>

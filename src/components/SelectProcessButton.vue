@@ -1,42 +1,56 @@
 <template>
-	<button :class="['select-process-button relative flex h-32 grow flex-col items-center justify-center rounded border border-gray-300 px-8 text-sm font-semibold text-gray-700 hover:scale-105 sm:w-auto sm:text-xl md:h-40', selectedProcess === button ? 'bg-fipu_blue text-white' : 'bg-gray-50']">
-		<!-- Button Text -->
-		<span :class="{ 'mb-20 opacity-90 md:mb-28': hoveredButton === button, 'whitespace-nowrap text-base transition-all duration-300 md:text-lg lg:text-xl': true }">{{ button == "A" ? "Nemam poduzeće (Model A)" : "Imam već dogovoreno (Model B)" }}</span>
-
-		<!-- Bullet points on hover for Button A -->
-		<div :class="hoveredButton === button ? 'pt-8 opacity-80 delay-100' : 'opacity-0 delay-0'" class="absolute inset-0 flex items-center justify-center bg-gray-800 bg-opacity-60 text-white transition-opacity duration-300">
-			<ul class="px-4 text-left text-sm md:text-base xl:text-lg">
-				<li v-for="(text, index) in hoverTexts" :key="index">{{ text }}</li>
-			</ul>
-		</div>
+	<button type="button" class="select-process-button" :aria-pressed="selectedProcess === button">
+		<span class="option-heading">
+			<span class="option-title">{{ button === "A" ? "Nemam poduzeće" : "Imam već dogovoreno" }}</span>
+			<span class="option-model">Model {{ button }}</span>
+			<BaseIcon :path="selectedProcess === button ? mdiCheckCircle : mdiCircleOutline" class="option-check" size="22" aria-hidden="true" />
+		</span>
+		<span class="option-steps">
+			<span v-for="(text, index) in steps" :key="index" class="option-step"><span class="step-number" aria-hidden="true">{{ index + 1 }}.</span>{{ text }}</span>
+		</span>
 	</button>
 </template>
-<script>
-export default {
-	props: {
-		button: {
-			type: String,
-			default: "",
-		},
-		hoveredButton: {
-			type: String,
-			default: "",
-		},
-		selectedProcess: {
-			type: String,
-			default: "",
-		},
-		hoverTexts: {
-			type: Array,
-			default: () => [],
-		},
-	},
-};
+
+<script setup>
+import BaseIcon from "@/components/Base/BaseIcon.vue";
+import { mdiCheckCircle, mdiCircleOutline } from "@mdi/js";
+
+defineProps({
+	button: { type: String, default: "" },
+	selectedProcess: { type: String, default: "" },
+	steps: { type: Array, default: () => [] },
+});
 </script>
+
 <style scoped>
 .select-process-button {
-	transition:
-		background-color 100ms ease-in-out,
-		transform 150ms ease-in-out;
+	width: 100%;
+	padding: 24px;
+	border: 1px solid #d1d5db;
+	border-radius: 12px;
+	background: white;
+	color: #212529;
+	text-align: left;
+	transition: background-color 150ms ease-out, border-color 150ms ease-out;
+}
+.select-process-button:hover { border-color: theme("colors.fipu_blue"); background: #f9fafb; }
+.select-process-button[aria-pressed="true"] { border-color: theme("colors.fipu_blue"); background: theme("colors.fipu_blue / 10%"); }
+.select-process-button:focus-visible { outline: 3px solid theme("colors.fipu_blue"); outline-offset: 4px; }
+.option-heading { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+.option-title { flex: 1; font-size: 18px; font-weight: 600; line-height: 1.4; }
+.option-model { color: #4b5563; font-size: 13px; white-space: nowrap; }
+.option-check { flex-shrink: 0; color: #6b7280; }
+[aria-pressed="true"] .option-check { color: theme("colors.fipu_blue"); }
+.option-steps { display: grid; gap: 8px; margin-top: 20px; color: #4b5563; font-size: 14px; line-height: 1.6; }
+.option-step { display: flex; gap: 10px; }
+.step-number { color: #6b7280; font-variant-numeric: tabular-nums; }
+@media (max-width: 640px) {
+	.select-process-button { padding: 20px; }
+	.option-heading { gap: 8px; }
+	.option-title { flex-basis: 100%; }
+	.option-check { margin-left: auto; }
+}
+@media (prefers-reduced-motion: reduce) {
+	.select-process-button { transition: none; }
 }
 </style>

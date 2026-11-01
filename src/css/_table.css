@@ -38,7 +38,7 @@
 
 	.selected-row,
 	.selected-row:nth-child(odd) {
-		@apply lg:bg-fipu_light_blue lg:dark:bg-fipu_dark_blue !important;
+		@apply lg:bg-fipu_light_blue lg:dark:bg-fipu_blue !important;
 	}
 
 	tbody tr:nth-child(odd) {

@@ -33,7 +33,7 @@ function update(value) {
 </script>
 <template>
 	<SelectRoot :model-value="selected" :disabled="disabled || readonly" :required="required" @update:model-value="update">
-		<SelectTrigger v-bind="$attrs" :id="id" ref="trigger" :aria-labelledby="fieldLabelId" :class="buttonClass" class="flex items-center justify-between gap-2 text-left" :aria-readonly="readonly || undefined">
+		<SelectTrigger v-bind="$attrs" :id="id" ref="trigger" :aria-labelledby="fieldLabelId" :class="buttonClass" class="form-select-trigger flex items-center justify-between gap-2 text-left" :aria-readonly="readonly || undefined">
 			<SelectValue :placeholder="placeholder" /><SelectIcon aria-hidden="true">⌄</SelectIcon>
 		</SelectTrigger>
 		<SelectPortal>

@@ -102,6 +102,6 @@ function openModal(assignmentDetails) {
 <style scoped>
 .ghost {
 	opacity: 0.5;
-	background: #c8ebfb;
+	background: theme("colors.fipu_light_blue / 25%");
 }
 </style>

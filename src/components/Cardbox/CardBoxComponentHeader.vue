@@ -29,7 +29,7 @@ const buttonClick = (event) => {
 			<BaseIcon v-if="icon" :path="icon" class="mr-3" />
 			{{ title }}
 		</div>
-		<button v-if="buttonIcon" class="flex items-center p-2 justify-center ring-blue-700 focus:ring" @click="buttonClick">
+		<button v-if="buttonIcon" class="flex items-center p-2 justify-center ring-fipu_blue focus:ring" @click="buttonClick">
 			<BaseIcon :path="buttonIcon" />
 		</button>
 	</header>

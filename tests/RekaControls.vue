@@ -1,4 +1,5 @@
 <script setup>
+import SelectProcessButton from "../src/components/SelectProcessButton.vue";
 import Tooltip from "../src/components/Base/Tooltip.vue";
 import { TooltipProvider } from "reka-ui";
 import Select from "../src/components/Premium/FormControlListbox.vue";
@@ -16,6 +17,7 @@ const options = [
 	{ id: 2, label: "Druga" },
 	{ id: 3, label: "Nedostupna", unavailable: true },
 ];
+const selectedProcess = ref("");
 const selected = ref({ ...options[0] }),
 	checks = ref([]),
 	radio = ref("a"),
@@ -29,12 +31,13 @@ const selected = ref({ ...options[0] }),
 </script>
 <template>
 	<TooltipProvider :delay-duration="1000"><main style="max-width: 640px; margin: auto; padding: 24px">
+		<SelectProcessButton button="A" :selected-process="selectedProcess" @click="selectedProcess = 'A'" />
 		<BaseButton label="Disabled link" href="#bad" disabled @click="clicks++" />
 		<BaseButton label="Loading" loading />
 		<output data-testid="clicks">{{ clicks }}</output>
 		<form>
-			<Select id="required-select" name="required-choice" v-model="empty" :options="['', 'Vrijednost']" button-class="h-12 w-full rounded border px-3" required />
-			<Select id="select" name="choice" v-model="selected" :options="options" button-class="h-12 w-full rounded border px-3" required />
+			<Select id="required-select" v-model="empty" name="required-choice" :options="['', 'Vrijednost']" button-class="h-12 w-full rounded border px-3" required />
+			<Select id="select" v-model="selected" name="choice" :options="options" button-class="h-12 w-full rounded border px-3" required />
 			<output data-testid="selected">{{ selected.id }}</output>
 			<Check v-model="checks" type="switch" name="switch" input-value="one" label="Obavijesti" />
 			<Check v-model="checks" name="check" input-value="two" label="Potvrda" />

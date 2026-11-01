@@ -62,7 +62,7 @@ const selected = computed({
 		:min-value="date(min)"
 		:max-value="date(max)"
 		close-on-select>
-		<DatePickerField v-slot="{ segments }" :class="inputClass" class="flex items-center bg-white dark:bg-slate-800">
+		<DatePickerField v-slot="{ segments }" :class="inputClass" class="form-control-surface flex items-center border-gray-700 bg-white dark:bg-slate-800">
 			<DatePickerInput v-for="item in segments" :key="item.part" :part="item.part" class="rounded focus:bg-fipu_blue/20 focus:outline-none">{{ item.value }}</DatePickerInput>
 			<DatePickerTrigger :disabled="disabled || readonly" aria-label="Otvori kalendar" class="ml-auto rounded px-2 focus-visible:ring focus-visible:ring-fipu_blue">▦</DatePickerTrigger>
 		</DatePickerField>

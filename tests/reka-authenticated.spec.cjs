@@ -57,10 +57,14 @@ test.describe("local authenticated workflows", () => {
 		await expect(page).toHaveURL(/\/odabir-procesa$/);
 		await expect(page.getByRole("textbox", { name: "E-mail", exact: true })).toHaveValue("student@local.test");
 		await page.getByRole("textbox", { name: "JMBAG", exact: true }).fill("1234567890");
-		const first = page.getByRole("radio", { name: "1. prijediplomski", exact: true });
-		await first.click();
-		await first.press("ArrowRight", { delay: 50 });
-		await expect(page.getByRole("radio", { name: "2. prijediplomski", exact: true })).toBeChecked();
+		const studyYear = page.getByRole("combobox", { name: "Godina studija", exact: true });
+		await expect(studyYear).toContainText("3. prijediplomski");
+		await studyYear.click();
+		await page.getByRole("option", { name: "1. prijediplomski", exact: true }).click();
+		await studyYear.press("Space");
+		await page.keyboard.press("ArrowDown");
+		await page.keyboard.press("Enter");
+		await expect(studyYear).toContainText("2. prijediplomski");
 		await page.goto(new URL("/dashboard", process.env.LOCAL_AUTH_URL).href);
 		await expect(page).toHaveURL(/\/odabir-procesa$/);
 		expect(errors).toEqual([]);
