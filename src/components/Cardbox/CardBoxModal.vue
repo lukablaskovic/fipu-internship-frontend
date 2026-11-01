@@ -1,5 +1,7 @@
 <script setup>
 import { Dialog } from "reka-ui/namespaced";
+import { mdiLogout } from "@mdi/js";
+import BaseIcon from "@/components/Base/BaseIcon.vue";
 import CardBoxComponentTitle from "@/components/Cardbox/CardBoxComponentTitle.vue";
 import BaseButtons from "@/components/Base/BaseButtons.vue";
 import BaseButton from "@/components/Base/BaseButton.vue";
@@ -77,24 +79,34 @@ const cancel = () => confirmCancel("cancel");
 <template>
 	<Dialog.Root :open="!!value" @update:open="!$event && cancel()">
 		<Dialog.Portal>
-			<Dialog.Overlay class="reka-animated fixed inset-0 z-[5000] bg-gradient-to-tr from-gray-700 via-gray-800 to-gray-900 opacity-90" />
+			<Dialog.Overlay class="reka-animated fixed inset-0 z-[5000]" :class="isLogout ? 'bg-slate-950/50' : 'bg-gradient-to-tr from-gray-700 via-gray-800 to-gray-900 opacity-90'" />
 			<div class="pointer-events-none fixed inset-0 z-[5001] flex items-center justify-center"><Dialog.Content class="reka-animated" as-child :aria-describedby="undefined" @close-auto-focus="restoreFocus">
 				<CardBox
 					class="pointer-events-auto [&>div]:min-w-0"
 					:class="{
 						'2xl:3/12 modal-scrollable fipu_vertical_scrollbar z-50 max-h-modal w-11/12 rounded shadow-lg md:w-3/5 lg:w-2/5 xl:w-6/12': !large && !isLogout,
 						'modal-scrollable fipu_vertical_scrollbar z-50 max-h-modal w-11/12 max-w-6xl rounded-xl shadow-lg': large && !isLogout,
-						'2xl:3/12 modal-scrollable fipu_vertical_scrollbar z-50 max-h-modal w-11/12 rounded shadow-lg md:w-3/5 lg:w-1/5 xl:w-4/12': isLogout,
+						'modal-scrollable fipu_vertical_scrollbar w-11/12 max-w-md rounded-2xl shadow-2xl': isLogout,
 						'mobile-fullscreen': !isLogout,
 					}"
 					is-modal>
 					<div class="modal-content">
-						<Dialog.Title v-if="title" as-child><CardBoxComponentTitle :title="title" /></Dialog.Title>
+						<template v-if="isLogout">
+							<div class="mb-4 flex h-11 w-11 items-center justify-center rounded-xl bg-fipu_blue/10 text-fipu_text_blue dark:text-fipu_blue">
+								<BaseIcon :path="mdiLogout" size="24" aria-hidden="true" />
+							</div>
+							<Dialog.Title class="text-xl font-semibold leading-7 text-gray-900 dark:text-slate-100">{{ title }}</Dialog.Title>
+						</template>
+						<Dialog.Title v-else-if="title" as-child><CardBoxComponentTitle :title="title" /></Dialog.Title>
 						<Dialog.Title v-else class="sr-only">Detalji</Dialog.Title>
 
 						<slot v-if="modelValue != null" :assignment="modelValue"></slot>
 
-						<BaseButtons class="mt-4 justify-center">
+						<BaseButtons v-if="isLogout" type="justify-end" class="mt-6 gap-3" class-addon="" mb="">
+							<BaseButton v-if="hasCancel" label="Natrag" color="border-gray-200 bg-white text-gray-700 hover:bg-gray-50 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200 dark:hover:bg-slate-800" class="min-h-[44px] flex-1 sm:flex-none" @click="cancel" />
+							<BaseButton v-if="hasConfirm" :label="buttonLabel" color="border-fipu_blue bg-fipu_blue text-slate-900 hover:border-fipu_light_blue hover:bg-fipu_light_blue" class="min-h-[44px] flex-1 sm:flex-none" :disabled="disabledCondition" @click="confirm" />
+						</BaseButtons>
+						<BaseButtons v-else class="mt-4 justify-center">
 							<BaseButton v-if="hasConfirm" :label="buttonLabel" :color="button" :disabled="disabledCondition" @click="confirm" />
 							<BaseButton v-if="hasCancel" label="Natrag" :color="button" outline @click="cancel" />
 						</BaseButtons>
