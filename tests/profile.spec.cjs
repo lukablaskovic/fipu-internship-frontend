@@ -121,8 +121,36 @@ test("camera button sits over the avatar and opens the editor with the keyboard"
 	await camera.press("Enter");
 	await expect(camera).toHaveAttribute("aria-expanded", "true");
 	await expect(page.getByRole("textbox", { name: "URL profilne slike" })).toBeVisible();
-	await page.screenshot({ path: "/tmp/profile-camera-editor-mobile.png" });
+	await page.screenshot({ path: "/tmp/profile-camera-editor-mobile.png", animations: "disabled" });
 	await page.getByRole("button", { name: "Odustani" }).click();
 	await expect(camera).toHaveAttribute("aria-expanded", "false");
 	await expect(page.locator("#avatar-editor")).toHaveCount(0);
 });
+
+for (const width of [1280, 390]) {
+	test(`avatar editor floats without shifting details and dismisses at ${width}px`, async ({ page }) => {
+		await page.setViewportSize({ width, height: 844 });
+		await openProfile(page);
+		const camera = page.getByRole("button", { name: "Promijeni avatar" });
+		const details = page.locator("dl");
+		const before = await details.boundingBox();
+		await camera.click();
+		const popover = page.getByRole("dialog", { name: "Promijeni avatar" });
+		await expect(popover).toBeVisible();
+		await expect(popover.getByRole("textbox", { name: "URL profilne slike" })).toBeFocused();
+		expect(await details.boundingBox()).toEqual(before);
+		expect(await popover.evaluate(el => !el.closest("main"))).toBe(true);
+		await page.screenshot({ path: `/tmp/profile-popover-${width}.png`, animations: "disabled" });
+		const bounds = await popover.boundingBox();
+		expect(bounds.x).toBeGreaterThanOrEqual(0);
+		expect(bounds.x + bounds.width).toBeLessThanOrEqual(width);
+		await page.keyboard.press("Escape");
+		await expect(popover).toHaveCount(0);
+		await expect(camera).toBeFocused();
+		await camera.click();
+		await expect(popover).toBeVisible();
+		await page.getByRole("heading", { name: "Demo Korisnik", exact: true }).click();
+		await expect(popover).toHaveCount(0);
+		await expect(camera).toHaveAttribute("aria-expanded", "false");
+	});
+}

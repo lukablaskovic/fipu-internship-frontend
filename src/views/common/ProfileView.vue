@@ -1,5 +1,6 @@
 <script setup>
 import { computed, ref } from "vue";
+import { Popover } from "reka-ui/namespaced";
 import { mainStore } from "@/main.js";
 import { mdiAccountCircle, mdiDomain, mdiLaptop, mdiCameraOutline } from "@mdi/js";
 import UserAvatarCurrentUser from "@/components/User/UserAvatarCurrentUser.vue";
@@ -35,12 +36,13 @@ function updatePreviewStatus(status) {
 	if (status === "error") error.value = "Sliku nije moguće učitati. Provjerite poveznicu.";
 }
 
-function editAvatar() {
+function editAvatar(open) {
+	editing.value = open;
+	if (!open) return;
 	avatarUrl.value = mainStore.currentUser.avatar || "";
 	previewLoaded.value = false;
 	message.value = "";
 	error.value = "";
-	editing.value = true;
 }
 
 async function saveAvatar() {
@@ -80,17 +82,48 @@ const details = computed(() => [
 				<div class="flex items-center gap-4">
 					<div class="relative h-28 w-28 shrink-0">
 						<UserAvatarCurrentUser class="profile-avatar h-full w-full" />
-						<BaseButton
-							:icon="mdiCameraOutline"
-							:icon-size="22"
-							color="fipu_blue"
-							class="avatar-edit-button absolute bottom-0 right-0 h-11 w-14 border-0"
-							aria-label="Promijeni avatar"
-							title="Promijeni avatar"
-							:disabled="saving"
-							:aria-expanded="editing"
-							aria-controls="avatar-editor"
-							@click="editAvatar" />
+						<Popover.Root :open="editing" @update:open="editAvatar">
+							<Popover.Trigger as-child>
+								<BaseButton
+									:icon="mdiCameraOutline"
+									:icon-size="22"
+									color="fipu_blue"
+									class="avatar-edit-button absolute bottom-0 right-0 h-11 w-14 border-0"
+									aria-label="Promijeni avatar"
+									title="Promijeni avatar"
+									:disabled="saving" />
+							</Popover.Trigger>
+							<Popover.Portal>
+								<Popover.Content
+									align="start"
+									:side-offset="8"
+									:collision-padding="16"
+									class="reka-animated z-[10000] max-h-[var(--reka-popover-content-available-height)] w-96 max-w-[calc(100vw-2rem)] overflow-y-auto rounded-lg border border-gray-200 bg-white p-4 text-gray-900 shadow-lg dark:border-slate-700 dark:bg-slate-800 dark:text-white"
+									@escape-key-down="saving && $event.preventDefault()"
+									@interact-outside="saving && $event.preventDefault()">
+									<form id="avatar-editor" @submit.prevent="saveAvatar">
+										<FormField :error="error || (avatarUrl && !previewUrl ? 'Unesite valjanu HTTPS poveznicu.' : null)" label="URL profilne slike" help="Unesite javno dostupnu HTTPS poveznicu na sliku.">
+											<FormControl
+												v-model="avatarUrl"
+												type="url"
+												maxlength="2048"
+												required
+												:disabled="saving"
+												placeholder="https://…"
+												@update:model-value="
+													previewLoaded = false;
+													error = '';
+												" />
+										</FormField>
+										<UserAvatar v-if="previewUrl" :key="previewUrl" :avatar="previewUrl" username="Pregled nove profilne slike" referrer-policy="no-referrer" class="mb-3 h-16 w-16" @loading-status-change="updatePreviewStatus" />
+										<div class="flex gap-2">
+											<BaseButton type="submit" label="Spremi sliku" color="info" small :loading="saving" :disabled="!previewLoaded || !previewUrl" />
+											<BaseButton label="Odustani" small :disabled="saving" @click="editing = false" />
+										</div>
+									</form>
+								</Popover.Content>
+							</Popover.Portal>
+						</Popover.Root>
 					</div>
 					<div class="min-w-0">
 						<h2 class="break-words text-xl font-semibold">{{ mainStore.currentUser.ime }} {{ mainStore.currentUser.prezime }}</h2>
@@ -102,26 +135,6 @@ const details = computed(() => [
 				</div>
 
 				<p v-if="message" role="status" class="mt-3 text-sm text-green-700 dark:text-green-400">{{ message }}</p>
-				<form v-if="editing" id="avatar-editor" class="mt-4 max-w-lg" @submit.prevent="saveAvatar">
-					<FormField :error="error || (avatarUrl && !previewUrl ? 'Unesite valjanu HTTPS poveznicu.' : null)" label="URL profilne slike" help="Unesite javno dostupnu HTTPS poveznicu na sliku.">
-						<FormControl
-							v-model="avatarUrl"
-							type="url"
-							maxlength="2048"
-							required
-							:disabled="saving"
-							placeholder="https://…"
-							@update:model-value="
-								previewLoaded = false;
-								error = '';
-							" />
-					</FormField>
-					<UserAvatar v-if="previewUrl" :key="previewUrl" :avatar="previewUrl" username="Pregled nove profilne slike" referrer-policy="no-referrer" class="mb-3 h-16 w-16" @loading-status-change="updatePreviewStatus" />
-					<div class="flex gap-2">
-						<BaseButton type="submit" label="Spremi sliku" color="info" small :loading="saving" :disabled="!previewLoaded || !previewUrl" />
-						<BaseButton label="Odustani" small :disabled="saving" @click="editing = false" />
-					</div>
-				</form>
 
 				<dl class="my-5 grid grid-cols-1 gap-x-6 gap-y-4 border-y border-gray-100 py-5 dark:border-slate-700 sm:grid-cols-2 lg:grid-cols-3">
 					<div v-for="[label, value] in details" :key="label" class="min-w-0">
