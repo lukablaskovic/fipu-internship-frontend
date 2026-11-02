@@ -39,15 +39,15 @@ onMounted(async () => {
 	const details = await Student.getAssignmentDetails({ search: vars.Alocirani_zadatak });
 	assignment.value = details?.data?.results?.find(row => row.id_zadatak === vars.Alocirani_zadatak);
 });
-const formDynamicValues = ref({});
+const answers = ref(null);
 const isLoading = ref(false);
 
 async function handleNewInstance() {
-	if (isLoading.value) return;
+	if (isLoading.value || !answers.value) return;
 	isLoading.value = true;
 	try {
 		const task = evaluationTask;
-		const result = await ProcessInstance.evaluation(route.params.process_instance_id, route.hash.slice(1), { kandidat_odobren: formDynamicValues.value.kandidat_odobren });
+		const result = await ProcessInstance.evaluation(route.params.process_instance_id, route.hash.slice(1), { kandidat_odobren: answers.value.kandidat_odobren });
 		if (result?.status !== "OK") throw new Error("Evaluation failed");
 		if (UserTaskMappings.getTaskProperty(task, "snackbar_msg")) {
 			snackBarStore.pushMessage(UserTaskMappings.getTaskProperty(task, "snackbar_msg"), UserTaskMappings.getTaskProperty(task, "snackbar_color"));
@@ -60,11 +60,6 @@ async function handleNewInstance() {
 	}
 }
 
-const disabledCondition = ref(true);
-
-const updateDisabledCondition = (allFilled) => {
-	disabledCondition.value = !allFilled;
-};
 </script>
 
 <template>
@@ -93,9 +88,9 @@ const updateDisabledCondition = (allFilled) => {
 
 				<p class="mb-4">Molimo da nakon što evaluirate studenta (bilo to kroz intervju, tehnički ispit ili pak bez procesa selekcije) potvrdite prihvaćate li studenta za obavljanje prakse u Vašem poduzeću.</p>
 
-				<FormDynamic v-model="formDynamicValues" class="mb-4 rounded-md p-1" :form-fields="evaluation.task.form_fields" :variables="evaluation.variables" :documentation="evaluation.task.documentation" @all-fields-filled="updateDisabledCondition" />
+				<FormDynamic class="mb-4 rounded-md p-1" :task="evaluation.task" @answers="answers = $event" />
 
-				<BaseButton v-if="formDynamicValues['kandidat_odobren']" class="mb-4" label="Potvrdi" :loading="isLoading" color="fipu_blue" :disabled="disabledCondition" @click="handleNewInstance()" />
+				<BaseButton v-if="answers?.kandidat_odobren" class="mb-4" label="Potvrdi" :loading="isLoading" color="fipu_blue" @click="handleNewInstance()" />
 			</div>
 		</SectionMain>
 

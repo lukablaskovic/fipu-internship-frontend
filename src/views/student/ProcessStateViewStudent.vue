@@ -78,7 +78,7 @@ onMounted(async () => {
 					<!-- Modal for past tasks (without FormDynamic) -->
 					<CardBoxModal v-if="modal_past_bpmn_task" v-model="modal_past_bpmn_task" :title="UserTaskMappings.getTaskProperty(selectedTaskId, 'form_title', process_instance_data['state'])" button-label="Povratak">
 						<p class="mb-2">Ovaj zadatak je već obavljen.</p>
-						<TableInstanceData :task-id="selectedTaskId" :variables="process_instance_data.variables" />
+						<TableInstanceData :instance-id="process_instance_data.id" :task-id="selectedTaskId" :variables="process_instance_data.variables" />
 					</CardBoxModal>
 				</div>
 				<p class="block sm:hidden">BPMN graf je moguće pregledati samo u Desktop prikazu aplikacije. Sorry!</p>

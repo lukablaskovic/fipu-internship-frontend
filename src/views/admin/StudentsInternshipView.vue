@@ -51,17 +51,25 @@ const modal_past_bpmn_task = ref(false);
 const modal_send_task = ref(false);
 const bpmn_help_modal = ref(false);
 
-const disabledCondition = ref(true);
-const updateDisabledCondition = (allFilled) => {
-	disabledCondition.value = !allFilled;
-};
-
-const formDynamicValues = ref({});
-
-
 const router = useRouter();
 const process_instance_data = ref(null);
 const bpmn_model = ref(null);
+const taskInfo = ref();
+const answers = ref(null);
+const coordinatorTask = computed(() => {
+	const task = selectedTaskId.value;
+	return process_instance_data.value?.pending.includes(task) && ["alociranje_profesor", "model_b_odobrenje_zadatka", "upis_ocjene"].includes(task) ? task : null;
+});
+
+watch([modal_select_bpmn_task, () => process_instance_data.value?.id, coordinatorTask], async ([open, instanceId, task], _, onCleanup) => {
+	answers.value = null;
+	taskInfo.value = undefined;
+	if (!open || !task) return;
+	let cancelled = false;
+	onCleanup(() => { cancelled = true; });
+	const info = await ProcessInstance.getTaskInfo(instanceId, task);
+	if (!cancelled) taskInfo.value = info;
+});
 
 async function handleProcessDiagram(student) {
 	selectedStudent.value = student;
@@ -190,13 +198,13 @@ onMounted(() => adminStore.getStudents());
 
 const isSubmitting = ref(false);
 async function handleNewInstance() {
-	if (isSubmitting.value) return;
+	if (isSubmitting.value || !coordinatorTask.value || !answers.value) return;
 	isSubmitting.value = true;
 	let saved = false;
 	const instanceId = process_instance_data.value.id;
-	const task = process_instance_data.value.pending[0];
+	const task = coordinatorTask.value;
 	try {
-		const result = await adminStore.handleNewInstance(instanceId, task, formDynamicValues.value);
+		const result = await adminStore.handleNewInstance(instanceId, task, answers.value);
 		if (result?.status !== "OK") throw new Error("Process update failed");
 		saved = true;
 		if (UserTaskMappings.getTaskProperty(task, "snackbar_msg")) {
@@ -207,8 +215,6 @@ async function handleNewInstance() {
 		if (!student) throw new Error("Student could not be fetched");
 		selectedStudent.value = student;
 		process_instance_data.value = student.process_instance_data;
-		formDynamicValues.value = {};
-		disabledCondition.value = true;
 	} catch (error) {
 		snackBarStore.pushMessage(saved ? "Promjena je spremljena, ali popis studenata nije osvježen. Pokušajte ponovno otvoriti popis." : "Promjena nije spremljena. Molimo pokušajte ponovno.", "danger");
 	} finally {
@@ -297,25 +303,21 @@ onMounted(loadDataForStudent);
 							:title="UserTaskMappings.getTaskProperty(process_instance_data.pending[0], 'form_title', process_instance_data['state'])"
 							button-label="Potvrda"
 							has-cancel
-							:disabled-condition="disabledCondition || isSubmitting"
+							:has-confirm="!!coordinatorTask"
+							:disabled-condition="!answers || isSubmitting"
 							@confirm="handleNewInstance()">
-							<p v-if="process_instance_data.pending[0] == 'odabiranje_zadatka_student' || process_instance_data.pending[0] == 'ispunjavanje_prijavnice_student' || process_instance_data.pending[0] == 'predavanje_dnevnika_student'" class="mb-4">
+							<p v-if="!coordinatorTask" class="mb-4">
 								{{ UserTaskMappings.getTaskProperty(selectedTaskId, "bpmn_pending_info_msg", process_instance_data["state"]) }}
 							</p>
 
-							<FormDynamic
-								v-else
-								v-model="formDynamicValues"
-								:form-fields="selectedStudent.process_instance_data.pending_task_info.form_fields"
-								:variables="selectedStudent.process_instance_data.variables"
-								:documentation="selectedStudent.process_instance_data.pending_task_info.documentation"
-								:current-task-id="process_instance_data.pending[0]"
-								@all-fields-filled="updateDisabledCondition" />
+							<p v-else-if="taskInfo === undefined" role="status">Učitavanje obrasca…</p>
+							<p v-else-if="!taskInfo?.form_fields" role="alert">Obrazac nije učitan. Ponovno otvorite zadatak.</p>
+							<FormDynamic v-else :task="taskInfo" :preferences-id="process_instance_data.variables.id_preferencije" :check-assignment="selectedTaskId === 'model_b_odobrenje_zadatka'" @answers="answers = $event" />
 						</CardBoxModal>
 
 						<!-- Modal for past tasks (without FormDynamic) -->
 						<CardBoxModal v-if="modal_past_bpmn_task" v-model="modal_past_bpmn_task" is-bpmn :title="UserTaskMappings.getTaskProperty(selectedTaskId, 'form_title')" description="Ovaj zadatak je već obavljen. Pregled spremljenih podataka." button-label="Zatvori">
-							<TableInstanceData :task-id="selectedTaskId" :variables="process_instance_data.variables" />
+							<TableInstanceData :instance-id="process_instance_data.id" :task-id="selectedTaskId" :variables="process_instance_data.variables" />
 						</CardBoxModal>
 
 						<CardBoxModal v-if="modal_send_task" v-model="modal_send_task" is-bpmn title="Ponovno slanje e-maila" description="Ponovno pošaljite obavijest za ovaj korak procesa." has-cancel button-label="Pošalji" @confirm="sendAnAdditionalEmail()">

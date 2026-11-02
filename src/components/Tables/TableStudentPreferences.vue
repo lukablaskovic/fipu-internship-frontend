@@ -27,16 +27,9 @@ const prviOdabir = ref({});
 const drugiOdabir = ref({});
 const treciOdabir = ref({});
 
-const selectedAssignmentId = ref(null);
+const selectedAssignmentId = defineModel({ type: [String, Number], default: null });
 const preferencesArray = ref([]);
 const dataLoaded = ref(false);
-
-const emit = defineEmits(["rowSelected"]);
-
-const selectAssignment = (assignment) => {
-	selectedAssignmentId.value = assignment["id_zadatak"];
-	emit("rowSelected", assignment["id_zadatak"]);
-};
 
 onMounted(async () => {
 	registeredPreferences.value = await adminStore.getPreferencesDetailed(props.preferencesId);
@@ -80,7 +73,7 @@ onMounted(async () => {
 					'selected-row': selectedAssignmentId === assignment['id_zadatak'],
 					'cursor-pointer': true,
 				}"
-				@click="selectAssignment(assignment)">
+				@click="selectedAssignmentId = assignment.id_zadatak">
 				<td data-label="Odabir"><TableCellText :value="order" /></td>
 				<td data-label="ID Zadatka"><TableCellText :value="assignment['id_zadatak']" /></td>
 				<td data-label="Kontakt email"><TableCellText :value="assignment['poslodavac_email']" /></td>

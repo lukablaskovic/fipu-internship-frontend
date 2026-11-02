@@ -125,14 +125,6 @@ export const useAdminStore = defineStore("admin", {
 				console.log("Error:", error);
 			}
 		},
-		async getTaskInfo(it: string, task: string) {
-			try {
-				const response = await ProcessInstance.getTaskInfo(it, task);
-				return response;
-			} catch (error) {
-				console.log("[admin_store].getTaskInfo: ", error);
-			}
-		},
 		async getStudents() {
 			try {
 				this.studentsFetched = false;
@@ -177,8 +169,6 @@ export const useAdminStore = defineStore("admin", {
 					student.process_instance_data = data;
 
 					const pendingTask = student.process_instance_data.pending[0];
-
-					student.process_instance_data.pending_task_info = await this.getTaskInfo(student.process_instance_id, pendingTask);
 
 					if (student.process_instance_data.state === "cancelled") {
 						this.dashboard_data.cancelled_internships++;
