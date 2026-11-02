@@ -7,7 +7,6 @@ export const NS = Object.freeze({
   xsi: 'http://www.w3.org/2001/XMLSchema-instance',
 });
 const LEGACY = 'http://camunda.org/schema/1.0/bpmn';
-const MODELER = 'http://camunda.org/schema/modeler/1.0';
 const XMLNS = 'http://www.w3.org/2000/xmlns/';
 export const NODE_TYPES = Object.freeze(['startEvent', 'endEvent', 'intermediateCatchEvent', 'userTask', 'serviceTask', 'sendTask', 'manualTask', 'task', 'exclusiveGateway', 'parallelGateway']);
 export const TYPE_LABELS = Object.freeze({ startEvent: 'Start Event', endEvent: 'End Event', intermediateCatchEvent: 'Message Catch Event', userTask: 'User Task', serviceTask: 'Service Task', sendTask: 'Send Task', manualTask: 'Manual Task', task: 'Task', exclusiveGateway: 'Exclusive Gateway', parallelGateway: 'Parallel Gateway', sequenceFlow: 'Sequence Flow', lane: 'Lane', participant: 'Pool' });
@@ -28,22 +27,7 @@ function create(document, prefix, name, attributes = {}, content) {
   return element;
 }
 
-function migrate(document) {
-  for (const old of all(document, LEGACY, '*')) {
-    const replacement = create(document, 'fipu', old.localName);
-    for (const attribute of Array.from(old.attributes)) replacement.setAttributeNS(attribute.namespaceURI, attribute.name, attribute.value);
-    while (old.firstChild) replacement.append(old.firstChild);
-    old.replaceWith(replacement);
-  }
-  for (const element of all(document, '*', '*')) {
-    for (const attribute of Array.from(element.attributes)) {
-      if (attribute.namespaceURI === MODELER || (attribute.namespaceURI === XMLNS && [MODELER, LEGACY].includes(attribute.value))) element.removeAttributeNode(attribute);
-      else if (attribute.namespaceURI === LEGACY) {
-        element.removeAttributeNode(attribute);
-        element.setAttributeNS(NS.fipu, `fipu:${attribute.localName}`, attribute.value);
-      }
-    }
-  }
+function setExporter(document) {
   const root = document.documentElement;
   for (const [prefix, namespace] of Object.entries(NS)) root.setAttributeNS(XMLNS, `xmlns:${prefix}`, namespace);
   root.setAttribute('targetNamespace', 'urn:fipu:praksa');
@@ -113,9 +97,11 @@ export function parseModel(xml) {
   const document = new DOMParser().parseFromString(xml, 'application/xml');
   if (document.getElementsByTagName('parsererror').length || document.documentElement.localName === 'parsererror') throw new Error('The file is not valid XML.');
   if (document.documentElement.namespaceURI !== NS.bpmn || document.documentElement.localName !== 'definitions') throw new Error('Expected BPMN 2.0 definitions.');
-  const profiles = new Set(all(document, '*', '*').flatMap(element => [element.namespaceURI, ...Array.from(element.attributes).map(attribute => attribute.namespaceURI)]).filter(namespace => [LEGACY, NS.fipu].includes(namespace)));
-  if (profiles.size > 1) throw new Error('A model cannot mix legacy Camunda and FIPU execution extensions.');
-  migrate(document);
+  if (all(document, '*', '*').some(element => element.namespaceURI === LEGACY ||
+      Array.from(element.attributes).some(attribute => attribute.namespaceURI === LEGACY))) {
+    throw new Error('Unsupported Camunda execution extension.');
+  }
+  setExporter(document);
   return readModel(document);
 }
 
