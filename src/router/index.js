@@ -2,6 +2,7 @@ import { createRouter, createWebHistory } from "vue-router";
 import { useMainStore } from "@/stores/main_store";
 import { MAINTENANCE_MODE, DEV_MODE } from "@/config.js";
 
+import { ProcessInstance } from "@/services/bpmn_engine_api";
 import { routes } from "./routes.js";
 
 function isTryingToAccess(path, restrictedRoutes) {
@@ -16,7 +17,7 @@ const router = createRouter({
 	},
 });
 
-router.beforeEach((to, from, next) => {
+router.beforeEach(async (to, from, next) => {
 	const mainStore = useMainStore();
 	const userAuthenticated = mainStore.userAuthenticated;
 	const userAdmin = mainStore.userAdmin;
@@ -59,7 +60,11 @@ router.beforeEach((to, from, next) => {
 		return next("/moja-praksa");
 	}
 
-	if (userAuthenticated && (to.path === "/prijava" || (to.path === "/odabir-procesa" && mainStore.userHasActiveInstance))) {
+	if (userAuthenticated && to.path === "/odabir-procesa" && mainStore.userHasActiveInstance) {
+		const instance = await ProcessInstance.get(mainStore.currentUser.internship_process.id);
+		if (instance?.state !== "cancelled") return next("/moja-praksa");
+	}
+	if (userAuthenticated && to.path === "/prijava") {
 		return next(userAdmin ? "/dashboard" : "/moja-praksa");
 	}
 

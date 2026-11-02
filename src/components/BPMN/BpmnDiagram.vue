@@ -70,6 +70,7 @@ function select(id) {
 <style scoped>
 .bpmn-container { position: relative; height: 70vh; width: 100%; min-height: 320px; }
 .bpmn-zoom-controls { position: absolute; right: 18px; bottom: 18px; display: flex; padding: 3px; border: 1px solid #d4e0e9; border-radius: 8px; background: #fff; }
-.bpmn-zoom-controls :deep(button) { width: 40px; height: 40px; border: 0; color: #294358; }
+.bpmn-zoom-controls :deep(button) { width: 40px; height: 40px; border: 0; color: #294358; box-shadow: none; }
+.bpmn-zoom-controls :deep(button:focus-visible) { outline: 2px solid #087caa; outline-offset: -3px; }
 @media (max-width: 600px) { .bpmn-container { position: relative; height: 50vh; } }
 </style>

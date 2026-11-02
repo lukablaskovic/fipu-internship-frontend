@@ -22,6 +22,7 @@ import BaseDivider from "@/components/Base/BaseDivider.vue";
 import IconTextLink from "@/components/IconTextLink.vue";
 import BaseIcon from "@/components/Base/BaseIcon.vue";
 import NavBar from "@/components/Navbar/NavBar.vue";
+import StudentWithdrawAction from "@/components/Internship/StudentWithdrawAction.vue";
 import FooterBar from "@/components/FooterBar.vue";
 
 
@@ -267,6 +268,7 @@ const menuClick = (event, item) => {
 
 			<AsideMenu :menu="menuAside" @menu-click="menuClick" />
 			<div class="relative grow">
+				<StudentWithdrawAction v-if="!mainStore.userAdmin && router.currentRoute.value.path === '/moja-praksa'" />
 				<slot></slot>
 			</div>
 			<div class="mt-6">

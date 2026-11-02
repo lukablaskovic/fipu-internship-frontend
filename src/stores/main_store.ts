@@ -161,11 +161,12 @@ export const useMainStore = defineStore("main", {
 				} else {
 					bpmn_model = appConfig.bpmn_process_name_B;
 				}
-				const response_bpmn_engine = await ProcessInstance.create(`${bpmn_model}.bpmn`);
+				const previousId = this.currentUser.internship_process.id;
+				const response_bpmn_engine = await ProcessInstance.create(`${bpmn_model}.bpmn`, previousId);
 
-				if (!response_bpmn_engine?.id) return null;
+				if (!("id" in response_bpmn_engine) || !response_bpmn_engine.id) return null;
 
-				const response_bw = await Student.setProcessData(this.currentUser.email, response_bpmn_engine.id, selected_model, godina_studija, jmbag);
+				const response_bw = await Student.setProcessData(this.currentUser.email, response_bpmn_engine.id, selected_model, godina_studija, jmbag, previousId);
 
 				await this.fetchCurrentUser();
 				return response_bw;

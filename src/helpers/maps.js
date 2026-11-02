@@ -56,6 +56,7 @@ class StudentMappings {
 import Student_ChooseAvailableAssignments from "@/components/Internship/Student_ChooseAvailableAssignments.vue";
 import Student_WaitingForEvaluation from "@/components/Internship/Student_WaitingForEvaluation.vue";
 import Student_WaitingForAllocation from "@/components/Internship/Student_WaitingForAllocation.vue";
+import Student_InternshipCancelled from "@/components/Internship/Student_InternshipCancelled.vue";
 import Student_InternshipFinished from "@/components/Internship/Student_InternshipFinished.vue";
 import Student_DnevnikPrakseForm from "@/components/Internship/Student_DnevnikPrakseForm.vue";
 import Student_WaitingForMark from "@/components/Internship/Student_WaitingForMark.vue";
@@ -121,7 +122,6 @@ class SendTaskMappings {
 			to: "student_email",
 			template: "student_potvrda_pdf",
 			body: {
-				attachment_name: "", //${student_prezime}_potvrda.pdf
 				process_instance_id: "",
 				pdf_attachment_url: "",
 				mentor_email: "",
@@ -132,7 +132,6 @@ class SendTaskMappings {
 			to: "mentor_email",
 			template: "mentor_potvrda_pdf",
 			body: {
-				attachment_name: "", //${student_prezime}_potvrda.pdf
 				process_instance_id: "",
 				pdf_attachment_url: "",
 				student_email: "",
@@ -144,6 +143,14 @@ class SendTaskMappings {
 }
 class UserTaskMappings {
 	static tasks = [
+		{
+			order: 0,
+			_id: "end_event_odustajanje",
+			name: "Student odustao",
+			form_title: "Odustajanje od prakse",
+			bpmn_task_color: "#EF4444",
+			component: Student_InternshipCancelled,
+		},
 		{
 			order: 1,
 			model_type: "A",
@@ -250,6 +257,7 @@ class UserTaskMappings {
 	];
 
 	static getTaskProperty(taskId, property, state = "running") {
+		if (state === "cancelled") return getMappedProperty(this.tasks, "_id", "end_event_odustajanje", property);
 		if (state === "finished") {
 			taskId = "end_event_student";
 
@@ -264,6 +272,9 @@ import { endpoints } from "@/config";
 
 class ActivityEventMappings {
 	static events = [
+		{ activity_id: "odustajanje_od_prakse", icon: mdiCancel, type: "warning", message: "Zatraženo odustajanje od prakse" },
+		{ activity_id: "evidentiranje_odustajanja", icon: mdiContentSaveOutline, type: "info", message: "Odustajanje evidentirano" },
+		{ activity_id: "end_event_odustajanje", icon: mdiCancel, type: "danger", message: "Student odustao od prakse" },
 		{
 			activity_id: "start_event_student",
 			icon: mdiRayStartArrow,

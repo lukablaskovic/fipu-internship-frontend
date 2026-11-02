@@ -3,11 +3,24 @@ import { endpoints } from "@/config.js";
 
 interface ModelData {
 	id: string;
+	model_path: string;
+	instances: string[];
 	[key: string]: any;
 }
 
-interface ProcessInstanceData {
-	id: string;
+export interface ProcessInstanceData {
+	id: string | number;
+	variables: {
+		id_alokacija?: string | number;
+		id_preferencije?: string | number;
+		id_prijavnica?: string | number;
+		id_dnevnik_prakse?: string | number;
+		pdf_attachment_url?: string;
+		[key: string]: any;
+	};
+	pending: string[];
+	state: string;
+	model: { model_path: string };
 	[key: string]: any;
 }
 
@@ -24,15 +37,15 @@ interface FormData {
 const AxiosWrapper = createAxiosInstance(endpoints.VITE_BPMN_ENGINE_API_URL);
 
 const Model = {
-	async get(id: string): Promise<ModelData | null> {
+	async get(id: string): Promise<string | null> {
 		return safeRequest(() => AxiosWrapper.get(`/model/${id}`));
 	},
 
-	async search(query: string): Promise<ModelData[]> {
-		return safeRequest(() => AxiosWrapper.get("/model", { q: query })) || [];
+	async search(query = ""): Promise<{ results: ModelData[] } | null> {
+		return safeRequest(() => AxiosWrapper.get("/model", { q: query }));
 	},
 
-	async getEvents(retries: number = 3): Promise<any[] | null> {
+	async getEvents(retries: number = 3): Promise<{ results: any[] } | null> {
 		while (retries > 0) {
 			try {
 				const result = await AxiosWrapper.get("/events");
@@ -53,15 +66,15 @@ const Model = {
 };
 
 const ProcessInstance = {
-	async create(model: string): Promise<ProcessInstanceData | { status: number; message: string; data: any }> {
+	async create(model: string, previousInstanceId?: string | number | null): Promise<ProcessInstanceData | { status: number; message: string; data: any }> {
 		try {
-			return await AxiosWrapper.post(`/model/${model}/instance`);
+			return await AxiosWrapper.post(`/model/${model}/instance`, previousInstanceId ? { previous_instance_id: previousInstanceId } : {});
 		} catch (error) {
 			return { status: 500, message: "Internal server error", data: error };
 		}
 	},
 
-	async get(id: string): Promise<ProcessInstanceData | null> {
+	async get(id: string | number): Promise<ProcessInstanceData | null> {
 		return safeRequest(() => AxiosWrapper.get(`/instance/${id}`));
 	},
 
@@ -77,8 +90,13 @@ const ProcessInstance = {
 		return result?.results || [];
 	},
 
-	async handleNewInstance(instance_id: string, current_task: string, post_data: FormData): Promise<any | null> {
+	async handleNewInstance(instance_id: string | number | null, current_task: string | null, post_data: FormData): Promise<any | null> {
+		if (instance_id === null || instance_id === "" || !current_task) return null;
 		return safeRequest(() => AxiosWrapper.post(`/instance/${instance_id}/task/${current_task}/form`, post_data));
+	},
+
+	async withdraw(instance_id: string | number): Promise<any | null> {
+		return safeRequest(() => AxiosWrapper.post(`/instance/${instance_id}/event/odustajanje_od_prakse`, {}));
 	},
 
 	async removeInstance(instance_id: string): Promise<any | null> {

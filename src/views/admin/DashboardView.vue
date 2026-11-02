@@ -1,4 +1,6 @@
 <script setup>
+import TableCellText from "@/components/Tables/TableCellText.vue";
+import { countInternshipStages } from "@/helpers/internship-stages";
 import { appConfig } from "@/config";
 
 import { Tabs } from "reka-ui/namespaced";
@@ -20,6 +22,9 @@ import {
 	mdiSort,
 	mdiSortAscending,
 	mdiSortDescending,
+	mdiSourceBranch,
+	mdiPlayCircleOutline,
+	mdiClockOutline,
 } from "@mdi/js";
 import BaseIcon from "@/components/Base/BaseIcon.vue";
 import { useAdminStore } from "@/stores/admin_store";
@@ -29,7 +34,10 @@ import { useSnackBarStore } from "@/stores/snackbar_store";
 
 import { ref, computed, onMounted, watch } from "vue";
 import { useRouter } from "vue-router";
-import moment from "@/moment-setup";
+import moment from "moment";
+import "moment/dist/locale/hr";
+
+moment.locale("hr");
 
 import SectionTitleLineWithButton from "@/components/Section/SectionTitleLineWithButton.vue";
 import LayoutAuthenticated from "@/layouts/LayoutAuthenticated.vue";
@@ -37,13 +45,18 @@ import PillTagFilter from "@/components/PillTag/PillTagFilter.vue";
 import CardBoxWidget from "@/components/Cardbox/CardBoxWidget.vue";
 import CardBoxEvents from "@/components/Cardbox/CardBoxEvents.vue";
 import SectionMain from "@/components/Section/SectionMain.vue";
+import SkeletonLoaderEvent from "@/components/SkeletonLoaderEvent.vue";
 import SkeletonLoader from "@/components/SkeletonLoader.vue";
 
 import BaseLevel from "@/components/Base/BaseLevel.vue";
 import PillTag from "@/components/PillTag/PillTag.vue";
 
 import { ActivityEventMappings } from "@/helpers/maps.js";
-import { latestEvents } from "@/filterOptions.js";
+const latestEvents = [ActivityEventMappings.events.map((event) => ({
+	id: event.activity_id,
+	label: event.message,
+	icon: event.icon,
+}))];
 
 const adminStore = useAdminStore();
 const mainStore = useMainStore();
@@ -73,7 +86,7 @@ const eventsLoading = ref(true);
 
 onMounted(async () => {
 	try {
-		await adminStore.getStudents();
+		studentsLoadError.value = !(await adminStore.getStudents());
 		await adminStore.searchModels();
 
 		ongoing_internships.value = adminStore.dashboard_data.ongoing_internships;
@@ -109,6 +122,9 @@ onMounted(async () => {
 });
 
 const statisticsModel = ref("AB");
+const stageCounts = computed(() => countInternshipStages(adminStore.students, statisticsModel.value));
+const maxStageCount = computed(() => Math.max(1, ...stageCounts.value.map(({ count }) => count)));
+const studentsLoadError = ref(false);
 const logView = ref("list");
 const logSearch = ref("");
 const studentName = (event) => [event.student_ime, event.student_prezime].filter(Boolean).join(" ") || "Nepoznat student";
@@ -204,7 +220,7 @@ const { perPage, currentPage, itemsPaginated, numPages, currentPageHuman } = use
 								@click="router.push('/studenti?model=AB')" />
 							<SkeletonLoader v-else></SkeletonLoader>
 
-							<CardBoxWidget v-if="adminStore.studentsFetched" color="text-fipu_blue" class="rounded-lg" :icon="mdiAccountCancel" :number="0" label="Odustalo od prakse" />
+							<CardBoxWidget v-if="adminStore.studentsFetched" color="text-fipu_blue" class="rounded-lg" :icon="mdiAccountCancel" :number="adminStore.dashboard_data.cancelled_internships" label="Odustalo od prakse" />
 							<SkeletonLoader v-else></SkeletonLoader>
 
 							<CardBoxWidget v-if="adminStore.studentsFetched" color="text-fipu_blue" class="rounded-lg" :icon="mdiAlphaSBox" :number="waiting_for_mark" label="Čeka na upis ocjene" />
@@ -279,6 +295,36 @@ const { perPage, currentPage, itemsPaginated, numPages, currentPageHuman } = use
 					</Tabs.Content>
 				</Tabs.Root>
 
+				<section aria-labelledby="internship-stages-title" class="mb-6 rounded-lg bg-white p-5 dark:bg-slate-900/70">
+					<div class="mb-2 flex flex-wrap items-center gap-2">
+						<h2 id="internship-stages-title" class="text-lg font-semibold">Prakse po fazi</h2>
+						<PillTag :label="statisticsModel === 'AB' ? 'Svi modeli' : `Model ${statisticsModel}`" :color="statisticsModel === 'A' ? 'danger' : statisticsModel === 'B' ? 'success' : 'info'" small />
+					</div>
+					<p class="mb-4 text-sm text-gray-500 dark:text-slate-400">Broj procesa u trenutačnoj fazi</p>
+					<div v-if="!adminStore.studentsFetched" role="status" aria-label="Učitavanje praksi…" class="space-y-3">
+						<div v-for="width in ['80%', '55%', '65%', '35%']" :key="width" class="grid gap-2 p-1 motion-safe:animate-pulse sm:grid-cols-[16rem_1fr] sm:items-center" aria-hidden="true">
+							<div class="h-5 w-4/5 rounded bg-gray-200 dark:bg-slate-700"></div>
+							<div class="flex items-center gap-3">
+								<div class="flex-1"><div class="h-6 rounded bg-gray-200 dark:bg-slate-700" :style="{ width }"></div></div>
+								<div class="h-5 w-10 rounded bg-gray-200 dark:bg-slate-700"></div>
+							</div>
+						</div>
+					</div>
+					<p v-else-if="studentsLoadError" role="alert">Nije moguće dohvatiti podatke o praksama.</p>
+					<p v-else-if="!stageCounts.length" role="status">Nema praksi za odabrani model.</p>
+					<ul v-else class="space-y-3">
+						<li v-for="{ stage, count } in stageCounts" :key="stage">
+							<RouterLink :to="{ path: '/studenti', query: { model: statisticsModel, stage, instances: 'all' } }" :aria-label="`${stage}: ${count} — Prikaži studente`" class="grid gap-2 rounded p-1 hover:bg-fipu_blue/10 focus-visible:outline focus-visible:outline-2 focus-visible:outline-fipu_blue sm:grid-cols-[16rem_1fr] sm:items-center">
+								<span class="text-sm">{{ stage }}</span>
+								<span class="flex items-center gap-3">
+									<span class="h-6 flex-1 rounded bg-slate-100 dark:bg-slate-800" aria-hidden="true"><span class="block h-full rounded" :class="statisticsModel === 'A' ? 'bg-rose-600' : statisticsModel === 'B' ? 'bg-emerald-500' : 'bg-fipu_blue'" :style="{ width: `${count / maxStageCount * 100}%` }"></span></span>
+									<span class="w-10 text-right text-sm font-semibold tabular-nums">{{ count }}</span>
+								</span>
+							</RouterLink>
+						</li>
+					</ul>
+				</section>
+
 				<SectionTitleLineWithButton :icon="mdiCardSearch" title="Događaji (logs)" main> </SectionTitleLineWithButton>
 
 				<Tabs.Root v-if="!eventsFetchError" v-model="logView">
@@ -287,18 +333,19 @@ const { perPage, currentPage, itemsPaginated, numPages, currentPageHuman } = use
 							<Tabs.Trigger v-for="view in [{ id: 'list', label: 'Popis' }, { id: 'table', label: 'Tablica' }]" :key="view.id" :value="view.id" class="rounded px-3 py-1.5 focus-visible:outline focus-visible:outline-2 focus-visible:outline-fipu_blue data-[state=active]:bg-fipu_blue data-[state=active]:text-white">{{ view.label }}</Tabs.Trigger>
 						</Tabs.List>
 						<input v-model="logSearch" type="search" aria-label="Pretraži događaje" placeholder="Ime, JMBAG ili email…" class="min-w-0 flex-1 rounded-lg border-gray-300 py-1.5 text-sm dark:border-slate-700 dark:bg-slate-800" />
-						<FormControlListbox v-if="logView === 'list'" v-model="logSort" :options="sortOptions" aria-label="Sortiranje događaja" button-class="rounded-lg bg-white px-3 py-2 dark:bg-slate-800" />
-						<FormControlListbox v-model="modelFilter" :options="modelOptions" aria-label="Model prakse" button-class="rounded-lg bg-white px-3 py-2 dark:bg-slate-800" />
-						<FormControlListbox v-model="processFilter" :options="processOptions" aria-label="Status instance" button-class="rounded-lg bg-white px-3 py-2 dark:bg-slate-800" />
-						<FormControlListbox v-model="dateFormat" :options="dateOptions" aria-label="Format vremena" button-class="rounded-lg bg-white px-3 py-2 dark:bg-slate-800" />
+						<FormControlListbox v-if="logView === 'list'" v-model="logSort" :icon="mdiSort" :options="sortOptions" aria-label="Sortiranje događaja" button-class="rounded-lg bg-white px-3 py-2 dark:bg-slate-800" />
+						<FormControlListbox v-model="modelFilter" :icon="mdiSourceBranch" :options="modelOptions" aria-label="Model prakse" button-class="rounded-lg bg-white px-3 py-2 dark:bg-slate-800" />
+						<FormControlListbox v-model="processFilter" :icon="mdiPlayCircleOutline" :options="processOptions" aria-label="Status instance" button-class="rounded-lg bg-white px-3 py-2 dark:bg-slate-800" />
+						<FormControlListbox v-model="dateFormat" :icon="mdiClockOutline" :options="dateOptions" aria-label="Format vremena" button-class="rounded-lg bg-white px-3 py-2 dark:bg-slate-800" />
 						<PillTagFilter trend-type="filter" trend="Događaji" :options="latestEvents" :left="true" small />
 					</div>
-					<p class="mb-2 text-xs text-gray-500 dark:text-slate-400" role="status">{{ filteredEvents.length }} događaja</p>
+					<p v-if="!eventsLoading" class="mb-2 text-xs text-gray-500 dark:text-slate-400" role="status">{{ filteredEvents.length }} događaja</p>
 					<Tabs.Content value="list">
-						<CardBoxEvents v-for="(event, index) in itemsPaginated" :key="index" :student="studentName(event)" :date="formattedDate(event.timestamp)" :type="event.activity_id" :jmbag="event.student_JMBAG || '—'" :email="event.student_email || '—'" :model="event.model_name" class="cursor-pointer rounded-lg hover:bg-fipu_blue/10 focus-visible:outline focus-visible:outline-2 focus-visible:outline-fipu_blue" role="link" tabindex="0" @click="router.push(`/studenti/${event.instance_id}`)" @keydown.enter="router.push(`/studenti/${event.instance_id}`)" />
+						<div v-if="eventsLoading" aria-hidden="true"><SkeletonLoaderEvent v-for="row in 3" :key="row" /></div>
+						<CardBoxEvents v-for="(event, index) in itemsPaginated" :key="index" :student="studentName(event)" :date="formattedDate(event.timestamp)" :type="event.activity_id" :jmbag="event.student_JMBAG || '—'" :email="event.student_email || '—'" :model="event.model_name" class="cursor-pointer rounded-lg hover:bg-fipu_blue/10 dark:hover:bg-fipu_blue/10 focus-visible:outline focus-visible:outline-2 focus-visible:outline-fipu_blue" role="link" tabindex="0" @click="router.push(`/studenti/${event.instance_id}`)" @keydown.enter="router.push(`/studenti/${event.instance_id}`)" />
 					</Tabs.Content>
 					<Tabs.Content value="table" class="overflow-x-auto rounded-lg bg-white dark:bg-slate-900/70">
-						<table v-if="filteredEvents.length" class="w-full text-left text-xs">
+						<table v-if="eventsLoading || filteredEvents.length" :aria-busy="eventsLoading" class="w-full text-left text-xs">
 							<caption class="sr-only">Događaji stručne prakse</caption>
 							<thead class="border-b dark:border-slate-700">
 								<tr>
@@ -310,15 +357,20 @@ const { perPage, currentPage, itemsPaginated, numPages, currentPageHuman } = use
 									</th>
 								</tr>
 							</thead>
-							<tbody><tr v-for="(event, index) in itemsPaginated" :key="index" class="border-b last:border-0 hover:bg-fipu_blue/10 dark:border-slate-700">
-								<td class="px-3 py-2"><RouterLink :to="`/studenti/${event.instance_id}`" class="font-semibold text-fipu_blue underline">{{ studentName(event) }}</RouterLink></td>
-								<td class="px-3 py-2">{{ event.student_JMBAG || '—' }}</td><td class="px-3 py-2">{{ event.student_email || '—' }}</td>
-								<td class="px-3 py-2">{{ event.model_name === appConfig.bpmn_process_name_A + '.bpmn' ? 'A' : 'B' }}</td>
-								<td class="px-3 py-2">{{ ActivityEventMappings.getEvent(event.activity_id)?.message || event.activity_id }}</td><td class="whitespace-nowrap px-3 py-2">{{ formattedDate(event.timestamp) }}</td>
+							<tbody v-if="eventsLoading" aria-hidden="true">
+								<tr v-for="row in 3" :key="row" class="motion-safe:animate-pulse">
+									<td v-for="column in logColumns" :key="column.id" class="px-3 py-3"><div class="h-4 w-20 rounded bg-gray-200 dark:bg-slate-700"></div></td>
+								</tr>
+							</tbody>
+							<tbody v-else><tr v-for="(event, index) in itemsPaginated" :key="index" class="border-b last:border-0 hover:bg-fipu_blue/10 dark:border-slate-700">
+								<td class="px-3 py-2"><TableCellText :value="studentName(event)"><RouterLink :to="`/studenti/${event.instance_id}`" class="font-semibold text-fipu_blue underline">{{ studentName(event) }}</RouterLink></TableCellText></td>
+								<td class="px-3 py-2"><TableCellText :value="event.student_JMBAG || '—'" /></td><td class="px-3 py-2"><TableCellText :value="event.student_email || '—'" /></td>
+								<td class="px-3 py-2"><TableCellText :value="event.model_name === appConfig.bpmn_process_name_A + '.bpmn' ? 'A' : 'B'" /></td>
+								<td class="px-3 py-2"><TableCellText :value="ActivityEventMappings.getEvent(event.activity_id)?.message || event.activity_id" /></td><td class="whitespace-nowrap px-3 py-2"><TableCellText :value="formattedDate(event.timestamp)" /></td>
 							</tr></tbody>
 						</table>
 					</Tabs.Content>
-					<p v-if="eventsLoading" class="py-6 text-center text-sm text-gray-500 dark:text-slate-400" role="status">Učitavanje događaja…</p>
+					<p v-if="eventsLoading" class="sr-only" role="status">Učitavanje događaja…</p>
 					<CardBoxComponentEmpty v-else-if="!filteredEvents.length" />
 				</Tabs.Root>
 				<div v-else class="mb-6 text-red-500">Nakon više ponovljenih pokušaja, nije moguće dohvatiti evente.</div>

@@ -43,7 +43,7 @@ services:
       - POSTGRES_DB_NAME=${POSTGRES_DB1_NAME}
       - POSTGRES_USER=${POSTGRES_USER}
       - BASEROW_CONNECTOR_URL=${BASEROW_CONNECTOR_URL}
-      - SENDGRID_CONNECTOR_URL=${SENDGRID_CONNECTOR_URL}
+      - EMAILJS_CONNECTOR_URL=${EMAILJS_CONNECTOR_URL}
       - PDF_CONNECTOR_URL=${PDF_CONNECTOR_URL}
       - PORT=${PBE_PORT}
     depends_on:
@@ -54,7 +54,7 @@ services:
     networks:
       - app-network
 
-gateway-api:
+  gateway-api:
     image: lukablaskovic/fp-internship-gateway-api
     env_file:
       - .env
@@ -98,21 +98,16 @@ gateway-api:
     networks:
       - app-network
 
-sendgrid-connector:
-    image: lukablaskovic/fp-sendgrid-connector-service
+  emailjs-connector:
+    image: lukablaskovic/fp-emailjs-connector-service
     env_file:
       - .env
     environment:
-      - API_KEY=${SENDGRID_API_KEY}
-      - FROM_EMAIL=${FROM_EMAIL}
-      - MENTOR_SEND_PDF_TEMPLATE=${MENTOR_SEND_PDF_TEMPLATE}
-      - POSLODAVAC_AFTER_ALLOCATION_NOTIFICATION_TEMPLATE=${POSLODAVAC_AFTER_ALLOCATION_NOTIFICATION_TEMPLATE}
-      - STUDENT_AFTER_ALLOCATION_NOTIFICATION_TEMPLATE=${STUDENT_AFTER_ALLOCATION_NOTIFICATION_TEMPLATE}
-      - STUDENT_AFTER_APPROVAL_TEMPLATE=${STUDENT_AFTER_APPROVAL_TEMPLATE}
-      - STUDENT_AFTER_REFUSAL_TEMPLATE=${STUDENT_AFTER_REFUSAL_TEMPLATE}
-      - STUDENT_AFTER_RETURN_TEMPLATE=${STUDENT_AFTER_RETURN_TEMPLATE}
-      - STUDENT_SEND_PDF_TEMPLATE=${STUDENT_SEND_PDF_TEMPLATE}
-      - PORT=${SCS_PORT}
+      - SERVICE_ID=${EMAILJS_SERVICE_ID}
+      - TEMPLATE_ID=${EMAILJS_TEMPLATE_ID}
+      - PUBLIC_KEY=${EMAILJS_PUBLIC_KEY}
+      - PRIVATE_KEY=${EMAILJS_PRIVATE_KEY}
+      - PORT=8083
     depends_on:
       - postgres-db
       - baserow-db

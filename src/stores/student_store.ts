@@ -37,6 +37,15 @@ export const useStudentStore = defineStore("student", {
 	}),
 
 	actions: {
+		async withdrawInternship() {
+			const mainStore = useMainStore();
+			const id = mainStore.currentUser.internship_process.id;
+			if (id === null || id === "") return null;
+			const response = await ProcessInstance.withdraw(id);
+			await this.getPendingUserTask(id);
+			return response;
+		},
+
 		async registerPreferences(assignmentsData: AssignmentData[], napomena: string) {
 			const mainStore = useMainStore();
 			const post_data = {
@@ -153,17 +162,17 @@ export const useStudentStore = defineStore("student", {
 			}
 		},
 
-		async getInstanceInfo(process_instance_id: number) {
+		async getInstanceInfo(process_instance_id: string | number) {
 			try {
 				const response = await ProcessInstance.get(process_instance_id);
-				this.student_process_instance_data = response;
+				if (response) this.student_process_instance_data = response;
 				return response;
 			} catch (error) {
 				console.log("[student_store].getInstanceInfo error:", error);
 			}
 		},
 
-		async getPendingUserTask(process_instance_id: number) {
+		async getPendingUserTask(process_instance_id: string | number) {
 			const mainStore = useMainStore();
 			const response = await this.getInstanceInfo(process_instance_id);
 			if (!response) throw new Error("Process instance could not be fetched");

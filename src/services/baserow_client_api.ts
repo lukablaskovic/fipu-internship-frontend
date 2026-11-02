@@ -10,8 +10,8 @@ interface ProcessData {
 }
 
 interface TaskData {
-	id_zadatak: string;
-	voditelj_odobrio: boolean;
+	id_zadatak: string | number;
+	voditelj_odobrio: "odobreno" | "odbijeno";
 }
 
 interface CompanyData {
@@ -44,10 +44,15 @@ const Guest = {
 };
 
 const Student = {
-	updateAvatar(avatar: string, email: string) {
-		const headers = LOCAL_DEV
+	updateAvatar(avatar: string | File, email: string) {
+		const headers: Record<string, string> = LOCAL_DEV
 			? { "X-Local-User": email }
 			: { Authorization: `Bearer ${sessionStorage.getItem("google-id-token") || ""}` };
+		if (avatar instanceof File) {
+			const data = new FormData();
+			data.append("file", avatar);
+			return AxiosWrapper.patch("/student/avatar", data, headers);
+		}
 		return AxiosWrapper.patch("/student/avatar", { avatar }, headers);
 	},
 
@@ -55,8 +60,8 @@ const Student = {
 		return safeRequest(() => AxiosWrapper.post("/student", studentData));
 	},
 
-	setProcessData(email: string, process_instance_id: string, model_prakse: string, godina_studija: string, JMBAG: string) {
-		return safeRequest(() => AxiosWrapper.patch("/student/process", { email, Model_prakse: model_prakse, process_instance_id, godina_studija, JMBAG }));
+	setProcessData(email: string, process_instance_id: string | number, model_prakse: string, godina_studija: string, JMBAG: string, previous_instance_id: string | number | null) {
+		return safeRequest(() => AxiosWrapper.patch("/student/process", { email, Model_prakse: model_prakse, process_instance_id, godina_studija, JMBAG, previous_instance_id }));
 	},
 
 	fetch(search_by: string = "") {
@@ -97,11 +102,11 @@ const Admin = {
 		return safeRequest(() => AxiosWrapper.get("/alokacija").then((res: any) => res.results));
 	},
 
-	getPreferencesDetailed(id_alokacija: string) {
+	getPreferencesDetailed(id_alokacija: string | number) {
 		return safeRequest(() => AxiosWrapper.get(`/student_preferencije/detailed/${id_alokacija}`));
 	},
 
-	handleTask(id_zadatak: string, value: boolean) {
+	handleTask(id_zadatak: string | number, value: TaskData["voditelj_odobrio"]) {
 		const postData: TaskData = { id_zadatak, voditelj_odobrio: value };
 		return safeRequest(() => AxiosWrapper.patch("/zadaci_za_odabir/odobrenje", postData));
 	},

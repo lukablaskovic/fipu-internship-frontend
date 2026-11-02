@@ -2,9 +2,9 @@ import { persistSession } from "@/helpers/persist-session";
 import { appConfig } from "@/config";
 import { defineStore } from "pinia";
 
-import { Model, ProcessInstance } from "@/services/bpmn_engine_api";
+import { Model, ProcessInstance, type ProcessInstanceData } from "@/services/bpmn_engine_api";
 import { Admin, Student } from "@/services/baserow_client_api";
-import { SendGrid } from "@/services/sendgrid_client_api";
+import { EmailJS } from "@/services/emailjs_client_api";
 import { useSnackBarStore } from "@/stores/snackbar_store";
 import Utils from "@/helpers/utils";
 
@@ -12,6 +12,7 @@ import Utils from "@/helpers/utils";
 interface DashboardData {
 	waiting_for_mark: number;
 	finished_internships: number;
+	cancelled_internships: number;
 	ongoing_internships: number;
 	waiting_for_allocation: number;
 	waiting_for_evaluation: number;
@@ -25,21 +26,8 @@ interface DashboardData {
 	b_ongoing_internships: number;
 }
 
-interface StudentProcessData {
-	variables: {
-		id_alokacija: number;
-		pdf_attachment_url: string;
-	};
-	pending: any[];
-	pending_task_info?: any;
-	state: string;
-	model: {
-		model_path: string;
-	};
-}
-
 interface InternshipStudent {
-	process_instance_data: StudentProcessData;
+	process_instance_data: ProcessInstanceData;
 	process_instance_id: string;
 	ime: string;
 	prezime: string;
@@ -55,14 +43,6 @@ interface Event {
 	student_email?: string;
 }
 
-interface InstanceRemovalData {
-	process_instance_id: string;
-	id_preferencije?: string;
-	id_alokacija?: string;
-	id_prijavnica?: string;
-	id_dnevnik_prakse?: string;
-}
-
 export const useAdminStore = defineStore("admin", {
 	state: () => ({
 		students: [] as InternshipStudent[],
@@ -72,6 +52,7 @@ export const useAdminStore = defineStore("admin", {
 		dashboard_data: {
 			waiting_for_mark: 0,
 			finished_internships: 0,
+			cancelled_internships: 0,
 			ongoing_internships: 0,
 			waiting_for_allocation: 0,
 			waiting_for_evaluation: 0,
@@ -167,6 +148,7 @@ export const useAdminStore = defineStore("admin", {
 				this.dashboard_data = {
 					waiting_for_mark: 0,
 					finished_internships: 0,
+					cancelled_internships: 0,
 					ongoing_internships: 0,
 
 					waiting_for_allocation: 0,
@@ -191,13 +173,16 @@ export const useAdminStore = defineStore("admin", {
 
 				const promises = students.map(async (student: InternshipStudent) => {
 					const data = await this.getProcessInstanceData(student);
+					if (!data) throw new Error("Process instance could not be fetched");
 					student.process_instance_data = data;
 
 					const pendingTask = student.process_instance_data.pending[0];
 
 					student.process_instance_data.pending_task_info = await this.getTaskInfo(student.process_instance_id, pendingTask);
 
-					if (taskToDashboardMapping[pendingTask]) {
+					if (student.process_instance_data.state === "cancelled") {
+						this.dashboard_data.cancelled_internships++;
+					} else if (!student.process_instance_data.active_event && taskToDashboardMapping[pendingTask]) {
 						this.dashboard_data[taskToDashboardMapping[pendingTask]]++;
 					} else if (student.process_instance_data.state === "finished") {
 						this.dashboard_data.finished_internships++;
@@ -232,22 +217,18 @@ export const useAdminStore = defineStore("admin", {
 		async searchModels() {
 			try {
 				const response = await Model.search();
+				if (!response) return;
 
-				const model_a = response.results.find((result: any) => result.model_path === `${appConfig.bpmn_process_name_A}.bpmn`);
-				const model_b = response.results.find((result: any) => result.model_path === `${appConfig.bpmn_process_name_B}.bpmn`);
+				const model_a = response.results.find((result) => result.model_path === `${appConfig.bpmn_process_name_A}.bpmn`);
+				const model_b = response.results.find((result) => result.model_path === `${appConfig.bpmn_process_name_B}.bpmn`);
 
 				let model_a_instances = model_a?.instances || [];
 				let model_b_instances = model_b?.instances || [];
 
-				this.dashboard_data.a_ongoing_internships = model_a_instances.length - this.dashboard_data.a_finished_internships;
-				this.dashboard_data.b_ongoing_internships = model_b_instances.length - this.dashboard_data.b_finished_internships;
-
-				let model_all_instances = model_a_instances.concat(model_b_instances);
-
-				// Safeguard: check if there are combined instances and calculate ongoing internships
-				if (model_a && model_b && model_all_instances.length) {
-					this.dashboard_data.ongoing_internships = model_all_instances.length - this.dashboard_data.finished_internships;
-				}
+				const ongoing = new Set(this.students.filter((student) => !["cancelled", "finished"].includes(student.process_instance_data.state)).map((student) => student.process_instance_id));
+				this.dashboard_data.a_ongoing_internships = model_a_instances.filter(id => ongoing.has(id)).length;
+				this.dashboard_data.b_ongoing_internships = model_b_instances.filter(id => ongoing.has(id)).length;
+				this.dashboard_data.ongoing_internships = this.dashboard_data.a_ongoing_internships + this.dashboard_data.b_ongoing_internships;
 
 				return response.results;
 			} catch (error) {
@@ -257,10 +238,22 @@ export const useAdminStore = defineStore("admin", {
 		async getEvents() {
 			try {
 				const response = await Model.getEvents();
-				if (Utils.isArrayEmpty(response.results)) return null;
+				if (!response || Utils.isArrayEmpty(response.results)) return null;
 				else {
+					const previous = new Map<string, string>();
+					for (const event of response.results) {
+						if (event.activity_variables?.previous_instance_id) previous.set(event.instance_id, event.activity_variables.previous_instance_id);
+					}
+					const owners = new Map<string, InternshipStudent>();
+					for (const student of this.students) {
+						let id: string | undefined = student.process_instance_id;
+						while (id && !owners.has(id)) {
+							owners.set(id, student);
+							id = previous.get(id);
+						}
+					}
 					response.results.forEach((event: Event) => {
-						const student = this.students.find((stud) => stud.process_instance_id === event.instance_id);
+						const student = owners.get(event.instance_id);
 						if (student) {
 							event.student_ime = student.ime;
 							event.student_prezime = student.prezime;
@@ -277,7 +270,7 @@ export const useAdminStore = defineStore("admin", {
 			}
 		},
 
-		async handleTask(id_zadatak: number, action: string) {
+		async handleTask(id_zadatak: string | number, action: "odobreno" | "odbijeno") {
 			try {
 				const response = await Admin.handleTask(id_zadatak, action);
 				return response;
@@ -295,7 +288,7 @@ export const useAdminStore = defineStore("admin", {
 		},
 		async sendAnAdditionalEmail(postData: any, to: string, template: string) {
 			try {
-				const response = await SendGrid.sendEmail(postData, to, template);
+				const response = await EmailJS.sendEmail(postData, to, template);
 				return response;
 			} catch (error) {
 				console.log("[admin_store].sendAnAdditionalEmail(): ", error);
@@ -309,7 +302,7 @@ export const useAdminStore = defineStore("admin", {
 				id_preferencije: student?.process_instance_data?.variables?.id_preferencije,
 				id_prijavnica: student?.process_instance_data?.variables?.id_prijavnica,
 				id_dnevnik_prakse: student?.process_instance_data?.variables?.id_dnevnik_prakse,
-			} as InstanceRemovalData;
+			};
 
 			console.log("data:::", data);
 

@@ -5,9 +5,9 @@ interface EmailData {
 	[key: string]: any;
 }
 
-const AxiosWrapper = createAxiosInstance(endpoints.VITE_SENDGRID_API_URL);
+const AxiosWrapper = createAxiosInstance(endpoints.VITE_EMAILJS_API_URL);
 
-const SendGrid = {
+const EmailJS = {
 	async sendEmail(postData: EmailData, to: string, template: string) {
 		return safeRequest(async () => {
 			const url = `/email?to=${encodeURIComponent(to)}&template=${encodeURIComponent(template)}`;
@@ -17,4 +17,4 @@ const SendGrid = {
 	},
 };
 
-export { SendGrid };
+export { EmailJS };

@@ -53,7 +53,7 @@ function begin(event, node) {
   const p = point(event);
   if (node) emit('select', node.id);
   if (props.connecting && node) return;
-  if (!props.editable) return;
+  if (node && !props.editable) return;
   dragging.value = { id: node?.id, start: p, x: node?.x, y: node?.y, dx: 0, dy: 0, clientX: event.clientX, clientY: event.clientY, view: { ...view.value } };
   svg.value.setPointerCapture(event.pointerId);
 }
@@ -123,7 +123,7 @@ defineExpose({ fit, focus, center, zoomIn: () => zoom(0.8), zoomOut: () => zoom(
 </script>
 
 <template>
-  <svg ref="svg" class="fipu-bpmn-canvas" :class="{ connecting, editable, panning: dragging && !dragging.id }" :viewBox="`${view.x} ${view.y} ${view.width} ${view.height}`" role="group" :aria-label="`BPMN dijagram procesa. ${editable ? 'Povucite pozadinu za pomicanje; ' : ''}Control i kotačić za zumiranje.`" @wheel.prevent="wheel" @pointerdown.self="begin($event)" @pointermove="move" @pointerup="end" @pointercancel="dragging = null">
+  <svg ref="svg" class="fipu-bpmn-canvas" :class="{ connecting, editable, panning: dragging && !dragging.id }" :viewBox="`${view.x} ${view.y} ${view.width} ${view.height}`" role="group" aria-label="BPMN dijagram procesa. Povucite pozadinu za pomicanje; Control i kotačić za zumiranje." @wheel.prevent="wheel" @pointerdown.self="begin($event)" @pointermove="move" @pointerup="end" @pointercancel="dragging = null">
     <defs><marker :id="markerId" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto" markerUnits="userSpaceOnUse"><path d="M0 0 8 4 0 8Z" fill="#5f7185" /></marker></defs>
     <g class="bpmn-pools" @pointerdown="begin($event)">
       <g v-for="pool in model.pools" :key="pool.id"><rect :x="pool.x" :y="pool.y" :width="pool.width" :height="pool.height" fill="#fff" stroke="#9babbc" /><line :x1="pool.x + 30" :x2="pool.x + 30" :y1="pool.y" :y2="pool.y + pool.height" stroke="#9babbc" /><text :transform="`translate(${pool.x + 19} ${pool.y + pool.height / 2}) rotate(-90)`" text-anchor="middle" class="pool-label">{{ pool.name }}</text></g>
@@ -139,7 +139,12 @@ defineExpose({ fit, focus, center, zoomIn: () => zoom(0.8), zoomOut: () => zoom(
     <g v-for="node in model.nodes" :key="node.id" class="bpmn-node" :class="{ selected: selectedId === node.id, movable: editable, active: !!highlights[node.id] }" :transform="position(node)" tabindex="0" role="button" :aria-label="`${node.type}: ${node.name || node.id}`" :aria-pressed="selectedId === node.id" @pointerdown.stop="begin($event, node)" @keydown="key($event, node)" @dblclick.stop="focus(node.id)">
       <title>{{ node.name || node.id }} · {{ node.type }}</title>
       <rect v-if="selectedId === node.id" x="-5" y="-5" :width="node.width + 10" :height="node.height + 10" rx="8" class="selection-outline" />
-      <circle v-if="node.type.endsWith('Event')" class="node-shape" :class="{ 'end-event': node.type === 'endEvent' }" :cx="node.width / 2" :cy="node.height / 2" :r="Math.min(node.width, node.height) / 2 - 2" :fill="highlights[node.id] || '#fff'" :stroke-width="node.type === 'endEvent' ? 3.5 : 1.7" />
+      <g v-if="node.type.endsWith('Event')">
+      <circle class="node-shape" :class="{ 'end-event': node.type === 'endEvent' }" :cx="node.width / 2" :cy="node.height / 2" :r="Math.min(node.width, node.height) / 2 - 2" :fill="highlights[node.id] || '#fff'" :stroke-width="node.type === 'endEvent' ? 3.5 : 1.7" />
+      <circle v-if="node.type === 'intermediateCatchEvent'" :cx="node.width / 2" :cy="node.height / 2" :r="Math.min(node.width, node.height) / 2 - 5" fill="none" stroke="#536c82" />
+      <path v-if="node.type === 'intermediateCatchEvent'" d="M9 12h18v12H9z M9 12l9 7 9-7" fill="none" stroke="#253d54" stroke-width="1.3" />
+      <circle v-if="node.terminate" :cx="node.width / 2" :cy="node.height / 2" :r="Math.min(node.width, node.height) / 2 - 8" fill="#253d54" />
+      </g>
       <g v-else-if="node.type.endsWith('Gateway')">
         <polygon class="node-shape" :points="`${node.width / 2},0 ${node.width},${node.height / 2} ${node.width / 2},${node.height} 0,${node.height / 2}`" :fill="highlights[node.id] || '#fff'" />
         <path v-if="node.type === 'parallelGateway'" :d="`M${node.width / 2} ${node.height * .28}v${node.height * .44}M${node.width * .28} ${node.height / 2}h${node.width * .44}`" stroke="#253d54" stroke-width="3" />
@@ -157,7 +162,7 @@ defineExpose({ fit, focus, center, zoomIn: () => zoom(0.8), zoomOut: () => zoom(
 
 <style scoped>
 .fipu-bpmn-canvas { width: 100%; height: 100%; min-height: 240px; display: block; touch-action: none; user-select: none; color: #172234; }
-.fipu-bpmn-canvas.editable { cursor: grab; }
+.fipu-bpmn-canvas { cursor: grab; }
 .fipu-bpmn-canvas.panning { cursor: grabbing; }
 .bpmn-node, .bpmn-flow { cursor: pointer; outline: none; }
 .bpmn-node.movable { cursor: move; }

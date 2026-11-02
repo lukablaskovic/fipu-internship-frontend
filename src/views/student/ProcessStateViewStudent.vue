@@ -3,7 +3,7 @@ import SectionMain from "@/components/Section/SectionMain.vue";
 import { mdiChartTimeline } from "@mdi/js";
 import { ref, onMounted } from "vue";
 import { computed } from "vue";
-import axios from "axios";
+import { Model } from "@/services/bpmn_engine_api";
 
 import { UserTaskMappings } from "@/helpers/maps";
 import { useMainStore } from "@/stores/main_store";
@@ -28,42 +28,33 @@ const modal_send_task = ref(false);
 const userAuthenticated = computed(() => mainStore.userAuthenticated);
 
 async function fetchXML(model) {
-	try {
-		const response = await axios.get(`/bpmn_xml/${model}.xml`, {
-			responseType: "text",
-		});
-
-		return response.data;
-	} catch (error) {
-		console.error("Failed to fetch XML:", error);
-	}
+	return Model.get(`${model}.bpmn`);
 }
 
 const process_instance_data = ref(null);
-const bpmnKey = ref(0);
-
-async function loadDataForStudent(process_instance_id) {
-	if (process_instance_id) {
 
 
-		try {
-			process_instance_data.value = await ProcessInstance.get(process_instance_id);
-		} catch (error) {
-			console.error("Failed to fetch process instance data:", error);
-		}
-	}
+const attempts = ref([]);
+const bpmn_model = ref(null);
+const selectedAttempt = ref(null);
+
+async function showAttempt(attempt) {
+	selectedAttempt.value = attempt.id;
+	process_instance_data.value = attempt;
+	bpmn_model.value = null;
+	const xml = await fetchXML(attempt.model.model_path.split(".")[0]);
+	if (selectedAttempt.value === attempt.id) bpmn_model.value = xml;
 }
 
-const process_instance_id = ref(null);
-const bpmn_model = ref(null);
-
 onMounted(async () => {
-	process_instance_id.value = mainStore.currentUser.internship_process.id; //ok
-	await loadDataForStudent(process_instance_id.value);
-	if (!process_instance_data.value) return;
-	let model = process_instance_data.value.model.model_path.split(".")[0];
-
-	bpmn_model.value = await fetchXML(model);
+	let id = mainStore.currentUser.internship_process.id;
+	while (id && !attempts.value.some(attempt => attempt.id === id)) {
+		const attempt = await ProcessInstance.get(id);
+		if (!attempt) break;
+		attempts.value.push(attempt);
+		if (attempts.value.length === 1) await showAttempt(attempt);
+		id = attempt.variables?.previous_instance_id;
+	}
 });
 </script>
 
@@ -72,6 +63,13 @@ onMounted(async () => {
 		<LayoutAuthenticated v-if="userAuthenticated">
 			<SectionMain>
 				<SectionTitleLineWithButton class="mt-4" :icon="mdiChartTimeline" title="Stanje procesa" main> </SectionTitleLineWithButton>
+				<label v-if="attempts.length > 1" class="mb-4 block">Povijest praksi
+					<select :value="selectedAttempt" @change="showAttempt(attempts.find(item => item.id === $event.target.value))">
+						<option v-for="(attempt, index) in attempts" :key="attempt.id" :value="attempt.id">
+							{{ attempts.length - index }}. Model {{ attempt.model.model_path.slice(-6, -5) }} · {{ attempt.state === 'cancelled' ? 'Odustajanje' : 'Trenutna praksa' }}
+						</option>
+					</select>
+				</label>
 				<div class="hidden sm:block">
 					<p class="mb-4">Ovdje možete pronaći BPMN graf koji prikazuje aktualno stanje vašeg procesa prakse.</p>
 					<p><span class="font-bold text-fipu_blue">Plavom</span> bojom označena je trenutna aktivnost koju mora izvršiti student.</p>
@@ -90,7 +88,7 @@ onMounted(async () => {
 			<div class="hidden sm:block">
 				<BpmnDiagram
 					v-if="bpmn_model && process_instance_data"
-					:key="bpmnKey"
+					:key="selectedAttempt"
 					class="mt-12"
 					:xml="bpmn_model"
 					:current-order="UserTaskMappings.getTaskProperty(process_instance_data.pending[0], 'order', process_instance_data['state'])"

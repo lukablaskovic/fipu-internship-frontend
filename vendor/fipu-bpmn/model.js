@@ -9,9 +9,9 @@ export const NS = Object.freeze({
 const LEGACY = 'http://camunda.org/schema/1.0/bpmn';
 const MODELER = 'http://camunda.org/schema/modeler/1.0';
 const XMLNS = 'http://www.w3.org/2000/xmlns/';
-export const NODE_TYPES = Object.freeze(['startEvent', 'endEvent', 'userTask', 'serviceTask', 'sendTask', 'manualTask', 'task', 'exclusiveGateway', 'parallelGateway']);
-export const TYPE_LABELS = Object.freeze({ startEvent: 'Start Event', endEvent: 'End Event', userTask: 'User Task', serviceTask: 'Service Task', sendTask: 'Send Task', manualTask: 'Manual Task', task: 'Task', exclusiveGateway: 'Exclusive Gateway', parallelGateway: 'Parallel Gateway', sequenceFlow: 'Sequence Flow', lane: 'Lane', participant: 'Pool' });
-const BPMN_ELEMENTS = new Set(['definitions', 'collaboration', 'participant', 'process', 'laneSet', 'lane', 'flowNodeRef', 'extensionElements', 'documentation', 'sequenceFlow', 'incoming', 'outgoing', 'conditionExpression', ...NODE_TYPES]);
+export const NODE_TYPES = Object.freeze(['startEvent', 'endEvent', 'intermediateCatchEvent', 'userTask', 'serviceTask', 'sendTask', 'manualTask', 'task', 'exclusiveGateway', 'parallelGateway']);
+export const TYPE_LABELS = Object.freeze({ startEvent: 'Start Event', endEvent: 'End Event', intermediateCatchEvent: 'Message Catch Event', userTask: 'User Task', serviceTask: 'Service Task', sendTask: 'Send Task', manualTask: 'Manual Task', task: 'Task', exclusiveGateway: 'Exclusive Gateway', parallelGateway: 'Parallel Gateway', sequenceFlow: 'Sequence Flow', lane: 'Lane', participant: 'Pool' });
+const BPMN_ELEMENTS = new Set(['definitions', 'collaboration', 'participant', 'process', 'laneSet', 'lane', 'flowNodeRef', 'extensionElements', 'documentation', 'sequenceFlow', 'incoming', 'outgoing', 'conditionExpression', 'messageEventDefinition', 'terminateEventDefinition', ...NODE_TYPES]);
 const EXT_ELEMENTS = new Set(['connector', 'connectorId', 'inputOutput', 'inputParameter', 'outputParameter', 'map', 'entry', 'list', 'value', 'formData', 'formField', 'properties', 'property', 'validation', 'constraint']);
 const EXT_ATTRIBUTES = { inputParameter: ['name'], outputParameter: ['name'], entry: ['key'], formField: ['id', 'type', 'label', 'defaultValue'], property: ['id', 'name', 'value'], constraint: ['name', 'config'] };
 const EXT_CHILDREN = { connector: ['connectorId', 'inputOutput'], inputOutput: ['inputParameter', 'outputParameter'], inputParameter: ['list', 'map'], outputParameter: ['list', 'map'], list: ['value'], map: ['entry'], formData: ['formField'], formField: ['properties', 'validation'], properties: ['property'], validation: ['constraint'] };
@@ -87,6 +87,8 @@ function readModel(document) {
       ...basic(element), ...geometry(element), laneId: laneIds.get(attr(element, 'id')) || '',
       documentation: text(element, NS.bpmn, 'documentation'),
       default: attr(element, 'default'),
+      terminate: !!child(element, NS.bpmn, 'terminateEventDefinition'),
+      outcome: element.getAttributeNS(NS.fipu, 'outcome') || 'finished',
       inputs: readParameters(extension, 'input'), outputs: readParameters(extension, 'output'),
       connector: connector ? { id: text(connector, NS.fipu, 'connectorId'), method: config.method || '', url: config.url || '', parameters: config.url_parameter || {} } : null,
       formFields: children(child(extension, NS.fipu, 'formData'), NS.fipu, 'formField').map(field => ({
@@ -174,6 +176,19 @@ export function updateElement(model, id, patch) {
   if ('id' in patch && patch.id !== id) throw new Error('Existing IDs are workflow contracts and cannot be renamed.');
   if ('name' in patch) element.setAttribute('name', patch.name);
   if ('documentation' in patch) ensureChild(element, 'bpmn', 'documentation').textContent = patch.documentation;
+  if ('terminate' in patch || 'outcome' in patch) {
+    if (element.localName !== 'endEvent') throw new Error('Termination and outcomes belong to End Events.');
+    if ('terminate' in patch) {
+      if (typeof patch.terminate !== 'boolean') throw new Error('terminate must be a boolean.');
+      if (patch.terminate) ensureChild(element, 'bpmn', 'terminateEventDefinition');
+      else child(element, NS.bpmn, 'terminateEventDefinition')?.remove();
+    }
+    if ('outcome' in patch) {
+      if (!['finished', 'cancelled'].includes(patch.outcome)) throw new Error('Unsupported end outcome.');
+      if (patch.outcome === 'finished') element.removeAttributeNS(NS.fipu, 'outcome');
+      else element.setAttributeNS(NS.fipu, 'fipu:outcome', patch.outcome);
+    }
+  }
   if ('default' in patch) {
     if (element.localName !== 'exclusiveGateway') throw new Error('Default flows belong to Exclusive Gateways.');
     const flow = next.flows.find(item => item.id === patch.default && item.sourceRef === id);
@@ -297,6 +312,7 @@ export function addNode(model, type, options = {}) {
   if (![x, y].every(Number.isFinite)) throw new Error('Position must use finite coordinates.');
   const element = create(next.document, 'bpmn', type, { id, name });
   elementById(next, next.processId).append(element);
+  if (type === 'intermediateCatchEvent') element.append(create(next.document, 'bpmn', 'messageEventDefinition'));
   setLane(next, element, laneId);
   const shape = create(next.document, 'bpmndi', 'BPMNShape', { id: `${id}_di`, bpmnElement: id });
   const size = type.endsWith('Event') ? [36, 36] : type.endsWith('Gateway') ? [50, 50] : [120, 80];
@@ -352,7 +368,7 @@ export function validateModel(model, connectors) {
     if (element.namespaceURI === NS.fipu && !EXT_ELEMENTS.has(element.localName)) report(`Unsupported execution extension: ${element.localName}.`, attr(element.closest?.('[id]'), 'id'));
     if (element.namespaceURI === NS.bpmn && element.localName === 'process' && attr(element, 'isExecutable') !== 'true') report('The Process must be executable.', id);
     for (const attribute of Array.from(element.attributes)) {
-      if (attribute.namespaceURI === NS.fipu) report(`Unsupported execution attribute: ${attribute.localName}.`, id);
+      if (attribute.namespaceURI === NS.fipu && !(element.localName === 'endEvent' && attribute.localName === 'outcome')) report(`Unsupported execution attribute: ${attribute.localName}.`, id);
       else if (element.namespaceURI === NS.fipu && attribute.namespaceURI !== XMLNS && (attribute.namespaceURI || !(EXT_ATTRIBUTES[element.localName] || []).includes(attribute.localName))) report(`Unsupported ${element.localName} attribute: ${attribute.localName}.`, id);
     }
     if (element.namespaceURI === NS.fipu) {
@@ -407,7 +423,7 @@ export function validateModel(model, connectors) {
   if (!model.nodes.some(node => node.type === 'endEvent')) report('The Process must have an End Event.');
   const knownIds = new Set(model.nodes.map(node => node.id));
   const catalog = connectors ? (Array.isArray(connectors) ? connectors : connectors.connectors || []) : null;
-  const connectorIds = catalog ? new Set(catalog.map(connector => connector.id)) : new Set(['baserow', 'sendgrid', 'pdf']);
+  const connectorIds = catalog ? new Set(catalog.map(connector => connector.id)) : new Set(['baserow', 'emailjs', 'pdf']);
   for (const node of model.nodes) {
     if (!node.id) report('Every flow node requires an ID.');
     const incoming = model.flows.filter(flow => flow.targetRef === node.id);
@@ -422,6 +438,11 @@ export function validateModel(model, connectors) {
     if (node.type !== 'startEvent' && !incoming.length) report('This node has no incoming Sequence Flow.', node.id);
     if (node.type !== 'endEvent' && !outgoing.length) report(node.type === 'manualTask' && incoming.length ? 'This Manual Task ends its branch implicitly without an End Event.' : 'This node has no outgoing Sequence Flow.', node.id, node.type === 'manualTask' && incoming.length ? 'warning' : 'error');
     if (!diagramElement(model, 'BPMNShape', node.id) || ![node.x, node.y, node.width, node.height].every(Number.isFinite) || node.width <= 0 || node.height <= 0) report('This node needs valid BPMN diagram bounds.', node.id);
+    const definitions = Array.from(elementById(model, node.id).children).filter(item => item.localName.endsWith('EventDefinition'));
+    if (node.type === 'intermediateCatchEvent' && (definitions.length !== 1 || definitions[0].localName !== 'messageEventDefinition')) report('Intermediate Catch Events require exactly one Message Event Definition.', node.id);
+    if (node.type === 'endEvent' && (definitions.length > 1 || definitions.some(item => item.localName !== 'terminateEventDefinition'))) report('Only normal and Terminate End Events are supported.', node.id);
+    if (!['intermediateCatchEvent', 'endEvent'].includes(node.type) && definitions.length) report('Event definitions are not supported on this element.', node.id);
+    if (!['finished', 'cancelled'].includes(node.outcome) || (node.outcome === 'cancelled' && !node.terminate)) report('Cancelled outcomes require a Terminate End Event.', node.id);
     if (node.type === 'exclusiveGateway') {
       if (node.default && !outgoing.some(flow => flow.id === node.default)) report('The default Sequence Flow must leave this Exclusive Gateway.', node.id);
       if (outgoing.some(flow => flow.id === node.default && flow.condition)) report('A default Sequence Flow cannot also have a condition in this execution profile.', node.id);

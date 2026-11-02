@@ -94,6 +94,10 @@ onMounted(() => {
 	let currentUser = mainStore.currentUser;
 	fixedUserData.ime_prezime = currentUser.ime + " " + currentUser.prezime;
 	fixedUserData.email = currentUser.email;
+	if (currentUser.internship_process.id) {
+		form.jmbag = currentUser.JMBAG;
+		form.godina_studija = currentUser.godina_studija || form.godina_studija;
+	}
 });
 
 const logout = () => {

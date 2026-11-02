@@ -1,9 +1,10 @@
 <script setup>
+import { internshipStages } from "@/helpers/internship-stages";
 import { mdiAccountMultiple, mdiAccount, mdiClose } from "@mdi/js";
 import { useRouter, useRoute } from "vue-router";
 import { computed, ref, onMounted, watch } from "vue";
 import { Dialog } from "reka-ui/namespaced";
-import axios from "axios";
+import { Model } from "@/services/bpmn_engine_api";
 
 import { UserTaskMappings, SendTaskMappings } from "@/helpers/maps";
 import { useAdminStore } from "@/stores/admin_store";
@@ -58,13 +59,7 @@ const updateDisabledCondition = (allFilled) => {
 const formDynamicValues = ref({});
 
 async function fetchXML(model) {
-	try {
-		const response = await axios.get(`/bpmn_xml/${model}.xml`, { responseType: "text" });
-
-		return response.data;
-	} catch (error) {
-		console.error("Failed to fetch XML:", error);
-	}
+	return Model.get(`${model}.bpmn`);
 }
 
 const router = useRouter();
@@ -123,7 +118,7 @@ function getPostDataForSendEmail() {
 const studentSearch = ref("");
 const modelOptions = [{ id: "AB", label: "Svi modeli" }, { id: "A", label: "Model A" }, { id: "B", label: "Model B" }];
 const processOptions = [{ id: true, label: "Sve instance" }, { id: false, label: "Aktivne instance" }];
-const stageOptions = [{ id: "all", label: "Sve faze procesa" }, { id: "ceka_alokaciju", label: "Čeka alokaciju (A)" }, { id: "ceka_odobrenje", label: "Čeka odobrenje (B)" }];
+const stageOptions = [{ id: "all", label: "Sve faze procesa" }, { id: "ceka_alokaciju", label: "Čeka alokaciju (A)" }, { id: "ceka_odobrenje", label: "Čeka odobrenje (B)" }, ...internshipStages.map((stage) => ({ id: stage, label: stage }))];
 const modelFilter = computed({
 	get: () => modelOptions.find((option) => option.id === adminStore.filterModelState),
 	set: (option) => {
@@ -181,6 +176,10 @@ watch(() => route.query.model, (model) => {
 }, { immediate: true });
 watch(() => route.query.stage, (stage) => {
 	adminStore.filterInternshipStage = stageOptions.some((option) => option.id === stage) ? stage : "all";
+}, { immediate: true });
+
+watch(() => route.query.instances, (instances) => {
+	if (instances === "all") adminStore.filterFinishedInstances = true;
 }, { immediate: true });
 
 onMounted(() => adminStore.getStudents());
@@ -289,6 +288,8 @@ onMounted(loadDataForStudent);
 						<CardBoxModal
 							v-if="modal_select_bpmn_task"
 							v-model="modal_select_bpmn_task"
+							is-bpmn
+							description="Trenutni korak procesa prakse."
 							:title="UserTaskMappings.getTaskProperty(process_instance_data.pending[0], 'form_title', process_instance_data['state'])"
 							button-label="Potvrda"
 							has-cancel
@@ -309,17 +310,15 @@ onMounted(loadDataForStudent);
 						</CardBoxModal>
 
 						<!-- Modal for past tasks (without FormDynamic) -->
-						<CardBoxModal v-if="modal_past_bpmn_task" v-model="modal_past_bpmn_task" :title="UserTaskMappings.getTaskProperty(selectedTaskId, 'form_title', process_instance_data['state'])" button-label="Povratak">
-							<p class="mb-2">Ovaj zadatak je već obavljen.</p>
+						<CardBoxModal v-if="modal_past_bpmn_task" v-model="modal_past_bpmn_task" is-bpmn :title="UserTaskMappings.getTaskProperty(selectedTaskId, 'form_title')" description="Ovaj zadatak je već obavljen. Pregled spremljenih podataka." button-label="Zatvori">
 							<TableInstanceData :task-id="selectedTaskId" :variables="process_instance_data.variables" />
 						</CardBoxModal>
 
-						<CardBoxModal v-if="modal_send_task" v-model="modal_send_task" :title="'Ponovno slanje emaila'" has-cancel button-label="Pošalji" @confirm="sendAnAdditionalEmail()">
-							<p class="">E-mail je već poslan putem BPMN <i>enginea</i>, ali ga možete ponovo poslati klikom na gumb 'Pošalji'.</p>
-							<p class="mb-2">Ispod je prikazan e-mail koji je pohranjen u BPMN <i>engineu</i>, no možete unijeti novie-mail ispod i poslati ga ponovo. U tom slučaju, e-mail u <i>engineu</i> neće biti ažuriran.</p>
+						<CardBoxModal v-if="modal_send_task" v-model="modal_send_task" is-bpmn title="Ponovno slanje e-maila" description="Ponovno pošaljite obavijest za ovaj korak procesa." has-cancel button-label="Pošalji" @confirm="sendAnAdditionalEmail()">
+							<p class="mb-5 text-slate-600 dark:text-slate-300">Obavijest je već poslana. Možete je poslati ponovno na spremljenu ili novu adresu. Promjena primatelja ovdje neće ažurirati adresu u procesu.</p>
 
-							<FormField label="Novi E-mail">
-								<FormControl v-model="newEmail" :icon-left="mdiAccount" name="email" autocomplete="email" />
+							<FormField label="E-mail primatelja">
+								<FormControl v-model="newEmail" :icon-left="mdiAccount" name="email" type="email" autocomplete="email" />
 							</FormField>
 						</CardBoxModal>
 					</Dialog.Content>

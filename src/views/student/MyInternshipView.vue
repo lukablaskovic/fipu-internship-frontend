@@ -5,6 +5,7 @@ import { useStudentStore } from "@/stores/student_store";
 import { UserTaskMappings } from "@/helpers/maps";
 import { ref, computed, onMounted } from "vue";
 
+import Student_InternshipCancelled from "@/components/Internship/Student_InternshipCancelled.vue";
 import LoadingOverlay from "@/components/LoadingOverlay.vue";
 
 const mainStore = useMainStore();
@@ -38,6 +39,8 @@ const currentRenderingComponent = computed(() => {
 	}
 
 	if (!isLoaded.value) return LoadingOverlay;
+
+	if (studentStore.student_process_instance_data.active_event === "odustajanje_od_prakse") return Student_InternshipCancelled;
 
 	return UserTaskMappings.getTaskProperty(pendingProcessTask.value, "component", studentStore.student_process_instance_data.state) || LoadingOverlay;
 });
