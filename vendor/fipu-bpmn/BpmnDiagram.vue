@@ -25,6 +25,18 @@ const bounds = computed(() => {
   const y = Math.min(...shapes.map(n => n.y)) - 55;
   return { x, y, width: Math.max(...shapes.map(n => n.x + n.width)) - x + 45, height: Math.max(...shapes.map(n => n.y + n.height)) - y + 70 };
 });
+function boundedOrigin(position, start, size, viewport) {
+  if (viewport >= size) return start + (size - viewport) / 2;
+  return Math.max(start, Math.min(position, start + size - viewport));
+}
+function setView(x, y, width, height) {
+  if (!props.editable) {
+    const box = bounds.value;
+    x = boundedOrigin(x, box.x, box.width, width);
+    y = boundedOrigin(y, box.y, box.height, height);
+  }
+  view.value = { x, y, width, height };
+}
 function fit() {
   const rect = svg.value?.getBoundingClientRect();
   const box = bounds.value;
@@ -43,7 +55,7 @@ function zoom(factor, anchor) {
   const width = Math.min(bounds.value.width * 5, Math.max(200, old.width * factor));
   const actual = width / old.width;
   const center = anchor || { x: old.x + old.width / 2, y: old.y + old.height / 2 };
-  view.value = { x: center.x - (center.x - old.x) * actual, y: center.y - (center.y - old.y) * actual, width, height: old.height * actual };
+  setView(center.x - (center.x - old.x) * actual, center.y - (center.y - old.y) * actual, width, old.height * actual);
 }
 function wheel(event) {
   if (event.ctrlKey || event.metaKey) zoom(event.deltaY > 0 ? 1.1 : 0.9, point(event));
@@ -63,7 +75,7 @@ function move(event) {
   const dx = (event.clientX - drag.clientX) * drag.view.width / svg.value.clientWidth;
   const dy = (event.clientY - drag.clientY) * drag.view.height / svg.value.clientHeight;
   if (drag.id) { drag.dx = dx; drag.dy = dy; }
-  else { view.value.x = drag.view.x - dx; view.value.y = drag.view.y - dy; }
+  else setView(drag.view.x - dx, drag.view.y - dy, drag.view.width, drag.view.height);
 }
 function end(event) {
   const drag = dragging.value;
@@ -107,7 +119,7 @@ function focus(id) {
   if (!node) return;
   const width = Math.min(view.value.width, 850);
   const ratio = view.value.height / view.value.width;
-  view.value = { x: node.x + node.width / 2 - width / 2, y: node.y + node.height / 2 - width * ratio / 2, width, height: width * ratio };
+  setView(node.x + node.width / 2 - width / 2, node.y + node.height / 2 - width * ratio / 2, width, width * ratio);
 }
 function center() { return { x: view.value.x + view.value.width / 2, y: view.value.y + view.value.height / 2 }; }
 function key(event, node) {
