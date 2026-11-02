@@ -19,7 +19,7 @@ import CardBox from "@/components/Cardbox/CardBox.vue";
 import LayoutGuest from "@/layouts/LayoutGuest.vue";
 import UserAvatar from "@/components/User/UserAvatar.vue";
 
-import { ref, computed, onMounted, watch } from "vue";
+import { ref, computed, nextTick, onMounted, watch } from "vue";
 import { DEFAULT_COMPANY_LOGO, fetchCompanyForAssignment, findCompanyForAssignment, getCompanyLogoKey, getCompanyLogoUrl, rememberCompany } from "@/helpers/company-logo.js";
 import draggable from "vuedraggable";
 
@@ -122,6 +122,8 @@ const getDefaultImage = (index) => {
 	return defaultImages[index] || "path/to/fallback.png";
 };
 
+const isDragging = ref(false);
+const reorderAnimation = window.matchMedia("(prefers-reduced-motion: reduce)").matches ? 0 : 180;
 const isDraggableEnabled = computed(() => checkedAssignments.value.length === 3);
 const isEmptySlot = (element) => element.id?.startsWith("empty");
 const isAssignment = (element) => element && !isEmptySlot(element);
@@ -140,32 +142,49 @@ const assignmentsForDrag = computed({
 	},
 });
 
-const moveAssignment = (index, offset) => {
+const moveAssignment = async (index, offset, button) => {
+	const card = button.closest("[data-draggable]");
+	const neighbor = offset < 0 ? card.previousElementSibling : card.nextElementSibling;
+	const movingCards = [card, neighbor];
+	const positions = movingCards.map(item => item.getBoundingClientRect().left);
 	const assignments = [...checkedAssignments.value];
 	const [assignment] = assignments.splice(index, 1);
 	assignments.splice(index + offset, 0, assignment);
 	checkedAssignments.value = assignments;
+	await nextTick();
+	if (reorderAnimation) {
+		movingCards.forEach((item, i) => {
+			const distance = positions[i] - item.getBoundingClientRect().left;
+			item.animate([{ transform: `translateX(${distance}px)` }, { transform: "none" }], { duration: reorderAnimation, easing: "ease-out" });
+		});
+	}
+	const nextButton = button.disabled ? card.querySelector("button:enabled") : button;
+	nextButton.focus({ preventScroll: true });
+	card.animate([{ outline: "2px solid var(--rank-accent)", outlineOffset: "2px" }, { outline: "2px solid transparent", outlineOffset: "2px" }], 750);
 };
 </script>
 
 <template>
 	<component :is="Layout">
-		<SectionMain class="relative">
-			<SectionTitleLineWithButton :icon="mdiLaptop" title="Moja Praksa" main />
+		<SectionMain class="assignment-picker relative">
+			<div class="flex items-start gap-6">
+				<div class="min-w-0 flex-1">
+					<SectionTitleLineWithButton :icon="mdiLaptop" title="Moja Praksa" main />
 
-			<p><b>Akademska godina:</b> {{ appConfig.academicYear }}</p>
-			<p><b>Voditelj:</b> {{ appConfig.voditelj_prakse }}</p>
+					<p><b>Akademska godina:</b> {{ appConfig.academicYear }}</p>
+					<p><b>Voditelj:</b> {{ appConfig.voditelj_prakse }}</p>
 
-			<img src="/illustrations/selection.svg" class="absolute right-0 top-0 mr-6 mt-4 hidden w-1/4 max-w-full md:block" />
-
-			<br />
-			<SectionTitleLineWithButton :icon="mdiClipboardTextOutline" main title="Dostupni zadaci" />
-			<p>U tablici označite tri zadatka koja želite odraditi. Njihov redoslijed možete zatim urediti u odjeljku „Vaš odabir”.</p>
-			<br />
-			<p>Molimo da <b>ne prijavljujete</b> zadatke gdje su poslodavci naveli ime i prezime studenta u <b>Preferencijama za studenta</b>.</p>
-			<br />
-			<p><b>Napomena:</b> Da biste prijavili preferencije, morate biti prijavljeni u aplikaciji!</p>
-			<br />
+					<br />
+					<SectionTitleLineWithButton :icon="mdiClipboardTextOutline" main title="Dostupni zadaci" />
+					<p>U tablici označite tri zadatka koja želite odraditi. Njihov redoslijed možete zatim urediti u odjeljku „Vaš odabir”.</p>
+					<br />
+					<p>Molimo da <b>ne prijavljujete</b> zadatke gdje su poslodavci naveli ime i prezime studenta u <b>Preferencijama za studenta</b>.</p>
+					<br />
+					<p><b>Napomena:</b> Da biste prijavili preferencije, morate biti prijavljeni u aplikaciji!</p>
+					<br />
+				</div>
+				<img src="/illustrations/selection.svg" alt="" class="hidden h-auto w-1/4 shrink-0 md:block" />
+			</div>
 			<CardBox has-table>
 				<TableAvailableAssignments v-model="checkedAssignments" checkable />
 			</CardBox>
@@ -173,21 +192,29 @@ const moveAssignment = (index, offset) => {
 			<br />
 			<SectionTitleLineWithButton ref="vas_odabir" :icon="mdiNumeric" main title="Vaš odabir" class="mt-22" />
 			<p class="mb-1 font-semibold" role="status">Odabrano {{ checkedAssignments.length }} od 3</p>
-			<p class="mb-4">{{ isDraggableEnabled ? "Na prvo mjesto stavite zadatak koji najviše želite. Redoslijed promijenite povlačenjem kartice ili strelicama." : "Označite zadatke u tablici iznad. Nakon trećeg odabira možete urediti redoslijed." }}</p>
+			<p class="mb-4">{{ isDraggableEnabled ? "Na prvo mjesto stavite zadatak koji najviše želite." : "Označite zadatke u tablici iznad. Nakon trećeg odabira možete urediti redoslijed." }}</p>
 
-			<draggable v-model="assignmentsForDrag" :disabled="!isDraggableEnabled" item-key="id" handle=".rank-card" class="grid max-w-2xl grid-cols-3 gap-2">
+			<div v-if="isDraggableEnabled" class="mb-3 inline-flex items-center gap-3 rounded-lg border-l-4 border-fipu_blue bg-white px-3 py-2 text-sm dark:bg-neutral-900">
+				<img src="/swipe-horizontal.png" alt="" class="swipe-hand h-7 w-7 shrink-0 object-contain dark:invert" :class="{ 'is-dragging': isDragging }" />
+				<span role="status">{{ isDragging ? "Otpustite karticu na označenom mjestu." : "Povucite karticu lijevo ili desno ili upotrijebite strelice." }}</span>
+			</div>
+			<div class="mb-1 grid max-w-2xl grid-cols-3 gap-2 text-center text-sm font-semibold" aria-hidden="true">
+				<span v-for="rank in 3" :key="rank">{{ rank }}. izbor</span>
+			</div>
+			<draggable v-model="assignmentsForDrag" :disabled="!isDraggableEnabled" item-key="id" handle=".rank-card" :animation="reorderAnimation" ghost-class="rank-destination" class="grid max-w-2xl grid-cols-3 gap-2" @start="isDragging = true" @end="isDragging = false">
 				<template #item="{ element, index }">
-					<div class="min-w-0 rounded-lg border p-2 text-center" :class="{ 'border-dashed': isEmptySlot(element) }">
+					<div class="relative min-w-0 rounded-lg border p-2 text-center" :class="{ 'border-dashed': isEmptySlot(element) }">
 						<div class="rank-card" :class="{ 'cursor-grab active:cursor-grabbing': isDraggableEnabled }">
-							<p class="text-sm font-semibold">{{ index + 1 }}. izbor</p>
+							<span class="sr-only">{{ index + 1 }}. izbor</span>
 							<UserAvatar v-if="isAssignment(element)" class="my-2 h-12 w-12" :avatar="getCompanyLogo(element)" :username="element.Poslodavac?.[0]?.value || 'Poslodavac'" />
 							<img v-else class="mx-auto my-2 h-12 w-12" :src="getDefaultImage(index)" alt="" />
 							<p class="break-words text-sm">{{ isAssignment(element) ? element.id_zadatak : "Slobodno mjesto" }}</p>
 						</div>
 						<div v-if="isDraggableEnabled" class="mt-2 flex flex-wrap justify-center gap-1">
-							<button type="button" class="rank-arrow" :disabled="index === 0" :aria-label="`Pomakni zadatak ${element.id_zadatak} na više mjesto`" @click="moveAssignment(index, -1)">←</button>
-							<button type="button" class="rank-arrow" :disabled="index === 2" :aria-label="`Pomakni zadatak ${element.id_zadatak} na niže mjesto`" @click="moveAssignment(index, 1)">→</button>
+							<button type="button" class="rank-arrow" :disabled="index === 0" :aria-label="`Pomakni zadatak ${element.id_zadatak} na više mjesto`" @click="moveAssignment(index, -1, $event.currentTarget)">←</button>
+							<button type="button" class="rank-arrow" :disabled="index === 2" :aria-label="`Pomakni zadatak ${element.id_zadatak} na niže mjesto`" @click="moveAssignment(index, 1, $event.currentTarget)">→</button>
 						</div>
+						<span class="drop-label" aria-hidden="true">Otpustite ovdje</span>
 					</div>
 				</template>
 			</draggable>
@@ -197,7 +224,7 @@ const moveAssignment = (index, offset) => {
 					<FormControl v-model="napomena" type="textarea" placeholder="Slobodno dodaj napomenu za voditelja prakse." />
 				</FormField>
 				<BaseButtons class="mb-16 mt-6 items-center justify-center space-y-2">
-					<BaseButton type="submit" color="fipu_light_blue" label="Prijavi preferencije" :loading="isLoading" @click="modalConfirmPreferences = true" />
+					<BaseButton type="submit" color="fipu_blue" class="dark:!bg-fipu_blue hover:!bg-fipu_blue !text-neutral-900 hover:underline" label="Prijavi preferencije" :loading="isLoading" @click="modalConfirmPreferences = true" />
 				</BaseButtons>
 			</div>
 
@@ -213,7 +240,30 @@ const moveAssignment = (index, offset) => {
 </template>
 
 <style scoped>
+.assignment-picker {
+	--rank-accent: theme("colors.fipu_blue");
+}
+.drop-label {
+	display: none;
+}
+.rank-destination {
+	@apply border-2 border-dashed border-fipu_blue bg-white dark:bg-neutral-900;
+}
+.rank-destination > div {
+	visibility: hidden;
+}
+.rank-destination .drop-label {
+	@apply absolute inset-0 grid place-items-center p-1 text-sm font-semibold;
+}
+@media (prefers-reduced-motion: no-preference) {
+	.swipe-hand:not(.is-dragging) {
+		animation: swipe-hint 1.6s ease-in-out 3;
+	}
+	@keyframes swipe-hint {
+		50% { transform: translateX(5px) rotate(8deg); }
+	}
+}
 .rank-arrow {
-	@apply rounded border px-2 py-1 leading-none enabled:hover:bg-gray-100 disabled:opacity-30 dark:enabled:hover:bg-slate-700;
+	@apply rounded border px-2 py-1 leading-none enabled:hover:bg-gray-100 disabled:opacity-30 focus-visible:outline-fipu_blue dark:enabled:hover:bg-neutral-700;
 }
 </style>

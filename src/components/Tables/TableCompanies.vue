@@ -10,6 +10,7 @@ import ButtonMenu from "@/components/Premium/ButtonMenu.vue";
 import BaseButtons from "@/components/Base/BaseButtons.vue";
 import BaseButton from "@/components/Base/BaseButton.vue";
 import UserAvatar from "@/components/User/UserAvatar.vue";
+import { DEFAULT_COMPANY_LOGO } from "@/helpers/company-logo.js";
 import BaseLevel from "@/components/Base/BaseLevel.vue";
 import LoadingOverlay from "../LoadingOverlay.vue";
 import { mdiWeb, mdiMenuDown } from "@mdi/js";
@@ -104,7 +105,7 @@ const goToCompanyWeb = (url) => {
 					<UserAvatar :avatar="company['logo'][0]['url']" class="mx-auto h-24 w-24 lg:h-6 lg:w-6" />
 				</td>
 				<td v-else>
-					<UserAvatar avatar="No-Logo.png" class="mx-auto h-24 w-24 lg:h-6 lg:w-6" />
+					<UserAvatar :avatar="DEFAULT_COMPANY_LOGO" class="mx-auto h-24 w-24 lg:h-6 lg:w-6" />
 				</td>
 
 				<td data-label="Naziv">
@@ -145,7 +146,7 @@ const goToCompanyWeb = (url) => {
 					<UserAvatar :avatar="company['logo'][0]['url']" class="mx-auto h-24 w-24 lg:h-6 lg:w-6" />
 				</td>
 				<td v-else>
-					<UserAvatar avatar="No-Logo.png" class="mx-auto h-24 w-24 lg:h-6 lg:w-6" />
+					<UserAvatar :avatar="DEFAULT_COMPANY_LOGO" class="mx-auto h-24 w-24 lg:h-6 lg:w-6" />
 				</td>
 
 				<td data-label="Naziv">

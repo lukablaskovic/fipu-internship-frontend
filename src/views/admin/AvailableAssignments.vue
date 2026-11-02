@@ -35,7 +35,7 @@ const availability = ref(availabilityOptions[0]);
 				<FormField class="md:w-1/2" label="Forma za prijavu novog zadatka">
 					<FormControl v-model="addNewAssignmentLink" :icon-left="mdiClipboardCheck" :icon-right="mdiContentCopy" name="addNewAssignmentLink" readonly copyable />
 				</FormField>
-				<div class="mb-3 flex flex-wrap items-center gap-2 text-sm">
+				<div class="table-filter-bar mb-3 flex flex-wrap items-center gap-2 text-sm">
 					<input v-model="search" type="search" aria-label="Pretraži zadatke" placeholder="Zadatak, poslodavac, tehnologija ili lokacija…" class="min-w-0 basis-full rounded-lg border-gray-300 py-1.5 text-sm dark:border-slate-700 dark:bg-slate-800 sm:flex-1 sm:basis-0" />
 					<FormControlListbox v-model="status" :options="statusOptions" aria-label="Status zadatka" button-class="rounded-lg bg-white px-3 py-2 dark:bg-slate-800" />
 					<FormControlListbox v-model="availability" :options="availabilityOptions" aria-label="Dostupnost mjesta" button-class="rounded-lg bg-white px-3 py-2 dark:bg-slate-800" />

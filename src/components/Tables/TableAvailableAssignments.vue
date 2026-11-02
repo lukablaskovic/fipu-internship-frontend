@@ -8,7 +8,7 @@
 		<br />
 	</CardBoxModal>
 
-	<div class="flex flex-wrap items-center gap-2 p-3 text-sm lg:px-6">
+	<div class="table-filter-bar flex flex-wrap items-center gap-2 p-3 text-sm lg:px-6">
 		<input v-model="searchQuery" type="search" aria-label="Pretraži zadatke" placeholder="Zadatak, poslodavac, tehnologija ili lokacija…" class="min-w-0 basis-full rounded-lg border-gray-300 py-1.5 text-sm dark:border-slate-700 dark:bg-slate-800 sm:flex-1 sm:basis-0" />
 		<FormControlListbox v-model="location" :options="locationOptions" aria-label="Lokacija" button-class="rounded-lg bg-white px-3 py-2 dark:bg-slate-800" />
 		<FormControlListbox v-model="hours" :options="hourOptions" aria-label="Trajanje prakse" button-class="rounded-lg bg-white px-3 py-2 dark:bg-slate-800" />

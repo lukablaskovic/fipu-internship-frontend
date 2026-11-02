@@ -224,7 +224,7 @@ onMounted(loadDataForStudent);
 		<LayoutAuthenticated v-if="mainStore.userAuthenticated">
 			<SectionMain>
 				<SectionTitleLineWithButton :icon="mdiAccountMultiple" title="Studenti u procesu prakse" button-enabled main @click="bpmn_help_modal = true"> </SectionTitleLineWithButton>
-				<div class="mb-3 flex flex-wrap items-center gap-2 text-sm">
+				<div class="table-filter-bar mb-3 flex flex-wrap items-center gap-2 text-sm">
 					<input v-model="studentSearch" type="search" aria-label="Pretraži studente" placeholder="Ime, JMBAG ili email…" class="min-w-0 basis-full rounded-lg border-gray-300 py-1.5 text-sm dark:border-slate-700 dark:bg-slate-800 sm:flex-1 sm:basis-0" />
 					<FormControlListbox v-model="modelFilter" :options="modelOptions" aria-label="Model prakse" button-class="rounded-lg bg-white px-3 py-2 dark:bg-slate-800" />
 					<FormControlListbox v-model="processFilter" :options="processOptions" aria-label="Status instance" button-class="rounded-lg bg-white px-3 py-2 dark:bg-slate-800" />

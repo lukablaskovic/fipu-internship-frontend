@@ -62,5 +62,15 @@ td[data-label]::before {
 }
 
 .pagination-page-size > button {
-	@apply inline-flex h-9 min-w-[2.25rem] items-center justify-center rounded border border-gray-200 bg-white px-2 text-sm transition-colors hover:bg-gray-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-fipu_blue focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-40 dark:border-slate-700 dark:bg-slate-900 dark:hover:bg-slate-800;
+	@apply inline-flex h-9 min-w-[2.25rem] items-center justify-center rounded border border-fipu_blue bg-white px-2 text-sm transition-colors hover:bg-gray-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-fipu_blue focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-40 dark:bg-slate-900 dark:hover:bg-slate-800;
+}
+
+.table-filter-bar input[type="search"],
+.table-filter-bar .form-select-trigger,
+.dark .table-filter-bar .form-select-trigger:not(:focus) {
+	@apply border border-fipu_blue;
+}
+.table-filter-bar input[type="search"]:focus,
+.table-filter-bar .form-select-trigger:focus-visible {
+	@apply border-fipu_blue ring-2 ring-fipu_blue;
 }

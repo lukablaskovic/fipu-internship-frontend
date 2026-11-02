@@ -86,9 +86,9 @@ const menuClick = (event, item) => {
 				<NavBarItemPlain display="hidden lg:flex xl:hidden" @click.prevent="uiStore.asideLgToggle()">
 					<BaseIcon :path="uiStore.isAsideLgActive ? mdiBackburger : mdiMenu" size="24" />
 				</NavBarItemPlain>
-				<NavBarItemPlain v-if="mainStore.userAdmin">
+				<div v-if="mainStore.userAdmin" class="self-center px-3">
 					<FormControl :icon="mdiMagnify" search-bar />
-				</NavBarItemPlain>
+				</div>
 			</NavBar>
 
 			<CardBoxModal v-model="logoutModalActive" has-cancel is-logout title="Jeste li sigurni da se želite odjaviti?" button-label="Odjava" class="z-100" @cancel="logoutModalActive = false" @confirm="mainStore.logout()"> </CardBoxModal>

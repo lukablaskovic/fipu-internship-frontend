@@ -13,6 +13,7 @@ import { useSnackBarStore } from "@/stores/snackbar_store";
 
 import BaseButtons from "@/components/Base/BaseButtons.vue";
 import UserAvatar from "@/components/User/UserAvatar.vue";
+import { DEFAULT_COMPANY_LOGO } from "@/helpers/company-logo.js";
 import BaseButton from "@/components/Base/BaseButton.vue";
 import BaseLevel from "@/components/Base/BaseLevel.vue";
 import CardBoxModal from "../Cardbox/CardBoxModal.vue";
@@ -196,7 +197,7 @@ const { perPage, currentPage, itemsPaginated: companiesPaginated, numPages, curr
 				</td>
 
 				<td v-else>
-					<UserAvatar avatar="No-Logo.png" class="mx-auto h-24 w-24 lg:h-6 lg:w-6" />
+					<UserAvatar :avatar="DEFAULT_COMPANY_LOGO" class="mx-auto h-24 w-24 lg:h-6 lg:w-6" />
 				</td>
 
 				<td data-label="Naziv">

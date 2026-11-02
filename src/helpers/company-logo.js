@@ -1,4 +1,4 @@
-export const DEFAULT_COMPANY_LOGO = "No-Logo.png";
+export const DEFAULT_COMPANY_LOGO = "/company-placeholder.svg";
 
 const normalizeCompanyName = (name) => (name || "").toString().trim();
 

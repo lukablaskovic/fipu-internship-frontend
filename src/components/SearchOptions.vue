@@ -143,7 +143,7 @@ onMounted(async () => {
 
 <template>
 	<Combobox.Root v-model="selectedValue" v-model:open="open" ignore-filter open-on-focus open-on-click :reset-search-term-on-select="false" :reset-search-term-on-blur="false">
-		<Combobox.Anchor class="flex h-12 w-full items-center gap-3 rounded-xl border border-gray-200 bg-gray-50 px-4 text-left transition-colors focus-within:border-fipu_blue dark:border-neutral-700 dark:bg-neutral-900 md:w-96">
+		<Combobox.Anchor class="flex h-12 w-full items-center gap-3 rounded-xl border border-fipu_blue bg-gray-50 px-4 text-left transition-colors focus-within:ring-2 focus-within:ring-fipu_blue dark:bg-neutral-900 md:w-96">
 			<Combobox.Trigger class="flex shrink-0 items-center text-gray-500 hover:text-gray-900 focus-visible:outline focus-visible:outline-fipu_blue dark:text-neutral-400 dark:hover:text-neutral-200" aria-label="Upute za pretraživanje" @click="showHelp">
 				<MdiMagnify :size="22" aria-hidden="true" />
 			</Combobox.Trigger>

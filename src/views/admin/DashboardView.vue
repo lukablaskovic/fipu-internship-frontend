@@ -197,7 +197,7 @@ const { perPage, currentPage, itemsPaginated, numPages, currentPageHuman } = use
 	<div>
 		<LayoutAuthenticated v-if="mainStore.userAuthenticated">
 			<SectionMain>
-				<SectionTitleLineWithButton :icon="mdiViewDashboard" title="Nadzorna ploča" main><RouterLink class="text-fipu_blue underline" to="/dashboard/engine">BPMN engine</RouterLink></SectionTitleLineWithButton>
+				<SectionTitleLineWithButton :icon="mdiViewDashboard" title="Nadzorna ploča" main><span>BPMN engine</span></SectionTitleLineWithButton>
 				<p class="mb-4"><b>Akademska godina:</b> {{ appConfig.academicYear }}</p>
 				<Tabs.Root v-model="statisticsModel">
 					<Tabs.List aria-label="Statistika po modelu prakse" class="mb-4 inline-flex rounded-lg bg-white p-1 text-sm dark:bg-slate-800">
@@ -328,7 +328,7 @@ const { perPage, currentPage, itemsPaginated, numPages, currentPageHuman } = use
 				<SectionTitleLineWithButton :icon="mdiCardSearch" title="Događaji (logs)" main> </SectionTitleLineWithButton>
 
 				<Tabs.Root v-if="!eventsFetchError" v-model="logView">
-					<div class="mb-3 flex flex-wrap items-center gap-2 text-sm">
+					<div class="table-filter-bar mb-3 flex flex-wrap items-center gap-2 text-sm">
 						<Tabs.List aria-label="Prikaz događaja" class="flex rounded-lg bg-white p-1 dark:bg-slate-800">
 							<Tabs.Trigger v-for="view in [{ id: 'list', label: 'Popis' }, { id: 'table', label: 'Tablica' }]" :key="view.id" :value="view.id" class="rounded px-3 py-1.5 focus-visible:outline focus-visible:outline-2 focus-visible:outline-fipu_blue data-[state=active]:bg-fipu_blue data-[state=active]:text-white">{{ view.label }}</Tabs.Trigger>
 						</Tabs.List>
