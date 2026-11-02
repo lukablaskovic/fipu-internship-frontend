@@ -8,9 +8,9 @@ export const NS = Object.freeze({
 });
 const LEGACY = 'http://camunda.org/schema/1.0/bpmn';
 const XMLNS = 'http://www.w3.org/2000/xmlns/';
-export const NODE_TYPES = Object.freeze(['startEvent', 'endEvent', 'intermediateCatchEvent', 'userTask', 'serviceTask', 'sendTask', 'manualTask', 'task', 'exclusiveGateway', 'parallelGateway']);
-export const TYPE_LABELS = Object.freeze({ startEvent: 'Start Event', endEvent: 'End Event', intermediateCatchEvent: 'Message Catch Event', userTask: 'User Task', serviceTask: 'Service Task', sendTask: 'Send Task', manualTask: 'Manual Task', task: 'Task', exclusiveGateway: 'Exclusive Gateway', parallelGateway: 'Parallel Gateway', sequenceFlow: 'Sequence Flow', lane: 'Lane', participant: 'Pool' });
-const BPMN_ELEMENTS = new Set(['definitions', 'collaboration', 'participant', 'process', 'laneSet', 'lane', 'flowNodeRef', 'extensionElements', 'documentation', 'sequenceFlow', 'incoming', 'outgoing', 'conditionExpression', 'messageEventDefinition', 'terminateEventDefinition', ...NODE_TYPES]);
+export const NODE_TYPES = Object.freeze(['startEvent', 'endEvent', 'intermediateCatchEvent', 'intermediateThrowEvent', 'userTask', 'serviceTask', 'sendTask', 'manualTask', 'task', 'exclusiveGateway', 'parallelGateway']);
+export const TYPE_LABELS = Object.freeze({ startEvent: 'Start Event', endEvent: 'End Event', intermediateCatchEvent: 'Message Catch Event', timerCatch: 'Timer Catch Event', intermediateThrowEvent: 'None Throw Event', userTask: 'User Task', serviceTask: 'Service Task', sendTask: 'Send Task', manualTask: 'Manual Task', task: 'Task', exclusiveGateway: 'Exclusive Gateway', parallelGateway: 'Parallel Gateway', sequenceFlow: 'Sequence Flow', messageFlow: 'Message Flow', lane: 'Lane', participant: 'Pool' });
+const BPMN_ELEMENTS = new Set(['definitions', 'collaboration', 'messageFlow', 'participant', 'process', 'laneSet', 'lane', 'flowNodeRef', 'extensionElements', 'documentation', 'sequenceFlow', 'incoming', 'outgoing', 'conditionExpression', 'timerEventDefinition', 'timeDuration', 'messageEventDefinition', 'terminateEventDefinition', ...NODE_TYPES]);
 const EXT_ELEMENTS = new Set(['connector', 'connectorId', 'inputOutput', 'inputParameter', 'outputParameter', 'map', 'entry', 'list', 'value', 'formData', 'formField', 'properties', 'property', 'validation', 'constraint']);
 const EXT_ATTRIBUTES = { inputParameter: ['name'], outputParameter: ['name'], entry: ['key'], formField: ['id', 'type', 'label', 'defaultValue'], property: ['id', 'name', 'value'], constraint: ['name', 'config'] };
 const EXT_CHILDREN = { connector: ['connectorId', 'inputOutput'], inputOutput: ['inputParameter', 'outputParameter'], inputParameter: ['list', 'map'], outputParameter: ['list', 'map'], list: ['value'], map: ['entry'], formData: ['formField'], formField: ['properties', 'validation'], properties: ['property'], validation: ['constraint'] };
@@ -71,6 +71,7 @@ function readModel(document) {
       ...basic(element), ...geometry(element), laneId: laneIds.get(attr(element, 'id')) || '',
       documentation: text(element, NS.bpmn, 'documentation'),
       default: attr(element, 'default'),
+      timerDuration: child(element, NS.bpmn, 'timerEventDefinition') ? text(child(element, NS.bpmn, 'timerEventDefinition'), NS.bpmn, 'timeDuration') : null,
       terminate: !!child(element, NS.bpmn, 'terminateEventDefinition'),
       outcome: element.getAttributeNS(NS.fipu, 'outcome') || 'finished',
       inputs: readParameters(extension, 'input'), outputs: readParameters(extension, 'output'),
@@ -83,11 +84,11 @@ function readModel(document) {
       })),
     };
   });
-  const flows = all(document, NS.bpmn, 'sequenceFlow').map(element => {
+  const readFlows = type => all(document, NS.bpmn, type).map(element => {
     const edge = edges.get(attr(element, 'id'));
     return { ...basic(element), documentation: text(element, NS.bpmn, 'documentation'), sourceRef: attr(element, 'sourceRef'), targetRef: attr(element, 'targetRef'), condition: text(element, NS.bpmn, 'conditionExpression'), waypoints: children(edge, NS.di, 'waypoint').map(point => ({ x: Number(attr(point, 'x')), y: Number(attr(point, 'y')) })), label: bounds(child(child(edge, NS.bpmndi, 'BPMNLabel'), NS.dc, 'Bounds')) };
   });
-  return { document, processId: attr(process, 'id'), name: attr(process, 'name'), nodes, flows, lanes, pools: all(document, NS.bpmn, 'participant').map(element => ({ ...basic(element), ...geometry(element) })) };
+  return { document, processId: attr(process, 'id'), name: attr(process, 'name'), nodes, flows: readFlows('sequenceFlow'), messageFlows: readFlows('messageFlow'), lanes, pools: all(document, NS.bpmn, 'participant').map(element => ({ ...basic(element), ...geometry(element) })) };
 }
 
 export function parseModel(xml) {
@@ -155,10 +156,47 @@ function setLane(model, element, laneId) {
   if (laneId) elementById(model, laneId).append(create(model.document, 'bpmn', 'flowNodeRef', {}, attr(element, 'id')));
 }
 
+export function variantsFor(type) {
+  if (/task$/i.test(type)) return NODE_TYPES.filter(t => /task$/i.test(t));
+  if (type.endsWith('Event')) return ['startEvent', 'intermediateCatchEvent', 'timerCatch', 'intermediateThrowEvent', 'endEvent'];
+  return [];
+}
+
+function replaceVariant(element, variant) {
+  if (!variantsFor(element.localName).includes(variant)) throw new Error('Unsupported variant for this element.');
+  const type = variant === 'timerCatch' ? 'intermediateCatchEvent' : variant;
+  if (element.localName !== type) {
+    const replacement = create(element.ownerDocument, 'bpmn', type);
+    for (const attr of Array.from(element.attributes)) replacement.setAttributeNS(attr.namespaceURI, attr.name, attr.value);
+    while (element.firstChild) replacement.append(element.firstChild);
+    element.replaceWith(replacement);
+    element = replacement;
+  }
+  if (type.endsWith('Event')) {
+    element.removeAttributeNS(NS.fipu, 'outcome');
+    for (const name of ['messageEventDefinition', 'timerEventDefinition', 'terminateEventDefinition']) child(element, NS.bpmn, name)?.remove();
+    if (variant === 'timerCatch') ensureChild(ensureChild(element, 'bpmn', 'timerEventDefinition'), 'bpmn', 'timeDuration').textContent = 'PT15M';
+    if (variant === 'intermediateCatchEvent') ensureChild(element, 'bpmn', 'messageEventDefinition');
+  } else {
+    const ext = child(element, NS.bpmn, 'extensionElements');
+    if (!['serviceTask', 'sendTask'].includes(type)) child(ext, NS.fipu, 'connector')?.remove();
+    if (type !== 'userTask') child(ext, NS.fipu, 'formData')?.remove();
+    if (['task', 'manualTask'].includes(type)) child(ext, NS.fipu, 'inputOutput')?.remove();
+  }
+  return element;
+}
+
 export function updateElement(model, id, patch) {
   // Work on a clone so a rejected edit cannot partially destroy the current draft.
   const next = readModel(model.document.cloneNode(true));
-  const element = elementById(next, id);
+  let element = elementById(next, id);
+  const currentVariant = child(element, NS.bpmn, 'timerEventDefinition') ? 'timerCatch' : element.localName;
+  if ('variant' in patch && patch.variant !== currentVariant) element = replaceVariant(element, patch.variant);
+  if ('timerDuration' in patch) {
+    const timer = child(element, NS.bpmn, 'timerEventDefinition');
+    if (!timer || !validDuration(patch.timerDuration)) throw new Error('Upišite trajanje, primjerice PT15M, PT30S ili P1D.');
+    ensureChild(timer, 'bpmn', 'timeDuration').textContent = patch.timerDuration;
+  }
   if ('id' in patch && patch.id !== id) throw new Error('Existing IDs are workflow contracts and cannot be renamed.');
   if ('name' in patch) element.setAttribute('name', patch.name);
   if ('documentation' in patch) ensureChild(element, 'bpmn', 'documentation').textContent = patch.documentation;
@@ -249,10 +287,56 @@ function writeWaypoints(edge, points) {
   for (const point of points) edge.insertBefore(create(edge.ownerDocument, 'di', 'waypoint', point), label || null);
 }
 
-export function moveElement(model, id, x, y) {
+export function moveLabel(model, id, bounds) {
+  if (!['x', 'y', 'width', 'height'].every(key => Number.isFinite(bounds[key])) || bounds.width < 0 || bounds.height < 0) throw new Error('Invalid label bounds.');
+  const document = model.document.cloneNode(true);
+  const isFlow = [...model.flows, ...model.messageFlows].some(flow => flow.id === id);
+  if (!isFlow && !model.nodes.some(node => node.id === id && /(?:Event|Gateway)$/.test(node.type))) throw new Error('Only external labels can be moved.');
+  const owner = diagramElement({ document }, isFlow ? 'BPMNEdge' : 'BPMNShape', id);
+  if (!owner) throw new Error('Missing diagram element for label.');
+  const box = ensureChild(ensureChild(owner, 'bpmndi', 'BPMNLabel'), 'dc', 'Bounds');
+  for (const key of ['x', 'y', 'width', 'height']) box.setAttribute(key, bounds[key]);
+  return readModel(document);
+}
+
+export function reshapeFlow(model, id, points) {
+  const flow = [...model.flows, ...model.messageFlows].find(item => item.id === id);
+  if (!flow || points.length < 2 || points.some(p => !Number.isFinite(p.x) || !Number.isFinite(p.y))) throw new Error('Invalid flow route.');
+  const document = model.document.cloneNode(true);
+  const edge = diagramElement({ document }, 'BPMNEdge', id);
+  if (!edge) throw new Error('Missing flow diagram edge.');
+  writeWaypoints(edge, points);
+  return readModel(document);
+}
+
+export function attachedWaypoints(flow, original, node) {
+  const old = flow.waypoints;
+  const points = old.map(point => ({ ...point }));
+  if (points.length < 2) return points;
+  for (const [ref, index, neighbor] of [[flow.sourceRef, 0, 1], [flow.targetRef, points.length - 1, points.length - 2]]) {
+    if (ref !== node.id) continue;
+    for (const [axis, size] of [['x', 'width'], ['y', 'height']]) {
+      const offset = old[index][axis] - original[axis];
+      points[index][axis] = node[axis] + offset + offset * (node[size] - original[size]) / (original[size] || 1);
+      if (points.length > 2 && old[index][axis] === old[neighbor][axis]) points[neighbor][axis] = points[index][axis];
+    }
+  }
+  // Keep the original docking sides when a straight horizontal or vertical route needs two bends.
+  if (points.length === 2 && points[0].x !== points[1].x && points[0].y !== points[1].y) {
+    const axis = old[0].x === old[1].x ? 'y' : old[0].y === old[1].y ? 'x' : null;
+    if (axis) {
+      const middle = (points[0][axis] + points[1][axis]) / 2;
+      return [points[0], { ...points[0], [axis]: middle }, { ...points[1], [axis]: middle }, points[1]];
+    }
+  }
+  return points;
+}
+
+export function moveElement(model, id, x, y, size) {
   if (![x, y].every(Number.isFinite)) throw new Error('Position must use finite coordinates.');
   const original = model.nodes.find(node => node.id === id);
   if (!original) throw new Error('Only flow nodes can be moved.');
+  if (size && (!/task$/i.test(original.type) || ![size.width, size.height].every(n => Number.isFinite(n) && n > 0))) throw new Error('Only tasks can be resized to positive dimensions.');
   const next = readModel(model.document.cloneNode(true));
   const shape = diagramElement(next, 'BPMNShape', id);
   const box = child(shape, NS.dc, 'Bounds');
@@ -262,11 +346,12 @@ export function moveElement(model, id, x, y) {
   if (label) { label.setAttribute('x', Number(attr(label, 'x')) + x - original.x); label.setAttribute('y', Number(attr(label, 'y')) + y - original.y); }
   const node = next.nodes.find(item => item.id === id);
   node.x = x; node.y = y;
-  for (const flow of next.flows.filter(item => item.sourceRef === id || item.targetRef === id)) {
-    const source = next.nodes.find(item => item.id === flow.sourceRef);
-    const target = next.nodes.find(item => item.id === flow.targetRef);
-    const edge = diagramElement(next, 'BPMNEdge', flow.id);
-    if (source && target && edge) writeWaypoints(edge, route(source, target));
+  if (size) for (const axis of ['width', 'height']) {
+    node[axis] = size[axis];
+    box.setAttribute(axis, size[axis]);
+  }
+  for (const flow of [...next.flows, ...next.messageFlows].filter(item => item.sourceRef === id || item.targetRef === id)) {
+    writeWaypoints(diagramElement(next, 'BPMNEdge', flow.id), attachedWaypoints(flow, original, node));
   }
   const lane = next.lanes.find(item => x + node.width / 2 >= item.x && x + node.width / 2 <= item.x + item.width && y + node.height / 2 >= item.y && y + node.height / 2 <= item.y + item.height);
   if (lane) setLane(next, elementById(next, id), lane.id);
@@ -290,6 +375,8 @@ function plane(model) {
   return element;
 }
 
+function validDuration(value) { return /^P(?:[1-9][0-9]{0,6}D|T[1-9][0-9]{0,6}[HMS])$/.test(value); }
+
 export function addNode(model, type, options = {}) {
   if (!NODE_TYPES.includes(type)) throw new Error('This BPMN element is not supported by the Praksa engine.');
   const next = readModel(model.document.cloneNode(true));
@@ -298,7 +385,11 @@ export function addNode(model, type, options = {}) {
   if (![x, y].every(Number.isFinite)) throw new Error('Position must use finite coordinates.');
   const element = create(next.document, 'bpmn', type, { id, name });
   elementById(next, next.processId).append(element);
-  if (type === 'intermediateCatchEvent') element.append(create(next.document, 'bpmn', 'messageEventDefinition'));
+  if (type === 'intermediateCatchEvent' && options.timerDuration !== undefined) {
+    if (!validDuration(options.timerDuration)) throw new Error('Invalid timer duration.');
+    const timer = ensureChild(element, 'bpmn', 'timerEventDefinition');
+    ensureChild(timer, 'bpmn', 'timeDuration').textContent = options.timerDuration;
+  } else if (type === 'intermediateCatchEvent') element.append(create(next.document, 'bpmn', 'messageEventDefinition'));
   setLane(next, element, laneId);
   const shape = create(next.document, 'bpmndi', 'BPMNShape', { id: `${id}_di`, bpmnElement: id });
   const size = type.endsWith('Event') ? [36, 36] : type.endsWith('Gateway') ? [50, 50] : [120, 80];
@@ -327,9 +418,9 @@ export function addFlow(model, sourceId, targetId, options = {}) {
 
 export function removeElement(model, id) {
   const element = elementById(model, id);
-  if (!NODE_TYPES.includes(element.localName) && element.localName !== 'sequenceFlow') throw new Error('Only flow nodes and Sequence Flows can be removed.');
+  if (!NODE_TYPES.includes(element.localName) && !['sequenceFlow', 'messageFlow'].includes(element.localName)) throw new Error('Only nodes and flows can be removed.');
   const next = readModel(model.document.cloneNode(true));
-  const ids = new Set([id, ...next.flows.filter(flow => flow.sourceRef === id || flow.targetRef === id).map(flow => flow.id)]);
+  const ids = new Set([id, ...[...next.flows, ...next.messageFlows].filter(flow => flow.sourceRef === id || flow.targetRef === id).map(flow => flow.id)]);
   for (const candidate of all(next.document, '*', '*')) {
     if (ids.has(attr(candidate, 'id')) || ids.has(attr(candidate, 'bpmnElement')) || (candidate.namespaceURI === NS.bpmn && ['incoming', 'outgoing', 'flowNodeRef'].includes(candidate.localName) && ids.has(candidate.textContent.trim()))) candidate.remove();
     if (ids.has(attr(candidate, 'default'))) candidate.removeAttribute('default');
@@ -363,6 +454,13 @@ export function validateModel(model, connectors) {
       for (const name of singles) if (children(element, NS.fipu, name).length > 1) report(`Duplicate ${name} execution extension.`, id);
     }
     if (element.namespaceURI === NS.bpmn && children(element, NS.bpmn, 'extensionElements').length > 1) report('Duplicate extensionElements containers are not supported.', id);
+  }
+  for (const flow of model.messageFlows) {
+    const element = flow.id && elementById(model, flow.id);
+    if (!flow.id || element?.parentElement?.localName !== 'collaboration') report('Message Flows belong to a Collaboration and require an ID.', flow.id);
+    const endpoints = [...model.nodes, ...model.pools];
+    if (flow.sourceRef === flow.targetRef || ![flow.sourceRef, flow.targetRef].every(ref => endpoints.some(item => item.id === ref))) report('Message Flows require distinct participant or node endpoints.', flow.id);
+    if (flow.waypoints.length < 2 || flow.waypoints.some(p => !Number.isFinite(p.x) || !Number.isFinite(p.y))) report('Message Flows need at least two valid diagram waypoints.', flow.id);
   }
   for (const extension of all(document, NS.bpmn, 'extensionElements')) {
     const owner = extension.parentElement;
@@ -425,7 +523,8 @@ export function validateModel(model, connectors) {
     if (node.type !== 'endEvent' && !outgoing.length) report(node.type === 'manualTask' && incoming.length ? 'This Manual Task ends its branch implicitly without an End Event.' : 'This node has no outgoing Sequence Flow.', node.id, node.type === 'manualTask' && incoming.length ? 'warning' : 'error');
     if (!diagramElement(model, 'BPMNShape', node.id) || ![node.x, node.y, node.width, node.height].every(Number.isFinite) || node.width <= 0 || node.height <= 0) report('This node needs valid BPMN diagram bounds.', node.id);
     const definitions = Array.from(elementById(model, node.id).children).filter(item => item.localName.endsWith('EventDefinition'));
-    if (node.type === 'intermediateCatchEvent' && (definitions.length !== 1 || definitions[0].localName !== 'messageEventDefinition')) report('Intermediate Catch Events require exactly one Message Event Definition.', node.id);
+    if (node.type === 'intermediateCatchEvent' && (definitions.length !== 1 || !['timerEventDefinition','messageEventDefinition'].includes(definitions[0].localName))) report('Intermediate Catch Events require one Timer or Message Event Definition.', node.id);
+    if (node.timerDuration !== null && (node.type !== 'intermediateCatchEvent' || !validDuration(node.timerDuration) || definitions[0]?.children.length !== 1)) report('Invalid timer duration. Use PT15M, PT30S or P1D.', node.id);
     if (node.type === 'endEvent' && (definitions.length > 1 || definitions.some(item => item.localName !== 'terminateEventDefinition'))) report('Only normal and Terminate End Events are supported.', node.id);
     if (!['intermediateCatchEvent', 'endEvent'].includes(node.type) && definitions.length) report('Event definitions are not supported on this element.', node.id);
     if (!['finished', 'cancelled'].includes(node.outcome) || (node.outcome === 'cancelled' && !node.terminate)) report('Cancelled outcomes require a Terminate End Event.', node.id);
