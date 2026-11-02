@@ -43,9 +43,7 @@ import SectionTitleLineWithButton from "@/components/Section/SectionTitleLineWit
 import LayoutAuthenticated from "@/layouts/LayoutAuthenticated.vue";
 import PillTagFilter from "@/components/PillTag/PillTagFilter.vue";
 import CardBoxWidget from "@/components/Cardbox/CardBoxWidget.vue";
-import CardBoxEvents from "@/components/Cardbox/CardBoxEvents.vue";
 import SectionMain from "@/components/Section/SectionMain.vue";
-import SkeletonLoaderEvent from "@/components/SkeletonLoaderEvent.vue";
 import SkeletonLoader from "@/components/SkeletonLoader.vue";
 
 import BaseLevel from "@/components/Base/BaseLevel.vue";
@@ -125,7 +123,6 @@ const statisticsModel = ref("AB");
 const stageCounts = computed(() => countInternshipStages(adminStore.students, statisticsModel.value));
 const maxStageCount = computed(() => Math.max(1, ...stageCounts.value.map(({ count }) => count)));
 const studentsLoadError = ref(false);
-const logView = ref("list");
 const logSearch = ref("");
 const studentName = (event) => [event.student_ime, event.student_prezime].filter(Boolean).join(" ") || "Nepoznat student";
 const logColumns = [
@@ -133,6 +130,7 @@ const logColumns = [
 	{ id: "jmbag", label: "JMBAG", value: (event) => event.student_JMBAG || "—" },
 	{ id: "email", label: "Email", value: (event) => event.student_email || "—" },
 	{ id: "model", label: "Model", value: (event) => event.model_name === appConfig.bpmn_process_name_A + ".bpmn" ? "A" : "B" },
+	{ id: "version", label: "Verzija modela", value: (event) => event.model_version ?? 0 },
 	{ id: "event", label: "Događaj", value: (event) => ActivityEventMappings.getEvent(event.activity_id)?.message || event.activity_id },
 	{ id: "time", label: "Vrijeme", value: (event) => new Date(event.timestamp).getTime() },
 ];
@@ -140,7 +138,6 @@ const sortOptions = logColumns.flatMap((column) => ["asc", "desc"].map((directio
 	id: `${column.id}-${direction}`,
 	column: column.id,
 	direction,
-	label: column.id === "time" ? (direction === "asc" ? "Najstariji prvo" : "Najnoviji prvo") : `${column.label} ${direction === "asc" ? "↑" : "↓"}`,
 	compare: (a, b) => {
 		const valueA = column.value(a);
 		const valueB = column.value(b);
@@ -197,7 +194,7 @@ const { perPage, currentPage, itemsPaginated, numPages, currentPageHuman } = use
 	<div>
 		<LayoutAuthenticated v-if="mainStore.userAuthenticated">
 			<SectionMain>
-				<SectionTitleLineWithButton :icon="mdiViewDashboard" title="Nadzorna ploča" main><span>BPMN engine</span></SectionTitleLineWithButton>
+				<SectionTitleLineWithButton :icon="mdiViewDashboard" title="Nadzorna ploča" main />
 				<p class="mb-4"><b>Akademska godina:</b> {{ appConfig.academicYear }}</p>
 				<Tabs.Root v-model="statisticsModel">
 					<Tabs.List aria-label="Statistika po modelu prakse" class="mb-4 inline-flex rounded-lg bg-white p-1 text-sm dark:bg-slate-800">
@@ -325,28 +322,20 @@ const { perPage, currentPage, itemsPaginated, numPages, currentPageHuman } = use
 					</ul>
 				</section>
 
-				<SectionTitleLineWithButton :icon="mdiCardSearch" title="Događaji (logs)" main> </SectionTitleLineWithButton>
+				<SectionTitleLineWithButton :icon="mdiCardSearch" title="Događaji (BPMN engine logs)" main> </SectionTitleLineWithButton>
 
-				<Tabs.Root v-if="!eventsFetchError" v-model="logView">
+				<template v-if="!eventsFetchError">
 					<div class="table-filter-bar mb-3 flex flex-wrap items-center gap-2 text-sm">
-						<Tabs.List aria-label="Prikaz događaja" class="flex rounded-lg bg-white p-1 dark:bg-slate-800">
-							<Tabs.Trigger v-for="view in [{ id: 'list', label: 'Popis' }, { id: 'table', label: 'Tablica' }]" :key="view.id" :value="view.id" class="rounded px-3 py-1.5 focus-visible:outline focus-visible:outline-2 focus-visible:outline-fipu_blue data-[state=active]:bg-fipu_blue data-[state=active]:text-white">{{ view.label }}</Tabs.Trigger>
-						</Tabs.List>
 						<input v-model="logSearch" type="search" aria-label="Pretraži događaje" placeholder="Ime, JMBAG ili email…" class="min-w-0 flex-1 rounded-lg border-gray-300 py-1.5 text-sm dark:border-slate-700 dark:bg-slate-800" />
-						<FormControlListbox v-if="logView === 'list'" v-model="logSort" :icon="mdiSort" :options="sortOptions" aria-label="Sortiranje događaja" button-class="rounded-lg bg-white px-3 py-2 dark:bg-slate-800" />
 						<FormControlListbox v-model="modelFilter" :icon="mdiSourceBranch" :options="modelOptions" aria-label="Model prakse" button-class="rounded-lg bg-white px-3 py-2 dark:bg-slate-800" />
 						<FormControlListbox v-model="processFilter" :icon="mdiPlayCircleOutline" :options="processOptions" aria-label="Status instance" button-class="rounded-lg bg-white px-3 py-2 dark:bg-slate-800" />
 						<FormControlListbox v-model="dateFormat" :icon="mdiClockOutline" :options="dateOptions" aria-label="Format vremena" button-class="rounded-lg bg-white px-3 py-2 dark:bg-slate-800" />
 						<PillTagFilter trend-type="filter" trend="Događaji" :options="latestEvents" :left="true" small />
 					</div>
 					<p v-if="!eventsLoading" class="mb-2 text-xs text-gray-500 dark:text-slate-400" role="status">{{ filteredEvents.length }} događaja</p>
-					<Tabs.Content value="list">
-						<div v-if="eventsLoading" aria-hidden="true"><SkeletonLoaderEvent v-for="row in 3" :key="row" /></div>
-						<CardBoxEvents v-for="(event, index) in itemsPaginated" :key="index" :student="studentName(event)" :date="formattedDate(event.timestamp)" :type="event.activity_id" :jmbag="event.student_JMBAG || '—'" :email="event.student_email || '—'" :model="event.model_name" class="cursor-pointer rounded-lg hover:bg-fipu_blue/10 dark:hover:bg-fipu_blue/10 focus-visible:outline focus-visible:outline-2 focus-visible:outline-fipu_blue" role="link" tabindex="0" @click="router.push(`/studenti/${event.instance_id}`)" @keydown.enter="router.push(`/studenti/${event.instance_id}`)" />
-					</Tabs.Content>
-					<Tabs.Content value="table" class="overflow-x-auto rounded-lg bg-white dark:bg-slate-900/70">
+					<div class="overflow-x-auto rounded-lg bg-white dark:bg-slate-900/70">
 						<table v-if="eventsLoading || filteredEvents.length" :aria-busy="eventsLoading" class="w-full text-left text-xs">
-							<caption class="sr-only">Događaji stručne prakse</caption>
+							<caption class="sr-only">Događaji (BPMN engine logs)</caption>
 							<thead class="border-b dark:border-slate-700">
 								<tr>
 									<th v-for="column in logColumns" :key="column.id" scope="col" class="px-3 py-2" :aria-sort="logSort.column === column.id ? (logSort.direction === 'asc' ? 'ascending' : 'descending') : 'none'">
@@ -366,13 +355,14 @@ const { perPage, currentPage, itemsPaginated, numPages, currentPageHuman } = use
 								<td class="px-3 py-2"><TableCellText :value="studentName(event)"><RouterLink :to="`/studenti/${event.instance_id}`" class="font-semibold text-fipu_blue underline">{{ studentName(event) }}</RouterLink></TableCellText></td>
 								<td class="px-3 py-2"><TableCellText :value="event.student_JMBAG || '—'" /></td><td class="px-3 py-2"><TableCellText :value="event.student_email || '—'" /></td>
 								<td class="px-3 py-2"><TableCellText :value="event.model_name === appConfig.bpmn_process_name_A + '.bpmn' ? 'A' : 'B'" /></td>
+								<td class="px-3 py-2"><TableCellText :value="event.model_version == null ? '—' : 'v' + event.model_version" /></td>
 								<td class="px-3 py-2"><TableCellText :value="ActivityEventMappings.getEvent(event.activity_id)?.message || event.activity_id" /></td><td class="whitespace-nowrap px-3 py-2"><TableCellText :value="formattedDate(event.timestamp)" /></td>
 							</tr></tbody>
 						</table>
-					</Tabs.Content>
+					</div>
 					<p v-if="eventsLoading" class="sr-only" role="status">Učitavanje događaja…</p>
 					<CardBoxComponentEmpty v-else-if="!filteredEvents.length" />
-				</Tabs.Root>
+				</template>
 				<div v-else class="mb-6 text-red-500">Nakon više ponovljenih pokušaja, nije moguće dohvatiti evente.</div>
 				<div v-if="!eventsFetchError && filteredEvents.length" class="border-t border-gray-100 p-3 dark:border-slate-800 lg:px-6">
 					<BaseLevel>
