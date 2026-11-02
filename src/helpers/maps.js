@@ -57,9 +57,8 @@ import Student_ChooseAvailableAssignments from "@/components/Internship/Student_
 import Student_WaitingForEvaluation from "@/components/Internship/Student_WaitingForEvaluation.vue";
 import Student_WaitingForAllocation from "@/components/Internship/Student_WaitingForAllocation.vue";
 import Student_InternshipCancelled from "@/components/Internship/Student_InternshipCancelled.vue";
-import Student_InternshipFinished from "@/components/Internship/Student_InternshipFinished.vue";
+import Student_GradingStatus from "@/components/Internship/Student_GradingStatus.vue";
 import Student_DnevnikPrakseForm from "@/components/Internship/Student_DnevnikPrakseForm.vue";
-import Student_WaitingForMark from "@/components/Internship/Student_WaitingForMark.vue";
 import Student_PrijavnicaForm from "@/components/Internship/Student_PrijavnicaForm.vue";
 
 //model B
@@ -217,7 +216,7 @@ class UserTaskMappings {
 			snackbar_color: "success",
 			bpmn_task_color: "#EF4444", //bg-red-500
 			form_title: "Upis ocjene (ISVU)",
-			component: Student_WaitingForMark,
+			component: Student_GradingStatus,
 		},
 		{
 			order: 7,
@@ -227,7 +226,7 @@ class UserTaskMappings {
 			snackbar_msg: "",
 			snackbar_color: "",
 			form_title: "Student ocjenjen",
-			component: Student_InternshipFinished,
+			component: Student_GradingStatus,
 		},
 		{
 			order: 1,
