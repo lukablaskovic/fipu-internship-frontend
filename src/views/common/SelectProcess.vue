@@ -42,32 +42,45 @@
 				</section>
 			</CardBox>
 		</main>
+		<AlertDialogRoot v-model:open="confirming">
+			<AlertDialogPortal>
+				<AlertDialogOverlay class="fixed inset-0 z-40 bg-black/50" />
+				<AlertDialogContent class="fixed left-1/2 top-1/2 z-50 w-11/12 max-w-md -translate-x-1/2 -translate-y-1/2 rounded-xl bg-white p-6 shadow-xl dark:bg-slate-800">
+					<AlertDialogTitle class="text-lg font-semibold">Potvrda odabira prakse</AlertDialogTitle>
+					<AlertDialogDescription class="my-4">Želite li započeti stručnu praksu prema modelu {{ selectedProcess }}?</AlertDialogDescription>
+					<div class="flex justify-end gap-3">
+						<AlertDialogCancel class="rounded px-4 py-2">Odustani</AlertDialogCancel>
+						<AlertDialogAction class="rounded bg-fipu_blue px-4 py-2 font-semibold" @click="startProcess">Započni praksu</AlertDialogAction>
+					</div>
+				</AlertDialogContent>
+			</AlertDialogPortal>
+		</AlertDialogRoot>
 		<SnackBar />
 	</div>
 </template>
 
 <script setup>
+import { AlertDialogRoot, AlertDialogPortal, AlertDialogOverlay, AlertDialogContent, AlertDialogTitle, AlertDialogDescription, AlertDialogCancel, AlertDialogAction } from "reka-ui";
 import { mdiEmail, mdiAccount, mdiCardAccountDetails, mdiLogin, mdiBookOpenPageVariantOutline } from "@mdi/js";
 import { required, helpers } from "@vuelidate/validators";
 import SnackBar from "@/components/Premium/SnackBar.vue";
 
 import { getFirstErrorForField, exactLength } from "@/helpers/validators";
 import FormControl from "@/components/Form/FormControl.vue";
-import BaseIcon from "@/components/Base/BaseIcon.vue";
 import BaseButton from "@/components/Base/BaseButton.vue";
 import FormField from "@/components/Form/FormField.vue";
+import BaseIcon from "@/components/Base/BaseIcon.vue";
 
 import SelectProcessButton from "@/components/SelectProcessButton.vue";
 
 import { useVuelidate } from "@vuelidate/core";
 
-
-import CardBox from "@/components/Cardbox/CardBox.vue";
 import { computed, ref, reactive, onMounted } from "vue";
+import CardBox from "@/components/Cardbox/CardBox.vue";
 
 // Public images
-import { useMainStore } from "@/stores/main_store";
 import { useSnackBarStore } from "@/stores/snackbar_store";
+import { useMainStore } from "@/stores/main_store";
 
 import fipu_unipu from "/fipu_unipu.png";
 import { useRouter } from "vue-router";
@@ -132,28 +145,32 @@ const isLoading = ref(false);
 
 const v$ = useVuelidate(rules, form);
 
-async function onSubmit() {
+const confirming = ref(false);
+
+function onSubmit() {
 	if (isLoading.value) return;
-	isLoading.value = true;
 	v$.value.$touch();
 	if (v$.value.$invalid) {
-		isLoading.value = false;
 		snackBarStore.pushMessage("Molimo ispravite sva polja", "danger");
 		return;
 	}
 
 	if (!fixedUserData.ime_prezime || fixedUserData.ime_prezime === "" || !fixedUserData.email || fixedUserData.email === "") {
 		snackBarStore.pushMessage("Greška! Molimo pokušajte ponovo.", "danger");
-		isLoading.value = false;
 		return;
 	}
 
 	if (!selectedProcess.value || selectedProcess.value === "") {
 		snackBarStore.pushMessage("Molimo odaberite izvedbu prakse!", "danger");
-		isLoading.value = false;
 		return;
 	}
 
+	confirming.value = true;
+}
+
+async function startProcess() {
+	if (isLoading.value) return;
+	isLoading.value = true;
 	try {
 		const response = await mainStore.createInternshipInstance(selectedProcess.value, form.godina_studija, form.jmbag);
 		if (!response) throw new Error("Process creation failed");
@@ -212,52 +229,203 @@ const selectedProcess = ref("");
 	padding: 16px 40px;
 	border-bottom: 1px solid #e5e7eb;
 }
-.faculty-logo { width: 240px; max-width: 100%; height: auto; }
-.process-page a, .login-return { color: theme("colors.fipu_blue"); text-underline-offset: 4px; }
-.process-page a:hover, .login-return:hover { text-decoration: underline; }
-.process-page :is(a, button:not([role="combobox"])):focus-visible { outline: 3px solid theme("colors.fipu_blue"); outline-offset: 5px; }
-.process-page ::selection { background: theme("colors.fipu_light_blue"); color: #172234; }
-.header-actions { display: flex; align-items: center; flex-wrap: wrap; gap: 24px; }
-.login-return { display: inline-flex; align-items: center; gap: 8px; min-height: 44px; font-size: 14px; font-weight: 600; }
-.help-link { display: inline-flex; align-items: center; gap: 8px; flex-shrink: 0; padding: 12px 0; font-size: 14px; font-weight: 600; }
-.process-intro { display: flex; align-items: center; gap: 20px; padding: 32px 40px; }
-.praksa-logo { width: 80px; height: auto; flex-shrink: 0; }
-h1 { max-width: 28ch; font-size: clamp(28px, 3vw, 36px); font-weight: 700; line-height: 1.2; letter-spacing: -0.03em; text-wrap: balance; }
-.process-form { display: grid; grid-template-columns: 1.1fr 1fr; background: white; }
-.process-options { min-width: 0; display: flex; flex-direction: column; gap: 16px; padding: 0 40px 32px; }
-.process-help { margin-top: 4px; color: #4b5563; font-size: 14px; line-height: 1.7; }
-.process-help a { text-decoration: underline; }
-.student-details { grid-column: 2; grid-row: 1 / 3; min-width: 0; padding: 32px; background: #f9fafb; }
-h2 { margin-bottom: 24px; font-size: 22px; font-weight: 600; letter-spacing: -0.02em; }
-.student-details :deep(.form-field-label) { font-size: 14px; font-weight: 600; }
-.start-button { width: 100%; min-height: 48px; color: #172234; font-weight: 600; }
+.faculty-logo {
+	width: 240px;
+	max-width: 100%;
+	height: auto;
+}
+.process-page a,
+.login-return {
+	color: theme("colors.fipu_blue");
+	text-underline-offset: 4px;
+}
+.process-page a:hover,
+.login-return:hover {
+	text-decoration: underline;
+}
+.process-page :is(a, button:not([role="combobox"])):focus-visible {
+	outline: 3px solid theme("colors.fipu_blue");
+	outline-offset: 5px;
+}
+.process-page ::selection {
+	background: theme("colors.fipu_light_blue");
+	color: #172234;
+}
+.header-actions {
+	display: flex;
+	align-items: center;
+	flex-wrap: wrap;
+	gap: 24px;
+}
+.login-return {
+	display: inline-flex;
+	align-items: center;
+	gap: 8px;
+	min-height: 44px;
+	font-size: 14px;
+	font-weight: 600;
+}
+.help-link {
+	display: inline-flex;
+	align-items: center;
+	gap: 8px;
+	flex-shrink: 0;
+	padding: 12px 0;
+	font-size: 14px;
+	font-weight: 600;
+}
+.process-intro {
+	display: flex;
+	align-items: center;
+	gap: 20px;
+	padding: 32px 40px;
+}
+.praksa-logo {
+	width: 80px;
+	height: auto;
+	flex-shrink: 0;
+}
+h1 {
+	max-width: 28ch;
+	font-size: clamp(28px, 3vw, 36px);
+	font-weight: 700;
+	line-height: 1.2;
+	letter-spacing: -0.03em;
+	text-wrap: balance;
+}
+.process-form {
+	display: grid;
+	grid-template-columns: 1.1fr 1fr;
+	background: white;
+}
+.process-options {
+	min-width: 0;
+	display: flex;
+	flex-direction: column;
+	gap: 16px;
+	padding: 0 40px 32px;
+}
+.process-help {
+	margin-top: 4px;
+	color: #4b5563;
+	font-size: 14px;
+	line-height: 1.7;
+}
+.process-help a {
+	text-decoration: underline;
+}
+.student-details {
+	grid-column: 2;
+	grid-row: 1 / 3;
+	min-width: 0;
+	padding: 32px;
+	background: #f9fafb;
+}
+h2 {
+	margin-bottom: 24px;
+	font-size: 22px;
+	font-weight: 600;
+	letter-spacing: -0.02em;
+}
+.student-details :deep(.form-field-label) {
+	font-size: 14px;
+	font-weight: 600;
+}
+.start-button {
+	width: 100%;
+	min-height: 48px;
+	color: #172234;
+	font-weight: 600;
+}
 @media (max-width: 1024px) {
-	.process-page { align-items: flex-start; padding: 32px 24px; background: white; }
-	.process-panel { max-width: 640px; border-radius: 0; box-shadow: none; }
-	.process-header { padding: 0 0 16px; gap: 16px; }
-	.faculty-logo { width: 220px; }
-	.process-intro { padding: 32px 0; }
-	.process-form { grid-template-columns: 1fr; }
-	.process-options { padding: 0 0 28px; }
-	.student-details { grid-column: auto; grid-row: auto; padding: 28px 0; border-top: 1px solid #e5e7eb; background: white; }
+	.process-page {
+		align-items: flex-start;
+		padding: 32px 24px;
+		background: white;
+	}
+	.process-panel {
+		max-width: 640px;
+		border-radius: 0;
+		box-shadow: none;
+	}
+	.process-header {
+		padding: 0 0 16px;
+		gap: 16px;
+	}
+	.faculty-logo {
+		width: 220px;
+	}
+	.process-intro {
+		padding: 32px 0;
+	}
+	.process-form {
+		grid-template-columns: 1fr;
+	}
+	.process-options {
+		padding: 0 0 28px;
+	}
+	.student-details {
+		grid-column: auto;
+		grid-row: auto;
+		padding: 28px 0;
+		border-top: 1px solid #e5e7eb;
+		background: white;
+	}
 }
 @media (max-width: 640px) {
-	.process-page { padding: 24px 20px; }
-	.process-header { padding-bottom: 16px; }
-	.faculty-logo { width: 200px; }
-	.help-link { display: none; }
-	.process-intro { gap: 12px; padding: 28px 0; }
-	.praksa-logo { width: 64px; }
-	h1 { font-size: clamp(24px, 6vw, 32px); }
+	.process-page {
+		padding: 24px 20px;
+	}
+	.process-header {
+		padding-bottom: 16px;
+	}
+	.faculty-logo {
+		width: 200px;
+	}
+	.help-link {
+		display: none;
+	}
+	.process-intro {
+		gap: 12px;
+		padding: 28px 0;
+	}
+	.praksa-logo {
+		width: 64px;
+	}
+	h1 {
+		font-size: clamp(24px, 6vw, 32px);
+	}
 }
-.dark .process-page { background: #0f172a; color: #f1f5f9; }
-.dark .process-panel, .dark .process-form { background: #1e293b; }
-.dark .student-details { background: #172234; border-color: #475569; }
-.dark .process-header { border-color: #475569; }
-.dark .faculty-logo { filter: brightness(0) invert(1); }
-.dark .process-help { color: #cbd5e1; }
-.dark .process-page a, .dark .login-return { color: #7dd3fc; }
+.dark .process-page {
+	background: #0f172a;
+	color: #f1f5f9;
+}
+.dark .process-panel,
+.dark .process-form {
+	background: #1e293b;
+}
+.dark .student-details {
+	background: #172234;
+	border-color: #475569;
+}
+.dark .process-header {
+	border-color: #475569;
+}
+.dark .faculty-logo {
+	filter: brightness(0) invert(1);
+}
+.dark .process-help {
+	color: #cbd5e1;
+}
+.dark .process-page a,
+.dark .login-return {
+	color: #7dd3fc;
+}
 @media (max-width: 1024px) {
-	.dark .process-panel, .dark .process-form, .dark .student-details { background: transparent; }
+	.dark .process-panel,
+	.dark .process-form,
+	.dark .student-details {
+		background: transparent;
+	}
 }
 </style>
