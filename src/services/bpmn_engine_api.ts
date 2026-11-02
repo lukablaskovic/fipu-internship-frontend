@@ -70,6 +70,12 @@ const Model = {
 };
 
 const ProcessInstance = {
+	rollbackOptions(id: string) {
+		return safeRequest(() => AxiosWrapper.get(`/instance/${encodeURIComponent(id)}/rollback`));
+	},
+	rollback(id: string, checkpoint: number, target: string) {
+		return safeRequest(() => AxiosWrapper.post(`/instance/${encodeURIComponent(id)}/rollback`, { checkpoint, target }));
+	},
 	retry(id: string, attemptId: number, confirmResend: boolean) {
 		return safeRequest(() => AxiosWrapper.post(`/instance/${encodeURIComponent(id)}/retry`, {
 			attempt_id: attemptId, confirm_resend: confirmResend,

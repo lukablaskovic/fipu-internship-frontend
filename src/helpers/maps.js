@@ -269,6 +269,7 @@ import { mdiRayStartArrow, mdiClipboardCheck, mdiNumeric, mdiProgressClock, mdiC
 
 class ActivityEventMappings {
 	static events = [
+		{ activity_id: "@rollback", icon: mdiCancel, type: "warning", message: "Voditelj je vratio praksu na prethodni zadatak" },
 		{ activity_id: "odustajanje_od_prakse", icon: mdiCancel, type: "warning", message: "Zatraženo odustajanje od prakse" },
 		{ activity_id: "evidentiranje_odustajanja", icon: mdiContentSaveOutline, type: "info", message: "Odustajanje evidentirano" },
 		{ activity_id: "end_event_odustajanje", icon: mdiCancel, type: "danger", message: "Student odustao od prakse" },

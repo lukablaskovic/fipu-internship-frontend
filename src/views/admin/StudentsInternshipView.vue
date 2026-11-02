@@ -13,6 +13,7 @@ import { useSnackBarStore } from "@/stores/snackbar_store";
 
 
 import SectionTitleLineWithButton from "@/components/Section/SectionTitleLineWithButton.vue";
+import InstanceRollback from "@/components/BPMN/InstanceRollback.vue";
 import TableInstanceData from "@/components/BPMN/TableInstanceData.vue";
 import LoadingAnimatedIcon from "@/components/LoadingAnimatedIcon.vue";
 import LayoutAuthenticated from "@/layouts/LayoutAuthenticated.vue";
@@ -222,6 +223,15 @@ async function handleNewInstance() {
 	}
 }
 
+async function refreshAfterRollback(id) {
+	const data = await ProcessInstance.get(id);
+	if (process_instance_data.value?.id === id && data) {
+		process_instance_data.value = data;
+		selectedStudent.value.process_instance_data = data;
+	}
+	await adminStore.getStudents();
+}
+
 onMounted(loadDataForStudent);
 </script>
 
@@ -279,6 +289,7 @@ onMounted(loadDataForStudent);
 								<Dialog.Title class="text-xl font-semibold">BPMN dijagram</Dialog.Title>
 								<p v-if="selectedStudent" class="truncate text-sm text-slate-600 dark:text-slate-300">{{ selectedStudent.ime }} {{ selectedStudent.prezime }}</p>
 							</div>
+							<InstanceRollback v-if="process_instance_data && ['running', 'failed'].includes(process_instance_data.state)" :key="process_instance_data.id" :instance-id="process_instance_data.id" class="ml-auto" @moved="refreshAfterRollback" />
 							<Dialog.Close as-child><BaseButton :icon="mdiClose" aria-label="Zatvori BPMN prikaz" /></Dialog.Close>
 						</header>
 						<BpmnDiagram
