@@ -2,7 +2,7 @@
 import { computed, getCurrentInstance, nextTick, onBeforeUnmount, onMounted, ref, watch } from 'vue';
 import BpmnMarker from './BpmnMarker.vue';
 
-import { attachedWaypoints } from './model.js';
+import { attachedWaypoints, gatewayRoute, newFlowRoute, portsForGateway } from './model.js';
 
 
 const props = defineProps({
@@ -12,7 +12,7 @@ const props = defineProps({
   highlights: { type: Object, default: () => ({}) },
   connecting: { type: Boolean, default: false },
 });
-const emit = defineEmits(['edit-name', 'select', 'move', 'move-label', 'reshape', 'background']);
+const emit = defineEmits(['edit-name', 'select', 'move', 'move-label', 'reshape', 'create-flow', 'background']);
 const svg = ref(null);
 const view = ref({ x: 0, y: 0, width: 1000, height: 700 });
 const dragging = ref(null);
@@ -90,6 +90,56 @@ const displayedFlows = computed(() => {
     ? { ...flow, waypoints: attachedWaypoints(flow, drag.node, node) } : flow);
 });
 const selectedFlow = computed(() => props.editable && !props.connecting && flows.value.find(f => f.id === props.selectedId));
+const gatewayPorts = computed(() => {
+  const flow = selectedFlow.value;
+  if (flow?.type !== 'sequenceFlow') return [];
+  return ['sourceRef', 'targetRef'].flatMap(ref => {
+    const node = props.model.nodes.find(n => n.id === flow[ref]);
+    if (!node?.type.endsWith('Gateway')) return [];
+    return portsForGateway(node, ref);
+  });
+});
+const creationPorts = computed(() => {
+  if (!props.editable || props.connecting) return [];
+  const node = props.model.nodes.find(n => n.id === props.selectedId);
+  return node?.type.endsWith('Gateway') ? portsForGateway(node, 'sourceRef') : [];
+});
+function startFlow(port, event) {
+  if (event && event.button !== 0) return;
+  dragging.value = { creation: port, points: [port, port] };
+  if (event) svg.value.setPointerCapture(event.pointerId);
+}
+function previewFlow(event, drag) {
+  const p = point(event);
+  const target = props.model.nodes.find(n => /task$/i.test(n.type) && p.x >= n.x && p.x <= n.x + n.width && p.y >= n.y && p.y <= n.y + n.height);
+  drag.target = target;
+  drag.points = target ? newFlowRoute(drag.creation.node, target, drag.creation.side) : [drag.creation, p];
+}
+function finishFlow(port, target) {
+  if (target && /task$/i.test(target.type)) emit('create-flow', { source: port.node.id, target: target.id, side: port.side });
+}
+function startDock(event, port) {
+  if (event.button !== 0) return;
+  const flow = selectedFlow.value;
+  dragging.value = { id: flow.id, flow, port, points: gatewayRoute(port, flow.waypoints) };
+  svg.value.setPointerCapture(event.pointerId);
+}
+function previewDock(event, drag) {
+  const p = point(event);
+  const tolerance = 12 / svg.value.getScreenCTM().a;
+  let nearest, distance = Infinity;
+  for (const port of gatewayPorts.value) {
+    const atStart = port.ref === 'sourceRef';
+    if (drag.port ? port.ref !== drag.port.ref : !drag.h.segment || drag.h.i !== (atStart ? 0 : drag.flow.waypoints.length - 2)) continue;
+    const d = Math.hypot(port.x - p.x, port.y - p.y);
+    if (d <= Math.max(tolerance, Math.min(port.node.width, port.node.height) / 2) && d < distance) { nearest = port; distance = d; }
+  }
+  const current = nearest && drag.flow.waypoints.at(nearest.ref === 'sourceRef' ? 0 : -1);
+  if (!drag.port && nearest?.x === current?.x && nearest?.y === current?.y) nearest = undefined;
+  drag.snapPort = nearest;
+  if (drag.port || nearest) drag.points = nearest && gatewayRoute(nearest, drag.flow.waypoints);
+  return !!nearest;
+}
 const handles = computed(() => {
   const points = selectedFlow.value?.waypoints || [];
   return points.slice(1).flatMap((b, i) => {
@@ -122,11 +172,24 @@ function adjusted(flow, h, x, y, free) {
 }
 function startHandle(event, h) {
   if (event.button !== 0) return;
+  event.currentTarget.focus();
   dragging.value = { id: selectedFlow.value.id, flow: selectedFlow.value, h, start: point(event), clientX: event.clientX, clientY: event.clientY };
   svg.value.setPointerCapture(event.pointerId);
 }
 function commitRoute(flow, points) {
   if (points?.length >= 2 && JSON.stringify(flow.waypoints) !== JSON.stringify(points)) emit('reshape', { id: flow.id, points });
+}
+function deleteWaypoint(event, h) {
+  const flow = selectedFlow.value;
+  if (event.repeat || flow.waypoints.length <= 2) return;
+  const lastBend = flow.waypoints.length - 2;
+  const index = h.segment ? Math.min(h.i + 1, lastBend) : h.i;
+  // The last bend and segment disappear together. Keep Delete scoped to the route.
+  if (h.i === lastBend) {
+    const segment = h.segment ? event.currentTarget.previousElementSibling : event.currentTarget;
+    segment.previousElementSibling.focus();
+  }
+  commitRoute(flow, flow.waypoints.filter((_, i) => i !== index));
 }
 function nudge(event, h) {
   const delta = { ArrowLeft: [-1,0], ArrowRight: [1,0], ArrowUp: [0,-1], ArrowDown: [0,1] }[event.key];
@@ -180,6 +243,8 @@ function resizeKey(event, node, corner) {
 function move(event) {
   const drag = dragging.value;
   if (!drag) return;
+  if (drag.creation) { previewFlow(event, drag); return; }
+  if (drag.port) { previewDock(event, drag); return; }
   if (drag.label) {
     const p = point(event);
     const moved = Math.hypot(event.clientX - drag.clientX, event.clientY - drag.clientY) >= 3;
@@ -194,6 +259,7 @@ function move(event) {
   }
   if (drag.flow) {
     if (Math.hypot(event.clientX - drag.clientX, event.clientY - drag.clientY) < 3) { drag.points = null; return; }
+    if (previewDock(event, drag)) return;
     const p = point(event);
     drag.points = adjusted(drag.flow, drag.h, drag.h.x + p.x - drag.start.x, drag.h.y + p.y - drag.start.y, event.altKey);
     return;
@@ -220,8 +286,10 @@ function move(event) {
 function end(event) {
   const drag = dragging.value;
   if (!drag) return;
+  if (drag.port || drag.h) move(event);
   dragging.value = null;
   if (svg.value.hasPointerCapture(event.pointerId)) svg.value.releasePointerCapture(event.pointerId);
+  if (drag.creation) { previewFlow(event, drag); finishFlow(drag.creation, drag.target); return; }
   if (drag.label) {
     if (drag.dx || drag.dy) shiftLabel(drag.label, drag.dx, drag.dy);
     else emit('select', drag.label.id);
@@ -326,7 +394,11 @@ function focus(id) {
 }
 function center() { return { x: view.value.x + view.value.width / 2, y: view.value.y + view.value.height / 2 }; }
 function key(event, node) {
-  if (event.key === 'Enter' || event.key === ' ') { event.preventDefault(); emit('select', node.id); }
+  if (event.key === 'Enter' || event.key === ' ') {
+    event.preventDefault();
+    if (dragging.value?.creation) { finishFlow(dragging.value.creation, node); dragging.value = null; }
+    else emit('select', node.id);
+  }
   if (!props.editable || props.connecting) return;
   const moves = { ArrowLeft: [-1, 0], ArrowRight: [1, 0], ArrowUp: [0, -1], ArrowDown: [0, 1] };
   if (moves[event.key]) { event.preventDefault(); const [x, y] = moves[event.key]; emit('move', { id: node.id, x: node.x + x * (event.shiftKey ? 1 : 10), y: node.y + y * (event.shiftKey ? 1 : 10) }); }
@@ -346,7 +418,7 @@ defineExpose({ fit, focus, center, zoomIn: () => zoom(0.8), zoomOut: () => zoom(
 </script>
 
 <template>
-  <svg ref="svg" class="fipu-bpmn-canvas" :class="{ connecting, editable, panning: dragging && !dragging.id && !dragging.label }" :viewBox="`${view.x} ${view.y} ${view.width} ${view.height}`" role="group" aria-label="BPMN dijagram procesa. Za pomicanje povucite pozadinu ili kliznite dvama prstima po dodirnoj pločici; Control i kotačić za zumiranje." @wheel.prevent="wheel" @pointerdown.self="begin($event)" @pointermove="move" @pointerup="end" @pointercancel="dragging = null">
+  <svg ref="svg" class="fipu-bpmn-canvas" :class="{ connecting, editable, panning: dragging && !dragging.id && !dragging.label }" :viewBox="`${view.x} ${view.y} ${view.width} ${view.height}`" role="group" aria-label="BPMN dijagram procesa. Za pomicanje povucite pozadinu ili kliznite dvama prstima po dodirnoj pločici; Control i kotačić za zumiranje." @wheel.prevent="wheel" @pointerdown.self="begin($event)" @pointermove="move" @pointerup="end" @pointercancel="dragging = null" @keydown.esc="dragging = null">
     <defs><marker :id="markerId" markerWidth="8" markerHeight="8" refX="9" refY="4" orient="auto" markerUnits="userSpaceOnUse"><path d="M0 0 8 4 0 8Z" fill="#5f7185" /></marker>
       <marker :id="markerId + '-open'" markerWidth="10" markerHeight="10" refX="9" refY="5" orient="auto" markerUnits="userSpaceOnUse"><path d="M1 1 9 5 1 9" fill="none" stroke="#5f7185" /></marker>
     </defs>
@@ -398,11 +470,25 @@ defineExpose({ fit, focus, center, zoomIn: () => zoom(0.8), zoomOut: () => zoom(
       <line v-if="dragging?.guideX != null" :x1="dragging.guideX" :x2="dragging.guideX" :y1="view.y" :y2="view.y + view.height" vector-effect="non-scaling-stroke" />
       <line v-if="dragging?.guideY != null" :y1="dragging.guideY" :y2="dragging.guideY" :x1="view.x" :x2="view.x + view.width" vector-effect="non-scaling-stroke" />
     </g>
-    <g v-if="selectedFlow" class="route-handles">
-      <g v-for="h in handles" :key="h.i + ':' + !!h.segment" :transform="`translate(${h.x} ${h.y})`" tabindex="0" role="button" :aria-label="(h.segment ? 'Pomakni segment ' : 'Pomakni zavoj ') + (h.i + 1)" @pointerdown.stop="startHandle($event, h)" @keydown="nudge($event, h)">
+    <polyline v-if="dragging?.creation" :points="flowPoints(dragging.points)" fill="none" stroke="#087caa" stroke-width="2" stroke-dasharray="5 3" pointer-events="none" />
+    <g v-if="creationPorts.length" class="route-handles">
+      <g v-for="port in creationPorts" :key="port.side" :transform="`translate(${port.x} ${port.y})`" tabindex="0" role="button"
+        :aria-label="'Nova veza: ' + port.side" @pointerdown.stop="startFlow(port, $event)" @keydown.enter.stop.prevent="startFlow(port)" @keydown.space.stop.prevent="startFlow(port)">
+        <title>Povucite do zadatka za novu vezu</title>
+        <circle r="9" fill="transparent" /><circle r="4.5" />
+      </g>
+    </g>
+    <g v-if="selectedFlow" class="route-handles" @keydown.delete.stop.prevent>
+      <g v-for="h in handles" :key="h.i + ':' + !!h.segment" :transform="`translate(${h.x} ${h.y})`" tabindex="0" role="button" :aria-label="(h.segment ? 'Pomakni segment ' : 'Pomakni zavoj ') + (h.i + 1)" @pointerdown.stop="startHandle($event, h)" @keydown="nudge($event, h)" @keydown.delete.stop.prevent="deleteWaypoint($event, h)">
+        <title>{{ h.segment ? 'Delete: ukloni susjedni zavoj' : 'Delete: ukloni zavoj' }}</title>
         <circle r="8" fill="transparent" />
         <rect v-if="h.segment" x="-3.5" y="-3.5" width="7" height="7" />
         <circle v-else r="4.5" />
+      </g>
+      <g v-for="port in gatewayPorts" :key="port.ref + port.side" :class="{ snapped: dragging?.snapPort?.ref === port.ref && dragging.snapPort.side === port.side }" :transform="`translate(${port.x} ${port.y})`" tabindex="0" role="button"
+        :aria-label="`Spoji ${port.ref === 'sourceRef' ? 'početak' : 'kraj'} veze: ${port.side}`" @pointerdown.stop="startDock($event, port)" @keydown.enter.stop.prevent="commitRoute(selectedFlow, gatewayRoute(port, selectedFlow.waypoints))" @keydown.space.stop.prevent="commitRoute(selectedFlow, gatewayRoute(port, selectedFlow.waypoints))">
+        <title>{{ 'Spoji vezu: ' + port.side }}</title>
+        <circle r="9" fill="transparent" /><circle r="4.5" />
       </g>
     </g>
   </svg>
@@ -415,7 +501,7 @@ defineExpose({ fit, focus, center, zoomIn: () => zoom(0.8), zoomOut: () => zoom(
 .bpmn-node, .bpmn-flow { cursor: pointer; outline: none; }
 .route-handles g { cursor: move; fill: white; }
 .route-handles g > :last-child { stroke: #087caa; stroke-width: 2; }
-.route-handles g:focus > :last-child { fill: #90d8f3; }
+.route-handles g.snapped > :last-child, .route-handles g:focus > :last-child { fill: #90d8f3; }
 .bpmn-node.movable { cursor: move; }
 .connecting .bpmn-node { cursor: crosshair; }
 .node-shape { stroke: #536c82; stroke-width: 1.5; }
