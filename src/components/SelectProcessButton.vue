@@ -53,4 +53,9 @@ defineProps({
 @media (prefers-reduced-motion: reduce) {
 	.select-process-button { transition: none; }
 }
+.dark .select-process-button { background: #1e293b; border-color: #64748b; color: #f1f5f9; }
+.dark .select-process-button:hover { background: #334155; border-color: #7dd3fc; }
+.dark .select-process-button[aria-pressed="true"] { background: #0c4a6e; border-color: #7dd3fc; }
+.dark .option-model, .dark .option-steps, .dark .step-number, .dark .option-check { color: #cbd5e1; }
+.dark [aria-pressed="true"] .option-check { color: #7dd3fc; }
 </style>

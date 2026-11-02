@@ -250,4 +250,14 @@ h2 { margin-bottom: 24px; font-size: 22px; font-weight: 600; letter-spacing: -0.
 	.praksa-logo { width: 64px; }
 	h1 { font-size: clamp(24px, 6vw, 32px); }
 }
+.dark .process-page { background: #0f172a; color: #f1f5f9; }
+.dark .process-panel, .dark .process-form { background: #1e293b; }
+.dark .student-details { background: #172234; border-color: #475569; }
+.dark .process-header { border-color: #475569; }
+.dark .faculty-logo { filter: brightness(0) invert(1); }
+.dark .process-help { color: #cbd5e1; }
+.dark .process-page a, .dark .login-return { color: #7dd3fc; }
+@media (max-width: 1024px) {
+	.dark .process-panel, .dark .process-form, .dark .student-details { background: transparent; }
+}
 </style>

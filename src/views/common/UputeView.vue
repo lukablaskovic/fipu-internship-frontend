@@ -102,7 +102,7 @@ onMounted(async () => {
 				<SectionTitleLineWithButton :icon="mdiCalendarRange" title="Važni datumi"></SectionTitleLineWithButton>
 				<p>Za studente koji su upisali Stručnu praksu na prijediplomskom ili diplomskom studiju:</p>
 				<ul class="ml-8 list-disc">
-					<li>Najraniji datum početka izvođenja stručne prakse - <b> 14. listopad 2025.</b></li>
+					<li>Najraniji datum početka izvođenja stručne prakse - <b> 15. listopad 2026.</b></li>
 					<li>Najkasniji datum završetka - <b> 15. rujna 2026.</b></li>
 				</ul>
 				<br />
@@ -335,7 +335,7 @@ onMounted(async () => {
 				<SectionTitleLineWithButton :icon="mdiCalendarRange" title="Važni datumi"></SectionTitleLineWithButton>
 				<p>Za studente koji su upisali Stručnu praksu na prijediplomskom ili diplomskom studiju:</p>
 				<ul class="ml-8 list-disc">
-					<li>Najraniji datum početka izvođenja stručne prakse - <b> 14. listopad 2025.</b></li>
+					<li>Najraniji datum početka izvođenja stručne prakse - <b> 15. listopad 2026.</b></li>
 					<li>Najkasniji datum završetka - <b> 15. rujna 2026.</b></li>
 				</ul>
 				<br />
