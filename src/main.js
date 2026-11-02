@@ -7,7 +7,7 @@ import "./css/main.css";
 import "animate.css";
 
 import { useUiStore } from "@/stores/ui_store";
-import { darkModeKey, LOCAL_DEV } from "@/config.js";
+import { darkModeKey } from "@/config.js";
 
 import NotificationBar from "@/components/Notification/NotificationBar.vue";
 import piniaPluginPersistedstate from "pinia-plugin-persistedstate";
@@ -23,11 +23,9 @@ const app = createApp(App);
 app.component("NotificationBar", NotificationBar);
 app.use(pinia);
 
-if (!LOCAL_DEV) {
-	app.use(vue3GoogleLogin, {
-		clientId: "182844940133-k5k1t08dposga8083n6nek2r4gjo9a7l.apps.googleusercontent.com",
-	});
-}
+app.use(vue3GoogleLogin, {
+	clientId: "182844940133-k5k1t08dposga8083n6nek2r4gjo9a7l.apps.googleusercontent.com",
+});
 
 const uiStore = useUiStore(pinia);
 uiStore.responsiveLayoutControl();

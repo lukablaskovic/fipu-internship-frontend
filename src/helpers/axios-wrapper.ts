@@ -14,8 +14,8 @@ function createAxiosInstance(API_URL: string, authenticated = false) {
 			if (config.headers.has("X-Evaluation-Token")) return config;
 			const email = JSON.parse(sessionStorage.getItem("token") || "{}").email;
 			const token = sessionStorage.getItem("google-id-token");
-			if (LOCAL_DEV && email) config.headers["X-Local-User"] = email;
-			else if (token) config.headers.Authorization = `Bearer ${token}`;
+			if (token) config.headers.Authorization = `Bearer ${token}`;
+			else if (LOCAL_DEV && email) config.headers["X-Local-User"] = email;
 			return config;
 		});
 		instance.interceptors.response.use(undefined, (error) => {

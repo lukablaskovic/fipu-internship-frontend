@@ -32,12 +32,12 @@
 				<section class="login-actions" aria-labelledby="login-title">
 					<h2 id="login-title">Prijava</h2>
 					<p class="login-note">Prije nego se prijavite, pročitajte <RouterLink to="/upute">upute</RouterLink> kako izvodimo praksu na FIPU.</p>
-					<div class="sign-in">
+					<div class="sign-in flex flex-col items-start gap-3">
 						<div v-if="LOCAL_DEV" class="flex flex-col gap-3">
 							<BaseButton label="Lokalni student" color="info" type="button" @click="localLogin('student')" />
 							<BaseButton label="Lokalni administrator" color="info" type="button" @click="localLogin('admin')" />
 						</div>
-						<GoogleLogin v-else :key="uiStore.darkMode" :callback="loginCallback" :button-config="{ theme: uiStore.darkMode ? 'filled_black' : 'outline', size: 'large' }" />
+						<GoogleLogin :key="uiStore.darkMode" :callback="loginCallback" :button-config="{ theme: uiStore.darkMode ? 'filled_black' : 'outline', size: 'large' }" />
 					</div>
 					<div class="guest-access">
 						<p>Ako želite samo pregledati dostupne zadatke i poduzeća, možete nastaviti kao gost.</p>

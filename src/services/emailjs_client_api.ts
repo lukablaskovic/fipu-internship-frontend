@@ -5,7 +5,7 @@ interface EmailData {
 	[key: string]: any;
 }
 
-const AxiosWrapper = createAxiosInstance(endpoints.VITE_EMAILJS_API_URL);
+const AxiosWrapper = createAxiosInstance(endpoints.VITE_EMAILJS_API_URL, true);
 
 const EmailJS = {
 	async sendEmail(postData: EmailData, to: string, template: string) {
