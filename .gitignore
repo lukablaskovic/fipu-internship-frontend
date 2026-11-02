@@ -10,11 +10,8 @@ lerna-debug.log*
 node_modules
 .DS_Store
 
-coverage
 *.local
 
-/cypress/videos/
-/cypress/screenshots/
 
 # Editor directories and files
 .vscode/*
@@ -28,8 +25,6 @@ coverage
 .env
 .prettierrc.json
 
-/playwright-report/
-/test-results/
 
 # Generated production build output.
 /dist/

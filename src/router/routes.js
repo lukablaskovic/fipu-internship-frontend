@@ -129,14 +129,6 @@ const routes = [
 	},
 	{
 		meta: {
-			title: "Forms",
-		},
-		path: "/forms",
-		name: "forms",
-		component: () => import("@/views/common/FormsView.vue"),
-	},
-	{
-		meta: {
 			title: "Moj profil",
 			requiresAuth: true,
 		},

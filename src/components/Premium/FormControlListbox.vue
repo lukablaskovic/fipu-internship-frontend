@@ -9,6 +9,7 @@ const props = defineProps({
 	options: { type: Array, default: () => [] },
 	modelValue: { type: [Object, String, Number, Boolean], default: null },
 	buttonClass: { type: [String, Array], default: null },
+	icon: { type: String, default: null },
 	id: { type: String, default: undefined },
 	name: { type: String, default: undefined },
 	placeholder: { type: String, default: "Odaberite" },
@@ -40,6 +41,7 @@ function update(value) {
 	<!-- Only the native select below submits the public value, rather than an internal option index. -->
 	<Select.Root name="" :model-value="selected" :disabled="!!isDisabled" :required="!!isRequired" @update:model-value="update">
 		<Select.Trigger v-bind="$attrs" :id="id" ref="trigger" :class="buttonClass" class="form-select-trigger flex items-center justify-between gap-2 text-left" :aria-readonly="readonly || undefined">
+			<BaseIcon v-if="icon" :path="icon" w="w-4" h="h-4" :size="16" class="shrink-0 text-fipu_blue" aria-hidden="true" />
 			<Select.Value :placeholder="placeholder" /><Select.Icon aria-hidden="true" class="inline-flex shrink-0 items-center text-gray-500 dark:text-slate-400"><BaseIcon :path="mdiChevronDown" w="w-4" h="h-4" :size="16" /></Select.Icon>
 		</Select.Trigger>
 		<Select.Portal>

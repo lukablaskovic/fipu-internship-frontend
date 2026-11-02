@@ -1,5 +1,5 @@
 export interface InternshipProcess {
-	id: number | null;
+	id: string | number | null;
 	pending_user_task: string | null;
 }
 

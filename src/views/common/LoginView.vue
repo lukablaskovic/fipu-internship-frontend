@@ -5,8 +5,11 @@
 				<a href="https://fipu.unipu.hr/" target="_blank" rel="noopener noreferrer" aria-label="Fakultet informatike u Puli (otvara se u novoj kartici)">
 					<img :src="fipu_unipu" alt="Fakultet informatike u Puli - logotip" class="faculty-logo" />
 				</a>
-				<div class="flex items-center gap-4">
+				<div class="flex flex-wrap items-center gap-x-4">
 					<RouterLink to="/upute" class="help-link">Upute za praksu <span aria-hidden="true">↗</span></RouterLink>
+					<a href="https://chat.google.com/room/AAAASZREDy8?cls=7" target="_blank" rel="noopener noreferrer" class="help-link inline-flex items-center gap-2" aria-label="Google Chat (otvara se u novoj kartici)">
+						Google Chat <span aria-hidden="true">↗</span>
+					</a>
 					<ThemeToggle />
 				</div>
 			</header>
@@ -387,13 +390,11 @@ h2 {
 		padding: 24px 20px;
 	}
 	.login-header {
+		flex-wrap: wrap;
 		padding-bottom: 16px;
 	}
 	.faculty-logo {
 		width: 200px;
-	}
-	.help-link {
-		display: none;
 	}
 	.welcome {
 		padding-top: 28px;

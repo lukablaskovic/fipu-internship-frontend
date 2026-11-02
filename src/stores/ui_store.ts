@@ -1,10 +1,6 @@
 import { persistSession } from "@/helpers/persist-session";
-import { darkModeKey, styleKey } from "@/config";
+import { darkModeKey } from "@/config";
 import { defineStore } from "pinia";
-import * as styles from "@/styles";
-
-// Define a type for styles from the imported styles object
-type StylePayload = keyof typeof styles; // Extracting keys from styles to restrict payload to valid styles
 
 // Define an interface for the state structure
 interface UiState {
@@ -35,18 +31,18 @@ export const useUiStore = defineStore("ui", {
 		isAsideLgActive: true,
 		isLg: false,
 		/* Styles */
-		asideStyle: "",
-		asideScrollbarsStyle: "",
-		asideBrandStyle: "",
-		asideMenuItemStyle: "",
-		asideMenuItemActiveStyle: "",
-		asideMenuItemActiveBgStyle: "",
-		asideMenuItemInactiveStyle: "",
-		asideMenuDropdownStyle: "",
-		navBarItemLabelStyle: "",
-		navBarItemLabelHoverStyle: "",
-		navBarItemLabelActiveColorStyle: "",
-		overlayStyle: "",
+		asideStyle: "bg-white dark:bg-gray-800",
+		asideScrollbarsStyle: "aside-scrollbars-[slate]",
+		asideBrandStyle: "items-center justify-center bg-white text-gray-800 dark:bg-gray-900 dark:text-white",
+		asideMenuItemStyle: "text-gray-600 dark:text-gray-300",
+		asideMenuItemActiveStyle: "text-sky-700 dark:text-fipu_text_blue font-bold",
+		asideMenuItemActiveBgStyle: "bg-sky-100 dark:bg-gray-600/25",
+		asideMenuItemInactiveStyle: "text-gray-600 hover:text-sky-700 dark:text-gray-300 dark:hover:text-fipu_light_blue",
+		asideMenuDropdownStyle: "bg-gray-100 dark:bg-gray-700/50",
+		navBarItemLabelStyle: "text-black",
+		navBarItemLabelHoverStyle: "hover:text-fipu_text_blue",
+		navBarItemLabelActiveColorStyle: "text-fipu_blue",
+		overlayStyle: "from-gray-700 via-gray-900 to-gray-700",
 
 		/* Dark mode */
 		darkMode: false,
@@ -64,25 +60,6 @@ export const useUiStore = defineStore("ui", {
 		responsiveLayoutControl() {
 			this.isLg = window.innerWidth >= 1024;
 		},
-		setStyle(payload: StylePayload) {
-			if (!styles[payload]) {
-				return;
-			}
-
-			if (typeof sessionStorage !== "undefined") {
-				sessionStorage.setItem(styleKey, payload);
-			}
-
-			const style = styles[payload];
-
-			for (const key in style) {
-				if (Object.prototype.hasOwnProperty.call(style, key)) {
-					// Dynamically assign style properties with a key pattern
-					(this as any)[`${key}Style`] = style[key];
-				}
-			}
-		},
-
 		setDarkMode(payload: boolean | null = null, savePreference = true) {
 			this.darkMode = payload !== null ? payload : !this.darkMode;
 

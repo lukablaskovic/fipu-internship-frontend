@@ -1,6 +1,6 @@
 <script setup>
 import { FieldDescription, FieldError, injectFieldRootContext } from "reka-ui";
-import { controlTextColor } from "@/colorsPremium.js";
+import { controlTextColor } from "@/colors.js";
 import { computed } from "vue";
 
 const fieldContext = injectFieldRootContext(null);

@@ -31,7 +31,6 @@ if (!LOCAL_DEV) {
 
 const uiStore = useUiStore(pinia);
 uiStore.responsiveLayoutControl();
-uiStore.setStyle("basic");
 
 let darkMode = window.matchMedia("(prefers-color-scheme: dark)").matches;
 try {

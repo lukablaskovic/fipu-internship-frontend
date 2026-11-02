@@ -2,7 +2,7 @@
 import { FieldRoot, FieldLabel } from "reka-ui";
 
 import FormFieldHelp from "@/components/Premium/FormFieldHelp.vue";
-import { controlTextColor } from "@/colorsPremium.js";
+import { controlTextColor } from "@/colors.js";
 import { computed, useSlots } from "vue";
 
 const props = defineProps({

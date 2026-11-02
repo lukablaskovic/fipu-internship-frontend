@@ -9,9 +9,8 @@ import FormDatePicker from "@/components/Form/FormDatePicker.vue";
 import { computed, ref, onMounted, onBeforeUnmount } from "vue";
 import SearchOptions from "@/components/SearchOptions.vue";
 import BaseIcon from "@/components/Base/BaseIcon.vue";
-import { controlTextColor } from "@/colorsPremium.js";
 import TipTag from "@/components/Premium/TipTag.vue";
-import { getButtonColor } from "@/colors.js";
+import { getButtonColor, controlTextColor } from "@/colors.js";
 import { useMainStore } from "@/stores/main_store";
 
 const mainStore = useMainStore();

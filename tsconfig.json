@@ -1,5 +1,10 @@
 {
 	"compilerOptions": {
+		"allowJs": true,
+		"paths": {
+			"@/*": ["./src/*"]
+		},
+		"types": ["vite/client", "pinia-plugin-persistedstate"],
 		// Most non-library projects don't need to emit declarations.
 		// So we add this option by default to make the config more friendly to most users.
 		"noEmit": true,
@@ -64,5 +69,7 @@
 		"forceConsistentCasingInFileNames": true,
 		// See <https://github.com/vuejs/vue-cli/pull/5688>
 		"skipLibCheck": true
-	}
+	},
+	"include": ["src/**/*"],
+	"exclude": ["node_modules", "dist"]
 }

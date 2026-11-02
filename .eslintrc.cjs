@@ -7,7 +7,7 @@ module.exports = {
 	extends: ["plugin:vue/vue3-recommended", "eslint:recommended", "@vue/eslint-config-prettier/skip-formatting"],
 	env: { browser: true, es2022: true },
 	overrides: [
-		{ files: ["*.cjs", "*.config.js", "tests/**", "find-unused-components.js"], env: { node: true } },
+		{ files: ["*.cjs", "*.config.js"], env: { node: true } },
 		{
 			files: ["**/*.vue"],
 			parserOptions: { parser: "@typescript-eslint/parser" },

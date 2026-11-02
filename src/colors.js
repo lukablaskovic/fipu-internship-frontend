@@ -1,8 +1,3 @@
-export const gradientBgBase = "md:bg-gradient-to-tr";
-export const gradientBgBlue = `${gradientBgBase} md:from-fipu_blue md:via-fipu_light_blue md:to-fipu_blue`;
-export const gradientBgDark = `${gradientBgBase} md:from-slate-700 md:via-slate-900 md:to-slate-800`;
-export const gradientBgPinkRed = `${gradientBgBase} md:from-pink-400 md:via-red-500 md:to-yellow-500`;
-
 export const colorsBgLight = {
 	white: "bg-white text-black",
 	light: "bg-white text-black dark:bg-slate-900/70 dark:text-white",
@@ -140,4 +135,16 @@ export const getButtonColor = (color, isOutlined, hasHover, isActive = false) =>
 	}
 
 	return base;
+};
+
+export const controlTextColor = (error, success) => {
+	if (error) {
+		return "text-red-600";
+	}
+
+	if (success) {
+		return "text-green-600";
+	}
+
+	return null;
 };
