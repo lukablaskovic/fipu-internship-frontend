@@ -23,24 +23,16 @@ import { ref, computed, onMounted, watch } from "vue";
 import { DEFAULT_COMPANY_LOGO, fetchCompanyForAssignment, findCompanyForAssignment, getCompanyLogoKey, getCompanyLogoUrl, rememberCompany } from "@/helpers/company-logo.js";
 import draggable from "vuedraggable";
 
-import AOS from "aos";
-
 const mainStore = useMainStore();
 const studentStore = useStudentStore();
 const snackBarStore = useSnackBarStore();
-
-onMounted(() => {
-	AOS.init();
-});
 
 const Layout = computed(() => (mainStore.userAuthenticated ? LayoutAuthenticated : LayoutGuest));
 
 const checkedAssignments = ref([]);
 const modalConfirmPreferences = ref(false);
-const vueDraggableDragging = ref(false);
 const isLoading = ref(false);
 const napomena = ref(null);
-const isFadedOut = ref(false);
 const vas_odabir = ref(null);
 const hasScrolledForFirstTime = ref(false);
 const companiesLoaded = ref(false);
@@ -130,10 +122,6 @@ const getDefaultImage = (index) => {
 	return defaultImages[index] || "path/to/fallback.png";
 };
 
-const fadeOutAnimation = () => {
-	isFadedOut.value = true;
-};
-
 const isDraggableEnabled = computed(() => checkedAssignments.value.length === 3);
 const isEmptySlot = (element) => element.id?.startsWith("empty");
 const isAssignment = (element) => element && !isEmptySlot(element);
@@ -152,13 +140,11 @@ const assignmentsForDrag = computed({
 	},
 });
 
-const handleDragStart = () => {
-	vueDraggableDragging.value = true;
-	fadeOutAnimation();
-};
-
-const handleDragEnd = () => {
-	vueDraggableDragging.value = false;
+const moveAssignment = (index, offset) => {
+	const assignments = [...checkedAssignments.value];
+	const [assignment] = assignments.splice(index, 1);
+	assignments.splice(index + offset, 0, assignment);
+	checkedAssignments.value = assignments;
 };
 </script>
 
@@ -174,8 +160,7 @@ const handleDragEnd = () => {
 
 			<br />
 			<SectionTitleLineWithButton :icon="mdiClipboardTextOutline" main title="Dostupni zadaci" />
-			<p>Pogledajte zanimljive slobodne zadatke te odaberite i rasporedite 3 najdraža, prema vašim preferencijama:</p>
-			<p>(1. odabir | 2. odabir | 3. odabir) gdje 1. odabir predstavlja zadatak koji najviše želite odraditi.</p>
+			<p>U tablici označite tri zadatka koja želite odraditi. Njihov redoslijed možete zatim urediti u odjeljku „Vaš odabir”.</p>
 			<br />
 			<p>Molimo da <b>ne prijavljujete</b> zadatke gdje su poslodavci naveli ime i prezime studenta u <b>Preferencijama za studenta</b>.</p>
 			<br />
@@ -187,27 +172,27 @@ const handleDragEnd = () => {
 			<hr />
 			<br />
 			<SectionTitleLineWithButton ref="vas_odabir" :icon="mdiNumeric" main title="Vaš odabir" class="mt-22" />
-			<p v-if="checkedAssignments.length != 3" class="mb-4">Potrebno je odabrati minimalno 3 zadatka za prijavu preferencija.</p>
-			<p v-if="checkedAssignments.length === 3" class="mb-4">Zadatke možete rasporediti po vašim preferencijama.</p>
+			<p class="mb-1 font-semibold" role="status">Odabrano {{ checkedAssignments.length }} od 3</p>
+			<p class="mb-4">{{ isDraggableEnabled ? "Na prvo mjesto stavite zadatak koji najviše želite. Redoslijed promijenite povlačenjem kartice ili strelicama." : "Označite zadatke u tablici iznad. Nakon trećeg odabira možete urediti redoslijed." }}</p>
 
-			<draggable v-model="assignmentsForDrag" :disabled="!isDraggableEnabled" item-key="id" class="list-group flex w-full max-w-2xl space-x-2" @start="handleDragStart" @end="handleDragEnd">
+			<draggable v-model="assignmentsForDrag" :disabled="!isDraggableEnabled" item-key="id" handle=".rank-card" class="grid max-w-2xl grid-cols-3 gap-2">
 				<template #item="{ element, index }">
-					<div class="flex-1">
-						<div
-							class="draggable-item aspect-h-1 aspect-w-1 relative flex items-center justify-center border-2 bg-gray-50"
-							:class="{ grab: isAssignment(element) && isDraggableEnabled, grabbing: vueDraggableDragging && isAssignment(element) && isDraggableEnabled }">
-							<transition name="image-fade">
-								<UserAvatar v-if="isAssignment(element)" data-aos="zoom-out" class="p-4 sm:p-6" :avatar="getCompanyLogo(element)" :username="element.Poslodavac?.[0]?.value || 'Poslodavac'" />
-								<img v-else class="p-4 sm:p-6" :src="getDefaultImage(index)" alt="Default Task" />
-							</transition>
-							<div v-if="isAssignment(element)" class="absolute inset-0 flex items-center justify-center bg-black bg-opacity-50 text-sm font-bold text-white opacity-0 transition-opacity hover:opacity-100">ID: {{ element.id_zadatak }}</div>
+					<div class="min-w-0 rounded-lg border p-2 text-center" :class="{ 'border-dashed': isEmptySlot(element) }">
+						<div class="rank-card" :class="{ 'cursor-grab active:cursor-grabbing': isDraggableEnabled }">
+							<p class="text-sm font-semibold">{{ index + 1 }}. izbor</p>
+							<UserAvatar v-if="isAssignment(element)" class="my-2 h-12 w-12" :avatar="getCompanyLogo(element)" :username="element.Poslodavac?.[0]?.value || 'Poslodavac'" />
+							<img v-else class="mx-auto my-2 h-12 w-12" :src="getDefaultImage(index)" alt="" />
+							<p class="break-words text-sm">{{ isAssignment(element) ? element.id_zadatak : "Slobodno mjesto" }}</p>
+						</div>
+						<div v-if="isDraggableEnabled" class="mt-2 flex flex-wrap justify-center gap-1">
+							<button type="button" class="rank-arrow" :disabled="index === 0" :aria-label="`Pomakni zadatak ${element.id_zadatak} na više mjesto`" @click="moveAssignment(index, -1)">←</button>
+							<button type="button" class="rank-arrow" :disabled="index === 2" :aria-label="`Pomakni zadatak ${element.id_zadatak} na niže mjesto`" @click="moveAssignment(index, 1)">→</button>
 						</div>
 					</div>
 				</template>
 			</draggable>
 
-			<div v-if="checkedAssignments.length === 3">
-				<div class="animation bg-[url('/swipe-vertical.png')] bg-center bg-no-repeat dark:invert md:bg-[url('/swipe-horizontal.png')]" :class="{ 'fade-out': isFadedOut }" @click="fadeOutAnimation"></div>
+			<div v-if="isDraggableEnabled" class="mt-6">
 				<FormField class="lg:mt-4" label="Napomena (nije obavezno)">
 					<FormControl v-model="napomena" type="textarea" placeholder="Slobodno dodaj napomenu za voditelja prakse." />
 				</FormField>
@@ -228,60 +213,7 @@ const handleDragEnd = () => {
 </template>
 
 <style scoped>
-.ghost {
-	opacity: 0.5;
-	background: theme("colors.fipu_light_blue / 25%");
-}
-.grab {
-	cursor: grab !important;
-}
-.grabbing {
-	cursor: grabbing !important;
-}
-@keyframes left-right {
-	0% {
-		left: -30px;
-	}
-	50% {
-		left: 30px;
-	}
-	100% {
-		left: -30px;
-	}
-}
-.animation {
-	position: relative;
-	width: 115px;
-	height: 143px;
-	margin: auto;
-	animation: left-right 1.8s ease-out infinite;
-}
-@keyframes fade-out-anim {
-	0% {
-		opacity: 1;
-	}
-	100% {
-		opacity: 0;
-	}
-}
-.animation.fade-out {
-	animation: fade-out-anim 0.5s ease 1;
-	opacity: 0;
-}
-.image-fade-enter-active,
-.image-fade-leave-active {
-	transition:
-		opacity 0.5s ease,
-		transform 0.5s ease;
-}
-.image-fade-enter-from,
-.image-fade-leave-to {
-	opacity: 0;
-	transform: scale(0.9);
-}
-.image-fade-enter-to,
-.image-fade-leave-from {
-	opacity: 1;
-	transform: scale(1);
+.rank-arrow {
+	@apply rounded border px-2 py-1 leading-none enabled:hover:bg-gray-100 disabled:opacity-30 dark:enabled:hover:bg-slate-700;
 }
 </style>

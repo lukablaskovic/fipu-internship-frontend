@@ -8,8 +8,14 @@
 		<br />
 	</CardBoxModal>
 
-	<div class="mb-4">
-		<input v-model="searchQuery" type="text" placeholder="Pretraži zadatke..." class="w-full border border-gray-50 p-2 text-gray-700 outline-none focus:border-fipu_blue" />
+	<div class="flex flex-wrap items-center gap-2 p-3 text-sm lg:px-6">
+		<input v-model="searchQuery" type="search" aria-label="Pretraži zadatke" placeholder="Zadatak, poslodavac, tehnologija ili lokacija…" class="min-w-0 basis-full rounded-lg border-gray-300 py-1.5 text-sm dark:border-slate-700 dark:bg-slate-800 sm:flex-1 sm:basis-0" />
+		<FormControlListbox v-model="location" :options="locationOptions" aria-label="Lokacija" button-class="rounded-lg bg-white px-3 py-2 dark:bg-slate-800" />
+		<FormControlListbox v-model="hours" :options="hourOptions" aria-label="Trajanje prakse" button-class="rounded-lg bg-white px-3 py-2 dark:bg-slate-800" />
+		<div class="flex items-center gap-1 lg:hidden">
+			<FormControlListbox v-model="sortColumn" :options="columns" aria-label="Poredaj po" button-class="rounded-lg bg-white px-3 py-2 dark:bg-slate-800" />
+			<BaseButton :icon="descending ? mdiSortDescending : mdiSortAscending" :aria-label="descending ? 'Poredaj uzlazno' : 'Poredaj silazno'" small @click="descending = !descending" />
+		</div>
 	</div>
 
 	<table v-if="filteredAssignments.length || !dataLoaded">
@@ -17,13 +23,12 @@
 			<tr>
 				<th v-if="checkable"></th>
 				<th />
-				<th>ID Zadatka</th>
-				<th>Kontakt email</th>
-				<th>Preferirane tehnologije</th>
-				<th>Trajanje (sati)</th>
-				<th>Lokacija</th>
-				<th v-if="mainStore.userAdmin">Max. mjesta</th>
-				<th v-if="mainStore.userAdmin">Dostupno mjesta</th>
+				<th v-for="column in columns" :key="column.id" :aria-sort="column.id === sortColumn.id ? (descending ? 'descending' : 'ascending') : 'none'">
+					<button type="button" class="flex items-center gap-1 text-left" @click="toggleSort(column)">
+						{{ column.label }}
+						<BaseIcon v-if="column.id === sortColumn.id" :path="descending ? mdiSortDescending : mdiSortAscending" :size="16" w="w-4" h="h-4" aria-hidden="true" />
+					</button>
+				</th>
 				<th />
 			</tr>
 		</thead>
@@ -87,6 +92,9 @@
 </template>
 
 <script setup>
+import { compareValues, findAssignments } from "@/helpers/available-assignment-search.mjs";
+import FormControlListbox from "@/components/Premium/FormControlListbox.vue";
+import BaseIcon from "@/components/Base/BaseIcon.vue";
 import TableCellText from "@/components/Tables/TableCellText.vue";
 import { fetchAvailableAssignments } from "@/services/baserow_client_api";
 
@@ -107,7 +115,7 @@ import BaseButton from "@/components/Base/BaseButton.vue";
 import BaseLevel from "@/components/Base/BaseLevel.vue";
 import { useMainStore } from "@/stores/main_store";
 
-import { mdiEye, mdiMenuDown } from "@mdi/js";
+import { mdiEye, mdiMenuDown, mdiSortAscending, mdiSortDescending } from "@mdi/js";
 import { DEFAULT_COMPANY_LOGO, fetchCompanyForAssignment, findCompanyForAssignment, getCompanyLogoKey, getCompanyLogoUrl, rememberCompany } from "@/helpers/company-logo.js";
 
 import { useRoute } from "vue-router";
@@ -123,20 +131,34 @@ const loadingCompanyLogoKeys = new Set();
 
 const allAvailableAssignments = ref([]);
 
-const filteredAssignments = computed(() => {
-	const query = searchQuery.value.toLowerCase();
-	if (!query) {
-		return allAvailableAssignments.value;
-	}
+const columns = computed(() => [
+	{ id: "id_zadatak", label: "ID Zadatka" },
+	{ id: "poslodavac_email", label: "Kontakt email" },
+	{ id: "preferirane_tehnologije", label: "Preferirane tehnologije" },
+	{ id: "trajanje_sati", label: "Trajanje (sati)" },
+	{ id: "lokacija", label: "Lokacija" },
+	...(mainStore.userAdmin ? [{ id: "broj_studenata", label: "Max. mjesta" }, { id: "dostupno_mjesta", label: "Dostupno mjesta" }] : []),
+]);
+const sortColumn = ref(columns.value[0]);
+const descending = ref(false);
+function toggleSort(column) {
+	descending.value = column.id === sortColumn.value.id && !descending.value;
+	sortColumn.value = column;
+}
 
-	return allAvailableAssignments.value.filter((assignment) => {
-		const idMatch = assignment["id_zadatak"].toString().toLowerCase().includes(query);
-		const techMatch = assignment["preferirane_tehnologije"].toLowerCase().includes(query);
-		return idMatch || techMatch;
-	});
-});
+function filterOptions(key, label, suffix = "") {
+	const values = allAvailableAssignments.value.map(task => String(task[key] ?? "").trim()).filter(Boolean);
+	return [{ id: "", label }, ...Array.from(new Set(values)).sort(compareValues).map(id => ({ id, label: id + suffix }))];
+}
+const locationOptions = computed(() => filterOptions("lokacija", "Sve lokacije"));
+const hourOptions = computed(() => filterOptions("trajanje_sati", "Sva trajanja", " sati"));
+const location = ref(locationOptions.value[0]);
+const hours = ref(hourOptions.value[0]);
+const filteredAssignments = computed(() => findAssignments(allAvailableAssignments.value, searchQuery.value, location.value.id, hours.value.id, sortColumn.value.id, descending.value));
 
 const { perPage, currentPage, itemsPaginated: paginatedAssignments, numPages, currentPageHuman, handlePerPageChange } = usePagination(filteredAssignments);
+
+watch([searchQuery, location, hours, sortColumn, descending], () => { currentPage.value = 0; });
 
 const MAX_NUM_ASSIGNMENTS = 3;
 
@@ -224,7 +246,7 @@ watch(paginatedAssignments, loadCompanyLogos, { immediate: true });
 watch(() => mainStore.allCompanies, () => loadCompanyLogos(paginatedAssignments.value), { deep: true });
 
 function getAssignmentPage(id) {
-	const index = allAvailableAssignments.value.findIndex((assignment) => assignment["id_zadatak"] === id);
+	const index = filteredAssignments.value.findIndex((assignment) => assignment["id_zadatak"] === id);
 	if (index === -1) return 0;
 	return Math.floor(index / perPage.value);
 }
