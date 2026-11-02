@@ -31,14 +31,14 @@ let dataLoaded = ref(false);
 onMounted(async () => {
 	dataLoaded.value = false;
 
-	allocations.value = await studentStore.getAllocationsPublic();
+	allocations.value = (await studentStore.getAllocationsPublic()) || [];
 	dataLoaded.value = true;
 });
 
 const filteredAllocations = computed(() => {
 	return allocations.value.filter((allocation) => allocation["Alocirani_zadatak"] !== null).map((allocation) => ({
 		...allocation,
-		model: adminStore.students.find((student) => student.process_instance_data.variables.JMBAG == allocation.JMBAG)?.Model_prakse?.value,
+		model: !mainStore.userAdmin ? mainStore.currentUser.model_prakse : adminStore.students.find((student) => student.process_instance_data.variables.JMBAG == allocation.JMBAG)?.Model_prakse?.value,
 	}));
 });
 
@@ -86,10 +86,10 @@ const { perPage, currentPage, itemsPaginated: allocationsPaginated, numPages, cu
 			<tr v-for="allocation in allocationsPaginated" :key="allocation['id_alokacija']">
 				<TableCheckboxCell v-if="checkable" :assignment-data="company" />
 				<td data-label="Ime">
-					<TableCellText :value="getVariableByJMBAG(allocation['JMBAG'], 'student_ime')" />
+					<TableCellText :value="mainStore.userAdmin ? getVariableByJMBAG(allocation['JMBAG'], 'student_ime') : mainStore.currentUser.ime" />
 				</td>
 				<td data-label="Prezime">
-					<TableCellText :value="getVariableByJMBAG(allocation['JMBAG'], 'student_prezime')" />
+					<TableCellText :value="mainStore.userAdmin ? getVariableByJMBAG(allocation['JMBAG'], 'student_prezime') : mainStore.currentUser.prezime" />
 				</td>
 				<td data-label="A/B" class="lg:text-center">
 					<PillTag v-if="allocation.model" :color="allocation.model === 'A' ? 'danger' : 'success'" :label="allocation.model" />

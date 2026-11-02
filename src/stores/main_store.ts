@@ -24,7 +24,7 @@ export const useMainStore = defineStore("main", {
 			return token ? true : false;
 		},
 		userAdmin(state): boolean {
-			return !!state.currentUser.email && appConfig.admin_emails.includes(state.currentUser.email);
+			return state.currentUser.coordinator === true;
 		},
 		userHasActiveInstance(state): boolean {
 			return !!state.currentUser.internship_process.id && state.currentUser.internship_process.pending_user_task !== "end_event_student";
@@ -37,20 +37,13 @@ export const useMainStore = defineStore("main", {
 	actions: {
 		async fetchCurrentUser(): Promise<void> {
 			try {
-				let sessionStorageToken;
-				try {
-					sessionStorageToken = JSON.parse(sessionStorage.getItem("token") || "{}");
-				} catch (error) {
-					console.error("Invalid token in sessionStorage:", error);
-					sessionStorageToken = {};
-				}
-				const emailFromStorage = sessionStorageToken.email;
-
-				const response = await Student.fetch(emailFromStorage);
-				const data = response.data.results[0];
+				const response = await Student.session();
+				const data = response?.student;
+				if (!data) return;
 
 				// Initialize currentUser from fetched data
 				this.currentUser.initializeFromData({
+					coordinator: response.coordinator,
 					ime: data.ime,
 					prezime: data.prezime,
 					JMBAG: data.JMBAG,
@@ -60,7 +53,7 @@ export const useMainStore = defineStore("main", {
 					baserow_id: data.id,
 					loggedAt: new Date(),
 					internship_process: { id: data.process_instance_id, pending_user_task: data.pending_user_task || null },
-					model_prakse: data.Model_prakse,
+					model_prakse: data.Model_prakse?.value || data.Model_prakse,
 				});
 			} catch (error) {
 				console.error("[fetchCurrentUser] Error:", error);
@@ -84,14 +77,16 @@ export const useMainStore = defineStore("main", {
 				};
 
 				// Check if student already exists
-				const response_student = await Student.fetch(decodedToken.email);
+				const response_student = await Student.session();
 				let response = null;
 
 				// If student does not exist, create a new student
-				if (response_student.data.count === 0) {
+				if (!response_student) throw new Error("Prijava nije uspjela");
+				if (!response_student.student) {
 					response = await Student.create(student_data);
+					if (!response?.data) throw new Error("Student nije spremljen");
 					await this.fetchCurrentUser();
-					await router.push("/odabir-procesa");
+					await router.push(this.userAdmin ? "/dashboard" : "/odabir-procesa");
 				} else {
 					await this.fetchCurrentUser();
 
@@ -101,7 +96,7 @@ export const useMainStore = defineStore("main", {
 					}
 					// if student is logged in, check if they have an active process instance
 					else {
-						const processInstance = response_student.data.results[0].process_instance_id;
+						const processInstance = response_student.student.process_instance_id;
 						// Has active process instance, so redirect to moja-praksa
 						if (processInstance) {
 							await useStudentStore().getPendingUserTask(processInstance);
@@ -116,11 +111,13 @@ export const useMainStore = defineStore("main", {
 							await router.push("/odabir-procesa");
 						}
 					}
-					response = response_student.data.results[0];
+					response = response_student.student;
 				}
 				return { status: "success", data: response };
 			} catch (error) {
-				console.error("Login error:", error);
+				clearSession();
+				this.currentUser.reset();
+				console.error("Login failed");
 				return { status: "error", error };
 			}
 		},
@@ -166,7 +163,7 @@ export const useMainStore = defineStore("main", {
 
 				if (!("id" in response_bpmn_engine) || !response_bpmn_engine.id) return null;
 
-				const response_bw = await Student.setProcessData(this.currentUser.email, response_bpmn_engine.id, selected_model, godina_studija, jmbag, previousId);
+				const response_bw = await Student.setProcessData(this.currentUser.email, response_bpmn_engine.id, selected_model, godina_studija, jmbag, previousId, response_bpmn_engine.binding);
 
 				await this.fetchCurrentUser();
 				return response_bw;

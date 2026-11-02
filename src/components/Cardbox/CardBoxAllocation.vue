@@ -103,7 +103,7 @@ let companyLogo = ref("");
 
 onMounted(async () => {
 	let result = await mainStore.fetchCompanies(props.data["Poslodavac"][0]["value"]);
-	companyLogo.value = result[0].logo[0].url;
+	companyLogo.value = result?.[0]?.logo?.[0]?.url || "";
 });
 </script>
 <style></style>

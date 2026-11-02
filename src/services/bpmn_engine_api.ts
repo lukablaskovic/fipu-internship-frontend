@@ -34,7 +34,7 @@ interface FormData {
 	[key: string]: any;
 }
 
-const AxiosWrapper = createAxiosInstance(endpoints.VITE_BPMN_ENGINE_API_URL);
+const AxiosWrapper = createAxiosInstance(endpoints.VITE_BPMN_ENGINE_API_URL, true);
 
 const Model = {
 	async get(id: string): Promise<string | null> {
@@ -55,7 +55,7 @@ const Model = {
 				return result;
 			} catch (error) {
 				if (retries === 1) {
-					console.error("Failed to fetch events after multiple attempts:", error);
+					console.error("Could not fetch internship events.");
 					return null;
 				}
 				retries--;
@@ -66,6 +66,16 @@ const Model = {
 };
 
 const ProcessInstance = {
+	evaluation(id: string, token: string, decision?: object) {
+		const path = `/evaluation/${encodeURIComponent(id)}`;
+		const headers = { "X-Evaluation-Token": token };
+		return safeRequest(() => decision ? AxiosWrapper.post(path, decision, headers) : AxiosWrapper.get(path, {}, headers));
+	},
+
+	evaluationLink(id: string) {
+		return safeRequest(() => AxiosWrapper.get(`/instance/${id}/evaluation-link`));
+	},
+
 	async create(model: string, previousInstanceId?: string | number | null): Promise<ProcessInstanceData | { status: number; message: string; data: any }> {
 		try {
 			return await AxiosWrapper.post(`/model/${model}/instance`, previousInstanceId ? { previous_instance_id: previousInstanceId } : {});

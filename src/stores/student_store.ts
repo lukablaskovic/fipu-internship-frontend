@@ -1,6 +1,5 @@
 import { ProcessInstance } from "@/services/bpmn_engine_api";
 import { Student } from "@/services/baserow_client_api";
-import { endpoints } from "@/config";
 import { defineStore } from "pinia";
 import { useMainStore } from "@/stores/main_store";
 
@@ -49,18 +48,10 @@ export const useStudentStore = defineStore("student", {
 		async registerPreferences(assignmentsData: AssignmentData[], napomena: string) {
 			const mainStore = useMainStore();
 			const post_data = {
-				JMBAG: mainStore.currentUser["JMBAG"],
-				Student: [mainStore.currentUser["JMBAG"]],
-				student_email: mainStore.currentUser["email"],
-				student_ime: mainStore.currentUser["ime"],
-				student_prezime: mainStore.currentUser["prezime"],
-				student_godina_studija: mainStore.currentUser["godina_studija"],
 				Prvi_odabir: [assignmentsData[0].id_zadatak],
 				Drugi_odabir: [assignmentsData[1].id_zadatak],
 				Treci_odabir: [assignmentsData[2].id_zadatak],
 				napomena,
-				process_instance_id: mainStore.currentUser.internship_process.id,
-				frontend_url: endpoints.VITE_FRONTEND_URL,
 			};
 
 			try {
@@ -73,36 +64,13 @@ export const useStudentStore = defineStore("student", {
 			}
 		},
 
-		async direct_application_B(assignment_data: AssignmentData, napomena: string) {
+		async direct_application_B(napomena: string) {
 			const mainStore = useMainStore();
-			let response = await Student.directAllocation({
-				JMBAG: mainStore.currentUser["JMBAG"],
-				Student: [mainStore.currentUser["JMBAG"]],
-				Napomena: napomena,
-				id_instance: mainStore.currentUser.internship_process.id,
-				_frontend_url: endpoints.VITE_FRONTEND_URL,
-			});
-
-			if (!response?.id_alokacija) return null;
-
-			const post_data = {
-				JMBAG: mainStore.currentUser["JMBAG"],
-				Student: [mainStore.currentUser["JMBAG"]],
-				student_email: mainStore.currentUser["email"],
-				student_ime: mainStore.currentUser["ime"],
-				student_prezime: mainStore.currentUser["prezime"],
-				student_godina_studija: mainStore.currentUser["godina_studija"],
-				Alocirani_zadatak: [assignment_data.id_zadatak],
-				napomena,
-				process_instance_id: mainStore.currentUser.internship_process.id,
-				frontend_url: endpoints.VITE_FRONTEND_URL,
-				id_alokacija: response["id_alokacija"],
-			};
 
 			try {
 				const process_instance_id = mainStore.currentUser.internship_process.id;
 				const pending_user_task = mainStore.currentUser.internship_process.pending_user_task;
-				const response = await ProcessInstance.handleNewInstance(process_instance_id, pending_user_task, post_data);
+				const response = await ProcessInstance.handleNewInstance(process_instance_id, pending_user_task, { napomena });
 				return response;
 			} catch (error) {
 				console.log("[student_store.direct_application_B] Error:", error);

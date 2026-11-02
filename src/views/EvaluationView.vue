@@ -1,11 +1,11 @@
 <script setup>
-import { mdiAccountTie, mdiAccount, mdiClipboardCheck, mdiCloseCircle } from "@mdi/js";
+import { mdiAccountTie, mdiAccount, mdiClipboardCheck } from "@mdi/js";
 import { useRoute } from "vue-router";
 import { ref, onMounted } from "vue";
 import { router } from "@/router";
 
-import { useAdminStore } from "@/stores/admin_store";
-import { useStudentStore } from "@/stores/student_store";
+import { Student } from "@/services/baserow_client_api";
+import { ProcessInstance } from "@/services/bpmn_engine_api";
 import { useSnackBarStore } from "@/stores/snackbar_store";
 
 import { UserTaskMappings } from "@/helpers/maps";
@@ -21,42 +21,23 @@ import FooterBar from "@/components/FooterBar.vue";
 
 import FIPU_praksa_logo_transparent from "/FIPU_praksa_logo_transparent.svg";
 
-const adminStore = useAdminStore();
-const studentStore = useStudentStore();
 const snackBarStore = useSnackBarStore();
 
-const process_instance_id = ref(null);
-
-const assignemntDetails = ref(null);
-const instanceInfo = ref(null);
-const pendingTaskInfo = ref(null);
 const route = useRoute();
-
-let assignment = ref(null);
-let studentInfo = ref(null);
-
+const evaluation = ref(null);
+const assignment = ref(null);
 const error = ref(false);
+const evaluationTask = "evaluacija_poslodavac";
 
 onMounted(async () => {
-	process_instance_id.value = route.params.process_instance_id;
-
-	instanceInfo.value = await studentStore.getInstanceInfo(process_instance_id.value);
-	if (instanceInfo.value == null) {
+	evaluation.value = await ProcessInstance.evaluation(route.params.process_instance_id, route.hash.slice(1));
+	if (!evaluation.value) {
 		error.value = true;
 		return;
 	}
-
-	assignemntDetails.value = await studentStore.getAssignmentDetails(instanceInfo.value.variables["Alocirani_zadatak"]);
-	assignment.value = assignemntDetails.value.data.results[0];
-
-	pendingTaskInfo.value = await adminStore.getTaskInfo(process_instance_id.value, instanceInfo.value.pending[0]);
-
-	studentInfo.value = {
-		student_ime: instanceInfo.value.variables["student_ime"],
-		student_prezime: instanceInfo.value.variables["student_prezime"],
-		student_email: instanceInfo.value.variables["student_email"],
-		student_godina_studija: instanceInfo.value.variables["student_godina_studija"],
-	};
+	const vars = evaluation.value.variables;
+	const details = await Student.getAssignmentDetails({ search: vars.Alocirani_zadatak });
+	assignment.value = details?.data?.results?.find(row => row.id_zadatak === vars.Alocirani_zadatak);
 });
 const formDynamicValues = ref({});
 const isLoading = ref(false);
@@ -65,8 +46,8 @@ async function handleNewInstance() {
 	if (isLoading.value) return;
 	isLoading.value = true;
 	try {
-		const task = instanceInfo.value.pending[0];
-		const result = await adminStore.handleNewInstance(process_instance_id.value, task, formDynamicValues.value);
+		const task = evaluationTask;
+		const result = await ProcessInstance.evaluation(route.params.process_instance_id, route.hash.slice(1), { kandidat_odobren: formDynamicValues.value.kandidat_odobren });
 		if (result?.status !== "OK") throw new Error("Evaluation failed");
 		if (UserTaskMappings.getTaskProperty(task, "snackbar_msg")) {
 			snackBarStore.pushMessage(UserTaskMappings.getTaskProperty(task, "snackbar_msg"), UserTaskMappings.getTaskProperty(task, "snackbar_color"));
@@ -88,44 +69,38 @@ const updateDisabledCondition = (allFilled) => {
 
 <template>
 	<div>
-		<SectionMain v-if="!error">
-			<SectionTitleLineWithButton :icon="instanceInfo != null && instanceInfo.pending[0] == 'evaluacija_poslodavac' ? mdiAccount : mdiCloseCircle" :title="instanceInfo != null && instanceInfo.pending[0] == 'evaluacija_poslodavac' ? 'Student' : 'Greška'" main
-				><a href="" target="_blank"> <img :src="FIPU_praksa_logo_transparent" class="max-h-14 object-contain" /> </a>
+		<SectionMain v-if="evaluation">
+			<SectionTitleLineWithButton :icon="mdiAccount" title="Student" main>
+				<img :src="FIPU_praksa_logo_transparent" alt="FIPU Praksa" class="max-h-14 object-contain" />
 			</SectionTitleLineWithButton>
-
-			<div v-if="instanceInfo != null && instanceInfo.pending[0] == 'evaluacija_poslodavac'">
-				<div v-if="studentInfo" class="mb-4">
-					<h1 class="text-lg font-bold sm:text-2xl">{{ studentInfo.student_ime }} {{ studentInfo.student_prezime }}</h1>
+			<div>
+				<div class="mb-4">
+					<h1 class="text-lg font-bold sm:text-2xl">{{ evaluation.variables.student_ime }} {{ evaluation.variables.student_prezime }}</h1>
 					<h3 class="text-base font-bold">
-						{{ studentInfo.student_email }}
+						{{ evaluation.variables.student_email }}
 					</h3>
 
 					<p class="text-small mt-1 font-medium text-gray-600">
-						{{ StudentMappings.getGodinaStudija(studentInfo.student_godina_studija) }}
+						{{ StudentMappings.getGodinaStudija(evaluation.variables.student_godina_studija) }}
 					</p>
 				</div>
 
 				<SectionTitleLineWithButton :icon="mdiClipboardCheck" title="Alocirani zadatak" main> </SectionTitleLineWithButton>
-				<CardBoxAllocation v-if="assignment != null" :data="assignment"></CardBoxAllocation>
+				<CardBoxAllocation v-if="assignment" :data="assignment" />
+				<p v-else>{{ evaluation.variables.Alocirani_zadatak }} · {{ evaluation.variables.opis_zadatka }}</p>
 
 				<SectionTitleLineWithButton :icon="mdiAccountTie" title="Evaluacija kandidata" class="mt-4" main> </SectionTitleLineWithButton>
 
 				<p class="mb-4">Molimo da nakon što evaluirate studenta (bilo to kroz intervju, tehnički ispit ili pak bez procesa selekcije) potvrdite prihvaćate li studenta za obavljanje prakse u Vašem poduzeću.</p>
 
-				<FormDynamic v-if="pendingTaskInfo != null" v-model="formDynamicValues" class="mb-4 rounded-md p-1" :form-fields="pendingTaskInfo.form_fields" :variables="instanceInfo.variables" :documentation="pendingTaskInfo.documentation" @all-fields-filled="updateDisabledCondition" />
+				<FormDynamic v-model="formDynamicValues" class="mb-4 rounded-md p-1" :form-fields="evaluation.task.form_fields" :variables="evaluation.variables" :documentation="evaluation.task.documentation" @all-fields-filled="updateDisabledCondition" />
 
 				<BaseButton v-if="formDynamicValues['kandidat_odobren']" class="mb-4" label="Potvrdi" :loading="isLoading" color="fipu_blue" :disabled="disabledCondition" @click="handleNewInstance()" />
 			</div>
-			<div v-else>
-				<SectionMain>
-					<b>Greška!</b>
-					<div v-if="instanceInfo == null">Ne postoji proces s ID-em {{ process_instance_id }}.</div>
-					<div v-else-if="instanceInfo.pending[0] != 'evaluacija_poslodavac'">Studenta je trenutno nemoguće evaluirati budući da ga voditelj prakse još nije alocirao na zadatak.</div>
-					<p class="mt-4">Molimo pokušajte ponovno kasnije ili kontaktirajte voditelja prakse.</p>
-				</SectionMain>
-			</div>
 		</SectionMain>
 
+		<SectionMain v-else-if="error">Poveznica za evaluaciju nije važeća ili je evaluacija završena. Za novu poveznicu obratite se voditelju prakse.</SectionMain>
+		<SectionMain v-else>Učitavanje evaluacije…</SectionMain>
 		<FooterBar></FooterBar>
 		<SnackBar />
 	</div>

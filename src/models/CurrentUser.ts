@@ -4,6 +4,7 @@ export interface InternshipProcess {
 }
 
 export class CurrentUser {
+	coordinator = false;
 	ime: string;
 	prezime: string;
 	JMBAG: string;
@@ -35,6 +36,7 @@ export class CurrentUser {
 	 * Resets all properties of the current user to their default values.
 	 */
 	reset(): void {
+		this.coordinator = false;
 		this.ime = "";
 		this.prezime = "";
 		this.JMBAG = "";
@@ -57,6 +59,7 @@ export class CurrentUser {
 	 * @param data - Partial object containing user data to initialize the current user.
 	 */
 	initializeFromData(data: Partial<CurrentUser>): void {
+		this.coordinator = data.coordinator === true;
 		this.ime = data.ime || "";
 		this.prezime = data.prezime || "";
 		this.JMBAG = data.JMBAG || "";

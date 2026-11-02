@@ -1,13 +1,5 @@
 import { createAxiosInstance, safeRequest } from "@/helpers/axios-wrapper";
-import { endpoints, LOCAL_DEV } from "@/config.js";
-
-interface ProcessData {
-	email: string;
-	Model_prakse: string;
-	process_instance_id: string;
-	godina_studija: string;
-	JMBAG: string;
-}
+import { endpoints } from "@/config.js";
 
 interface TaskData {
 	id_zadatak: string | number;
@@ -23,7 +15,7 @@ interface DeletionData {
 	[key: string]: any;
 }
 
-const AxiosWrapper = createAxiosInstance(endpoints.VITE_BASEROW_API_URL + "/api");
+const AxiosWrapper = createAxiosInstance(endpoints.VITE_BASEROW_API_URL + "/api", true);
 
 const Guest = {
 	fetchAvailableAssignments() {
@@ -44,36 +36,33 @@ const Guest = {
 };
 
 const Student = {
-	updateAvatar(avatar: string | File, email: string) {
-		const headers: Record<string, string> = LOCAL_DEV
-			? { "X-Local-User": email }
-			: { Authorization: `Bearer ${sessionStorage.getItem("google-id-token") || ""}` };
+	updateAvatar(avatar: string | File) {
 		if (avatar instanceof File) {
 			const data = new FormData();
 			data.append("file", avatar);
-			return AxiosWrapper.patch("/student/avatar", data, headers);
+			return AxiosWrapper.patch("/student/avatar", data);
 		}
-		return AxiosWrapper.patch("/student/avatar", { avatar }, headers);
+		return AxiosWrapper.patch("/student/avatar", { avatar });
 	},
 
 	create(studentData: any) {
 		return safeRequest(() => AxiosWrapper.post("/student", studentData));
 	},
 
-	setProcessData(email: string, process_instance_id: string | number, model_prakse: string, godina_studija: string, JMBAG: string, previous_instance_id: string | number | null) {
-		return safeRequest(() => AxiosWrapper.patch("/student/process", { email, Model_prakse: model_prakse, process_instance_id, godina_studija, JMBAG, previous_instance_id }));
+	setProcessData(email: string, process_instance_id: string | number, model_prakse: string, godina_studija: string, JMBAG: string, previous_instance_id: string | number | null, binding: string) {
+		return safeRequest(() => AxiosWrapper.patch("/student/process", { email, Model_prakse: model_prakse, process_instance_id, godina_studija, JMBAG, previous_instance_id, binding }));
 	},
 
-	fetch(search_by: string = "") {
-		return safeRequest(() => AxiosWrapper.get(`/Student?search=${search_by}`));
+	session() {
+		return safeRequest(() => AxiosWrapper.get("/session"));
+	},
+
+	fetch() {
+		return safeRequest(() => AxiosWrapper.get("/Student"));
 	},
 
 	getAllocationsPublic() {
 		return safeRequest(() => AxiosWrapper.get("/alokacija/public"));
-	},
-
-	directAllocation(postData: any) {
-		return safeRequest(() => AxiosWrapper.post("/alokacija/direct", postData));
 	},
 
 	getAssignmentDetails(queryParams: Record<string, any> = {}) {
@@ -157,8 +146,9 @@ export async function submitNewInternshipProject(formData: any) {
 
 	if (formData.Poslodavac) {
 		postData.Poslodavac = [formData.Poslodavac];
+		delete postData.new_company;
 	} else if (formData.Poslodavac_novi_naziv) {
-		postData.Poslodavac = [formData.Poslodavac_novi_naziv];
+		postData.Poslodavac = [formData.Poslodavac_novi_naziv.trim()];
 	}
 
 	delete postData.Poslodavac_novi_naziv;

@@ -4,7 +4,7 @@ import { mdiAccountMultiple, mdiAccount, mdiClose } from "@mdi/js";
 import { useRouter, useRoute } from "vue-router";
 import { computed, ref, onMounted, watch } from "vue";
 import { Dialog } from "reka-ui/namespaced";
-import { Model } from "@/services/bpmn_engine_api";
+import { Model, ProcessInstance } from "@/services/bpmn_engine_api";
 
 import { UserTaskMappings, SendTaskMappings } from "@/helpers/maps";
 import { useAdminStore } from "@/stores/admin_store";
@@ -149,6 +149,15 @@ async function sendAnAdditionalEmail() {
 
 	if (newEmail.value) {
 		to = newEmail.value;
+	}
+
+	if (template === "poslodavac_after_allocation") {
+		const link = await ProcessInstance.evaluationLink(selectedStudent.value.process_instance_id);
+		if (!link?.url) {
+			snackBarStore.pushMessage("Nema aktivne evaluacije za ovog studenta.", "danger");
+			return;
+		}
+		postData = { ...postData, evaluacija_url: link.url };
 	}
 
 	if (postData && template && to) {

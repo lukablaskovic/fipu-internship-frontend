@@ -79,7 +79,7 @@ const directApplication = async () => {
 	}
 	let saved = false;
 	try {
-		const result = await studentStore.direct_application_B(prviOdabirDetails.value, napomena.value);
+		const result = await studentStore.direct_application_B(napomena.value);
 		if (result?.status !== "OK") throw new Error("Submission failed");
 		saved = true;
 		snackBarStore.pushMessage("Uspješno ste prijavili zadatak.", "success");

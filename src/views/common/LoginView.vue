@@ -10,6 +10,9 @@
 					<a href="https://chat.google.com/room/AAAASZREDy8?cls=7" target="_blank" rel="noopener noreferrer" class="help-link inline-flex items-center gap-2" aria-label="Google Chat (otvara se u novoj kartici)">
 						Google Chat <span aria-hidden="true">↗</span>
 					</a>
+					<a href="https://drive.google.com/file/d/13BKZekCS6FwdlKfTlTLyCKB6tkNjZLIe/view?usp=sharing" target="_blank" rel="noopener noreferrer" class="help-link inline-flex items-center gap-2" aria-label="Silabus (otvara se u novoj kartici)">
+						Silabus <span aria-hidden="true">↗</span>
+					</a>
 					<ThemeToggle />
 				</div>
 			</header>
@@ -59,7 +62,6 @@ import BaseButton from "@/components/Base/BaseButton.vue";
 import ThemeToggle from "@/components/Navbar/ThemeToggle.vue";
 import FormCheckRadio from "@/components/Form/FormCheckRadio.vue";
 import SnackBar from "@/components/Premium/SnackBar.vue";
-import { isUnipuEmail } from "@/helpers/validators";
 import { useMainStore } from "@/stores/main_store";
 import { useUiStore } from "@/stores/ui_store";
 import { useSnackBarStore } from "@/stores/snackbar_store";
@@ -111,26 +113,22 @@ const loginCallback = async (response) => {
 			snackBarStore.pushMessage("Prijava nije uspjela! Molimo kontaktirajte voditelja prakse.", "error");
 			return;
 		}
-		if (isUnipuEmail(decodedToken.email) || decodedToken.email === "lukablaskovic2000@gmail.com") {
-			const result = await mainStore.handleLogin(decodedToken, response.credential);
-			if (result.status === "success") {
-				const ime = decodedToken.given_name || "";
-				const prezime = decodedToken.family_name || "";
-				snackBarStore.pushMessage(`Dobrodošli, ${ime} ${prezime}!`, "success");
+		const result = await mainStore.handleLogin(decodedToken, response.credential);
+		if (result.status === "success") {
+			const ime = decodedToken.given_name || "";
+			const prezime = decodedToken.family_name || "";
+			snackBarStore.pushMessage(`Dobrodošli, ${ime} ${prezime}!`, "success");
 
-				// Add a small delay to allow browser state to settle before reload
-				await new Promise((resolve) => setTimeout(resolve, 500));
+			// Add a small delay to allow browser state to settle before reload
+			await new Promise((resolve) => setTimeout(resolve, 500));
 
-				window.location.href = router.currentRoute.value.fullPath;
-			} else {
-				snackBarStore.pushMessage("Prijava nije uspjela! Molimo pokušajte ponovno.", "error");
-			}
+			window.location.href = router.currentRoute.value.fullPath;
 		} else {
-			snackBarStore.pushMessage("Molimo koristite UNIPU e-mail za prijavu", "warning");
+			snackBarStore.pushMessage("Prijava nije uspjela. Koristite sveučilišni račun ili se obratite voditelju prakse.", "error");
 		}
 	} catch (error) {
 		console.error("Login error:", error);
-		snackBarStore.pushMessage("Prijava nije uspjela! Molimo pokušajte ponovno.", "error");
+		snackBarStore.pushMessage("Prijava nije uspjela. Koristite sveučilišni račun ili se obratite voditelju prakse.", "error");
 	}
 };
 </script>

@@ -86,7 +86,7 @@ async function saveAvatar() {
 	saving.value = true;
 	error.value = "";
 	try {
-		const response = await Student.updateAvatar(avatarFile.value || previewUrl.value, mainStore.currentUser.email);
+		const response = await Student.updateAvatar(avatarFile.value || previewUrl.value);
 		mainStore.currentUser.avatar = response.avatar;
 		editAvatar(false);
 		message.value = "Profilna slika je spremljena.";

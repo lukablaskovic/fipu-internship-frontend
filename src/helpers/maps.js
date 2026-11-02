@@ -88,7 +88,6 @@ class SendTaskMappings {
 				student_email: "",
 				Alocirani_zadatak: "",
 				process_instance_id: "",
-				evaluacija_url: (processInstanceId) => `${endpoints.VITE_FRONTEND_URL}/evaluacija/${processInstanceId}`,
 			},
 		},
 
@@ -268,7 +267,6 @@ class UserTaskMappings {
 
 import { mdiRayStartArrow, mdiClipboardCheck, mdiNumeric, mdiProgressClock, mdiCheck, mdiThumbsUpDownOutline, mdiNoteCheck, mdiAccountTie, mdiNotebook, mdiFileDocumentPlus, mdiRayEnd, mdiContentSaveOutline, mdiApi, mdiEmailArrowRight, mdiCertificate, mdiCancel } from "@mdi/js";
 
-import { endpoints } from "@/config";
 
 class ActivityEventMappings {
 	static events = [
