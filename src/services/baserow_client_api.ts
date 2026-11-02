@@ -69,24 +69,16 @@ const Student = {
 		return safeRequest(() => AxiosWrapper.get("/Zadaci_za_odabir", queryParams));
 	},
 
-	storeDnevnik(id_dnevnik_prakse: string, fileData: File) {
-		const formData = new FormData();
-		formData.append("file", fileData);
-		return safeRequest(() => AxiosWrapper.post(`/upload/pdf-dnevnik/${id_dnevnik_prakse}`, formData));
-	},
-
-	storeIspunjenaPotvrda(id_dnevnik_prakse: string, fileData: File) {
-		const formData = new FormData();
-		formData.append("file", fileData);
-		return safeRequest(() => AxiosWrapper.post(`/upload/pdf-ispunjena-potvrda/${id_dnevnik_prakse}`, formData));
-	},
-
 	fetchPDF(query: string = "") {
 		return safeRequest(() => AxiosWrapper.get("/Dnevnik_prakse", { search: query }));
 	},
 };
 
 const Admin = {
+	listAdministrators() {
+		return safeRequest(() => AxiosWrapper.get<string[]>("/administratori"));
+	},
+
 	getAllocations() {
 		return safeRequest(() => AxiosWrapper.get("/alokacija").then((res: any) => res.results));
 	},

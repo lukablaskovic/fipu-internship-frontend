@@ -105,29 +105,12 @@ export const useStudentStore = defineStore("student", {
 		},
 
 		async submitDiaryForm(diary_data: DiaryData) {
-			const mainStore = useMainStore();
-			const post_data = {
-				nastavak_radnog_odnosa: diary_data.nastavak_radnog_odnosa,
-				prijavljen_rok: diary_data.prijavljen_rok,
-			};
-
-			let combinedResponses: Record<string, any> = {};
-			try {
-				const process_instance_id = mainStore.currentUser.internship_process.id;
-				const pending_user_task = mainStore.currentUser.internship_process.pending_user_task;
-
-				const dnevnik_prakse_id = this.student_process_instance_data.variables["id_dnevnik_prakse"];
-				combinedResponses.storeDnevnik = await Student.storeDnevnik(dnevnik_prakse_id, diary_data.dnevnik_attachment);
-				if (!combinedResponses.storeDnevnik) return null;
-				combinedResponses.storeIspunjenaPotvrda = await Student.storeIspunjenaPotvrda(dnevnik_prakse_id, diary_data.potvrda_attachment);
-
-				if (!combinedResponses.storeIspunjenaPotvrda) return null;
-				combinedResponses.handleNewInstance = await ProcessInstance.handleNewInstance(process_instance_id, pending_user_task, post_data);
-				if (combinedResponses.handleNewInstance?.status !== "OK") return null;
-				return combinedResponses;
-			} catch (error) {
-				console.log("[student_store].submitDiaryForm error: ", error);
-			}
+			const form = new FormData();
+			form.append("dnevnik_attachment", diary_data.dnevnik_attachment);
+			form.append("potvrda_attachment", diary_data.potvrda_attachment);
+			form.append("nastavak_radnog_odnosa", String(diary_data.nastavak_radnog_odnosa));
+			form.append("prijavljen_rok", diary_data.prijavljen_rok);
+			return ProcessInstance.submitDiary(useMainStore().currentUser.internship_process.id, form);
 		},
 
 		async getInstanceInfo(process_instance_id: string | number) {

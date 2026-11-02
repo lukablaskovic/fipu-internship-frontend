@@ -31,8 +31,8 @@ function createAxiosInstance(API_URL: string, authenticated = false) {
 			const response: AxiosResponse<T> = await instance.get(endpoint, { params, headers });
 			return response.data;
 		},
-		async post<T = any>(endpoint: string, data: any = {}, headers: RequestHeaders = {}): Promise<T> {
-			const response: AxiosResponse<T> = await instance.post(endpoint, data, { headers });
+		async post<T = any>(endpoint: string, data: any = {}, headers: RequestHeaders = {}, timeout = 10000): Promise<T> {
+			const response: AxiosResponse<T> = await instance.post(endpoint, data, { headers, timeout });
 			return response.data;
 		},
 		async put<T = any>(endpoint: string, data: any = {}, headers: RequestHeaders = {}): Promise<T> {

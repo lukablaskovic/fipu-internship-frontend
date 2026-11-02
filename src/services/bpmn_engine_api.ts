@@ -30,7 +30,7 @@ interface TaskData {
 	[key: string]: any;
 }
 
-interface FormData {
+interface TaskFormData {
 	[key: string]: any;
 }
 
@@ -106,9 +106,14 @@ const ProcessInstance = {
 		return result?.results || [];
 	},
 
-	async handleNewInstance(instance_id: string | number | null, current_task: string | null, post_data: FormData): Promise<any | null> {
+	async handleNewInstance(instance_id: string | number | null, current_task: string | null, post_data: TaskFormData): Promise<any | null> {
 		if (instance_id === null || instance_id === "" || !current_task) return null;
 		return safeRequest(() => AxiosWrapper.post(`/instance/${instance_id}/task/${current_task}/form`, post_data));
+	},
+
+	submitDiary(id: string | number | null, form: FormData) {
+		if (!id) return null;
+		return safeRequest(() => AxiosWrapper.post(`/instance/${id}/task/predavanje_dnevnika_student/form`, form, {}, 180000));
 	},
 
 	async withdraw(instance_id: string | number): Promise<any | null> {
