@@ -71,7 +71,7 @@ function readModel(document) {
       ...basic(element), ...geometry(element), laneId: laneIds.get(attr(element, 'id')) || '',
       documentation: text(element, NS.bpmn, 'documentation'),
       default: attr(element, 'default'),
-      timerDuration: child(element, NS.bpmn, 'timerEventDefinition') ? text(child(element, NS.bpmn, 'timerEventDefinition'), NS.bpmn, 'timeDuration') : null,
+      timerDuration: child(element, NS.bpmn, 'timerEventDefinition') ? text(child(element, NS.bpmn, 'timerEventDefinition'), NS.bpmn, 'timeDuration').trim() : null,
       terminate: !!child(element, NS.bpmn, 'terminateEventDefinition'),
       outcome: element.getAttributeNS(NS.fipu, 'outcome') || 'finished',
       inputs: readParameters(extension, 'input'), outputs: readParameters(extension, 'output'),
@@ -428,6 +428,11 @@ export function removeElement(model, id) {
   return readModel(next.document);
 }
 
+const eventParents = {
+  timerEventDefinition: 'intermediateCatchEvent', messageEventDefinition: 'intermediateCatchEvent',
+  terminateEventDefinition: 'endEvent', timeDuration: 'timerEventDefinition',
+};
+
 export function validateModel(model, connectors) {
   const issues = [];
   const report = (message, id = '', severity = 'error') => issues.push({ severity, id, message });
@@ -442,6 +447,13 @@ export function validateModel(model, connectors) {
       ids.add(id);
     }
     if (element.namespaceURI === NS.bpmn && !BPMN_ELEMENTS.has(element.localName)) report(`Unsupported BPMN element: ${element.localName}. It is preserved but cannot be exported for execution.`, id);
+    if (Object.hasOwn(eventParents, element.localName)) {
+      const parent = element.parentElement;
+      const owner = attr(parent?.closest('[id]'), 'id');
+      if (element.namespaceURI !== NS.bpmn || parent?.namespaceURI !== NS.bpmn || parent.localName !== eventParents[element.localName]) report(`Invalid namespace or parent for ${element.localName}.`, owner);
+      if (element.localName !== 'timerEventDefinition' && element.children.length) report(`${element.localName} cannot contain nested elements.`, owner);
+      if (element.localName === 'messageEventDefinition' && element.hasAttribute('messageRef')) report('Message delivery uses the instance and event ID; messageRef correlation is unsupported.', owner);
+    }
     if (element.namespaceURI === NS.fipu && !EXT_ELEMENTS.has(element.localName)) report(`Unsupported execution extension: ${element.localName}.`, attr(element.closest?.('[id]'), 'id'));
     if (element.namespaceURI === NS.bpmn && element.localName === 'process' && attr(element, 'isExecutable') !== 'true') report('The Process must be executable.', id);
     for (const attribute of Array.from(element.attributes)) {
