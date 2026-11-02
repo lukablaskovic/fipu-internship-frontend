@@ -69,6 +69,11 @@ const Model = {
 };
 
 const ProcessInstance = {
+	retry(id: string, attemptId: number, confirmResend: boolean) {
+		return safeRequest(() => AxiosWrapper.post(`/instance/${encodeURIComponent(id)}/retry`, {
+			attempt_id: attemptId, confirm_resend: confirmResend,
+		}));
+	},
 	async diagram(id: string) {
 		return safeRequest(() => AxiosWrapper.get<string>(`/instance/${id}/model`));
 	},
