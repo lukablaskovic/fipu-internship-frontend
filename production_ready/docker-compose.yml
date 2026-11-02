@@ -67,32 +67,6 @@ services:
         aliases:
           - python-bpmn-engine # Existing deployment environment URLs
 
-  gateway-api:
-    image: lukablaskovic/fp-internship-gateway-api
-    env_file:
-      - .env
-    environment:
-      - BASEROW_CONNECTOR_URL=${BASEROW_CONNECTOR_URL}
-      - BPMN_ENGINE_URL=${BPMN_ENGINE_URL}
-      - POSTGRES_HOSTNAME=${POSTGRES_HOST}
-      - POSTGRES_DB_NAME=${POSTGRES_DB2_NAME}
-      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
-      - POSTGRES_PORT=${POSTGRES_PORT}
-      - POSTGRES_USERNAME=${POSTGRES_USER}
-      - PASS_HASHING_ALGORITHM=${PASS_HASHING_ALGORITHM}
-      - ACCESS_TOKEN_EXPIRE_MINUTES=${ACCESS_TOKEN_EXPIRE_MINUTES}
-      - REMEMBER_ME_EXPIRE_MINUTES=${REMEMBER_ME_EXPIRE_MINUTES}
-      - SECRET_KEY=${SECRET_KEY}
-      - PORT=${FIGA_PORT}
-      - DEBUG=1
-    depends_on:
-      - postgres-db
-      - baserow-db
-    expose:
-      - "8081"
-    networks:
-      - app-network
-
   baserow-connector:
     image: lukablaskovic/fp-baserow-connector-service
     env_file:
