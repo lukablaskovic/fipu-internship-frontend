@@ -118,7 +118,16 @@ const routes = [
 		component: () => import("@/views/admin/DashboardView.vue"),
 	},
 	{
-		path: "/dashboard/engine",
+		path: "/dashboard/engine", redirect: { name: "engine" },
+	},
+	{
+		path: "/administratori",
+		name: "administratori",
+		meta: { title: "Administratori", requiresAuth: true, requiresAdmin: true },
+		component: () => import("@/views/admin/AdministratorsView.vue"),
+	},
+	{
+		path: "/engine",
 		name: "engine",
 		meta: { title: "BPMN engine", requiresAuth: true, requiresAdmin: true },
 		component: () => import("@/views/admin/EngineView.vue"),

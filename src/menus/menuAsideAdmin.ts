@@ -1,4 +1,4 @@
-import { BASEROW_URL, LOCAL_DEV } from "@/config.js";
+import { BPMN_STUDIO_URL, BASEROW_URL, LOCAL_DEV } from "@/config.js";
 import { mdiMonitor, mdiAccountMultiple, mdiSecurity, mdiDomain, mdiClipboardText, mdiClipboardCheck } from "@mdi/js";
 
 interface MenuItem {
@@ -40,7 +40,8 @@ const menuAsideAdmin: MenuItem[] = [
 		label: "Admin",
 		icon: mdiSecurity,
 		menu: [
-			{ label: "BPMN engine", to: "/dashboard/engine" },
+			{ label: "BPMN engine", to: "/engine" },
+			{ label: "Administratori", to: "/administratori" },
 			...(LOCAL_DEV ? [{ label: "Arhiva akademskih godina", to: "/arhiva" }] : []),
 			{
 				to: "/poslodavci/novi-zadatak",
@@ -52,7 +53,7 @@ const menuAsideAdmin: MenuItem[] = [
 			},
 			{
 				label: "BPMN Studio",
-				externalURL: "http://localhost:5174",
+				externalURL: BPMN_STUDIO_URL + "/",
 			},
 		],
 	},

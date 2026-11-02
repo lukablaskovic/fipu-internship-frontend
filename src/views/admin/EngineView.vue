@@ -1,4 +1,5 @@
 <script setup>
+import { BPMN_STUDIO_URL } from "@/config.js";
 import { ref, onMounted } from "vue";
 import { mdiRefresh, mdiSourceBranch } from "@mdi/js";
 import { Model } from "@/services/bpmn_engine_api";
@@ -33,6 +34,14 @@ onMounted(refresh);
 						<h3 class="text-lg font-semibold">{{ model.model_path.replace(/^strucna_praksa_/, "Model ").replace(/\.bpmn$/, "") }} · v{{ model.version }}</h3>
 						<p>{{ model.process }}</p>
 						<p class="mt-4">Aktivne prakse: <strong>{{ model.active }}</strong></p>
+						<a class="mt-3 inline-block text-fipu_blue underline" :href="`${BPMN_STUDIO_URL}/admin/model/${encodeURIComponent(model.model_path.replace(/\.bpmn$/, ''))}/${model.version}`" target="_blank" rel="noopener">Otvori u BPMN Studiju ↗</a>
+						<div class="mt-4">
+							<h4 class="font-semibold">Prethodne verzije</h4>
+							<p v-if="!model.previous_versions?.length">Nema prethodnih verzija.</p>
+							<ul v-else><li v-for="version in model.previous_versions" :key="version">
+								<a class="text-fipu_blue underline" :href="`${BPMN_STUDIO_URL}/admin/model/${encodeURIComponent(model.model_path.replace(/\.bpmn$/, ''))}/${version}`" target="_blank" rel="noopener">{{ model.model_path.replace(/^strucna_praksa_/, "Model ").replace(/\.bpmn$/, "") }} · v{{ version }}</a>
+							</li></ul>
+						</div>
 					</CardBox>
 				</div>
 				<p v-if="!deployments.length">Nema objavljenih procesa.</p>
