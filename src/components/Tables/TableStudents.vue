@@ -184,7 +184,7 @@ watch(selectedStudentInstanceID, (newVal) => {
 					<td data-label="Ime"><TableCellText :value="student['ime']" /></td>
 					<td data-label="Prezime"><TableCellText :value="student['prezime']" /></td>
 					<td data-label="Model_prakse" class="lg:text-center">
-						<PillTag :color="student.Model_prakse.value == 'A' ? 'danger' : 'success'" :label="student.Model_prakse.value" />
+						<PillTag :color="student.Model_prakse.value == 'A' ? 'danger' : 'success'" :label="`Model ${student.Model_prakse.value} · ${student.process_instance_data?.model?.version ? 'v' + student.process_instance_data.model.version : 'verzija nepoznata'}`" />
 					</td>
 					<td data-label="JMBAG"><TableCellText :value="student['JMBAG']" /></td>
 					<td data-label="Progress" class="lg:w-32">

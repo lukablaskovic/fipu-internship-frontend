@@ -20,7 +20,7 @@ export interface ProcessInstanceData {
 	};
 	pending: string[];
 	state: string;
-	model: { model_path: string };
+	model: { model_path: string; version: number | null };
 	[key: string]: any;
 }
 
@@ -37,6 +37,9 @@ interface FormData {
 const AxiosWrapper = createAxiosInstance(endpoints.VITE_BPMN_ENGINE_API_URL, true);
 
 const Model = {
+	async deployments() {
+		return safeRequest(() => AxiosWrapper.get("/engine"));
+	},
 	async get(id: string): Promise<string | null> {
 		return safeRequest(() => AxiosWrapper.get(`/model/${id}`));
 	},
@@ -66,6 +69,9 @@ const Model = {
 };
 
 const ProcessInstance = {
+	async diagram(id: string) {
+		return safeRequest(() => AxiosWrapper.get<string>(`/instance/${id}/model`));
+	},
 	evaluation(id: string, token: string, decision?: object) {
 		const path = `/evaluation/${encodeURIComponent(id)}`;
 		const headers = { "X-Evaluation-Token": token };

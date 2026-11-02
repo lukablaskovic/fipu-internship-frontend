@@ -4,7 +4,7 @@ import { mdiAccountMultiple, mdiAccount, mdiClose } from "@mdi/js";
 import { useRouter, useRoute } from "vue-router";
 import { computed, ref, onMounted, watch } from "vue";
 import { Dialog } from "reka-ui/namespaced";
-import { Model, ProcessInstance } from "@/services/bpmn_engine_api";
+import { ProcessInstance } from "@/services/bpmn_engine_api";
 
 import { UserTaskMappings, SendTaskMappings } from "@/helpers/maps";
 import { useAdminStore } from "@/stores/admin_store";
@@ -58,9 +58,6 @@ const updateDisabledCondition = (allFilled) => {
 
 const formDynamicValues = ref({});
 
-async function fetchXML(model) {
-	return Model.get(`${model}.bpmn`);
-}
 
 const router = useRouter();
 const process_instance_data = ref(null);
@@ -72,9 +69,7 @@ async function handleProcessDiagram(student) {
 	diagramTrigger = document.activeElement;
 	try {
 		process_instance_data.value = await adminStore.getProcessInstanceData(selectedStudent.value);
-		let model = process_instance_data.value.model.model_path.split(".")[0];
-
-		bpmn_model.value = await fetchXML(model);
+		bpmn_model.value = await ProcessInstance.diagram(process_instance_data.value.id);
 
 		bpmn_diagram_active.value = true;
 

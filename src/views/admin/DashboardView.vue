@@ -197,7 +197,7 @@ const { perPage, currentPage, itemsPaginated, numPages, currentPageHuman } = use
 	<div>
 		<LayoutAuthenticated v-if="mainStore.userAuthenticated">
 			<SectionMain>
-				<SectionTitleLineWithButton :icon="mdiViewDashboard" title="Nadzorna ploča" main> </SectionTitleLineWithButton>
+				<SectionTitleLineWithButton :icon="mdiViewDashboard" title="Nadzorna ploča" main><RouterLink class="text-fipu_blue underline" to="/dashboard/engine">BPMN engine</RouterLink></SectionTitleLineWithButton>
 				<p class="mb-4"><b>Akademska godina:</b> {{ appConfig.academicYear }}</p>
 				<Tabs.Root v-model="statisticsModel">
 					<Tabs.List aria-label="Statistika po modelu prakse" class="mb-4 inline-flex rounded-lg bg-white p-1 text-sm dark:bg-slate-800">

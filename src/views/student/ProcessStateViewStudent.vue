@@ -3,7 +3,7 @@ import SectionMain from "@/components/Section/SectionMain.vue";
 import { mdiChartTimeline } from "@mdi/js";
 import { ref, onMounted } from "vue";
 import { computed } from "vue";
-import { Model } from "@/services/bpmn_engine_api";
+
 
 import { UserTaskMappings } from "@/helpers/maps";
 import { useMainStore } from "@/stores/main_store";
@@ -27,9 +27,6 @@ const modal_send_task = ref(false);
 
 const userAuthenticated = computed(() => mainStore.userAuthenticated);
 
-async function fetchXML(model) {
-	return Model.get(`${model}.bpmn`);
-}
 
 const process_instance_data = ref(null);
 
@@ -42,7 +39,7 @@ async function showAttempt(attempt) {
 	selectedAttempt.value = attempt.id;
 	process_instance_data.value = attempt;
 	bpmn_model.value = null;
-	const xml = await fetchXML(attempt.model.model_path.split(".")[0]);
+	const xml = await ProcessInstance.diagram(attempt.id);
 	if (selectedAttempt.value === attempt.id) bpmn_model.value = xml;
 }
 
@@ -63,10 +60,11 @@ onMounted(async () => {
 		<LayoutAuthenticated v-if="userAuthenticated">
 			<SectionMain>
 				<SectionTitleLineWithButton class="mt-4" :icon="mdiChartTimeline" title="Stanje procesa" main> </SectionTitleLineWithButton>
+				<p v-if="process_instance_data" class="mb-4 font-semibold">Model {{ process_instance_data.model.model_path.slice(-6, -5) }} · {{ process_instance_data.model.version ? "v" + process_instance_data.model.version : "verzija nepoznata" }}</p>
 				<label v-if="attempts.length > 1" class="mb-4 block">Povijest praksi
 					<select :value="selectedAttempt" @change="showAttempt(attempts.find(item => item.id === $event.target.value))">
 						<option v-for="(attempt, index) in attempts" :key="attempt.id" :value="attempt.id">
-							{{ attempts.length - index }}. Model {{ attempt.model.model_path.slice(-6, -5) }} · {{ attempt.state === 'cancelled' ? 'Odustajanje' : 'Trenutna praksa' }}
+							{{ attempts.length - index }}. Model {{ attempt.model.model_path.slice(-6, -5) }} · {{ attempt.model.version ? "v" + attempt.model.version : "verzija nepoznata" }} · {{ attempt.state === 'cancelled' ? 'Odustajanje' : 'Trenutna praksa' }}
 						</option>
 					</select>
 				</label>

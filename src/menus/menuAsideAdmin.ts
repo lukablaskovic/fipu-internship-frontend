@@ -40,6 +40,7 @@ const menuAsideAdmin: MenuItem[] = [
 		label: "Admin",
 		icon: mdiSecurity,
 		menu: [
+			{ label: "BPMN engine", to: "/dashboard/engine" },
 			...(LOCAL_DEV ? [{ label: "Arhiva akademskih godina", to: "/arhiva" }] : []),
 			{
 				to: "/poslodavci/novi-zadatak",
