@@ -1,12 +1,12 @@
 <script setup>
+import TableCellText from "@/components/Tables/TableCellText.vue";
 import { fetchAvailableAssignments } from "@/services/baserow_client_api";
 import { computed, ref, onMounted, watch, nextTick } from "vue";
 import { useRoute } from "vue-router";
 import { mdiEye, mdiCheckCircle, mdiCloseBox, mdiMenuDown, mdiSortAscending, mdiSortDescending } from "@mdi/js";
 import { useAdminStore } from "@/stores/admin_store";
 import { useSnackBarStore } from "@/stores/snackbar_store";
-import { usePagination } from "@/composables/usePagination.js";
-import { tableButtonMenuOptions } from "@/tableButtonMenuOptions.js";
+import { usePagination, tableButtonMenuOptions } from "@/composables/usePagination.js";
 import CardBoxComponentEmpty from "@/components/Cardbox/CardBoxComponentEmpty.vue";
 import CardBoxModal from "@/components/Cardbox/CardBoxModal.vue";
 import CardBoxAllocation from "@/components/Cardbox/CardBoxAllocation.vue";
@@ -172,7 +172,7 @@ const cancelTaskAction = () => {
 				<tr v-for="assignment in assignmentsPaginated" :key="assignment.id_zadatak" :class="{ 'selected-row': route.params.id_zadatak === String(assignment.id_zadatak) }">
 					<td v-for="column in columns" :key="column.key" :data-label="column.label" class="break-words" :class="{ 'lg:max-w-[200px]': ['id_zadatak', 'poslodavac_email', 'preferirane_tehnologije'].includes(column.key) }">
 						<PillTag v-if="column.key === 'voditelj_odobrio'" :label="statuses[assignment.voditelj_odobrio?.value]?.label || 'Nepoznat'" :color="statuses[assignment.voditelj_odobrio?.value]?.color || 'info'" small />
-						<span v-else>{{ assignment[column.key] ?? '—' }}</span>
+						<TableCellText v-else :value="assignment[column.key] ?? '—'" />
 					</td>
 					<td class="whitespace-nowrap before:hidden lg:w-1">
 						<BaseButtons type="justify-start lg:justify-end" no-wrap>

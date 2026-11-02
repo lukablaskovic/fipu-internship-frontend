@@ -1,16 +1,16 @@
 <script setup>
+import TableCellText from "@/components/Tables/TableCellText.vue";
+import { getInternshipStage } from "@/helpers/internship-stages";
 import CardBoxComponentEmpty from "@/components/Cardbox/CardBoxComponentEmpty.vue";
 import BasePagination from "@/components/Base/BasePagination.vue";
-import { usePagination } from "@/composables/usePagination.js";
+import { usePagination, tableButtonMenuOptions } from "@/composables/usePagination.js";
 import { Progress } from "reka-ui/namespaced";
 import { mdiEye, mdiMenuDown, mdiCloseOutline, mdiSortAscending, mdiSortDescending } from "@mdi/js";
-import { tableButtonMenuOptions } from "@/tableButtonMenuOptions.js";
 import SkeletonLoaderTableRow from "../SkeletonLoaderTableRow.vue";
-import { StudentMappings, UserTaskMappings } from "@/helpers/maps";
+import { UserTaskMappings } from "@/helpers/maps";
 import CardBoxModal from "@/components/Cardbox/CardBoxModal.vue";
 import ButtonMenu from "@/components/Premium/ButtonMenu.vue";
 import BaseButtons from "@/components/Base/BaseButtons.vue";
-import UserAvatar from "@/components/User/UserAvatar.vue";
 import BaseButton from "@/components/Base/BaseButton.vue";
 import BaseLevel from "@/components/Base/BaseLevel.vue";
 import PillTag from "@/components/PillTag/PillTag.vue";
@@ -73,7 +73,7 @@ function getFilteredStudents(studentsToFilter) {
 	let filtered = [...studentsToFilter];
 
 	if (!adminStore.filterFinishedInstances) {
-		filtered = filtered.filter((student) => UserTaskMappings.getTaskProperty(student["process_instance_data"]["pending"][0], "name", student["process_instance_data"]["state"]) !== "Student ocjenjen");
+		filtered = filtered.filter((student) => !["finished", "cancelled"].includes(student.process_instance_data.state));
 	}
 
 	if (adminStore.filterModelState !== "AB") {
@@ -87,7 +87,7 @@ function getFilteredStudents(studentsToFilter) {
 		} else if (stage === "ceka_alokaciju") {
 			filtered = filtered.filter((student) => UserTaskMappings.getTaskProperty(student["process_instance_data"]["pending"][0], "name", student["process_instance_data"]["state"]) === "Čeka alokaciju profesora");
 		} else {
-			filtered = filtered.filter((student) => UserTaskMappings.getTaskProperty(student["process_instance_data"]["pending"][0], "name", student["process_instance_data"]["state"]) === stage);
+			filtered = filtered.filter((student) => getInternshipStage(student) === stage);
 		}
 	}
 
@@ -146,10 +146,6 @@ watch(selectedStudentInstanceID, (newVal) => {
 	<table v-if="filteredAndSortedStudents.length || !studentsFetched">
 		<thead>
 			<tr>
-				<th />
-				<th>Model</th>
-				<th>JMBAG</th>
-
 				<th class="cursor-pointer px-4 py-2 text-left">
 					<div class="flex items-center space-x-1">
 						<span>Ime</span>
@@ -164,8 +160,8 @@ watch(selectedStudentInstanceID, (newVal) => {
 					</div>
 				</th>
 
-				<th>Email</th>
-				<th>Godina studija</th>
+				<th>Model</th>
+				<th>JMBAG</th>
 
 				<th class="cursor-pointer px-4 py-2 text-left">
 					<div class="flex items-center space-x-1">
@@ -185,19 +181,12 @@ watch(selectedStudentInstanceID, (newVal) => {
 			</template>
 			<template v-else>
 				<tr v-for="student in studentsPaginated" :key="student['process_instance_id']" :class="{ 'selected-row bg-fipu_blue/10 dark:bg-fipu_blue/20': selectedStudentInstanceID === student['process_instance_id'] }">
-					<td class="border-b-0 before:hidden lg:w-6">
-						<UserAvatar :avatar="student['avatar']" class="mx-auto flex h-22 w-22 lg:h-12 lg:w-12" />
-					</td>
-					<td data-label="Model_prakse">
+					<td data-label="Ime"><TableCellText :value="student['ime']" /></td>
+					<td data-label="Prezime"><TableCellText :value="student['prezime']" /></td>
+					<td data-label="Model_prakse" class="lg:text-center">
 						<PillTag :color="student.Model_prakse.value == 'A' ? 'danger' : 'success'" :label="student.Model_prakse.value" />
 					</td>
-					<td data-label="JMBAG">{{ student["JMBAG"] }}</td>
-					<td data-label="Ime">{{ student["ime"] }}</td>
-					<td data-label="Prezime">{{ student["prezime"] }}</td>
-					<td data-label="Email">{{ student["email"] }}</td>
-					<td data-label="Godina studija">
-						{{ StudentMappings.getGodinaStudija(student["godina_studija"]["value"]) }}
-					</td>
+					<td data-label="JMBAG"><TableCellText :value="student['JMBAG']" /></td>
 					<td data-label="Progress" class="lg:w-32">
 						<Progress.Root
 							class="h-3 w-2/5 self-center overflow-hidden rounded-full bg-gray-200 ring-1 ring-inset ring-black/10 dark:bg-slate-950 dark:ring-white/15 lg:w-full"
@@ -210,8 +199,8 @@ watch(selectedStudentInstanceID, (newVal) => {
 								:style="{ width: `${(getProgressValue(student) / 7) * 100}%` }" />
 						</Progress.Root>
 					</td>
-					<td data-label="Stanje">
-						{{ UserTaskMappings.getTaskProperty(student["process_instance_data"]["pending"][0], "name", student["process_instance_data"]["state"]) }}
+					<td data-label="Stanje" class="lg:text-center">
+						<TableCellText :value="UserTaskMappings.getTaskProperty(student['process_instance_data']['pending'][0], 'name', student['process_instance_data']['state'])" />
 					</td>
 					<td class="whitespace-nowrap before:hidden lg:w-1">
 						<BaseButtons type="justify-start lg:justify-end" no-wrap>
@@ -262,6 +251,11 @@ watch(selectedStudentInstanceID, (newVal) => {
 	.student-progress-fill {
 		animation: progress-fill 700ms ease-out, progress-stripes 1s linear infinite;
 	}
+}
+
+.student-progress-fill[data-state="complete"] {
+	animation: none;
+	transition: none;
 }
 
 @keyframes progress-stripes {

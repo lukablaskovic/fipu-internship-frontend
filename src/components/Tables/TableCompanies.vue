@@ -1,11 +1,11 @@
 <script setup>
+import TableCellText from "@/components/Tables/TableCellText.vue";
 import CardBoxComponentEmpty from "@/components/Cardbox/CardBoxComponentEmpty.vue";
 import BasePagination from "@/components/Base/BasePagination.vue";
-import { usePagination } from "@/composables/usePagination.js";
+import { usePagination, tableButtonMenuOptions } from "@/composables/usePagination.js";
 import { computed, ref, onMounted, watch } from "vue";
 
 import TableCheckboxCell from "@/components/Tables/TableCheckboxCell.vue";
-import { tableButtonMenuOptions } from "@/tableButtonMenuOptions.js";
 import ButtonMenu from "@/components/Premium/ButtonMenu.vue";
 import BaseButtons from "@/components/Base/BaseButtons.vue";
 import BaseButton from "@/components/Base/BaseButton.vue";
@@ -108,20 +108,20 @@ const goToCompanyWeb = (url) => {
 				</td>
 
 				<td data-label="Naziv">
-					<div class="overflow-x-auto whitespace-nowrap">
-						{{ company["naziv"] }}
+					<div class="break-words">
+						<TableCellText :value="company['naziv']" />
 					</div>
 				</td>
 
 				<td data-label="Web">
-					<div class="overflow-x-auto whitespace-nowrap">
-						<a class="underline" :href="company['web']" target="_blank">{{ company["web"] }}</a>
+					<div class="break-words">
+						<TableCellText :value="company['web']"><a class="underline" :href="company['web']" target="_blank">{{ company["web"] }}</a></TableCellText>
 					</div>
 				</td>
 
 				<td data-label="Adresa">
-					<div class="overflow-x-auto whitespace-nowrap">
-						{{ company["adresa"] }}
+					<div class="break-words">
+						<TableCellText :value="company['adresa']" />
 					</div>
 				</td>
 
@@ -149,36 +149,36 @@ const goToCompanyWeb = (url) => {
 				</td>
 
 				<td data-label="Naziv">
-					<div class="overflow-x-auto whitespace-nowrap">
-						{{ company["naziv"] }}
+					<div class="break-words">
+						<TableCellText :value="company['naziv']" />
 					</div>
 				</td>
 				<td data-label="Web">
-					<div class="overflow-x-auto whitespace-nowrap">
-						<a class="underline" :href="company['web']" target="_blank">{{ company["web"] }}</a>
+					<div class="break-words">
+						<TableCellText :value="company['web']"><a class="underline" :href="company['web']" target="_blank">{{ company["web"] }}</a></TableCellText>
 					</div>
 				</td>
 				<td data-label="Direktor">
-					<div class="overflow-x-auto whitespace-nowrap">
-						{{ company["direktor"] }}
+					<div class="break-words">
+						<TableCellText :value="company['direktor']" />
 					</div>
 				</td>
 
 				<td data-label="Matični broj">
-					<div class="overflow-x-auto whitespace-nowrap">
-						{{ company["maticni_broj"] }}
+					<div class="break-words">
+						<TableCellText :value="company['maticni_broj']" />
 					</div>
 				</td>
 
 				<td data-label="OIB">
-					<div class="overflow-x-auto whitespace-nowrap">
-						{{ company["OIB"] }}
+					<div class="break-words">
+						<TableCellText :value="company['OIB']" />
 					</div>
 				</td>
 
 				<td data-label="Adresa">
-					<div class="overflow-x-auto whitespace-nowrap">
-						{{ company["adresa"] }}
+					<div class="break-words">
+						<TableCellText :value="company['adresa']" />
 					</div>
 				</td>
 

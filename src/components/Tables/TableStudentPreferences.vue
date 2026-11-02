@@ -1,4 +1,5 @@
 <script setup>
+import TableCellText from "@/components/Tables/TableCellText.vue";
 import CardBoxComponentEmpty from "@/components/Cardbox/CardBoxComponentEmpty.vue";
 import { ref, onMounted } from "vue";
 
@@ -80,10 +81,10 @@ onMounted(async () => {
 					'cursor-pointer': true,
 				}"
 				@click="selectAssignment(assignment)">
-				<td data-label="Odabir">{{ order }}</td>
-				<td data-label="ID Zadatka">{{ assignment["id_zadatak"] }}</td>
-				<td data-label="Kontakt email">{{ assignment["poslodavac_email"] }}</td>
-				<td data-label="Lokacija">{{ assignment["lokacija"] }}</td>
+				<td data-label="Odabir"><TableCellText :value="order" /></td>
+				<td data-label="ID Zadatka"><TableCellText :value="assignment['id_zadatak']" /></td>
+				<td data-label="Kontakt email"><TableCellText :value="assignment['poslodavac_email']" /></td>
+				<td data-label="Lokacija"><TableCellText :value="assignment['lokacija']" /></td>
 				<td class="whitespace-nowrap before:hidden lg:w-1">
 					<BaseButtons type="justify-start lg:justify-end" no-wrap>
 						<BaseButton color="fipu_blue" :icon="mdiEye" small @click="isModalActive = assignment" />

@@ -1,4 +1,5 @@
 <script setup>
+import TableCellText from "@/components/Tables/TableCellText.vue";
 import CardBoxComponentEmpty from "@/components/Cardbox/CardBoxComponentEmpty.vue";
 import BasePagination from "@/components/Base/BasePagination.vue";
 import { usePagination } from "@/composables/usePagination.js";
@@ -201,7 +202,7 @@ const { perPage, currentPage, itemsPaginated: companiesPaginated, numPages, curr
 				<td data-label="Naziv">
 					<FieldRoot>
 						<FieldLabel as="div" :native-label="false" class="sr-only">Naziv</FieldLabel>
-						<FormControl v-model="companyForms[company.id].naziv" readonly></FormControl>
+						<TableCellText :value="companyForms[company.id].naziv" />
 					</FieldRoot>
 				</td>
 

@@ -40,28 +40,28 @@
 					</td>
 
 					<td data-label="ID Zadatka">
-						{{ assignment["id_zadatak"] }}
+						<TableCellText :value="assignment['id_zadatak']" />
 					</td>
 					<td data-label="Kontakt email" class="break-all">
-						{{ assignment["poslodavac_email"] }}
+						<TableCellText :value="assignment['poslodavac_email']" />
 					</td>
-					<td data-label="Preferirane tehnologije" class="max-w-[100px] truncate">
-						{{ assignment["preferirane_tehnologije"] }}
+					<td data-label="Preferirane tehnologije" class="break-words lg:max-w-[200px]">
+						<TableCellText :value="assignment['preferirane_tehnologije']" />
 					</td>
 
 					<td data-label="Trajanje (sati)">
-						{{ assignment["trajanje_sati"] }}
+						<TableCellText :value="assignment['trajanje_sati']" />
 					</td>
 					<td data-label="Lokacija">
-						{{ assignment["lokacija"] }}
+						<TableCellText :value="assignment['lokacija']" />
 					</td>
 
 					<td v-if="mainStore.userAdmin" data-label="Max. studenata">
-						{{ assignment["broj_studenata"] }}
+						<TableCellText :value="assignment['broj_studenata']" />
 					</td>
 
 					<td v-if="mainStore.userAdmin" data-label="Dostupno mjesta">
-						{{ assignment["dostupno_mjesta"] }}
+						<TableCellText :value="assignment['dostupno_mjesta']" />
 					</td>
 
 					<td class="whitespace-nowrap before:hidden lg:w-1">
@@ -87,17 +87,17 @@
 </template>
 
 <script setup>
+import TableCellText from "@/components/Tables/TableCellText.vue";
 import { fetchAvailableAssignments } from "@/services/baserow_client_api";
 
 import CardBoxComponentEmpty from "@/components/Cardbox/CardBoxComponentEmpty.vue";
 import BasePagination from "@/components/Base/BasePagination.vue";
-import { usePagination } from "@/composables/usePagination.js";
+import { usePagination, tableButtonMenuOptions } from "@/composables/usePagination.js";
 import { computed, ref, onMounted, watch } from "vue";
 
 import SkeletonLoaderAssignmentRow from "@/components/SkeletonLoaderAssignmentRow.vue";
 import CardboxAllocation from "@/components/Cardbox/CardBoxAllocation.vue";
 import TableCheckboxCell from "@/components/Tables/TableCheckboxCell.vue";
-import { tableButtonMenuOptions } from "@/tableButtonMenuOptions.js";
 import CardBoxModal from "@/components/Cardbox/CardBoxModal.vue";
 import ButtonMenu from "@/components/Premium/ButtonMenu.vue";
 import LoadingOverlay from "@/components/LoadingOverlay.vue";

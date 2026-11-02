@@ -1,11 +1,11 @@
 <script setup>
+import TableCellText from "@/components/Tables/TableCellText.vue";
 import CardBoxComponentEmpty from "@/components/Cardbox/CardBoxComponentEmpty.vue";
 import BasePagination from "@/components/Base/BasePagination.vue";
-import { usePagination } from "@/composables/usePagination.js";
+import { usePagination, tableButtonMenuOptions } from "@/composables/usePagination.js";
 import { computed, ref, onMounted } from "vue";
 
 import TableCheckboxCell from "@/components/Tables/TableCheckboxCell.vue";
-import { tableButtonMenuOptions } from "@/tableButtonMenuOptions.js";
 import { useMainStore } from "@/stores/main_store";
 import { useStudentStore } from "@/stores/student_store";
 import { useAdminStore } from "@/stores/admin_store";
@@ -36,7 +36,10 @@ onMounted(async () => {
 });
 
 const filteredAllocations = computed(() => {
-	return allocations.value.filter((allocation) => allocation["Alocirani_zadatak"] !== null);
+	return allocations.value.filter((allocation) => allocation["Alocirani_zadatak"] !== null).map((allocation) => ({
+		...allocation,
+		model: adminStore.students.find((student) => student.process_instance_data.variables.JMBAG == allocation.JMBAG)?.Model_prakse?.value,
+	}));
 });
 
 function getVariableByIdAlokacija(id_alokacija, variableName) {
@@ -70,10 +73,10 @@ const { perPage, currentPage, itemsPaginated: allocationsPaginated, numPages, cu
 	<table v-if="filteredAllocations.length || !dataLoaded">
 		<thead>
 			<tr>
-				<th>Ime i prezime</th>
-				<th>JMBAG</th>
+				<th>Ime</th>
+				<th>Prezime</th>
+				<th>A/B</th>
 				<th>Alocirani zadatak</th>
-				<th>Poduzeće kontakt</th>
 				<th v-if="mainStore.userAdmin">Status zahtjeva</th>
 				<th>Prijavnica ispunjena</th>
 				<th>Dnevnik prakse predan</th>
@@ -82,20 +85,19 @@ const { perPage, currentPage, itemsPaginated: allocationsPaginated, numPages, cu
 		<tbody>
 			<tr v-for="allocation in allocationsPaginated" :key="allocation['id_alokacija']">
 				<TableCheckboxCell v-if="checkable" :assignment-data="company" />
-				<td data-label="Ime i prezime">
-					{{ getVariableByJMBAG(allocation["JMBAG"], "student_ime") }}
-					{{ getVariableByJMBAG(allocation["JMBAG"], "student_prezime") }}
+				<td data-label="Ime">
+					<TableCellText :value="getVariableByJMBAG(allocation['JMBAG'], 'student_ime')" />
 				</td>
-				<td data-label="JMBAG">
-					{{ allocation["JMBAG"] }}
+				<td data-label="Prezime">
+					<TableCellText :value="getVariableByJMBAG(allocation['JMBAG'], 'student_prezime')" />
+				</td>
+				<td data-label="A/B" class="lg:text-center">
+					<PillTag v-if="allocation.model" :color="allocation.model === 'A' ? 'danger' : 'success'" :label="allocation.model" />
 				</td>
 				<td data-label="Alocirani zadatak" class="underline hover:text-fipu_blue">
-					<router-link :to="`/zadaci/${allocation['Alocirani_zadatak']}`">{{ allocation["Alocirani_zadatak"] }}</router-link>
+					<TableCellText :value="allocation['Alocirani_zadatak']"><router-link :to="`/zadaci/${allocation['Alocirani_zadatak']}`">{{ allocation["Alocirani_zadatak"] }}</router-link></TableCellText>
 				</td>
 
-				<td data-label="Kontakt">
-					{{ allocation["poslodavac_email"] }}
-				</td>
 				<td v-if="mainStore.userAdmin" data-label="Status zahtjeva">
 					<PillTag :label="StudentMappings.getStatusProperty(allocation['status_zahtjeva']['value'], 'label')" :color="StudentMappings.getStatusProperty(allocation['status_zahtjeva']['value'], 'color')"></PillTag>
 				</td>
