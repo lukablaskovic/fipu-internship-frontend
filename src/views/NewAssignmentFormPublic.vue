@@ -1,10 +1,10 @@
 <script setup>
 import { submitNewInternshipProject } from "@/services/baserow_client_api";
 
-import { appConfig } from "@/config";
+import { appConfig, endpoints } from "@/config";
 
 import { mdiBallot, mdiNewBox, mdiEmail, mdiLaptop, mdiDomain, mdiMapMarker, mdiClipboardTextClockOutline, mdiAccountGroup, mdiSchool, mdiTextLong, mdiXml, mdiThumbsUpDown, mdiClockTimeFiveOutline, mdiNoteTextOutline } from "@mdi/js";
-import { ref, reactive, onMounted, watch, computed, nextTick } from "vue";
+import { ref, reactive, onMounted, watch, computed, nextTick, toRefs } from "vue";
 import { Stepper } from "reka-ui/namespaced";
 import SectionMain from "@/components/Section/SectionMain.vue";
 import UserAvatar from "@/components/User/UserAvatar.vue";
@@ -60,9 +60,16 @@ const DEFAULT_FORM_VALUES = {
 };
 
 const form = reactive({ ...DEFAULT_FORM_VALUES, new_company: emptyCompany() });
+const partnerType = ref("");
+const partnerOptions = [
+	"Prijavljujem zadatak kao postojeći partner s Fakultetom",
+	"Prijavljujem zadatak kao novi partner s Fakultetom",
+];
+const isNewPartner = computed(() => partnerType.value === partnerOptions[1]);
 const currentStep = ref(1);
 const stepPanel = ref(null);
 const steps = [
+	{ title: "Partnerstvo", description: "Postojeći ili novi partner", fields: ["partnerType"] },
 	{ title: "Poslodavac", description: "Organizacija i kontakt", fields: ["Poslodavac", "Poslodavac_novi_naziv", "new_company", "poslodavac_email"] },
 	{ title: "Zadatak i studenti", description: "Opis i očekivanja", fields: ["opis_zadatka", "preferirane_tehnologije", "broj_studenata", "preferencije_za_studenta", "potrebno_imati"] },
 	{ title: "Organizacija prakse", description: "Termin, lokacija i selekcija", fields: ["trajanje_sati", "lokacija", "zeljeno_okvirno_vrijeme_pocetka", "angazman_selekcija", "angazman_fipu", "napomena", "selekcija", "proces_selekcije"] },
@@ -80,19 +87,10 @@ const companyRules = {
 };
 
 const rules = reactive({
-	Poslodavac: computed(() => {
-		if (form.Poslodavac_novi_naziv) return {};
-		return {
-			required: helpers.withMessage("Polje je obavezno", required),
-		};
-	}),
-	Poslodavac_novi_naziv: computed(() => {
-		if (form.Poslodavac) return {};
-		return {
-			required: helpers.withMessage("Polje je obavezno", required),
-		};
-	}),
-	new_company: computed(() => form.Poslodavac_novi_naziv.trim() ? companyRules : {}),
+	partnerType: { required: requiredField },
+	Poslodavac: computed(() => isNewPartner.value ? {} : { required: requiredField }),
+	Poslodavac_novi_naziv: computed(() => isNewPartner.value ? { required: requiredField } : {}),
+	new_company: computed(() => isNewPartner.value ? companyRules : {}),
 	poslodavac_email: {
 		required: helpers.withMessage("Polje je obavezno", required),
 		email: helpers.withMessage("Molimo unesite ispravnu e-mail adresu", email),
@@ -144,7 +142,7 @@ const rules = reactive({
 
 const isLoading = ref(false);
 
-const v$ = useVuelidate(rules, form);
+const v$ = useVuelidate(rules, { ...toRefs(form), partnerType });
 
 async function showStep(step, focusInvalid = false) {
 	currentStep.value = step;
@@ -170,6 +168,7 @@ function resetForm(notify = true) {
 	for (const key in DEFAULT_FORM_VALUES) {
 		form[key] = DEFAULT_FORM_VALUES[key];
 	}
+	partnerType.value = "";
 	form.new_company = emptyCompany();
 	v$.value.$reset();
 	showStep(1);
@@ -231,6 +230,13 @@ async function refreshCompanies() {
 
 onMounted(refreshCompanies);
 
+watch(partnerType, () => {
+	form.Poslodavac = "";
+	form.Poslodavac_novi_naziv = "";
+	form.new_company = emptyCompany();
+	for (const field of steps[1].fields) v$.value[field].$reset();
+});
+
 watch(
 	() => form.selekcija,
 	(newValue) => {
@@ -245,7 +251,7 @@ watch(
 	<div>
 		<SectionMain>
 			<SectionTitleLineWithButton :icon="mdiLaptop" title="FIPU Praksa" main>
-				<a href="https://fipu-praksa.unipu.hr/" target="_blank">
+				<a :href="endpoints.VITE_FRONTEND_URL" target="_blank">
 					<img :src="FIPU_praksa_logo_transparent" class="max-h-14 object-contain" />
 				</a>
 			</SectionTitleLineWithButton>
@@ -296,40 +302,36 @@ watch(
 				</div>
 			</div>
 			<div class="mb-6 grid grid-cols-1 gap-6">
-				<CardBox :icon="mdiBallot" class="mb-6 lg:col-span-2 lg:mb-0 xl:col-span-3" is-form novalidate @submit.prevent="onSubmit">
+				<CardBox :icon="mdiBallot" class="mb-6 lg:col-span-2 lg:mb-0 xl:col-span-3 [&>div]:min-w-0" is-form novalidate @submit.prevent="onSubmit">
 					<CardBoxComponentTitle class="text-center" title="💼 Prijava projekta za studentsku praksu " />
 
 					<Stepper.Root :model-value="currentStep" class="mb-8 flex items-start" aria-label="Koraci prijave zadatka" @update:model-value="goToStep">
 						<Stepper.Item v-for="(step, index) in steps" :key="step.title" :step="index + 1" :disabled="isLoading" class="group relative flex min-w-0 flex-1 flex-col items-center">
 							<Stepper.Trigger class="relative z-10 flex w-full flex-col items-center gap-2 rounded p-1 text-center focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-fipu_blue disabled:cursor-not-allowed" @mousedown.left.prevent>
-								<Stepper.Indicator class="flex h-10 w-10 items-center justify-center rounded-full border-2 border-gray-300 bg-white font-semibold text-gray-600 group-data-[state=active]:border-fipu_blue group-data-[state=active]:bg-fipu_blue group-data-[state=active]:text-slate-900 group-data-[state=completed]:border-fipu_blue group-data-[state=completed]:text-slate-900 group-data-[state=completed]:dark:text-slate-100 dark:border-slate-600 dark:bg-slate-900 dark:text-slate-300">{{ index + 1 }}</Stepper.Indicator>
+								<Stepper.Indicator class="flex h-10 w-10 items-center justify-center rounded-full transition-colors duration-200 motion-reduce:transition-none border-2 border-gray-300 bg-white font-semibold text-gray-600 group-data-[state=active]:border-fipu_blue group-data-[state=active]:bg-fipu_blue group-data-[state=active]:text-slate-900 group-data-[state=completed]:border-fipu_blue group-data-[state=completed]:text-slate-900 group-data-[state=completed]:dark:text-slate-100 dark:border-slate-600 dark:bg-slate-900 dark:text-slate-300">{{ index + 1 }}</Stepper.Indicator>
 								<Stepper.Title class="text-sm font-semibold sm:text-base">{{ step.title }}</Stepper.Title>
 								<Stepper.Description class="hidden text-sm text-gray-600 dark:text-slate-300 sm:block">{{ step.description }}</Stepper.Description>
 							</Stepper.Trigger>
-							<Stepper.Separator v-if="index < steps.length - 1" class="absolute left-1/2 top-6 h-px w-full bg-gray-300 group-data-[state=completed]:bg-fipu_blue dark:bg-slate-600" />
+							<Stepper.Separator v-if="index < steps.length - 1" class="absolute left-1/2 top-6 h-px w-full transition-colors duration-200 motion-reduce:transition-none bg-gray-300 group-data-[state=completed]:bg-fipu_blue dark:bg-slate-600" />
 						</Stepper.Item>
 					</Stepper.Root>
 
-					<div ref="stepPanel">
+					<div :key="currentStep" ref="stepPanel" class="assignment-step-panel">
 						<h2 id="assignment-step-title" tabindex="-1" class="mb-6 text-xl font-semibold focus:outline-none">{{ currentStep }}. {{ steps[currentStep - 1].title }}</h2>
 						<fieldset v-if="currentStep === 1" :disabled="isLoading" aria-labelledby="assignment-step-title" class="min-w-0">
-							<FormField name="Poslodavac" label="Postojeći partner*" horizontal help="Ako niste partner, unesite naziv organizacije ispod." :error="getFirstErrorForField(v$, 'Poslodavac')" :disabled="!!form.Poslodavac_novi_naziv">
-								<FormCombobox v-model="form.Poslodavac" :disabled="!!form.Poslodavac_novi_naziv" :list="mappedCompanies" label-name="label" emit-name="label" />
+							<FormField name="partnerType" label="Prijavljujem zadatak*" :error="getFirstErrorForField(v$, 'partnerType')">
+								<FormControl v-model="partnerType" class="[&_button]:!h-auto [&_button]:min-h-[3rem]" :options="partnerOptions" placeholder="Odaberite status partnerstva" required />
+							</FormField>
+						</fieldset>
+						<fieldset v-if="currentStep === 2" :disabled="isLoading" aria-labelledby="assignment-step-title" class="min-w-0">
+							<FormField v-if="!isNewPartner" name="Poslodavac" label="Postojeći partner*" horizontal :error="getFirstErrorForField(v$, 'Poslodavac')">
+								<FormCombobox v-model="form.Poslodavac" :list="mappedCompanies" label-name="label" emit-name="label" />
 							</FormField>
 
-							<div class="mb-4 sm:mb-12">ili</div>
-
-							<FormField
-								name="Poslodavac_novi_naziv"
-								label="Naziv organizacije*"
-								horizontal
-								help="Ovdje unesite naziv organizacije ako ste novi partner (nema vas u dropdown obrascu iznad)"
-								:error="getFirstErrorForField(v$, 'Poslodavac_novi_naziv')"
-								:disabled="!!form.Poslodavac">
-								<FormControl v-model="form.Poslodavac_novi_naziv" :disabled="form.Poslodavac != ''" :icon-left="mdiDomain" placeholder="Naziv organizacije" />
-							</FormField>
-
-							<template v-if="form.Poslodavac_novi_naziv.trim()">
+							<template v-else>
+								<FormField name="Poslodavac_novi_naziv" label="Naziv organizacije*" horizontal :error="getFirstErrorForField(v$, 'Poslodavac_novi_naziv')">
+									<FormControl v-model="form.Poslodavac_novi_naziv" :icon-left="mdiDomain" placeholder="Naziv organizacije" />
+								</FormField>
 								<FormField v-for="(label, key) in companyFields" :key="key" :name="key" :label="label + '*'" horizontal :error="getFirstErrorForField(v$, key)">
 									<FormControl v-model.trim="form.new_company[key]" :type="key === 'web' ? 'url' : 'text'" :placeholder="key === 'web' ? 'https://primjer.hr' : label" required />
 								</FormField>
@@ -345,7 +347,7 @@ watch(
 							</FormField>
 
 						</fieldset>
-						<fieldset v-if="currentStep === 2" :disabled="isLoading" aria-labelledby="assignment-step-title" class="min-w-0">
+						<fieldset v-if="currentStep === 3" :disabled="isLoading" aria-labelledby="assignment-step-title" class="min-w-0">
 							<FormField
 								name="opis_zadatka"
 								label="Detaljan opis zadatka*"
@@ -389,7 +391,7 @@ watch(
 							</FormField>
 
 						</fieldset>
-						<fieldset v-if="currentStep === 3" :disabled="isLoading" aria-labelledby="assignment-step-title" class="min-w-0">
+						<fieldset v-if="currentStep === 4" :disabled="isLoading" aria-labelledby="assignment-step-title" class="min-w-0">
 							<FormField
 								name="trajanje_sati"
 								label="Željeno trajanje prakse*"
@@ -473,4 +475,25 @@ watch(
 	</div>
 </template>
 
-<style></style>
+<style scoped>
+.assignment-step-panel {
+	animation: assignment-step-enter 200ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes assignment-step-enter {
+	from {
+		opacity: 0;
+		transform: translateY(6px);
+	}
+	to {
+		opacity: 1;
+		transform: translateY(0);
+	}
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.assignment-step-panel {
+		animation: none;
+	}
+}
+</style>
