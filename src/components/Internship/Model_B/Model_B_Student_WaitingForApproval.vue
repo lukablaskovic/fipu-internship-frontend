@@ -3,7 +3,7 @@ import { appConfig } from "@/config";
 
 import { mdiProgressClock, mdiLaptop, mdiNewBox } from "@mdi/js";
 import IconTextLink from "@/components/IconTextLink.vue";
-import { computed, onMounted } from "vue";
+import { computed } from "vue";
 
 import LayoutAuthenticated from "@/layouts/LayoutAuthenticated.vue";
 import LayoutGuest from "@/layouts/LayoutGuest.vue";
@@ -13,15 +13,8 @@ import SectionTitleLineWithButton from "@/components/Section/SectionTitleLineWit
 import SectionMain from "@/components/Section/SectionMain.vue";
 
 import { useMainStore } from "@/stores/main_store";
-import { useStudentStore } from "@/stores/student_store";
 
 const mainStore = useMainStore();
-const studentStore = useStudentStore();
-
-
-onMounted(async () => {
-	await studentStore.getInstanceInfo(mainStore.currentUser.internship_process.id);
-});
 
 const Layout = computed(() => {
 	if (mainStore.userAuthenticated) {

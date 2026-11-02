@@ -21,9 +21,9 @@ const mainStore = useMainStore();
 const studentStore = useStudentStore();
 
 
-const prviOdabir = ref(null);
-const drugiOdabir = ref(null);
-const treciOdabir = ref(null);
+const prviOdabir = computed(() => studentStore.student_process_instance_data.variables["Prvi_odabir"][0]);
+const drugiOdabir = computed(() => studentStore.student_process_instance_data.variables["Drugi_odabir"][0]);
+const treciOdabir = computed(() => studentStore.student_process_instance_data.variables["Treci_odabir"][0]);
 
 let prviOdabirDetails = ref(null);
 let drugiOdabirDetails = ref(null);
@@ -47,11 +47,6 @@ async function fetchCompanyLogo(companyName) {
 }
 
 onMounted(async () => {
-	let result = await studentStore.getInstanceInfo(mainStore.currentUser.internship_process.id);
-
-	prviOdabir.value = result.variables["Prvi_odabir"][0];
-	drugiOdabir.value = result.variables["Drugi_odabir"][0];
-	treciOdabir.value = result.variables["Treci_odabir"][0];
 
 	prviOdabirDetails.value = await fetchAssignmentDetails(prviOdabir.value);
 	drugiOdabirDetails.value = await fetchAssignmentDetails(drugiOdabir.value);
