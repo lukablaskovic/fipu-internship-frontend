@@ -104,12 +104,12 @@ onMounted(async () => {
 			<p class="mb-6">Aktivna godina: <strong>{{ index?.active_year || "2026/2027" }}</strong>. Arhivirani podaci dostupni su samo za pregled.</p>
 			<p v-if="error" role="alert" class="mb-4 text-red-600">{{ error }}</p>
 			<CardBox v-if="index" class="mb-6">
-				<div class="grid gap-4 md:grid-cols-3">
+				<div class="grid items-start gap-4 md:grid-cols-3 [&>*]:mb-0">
 					<FormField label="Akademska godina"><FormControl v-model="year" :options="index.years.map((item) => item.year)" /></FormField>
 					<FormField label="Tablica"><FormControl v-model="table" :options="Object.keys(snapshot?.tables || { Student: [] })" @update:model-value="changeTable" /></FormField>
 					<FormField label="Pretraži arhivu"><FormControl v-model="search" type="search" placeholder="Ime, JMBAG ili drugi podatak" /></FormField>
 				</div>
-				<BaseButton v-if="databaseUrl" :href="databaseUrl" target="_blank" label="Otvori godinu u lokalnom Baserowu" small />
+				<BaseButton v-if="databaseUrl" :href="databaseUrl" target="_blank" class="mt-4" color="info" outline label="Otvori godinu u lokalnom Baserowu" small />
 			</CardBox>
 			<p v-if="loading" role="status">Učitavanje arhive…</p>
 			<template v-if="snapshot">
