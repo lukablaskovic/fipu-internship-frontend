@@ -37,6 +37,9 @@ import FIPU_praksa_logo_transparent from "/FIPU_praksa_logo_transparent.svg";
 const mainStore = useMainStore();
 const snackBarStore = useSnackBarStore();
 
+const companyFields = { web: "Web-stranica", direktor: "Ime i prezime direktora", maticni_broj: "Matični broj", OIB: "OIB", adresa: "Adresa sjedišta" };
+const emptyCompany = () => Object.fromEntries(Object.keys(companyFields).map((key) => [key, ""]));
+
 const DEFAULT_FORM_VALUES = {
 	Poslodavac: "",
 	Poslodavac_novi_naziv: "",
@@ -56,16 +59,25 @@ const DEFAULT_FORM_VALUES = {
 	proces_selekcije: "",
 };
 
-const form = reactive({ ...DEFAULT_FORM_VALUES });
+const form = reactive({ ...DEFAULT_FORM_VALUES, new_company: emptyCompany() });
 const currentStep = ref(1);
 const stepPanel = ref(null);
 const steps = [
-	{ title: "Poslodavac", description: "Organizacija i kontakt", fields: ["Poslodavac", "Poslodavac_novi_naziv", "poslodavac_email"] },
+	{ title: "Poslodavac", description: "Organizacija i kontakt", fields: ["Poslodavac", "Poslodavac_novi_naziv", "new_company", "poslodavac_email"] },
 	{ title: "Zadatak i studenti", description: "Opis i očekivanja", fields: ["opis_zadatka", "preferirane_tehnologije", "broj_studenata", "preferencije_za_studenta", "potrebno_imati"] },
 	{ title: "Organizacija prakse", description: "Termin, lokacija i selekcija", fields: ["trajanje_sati", "lokacija", "zeljeno_okvirno_vrijeme_pocetka", "angazman_selekcija", "angazman_fipu", "napomena", "selekcija", "proces_selekcije"] },
 ];
 
 const greaterThanZero = (value) => value > 0;
+
+const requiredField = helpers.withMessage("Polje je obavezno", required);
+const companyRules = {
+	web: { required: requiredField, url: helpers.withMessage("Unesite web-adresu koja počinje s https:// ili http://", helpers.regex(/^https?:\/\/[^\s/\\?#]+[^\s\\]*$/i)) },
+	direktor: { required: requiredField },
+	maticni_broj: { required: requiredField, digits: helpers.withMessage("Unesite matični broj znamenkama", helpers.regex(/^[0-9]+$/)) },
+	OIB: { required: requiredField, digits: helpers.withMessage("OIB mora imati 11 znamenki", helpers.regex(/^[0-9]{11}$/)) },
+	adresa: { required: requiredField },
+};
 
 const rules = reactive({
 	Poslodavac: computed(() => {
@@ -80,6 +92,7 @@ const rules = reactive({
 			required: helpers.withMessage("Polje je obavezno", required),
 		};
 	}),
+	new_company: computed(() => form.Poslodavac_novi_naziv.trim() ? companyRules : {}),
 	poslodavac_email: {
 		required: helpers.withMessage("Polje je obavezno", required),
 		email: helpers.withMessage("Molimo unesite ispravnu e-mail adresu", email),
@@ -157,6 +170,7 @@ function resetForm(notify = true) {
 	for (const key in DEFAULT_FORM_VALUES) {
 		form[key] = DEFAULT_FORM_VALUES[key];
 	}
+	form.new_company = emptyCompany();
 	v$.value.$reset();
 	showStep(1);
 	if (notify) snackBarStore.pushMessage("Forma resetirana.", "success");
@@ -314,6 +328,12 @@ watch(
 								:disabled="!!form.Poslodavac">
 								<FormControl v-model="form.Poslodavac_novi_naziv" :disabled="form.Poslodavac != ''" :icon-left="mdiDomain" placeholder="Naziv organizacije" />
 							</FormField>
+
+							<template v-if="form.Poslodavac_novi_naziv.trim()">
+								<FormField v-for="(label, key) in companyFields" :key="key" :name="key" :label="label + '*'" horizontal :error="getFirstErrorForField(v$, key)">
+									<FormControl v-model.trim="form.new_company[key]" :type="key === 'web' ? 'url' : 'text'" :placeholder="key === 'web' ? 'https://primjer.hr' : label" required />
+								</FormField>
+							</template>
 
 							<FormField
 								name="poslodavac_email"
