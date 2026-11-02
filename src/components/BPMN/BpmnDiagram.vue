@@ -6,13 +6,10 @@ import BaseButton from "@/components/Base/BaseButton.vue";
 import Diagram from "@fipu/bpmn/BpmnDiagram.vue";
 import { parseModel } from "@fipu/bpmn/model";
 import { UserTaskMappings, SendTaskMappings } from "@/helpers/maps";
-import { pathToTask, taskAction } from "@/helpers/bpmn-state";
 
 const props = defineProps({
 	xml: { type: String, required: true },
-	highlightColor: { type: String, default: "#79d4f2" },
-	highlightElementId: { type: String, default: "" },
-	currentOrder: { type: Number, required: true },
+	instance: { type: Object, required: true },
 });
 const emit = defineEmits(["currentTaskModal", "pastTaskModal", "sendTaskModal"]);
 const diagram = shallowRef(null);
@@ -27,29 +24,28 @@ watch(() => props.xml, (xml) => {
 		error.value = "BPMN prikaz nije moguće učitati. Osvježite stranicu ili kontaktirajte voditelja prakse.";
 	}
 }, { immediate: true });
-const path = computed(() => model.value ? pathToTask(model.value, props.highlightElementId) : []);
-const completed = computed(() => {
-	const ids = new Set(path.value.filter((id) => id !== props.highlightElementId));
-	for (const id of ids) {
-		if (model.value.nodes.find((node) => node.id === id)?.type === "parallelGateway") {
-			for (const flow of model.value.flows.filter((item) => item.sourceRef === id)) ids.add(flow.targetRef);
-		}
+const highlights = computed(() => {
+	const colors = Object.fromEntries((props.instance.completed_activity_ids ?? []).map(id => [id, "#86efac"]));
+	for (const id of props.instance.pending) {
+		const task = UserTaskMappings.tasks.find(task => task._id === id);
+		colors[id] = task?.bpmn_task_color ?? "#79d4f2";
 	}
-	ids.delete(props.highlightElementId);
-	return [...ids];
+	return colors;
 });
-const highlights = computed(() => ({
-	...Object.fromEntries(completed.value.map((id) => [id, "#86efac"])),
-	...(props.highlightElementId ? { [props.highlightElementId]: props.highlightColor } : {}),
-}));
-const completedSendIds = computed(() => completed.value.filter((id) => SendTaskMappings.tasks.some((task) => task._id === id)));
+
 function select(id) {
-	const node = model.value.nodes.find((item) => item.id === id);
+	const node = model.value.nodes.find(node => node.id === id);
 	if (!node) return;
-	const action = taskAction(node, props.currentOrder, UserTaskMappings.tasks, completedSendIds.value);
-	if (action) {
-		emit(action, { id, type: `bpmn:${node.type[0].toUpperCase()}${node.type.slice(1)}` });
+	const userTask = node.type === "userTask" && UserTaskMappings.tasks.some(task => task._id === id);
+	if (props.instance.pending.includes(id)) {
+		if (userTask && id !== "evaluacija_poslodavac" && props.instance.state === "running" && !props.instance.active_event) {
+			emit("currentTaskModal", { id });
+		}
+		return;
 	}
+	if (!props.instance.completed_activity_ids?.includes(id)) return;
+	if (userTask) emit("pastTaskModal", { id });
+	else if (node.type === "sendTask" && SendTaskMappings.tasks.some(task => task._id === id)) emit("sendTaskModal", { id });
 }
 </script>
 

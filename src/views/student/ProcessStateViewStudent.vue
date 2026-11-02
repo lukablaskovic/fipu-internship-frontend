@@ -21,9 +21,7 @@ import BpmnDiagram from "@/components/BPMN/BpmnDiagram.vue";
 const mainStore = useMainStore();
 
 const selectedTaskId = ref("");
-const modal_select_bpmn_task = ref(false);
 const modal_past_bpmn_task = ref(false);
-const modal_send_task = ref(false);
 
 const userAuthenticated = computed(() => mainStore.userAuthenticated);
 
@@ -76,7 +74,7 @@ onMounted(async () => {
 					<hr class="my-4" />
 					<p>Pronašli ste pogrešku? Molimo da kontaktirate voditelja prakse.</p>
 					<!-- Modal for past tasks (without FormDynamic) -->
-					<CardBoxModal v-if="modal_past_bpmn_task" v-model="modal_past_bpmn_task" :title="UserTaskMappings.getTaskProperty(selectedTaskId, 'form_title', process_instance_data['state'])" button-label="Povratak">
+					<CardBoxModal v-if="modal_past_bpmn_task" v-model="modal_past_bpmn_task" :title="UserTaskMappings.getTaskProperty(selectedTaskId, 'form_title')" button-label="Povratak">
 						<p class="mb-2">Ovaj zadatak je već obavljen.</p>
 						<TableInstanceData :instance-id="process_instance_data.id" :task-id="selectedTaskId" :variables="process_instance_data.variables" />
 					</CardBoxModal>
@@ -89,12 +87,8 @@ onMounted(async () => {
 					:key="selectedAttempt"
 					class="mt-12"
 					:xml="bpmn_model"
-					:current-order="UserTaskMappings.getTaskProperty(process_instance_data.pending[0], 'order', process_instance_data['state'])"
-					:highlight-color="UserTaskMappings.getTaskProperty(process_instance_data.pending[0], 'bpmn_task_color', process_instance_data['state'])"
-					:highlight-element-id="process_instance_data.pending[0] || UserTaskMappings.getTaskProperty(process_instance_data.pending[0], '_id', process_instance_data['state'])"
-					@current-task-modal="modal_select_bpmn_task = true"
-					@past-task-modal="selectedTaskId = $event.id; modal_past_bpmn_task = true"
-					@send-task-modal="modal_send_task = true" />
+					:instance="process_instance_data"
+					@past-task-modal="selectedTaskId = $event.id; modal_past_bpmn_task = true" />
 				<div v-else-if="process_instance_data" class="flex items-center justify-center pt-36">
 					<LoadingAnimatedIcon></LoadingAnimatedIcon>
 				</div>

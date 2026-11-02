@@ -19,6 +19,7 @@ export interface ProcessInstanceData {
 		[key: string]: any;
 	};
 	pending: string[];
+	completed_activity_ids?: string[];
 	state: string;
 	model: { model_path: string; version: number | null };
 	[key: string]: any;

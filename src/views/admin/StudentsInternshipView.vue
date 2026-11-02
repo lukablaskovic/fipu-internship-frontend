@@ -285,9 +285,7 @@ onMounted(loadDataForStudent);
 							v-if="bpmn_model && process_instance_data"
 							class="bpmn-dialog-canvas"
 							:xml="bpmn_model"
-							:current-order="UserTaskMappings.getTaskProperty(process_instance_data.pending[0], 'order', process_instance_data['state'])"
-							:highlight-color="UserTaskMappings.getTaskProperty(process_instance_data.pending[0], 'bpmn_task_color', process_instance_data['state'])"
-							:highlight-element-id="process_instance_data.pending[0] || UserTaskMappings.getTaskProperty(process_instance_data.pending[0], '_id', process_instance_data['state'])"
+							:instance="process_instance_data"
 							@current-task-modal="selectedTaskId = $event.id; modal_select_bpmn_task = true"
 							@past-task-modal="selectedTaskId = $event.id; modal_past_bpmn_task = true"
 							@send-task-modal="selectedTaskId = $event.id; modal_send_task = true" />
@@ -300,7 +298,7 @@ onMounted(loadDataForStudent);
 							v-model="modal_select_bpmn_task"
 							is-bpmn
 							description="Trenutni korak procesa prakse."
-							:title="UserTaskMappings.getTaskProperty(process_instance_data.pending[0], 'form_title', process_instance_data['state'])"
+							:title="UserTaskMappings.getTaskProperty(selectedTaskId, 'form_title')"
 							button-label="Potvrda"
 							has-cancel
 							:has-confirm="!!coordinatorTask"
