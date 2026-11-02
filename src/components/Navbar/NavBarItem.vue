@@ -17,6 +17,7 @@ const mainStore = useMainStore();
 
 
 const props = defineProps({
+	isSubmenu: Boolean,
 	item: {
 		type: Object,
 		required: true,
@@ -44,12 +45,12 @@ const componentClass = computed(() => {
 	const isActive = isDropdownActive.value || (props.item.isCurrentUser && route.path === "/profil");
 
 	const base = [
-		isActive ? `${uiStore.navBarItemLabelActiveColorStyle} dark:text-slate-400` : `${uiStore.navBarItemLabelStyle} dark:text-white dark:hover:text-slate-400 ${uiStore.navBarItemLabelHoverStyle}`,
+		isActive ? `${uiStore.navBarItemLabelActiveColorStyle} dark:text-slate-400` : `${uiStore.navBarItemLabelStyle} dark:text-white`,
 		props.item.menu ? "lg:py-2 lg:px-3" : "py-2 px-3",
 	];
 
 	if (props.item.isDesktopNoLabel) {
-		base.push("lg:w-16", "lg:justify-center");
+		base.push("lg:w-11", "lg:justify-center");
 	}
 
 	return base;
@@ -118,8 +119,8 @@ onBeforeUnmount(() => {
 				:role="is === 'div' ? 'button' : undefined"
 				:aria-label="itemLabel"
 				:aria-expanded="item.menu ? isDropdownActive : undefined"
-				class="relative block cursor-pointer items-center lg:flex"
-				:class="componentClass"
+				class="navbar-control relative block cursor-pointer items-center lg:flex"
+				:class="[componentClass, { 'lg:mx-1 lg:h-11 lg:self-center': !isSubmenu }]"
 				:to="item.to ?? null"
 				v-bind="item.to ? {} : { href: item.href }"
 				:target="item.target ?? null"
@@ -127,9 +128,9 @@ onBeforeUnmount(() => {
 				@keydown.enter.self="is === 'div' && menuClick($event)"
 				@keydown.space.self="is === 'div' && ($event.preventDefault(), menuClick($event))"
 				@click.stop="menuClick">
-				<div class="flex items-center" :class="{ 'bg-gray-100 p-3 dark:bg-slate-800 lg:bg-transparent lg:p-0 lg:dark:bg-transparent': item.menu }">
+				<div class="flex items-center" :class="{ 'p-3 lg:p-0': item.menu }">
 					<UserAvatarCurrentUser v-if="item.isCurrentUser" class="mr-3 inline-flex h-6 w-6" />
-					<BaseIcon v-if="item.icon" :size="item.size ? item.size : 19" :path="item.icon" class="text-fipu_gray transition-colors hover:text-fipu_blue dark:text-white dark:hover:text-fipu_blue" />
+					<BaseIcon v-if="item.icon" :size="item.size ? item.size : 19" :path="item.icon" class="text-fipu_gray dark:text-white" />
 
 					<span class="px-2 text-base transition-colors" :class="{ 'lg:hidden': item.isDesktopNoLabel && item.icon }">
 						{{ itemLabel }}

@@ -26,6 +26,6 @@ const menuClick = (event, item) => {
 
 <template>
 	<RovingFocusGroup :orientation="isSubmenu || !uiStore.isLg ? 'vertical' : 'horizontal'" loop :class="isSubmenu ? '' : 'lg:flex lg:items-stretch'">
-		<NavBarItem v-for="(item, index) in isSubmenu ? menu : menu[uiStore.isLg ? 0 : 1]" :key="index" :item="item" @menu-click="menuClick" />
+		<NavBarItem v-for="(item, index) in isSubmenu ? menu : menu[uiStore.isLg ? 0 : 1]" :key="index" :is-submenu="isSubmenu" :item="item" @menu-click="menuClick" />
 	</RovingFocusGroup>
 </template>

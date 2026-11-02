@@ -1,1 +1,5 @@
 @tailwind components;
+
+.navbar-control {
+	@apply rounded transition-colors hover:bg-gray-200 dark:hover:bg-slate-700;
+}

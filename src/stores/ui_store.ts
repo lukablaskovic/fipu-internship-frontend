@@ -17,7 +17,6 @@ interface UiState {
 	asideMenuItemInactiveStyle: string;
 	asideMenuDropdownStyle: string;
 	navBarItemLabelStyle: string;
-	navBarItemLabelHoverStyle: string;
 	navBarItemLabelActiveColorStyle: string;
 	overlayStyle: string;
 
@@ -40,7 +39,6 @@ export const useUiStore = defineStore("ui", {
 		asideMenuItemInactiveStyle: "text-gray-600 hover:text-sky-700 dark:text-gray-300 dark:hover:text-fipu_light_blue",
 		asideMenuDropdownStyle: "bg-gray-100 dark:bg-gray-700/50",
 		navBarItemLabelStyle: "text-black",
-		navBarItemLabelHoverStyle: "hover:text-fipu_text_blue",
 		navBarItemLabelActiveColorStyle: "text-fipu_blue",
 		overlayStyle: "from-gray-700 via-gray-900 to-gray-700",
 

@@ -14,7 +14,7 @@ defineProps({
 </script>
 
 <template>
-	<div :class="[display, uiStore.navBarItemLabelStyle, uiStore.navBarItemLabelHoverStyle, useMargin ? 'my-2 mx-3' : 'py-2 px-3']" class="items-center cursor-pointer dark:text-white dark:hover:text-slate-400">
+	<div :class="[display, uiStore.navBarItemLabelStyle, useMargin ? 'my-2 mx-3' : 'py-2 px-3']" class="navbar-control h-11 self-center items-center cursor-pointer dark:text-white">
 		<slot />
 	</div>
 </template>
