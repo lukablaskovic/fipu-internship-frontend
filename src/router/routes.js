@@ -1,13 +1,4 @@
-import { LOCAL_DEV } from "@/config.js";
-
-
 const routes = [
-	...(LOCAL_DEV ? [{
-		path: "/arhiva",
-		name: "arhiva",
-		meta: { title: "Arhiva akademskih godina", requiresAuth: true, requiresAdmin: true },
-		component: () => import("@/views/admin/AcademicArchiveView.vue"),
-	}] : []),
 	{
 		path: "/",
 		name: "root",

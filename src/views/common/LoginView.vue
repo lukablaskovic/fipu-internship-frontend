@@ -33,10 +33,6 @@
 					<h2 id="login-title">Prijava</h2>
 					<p class="login-note">Prije nego se prijavite, pročitajte <RouterLink to="/upute">upute</RouterLink> kako izvodimo praksu na FIPU.</p>
 					<div class="sign-in flex flex-col items-start gap-3">
-						<div v-if="LOCAL_DEV" class="flex flex-col gap-3">
-							<BaseButton label="Lokalni student" color="info" type="button" @click="localLogin('student')" />
-							<BaseButton label="Lokalni administrator" color="info" type="button" @click="localLogin('admin')" />
-						</div>
 						<GoogleLogin :key="uiStore.darkMode" :callback="loginCallback" :button-config="{ theme: uiStore.darkMode ? 'filled_black' : 'outline', size: 'large' }" />
 					</div>
 					<div class="guest-access">
@@ -51,16 +47,13 @@
 				<RouterLink to="/poslodavci/novi-zadatak">Prijavite zadatak <span aria-hidden="true">→</span></RouterLink>
 			</footer>
 		</main>
-		<FormCheckRadio v-if="DEV_MODE" class="fixed bottom-4 right-4 z-50 text-white" name="dev-data-mode" type="switch" :label="LOCAL_DEV ? 'Mock data' : 'Real data'" :model-value="LOCAL_DEV" @update:model-value="switchDataMode" />
 		<SnackBar />
 	</div>
 </template>
 
 <script setup>
 import { decodeCredential, GoogleLogin } from "vue3-google-login";
-import BaseButton from "@/components/Base/BaseButton.vue";
 import ThemeToggle from "@/components/Navbar/ThemeToggle.vue";
-import FormCheckRadio from "@/components/Form/FormCheckRadio.vue";
 import SnackBar from "@/components/Premium/SnackBar.vue";
 import { useMainStore } from "@/stores/main_store";
 import { useUiStore } from "@/stores/ui_store";
@@ -68,7 +61,6 @@ import { useSnackBarStore } from "@/stores/snackbar_store";
 
 import fipu_unipu from "/fipu_unipu.png";
 import { useRouter } from "vue-router";
-import { DEV_MODE, LOCAL_DEV, setLocalDevelopment } from "@/config";
 
 import { ref } from "vue";
 
@@ -77,24 +69,6 @@ const mainStore = useMainStore();
 const snackBarStore = useSnackBarStore();
 
 const router = useRouter();
-
-const switchDataMode = (enabled) => {
-	try {
-		setLocalDevelopment(enabled);
-	} catch {
-		snackBarStore.pushMessage("Promjena načina rada nije uspjela. Omogućite pohranu u pregledniku.", "error");
-	}
-};
-
-const localLogin = async (role) => {
-	if (!LOCAL_DEV) return;
-	const result = await mainStore.handleLogin({ email: `${role}@local.test`, given_name: "Demo", family_name: role, picture: "" });
-	if (result.status === "success") {
-		window.location.href = "/";
-	} else {
-		snackBarStore.pushMessage("Lokalna prijava nije uspjela. Provjerite lokalne servise.", "error");
-	}
-};
 
 const isBouncing = ref(false);
 const startBounce = () => {

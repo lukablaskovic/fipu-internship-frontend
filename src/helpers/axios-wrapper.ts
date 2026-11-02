@@ -1,6 +1,5 @@
 import axios, { type AxiosInstance as Axios, type AxiosResponse } from "axios";
 
-import { LOCAL_DEV, clearSession } from "@/config";
 
 interface RequestHeaders {
 	[key: string]: string;
@@ -12,15 +11,13 @@ function createAxiosInstance(API_URL: string, authenticated = false) {
 	if (authenticated) {
 		instance.interceptors.request.use((config) => {
 			if (config.headers.has("X-Evaluation-Token")) return config;
-			const email = JSON.parse(sessionStorage.getItem("token") || "{}").email;
 			const token = sessionStorage.getItem("google-id-token");
 			if (token) config.headers.Authorization = `Bearer ${token}`;
-			else if (LOCAL_DEV && email) config.headers["X-Local-User"] = email;
 			return config;
 		});
 		instance.interceptors.response.use(undefined, (error) => {
 			if (error.response?.status === 401 && !error.config?.headers?.has("X-Evaluation-Token") && sessionStorage.getItem("token")) {
-				clearSession();
+				sessionStorage.clear();
 				if (window.location.pathname !== "/prijava") window.location.assign("/prijava");
 			}
 			return Promise.reject(error);

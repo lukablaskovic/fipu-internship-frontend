@@ -3,7 +3,6 @@ import { computed, onMounted, ref, watch } from "vue";
 import axios from "axios";
 import { useMainStore } from "@/stores/main_store";
 
-import { endpoints, LOCAL_DEV } from "@/config.js";
 import { archiveDocuments, displayArchiveValue } from "@/helpers/academic-archive.js";
 import LayoutAuthenticated from "@/layouts/LayoutAuthenticated.vue";
 import SectionMain from "@/components/Section/SectionMain.vue";
@@ -23,7 +22,7 @@ const selected = ref(null);
 const error = ref("");
 const loading = ref(false);
 const downloading = ref(false);
-const base = endpoints.VITE_BASEROW_API_URL + "/api/academic-years";
+const base = "http://localhost:8082/api/academic-years";
 const headers = () => ({ "X-Local-User": mainStore.currentUser.email });
 const rows = computed(() => (snapshot.value?.tables[table.value] || []).filter((row) =>
 	Object.values(row).some((value) => displayArchiveValue(value).toLocaleLowerCase("hr").includes(search.value.toLocaleLowerCase("hr"))),
@@ -87,7 +86,6 @@ async function download(document) {
 }
 watch(year, loadYear);
 onMounted(async () => {
-	if (!LOCAL_DEV) return;
 	try {
 		index.value = (await axios.get(base, { headers: headers() })).data;
 		year.value = index.value.years.at(-1)?.year || "";

@@ -5,7 +5,7 @@ import { router } from "@/router";
 
 import { ProcessInstance } from "@/services/bpmn_engine_api";
 import { CurrentUser } from "@/models/CurrentUser";
-import { MAINTENANCE_MODE, appConfig, clearSession } from "@/config";
+import { MAINTENANCE_MODE, appConfig } from "@/config";
 import { useStudentStore } from "@/stores/student_store";
 
 export const useMainStore = defineStore("main", {
@@ -115,7 +115,7 @@ export const useMainStore = defineStore("main", {
 				}
 				return { status: "success", data: response };
 			} catch (error) {
-				clearSession();
+				sessionStorage.clear();
 				this.currentUser.reset();
 				console.error("Login failed");
 				return { status: "error", error };
@@ -124,7 +124,7 @@ export const useMainStore = defineStore("main", {
 
 		logout() {
 			this.currentUser.reset();
-			clearSession();
+			sessionStorage.clear();
 			router.go(0); // Refresh the page
 		},
 
