@@ -31,8 +31,18 @@ services:
     networks:
       - app-network
 
-  python-bpmn-engine:
-    image: lukablaskovic/fp-python-bpmn-engine
+  bpmn-studio:
+    build: ../../../fipu-internship-bpmn-studio
+    restart: unless-stopped
+    volumes:
+      - ./studio-models:/models
+    networks:
+      - app-network
+
+  fipu-internship-bpmn-engine:
+    volumes:
+      - ./studio-models:/app/models:ro
+    image: lukablaskovic/fp-fipu-internship-bpmn-engine
     env_file:
       - .env
     environment:
@@ -53,7 +63,9 @@ services:
     expose:
       - "8080"
     networks:
-      - app-network
+      app-network:
+        aliases:
+          - python-bpmn-engine # Existing deployment environment URLs
 
   gateway-api:
     image: lukablaskovic/fp-internship-gateway-api
@@ -137,7 +149,7 @@ services:
       - app-network
       
   baserow-db:
-    image: baserow/baserow:1.20.2
+    image: baserow/baserow:2.4.1
     env_file:
       - .env
     environment:

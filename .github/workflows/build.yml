@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - main
+      - test
 
 jobs:
   build:
@@ -20,6 +21,9 @@ jobs:
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
       - name: Build and push Docker image
+        env:
+          IMAGE: lukablaskovic/fp-fipu-internship-frontend
+          TAG: ${{ github.ref_name == 'test' && 'test' || 'latest' }}
         run: |
-          docker build -t lukablaskovic/fp-fipu-internship-frontend:latest .
-          docker push lukablaskovic/fp-fipu-internship-frontend:latest
+          docker build --build-arg FRONTEND_CHANNEL="$TAG" -t "$IMAGE:$TAG" .
+          docker push "$IMAGE:$TAG"

@@ -1,0 +1,36 @@
+map $http_cookie $praksa_channel {
+    default fipu-praksa-frontend:4000;
+    "~(?:^|;\s*)__Host-praksa-preview=${PRAKSA_PREVIEW_COOKIE}(?:;|$)" fipu-praksa-test-frontend:4000;
+}
+
+server {
+    listen 4000;
+    resolver 127.0.0.11 valid=10s;
+
+    location = /privatni-test/ {
+        rewrite ^ /_praksa_preview.html last;
+    }
+
+    location = /_praksa_preview.html {
+        internal;
+        auth_basic "FIPU Praksa test";
+        auth_basic_user_file /etc/nginx/preview.htpasswd;
+        alias /usr/share/nginx/preview.html;
+        default_type text/html;
+        charset utf-8;
+        etag off;
+        if_modified_since off;
+        add_header Cache-Control "private, no-store" always;
+        add_header Set-Cookie "__Host-praksa-preview=${PRAKSA_PREVIEW_COOKIE}; Path=/; Max-Age=28800; Secure; HttpOnly; SameSite=Lax";
+    }
+
+    location / {
+        proxy_set_header Authorization "";
+        proxy_set_header Cookie "";
+        proxy_set_header Host $host;
+        proxy_pass http://$praksa_channel;
+        proxy_hide_header Cache-Control;
+        add_header Cache-Control "private, no-store" always;
+        add_header Vary Cookie always;
+    }
+}

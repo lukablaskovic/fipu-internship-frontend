@@ -1,0 +1,11 @@
+services:
+  fipu-praksa-test-frontend:
+    image: lukablaskovic/fp-fipu-internship-frontend:test
+    networks:
+      - app-network
+
+  nginx:
+    volumes:
+      - ./nginx.test.conf:/etc/nginx/conf.d/test.conf:ro
+      - /etc/letsencrypt/live/fipu-praksa-test.unipu.hr:/etc/letsencrypt/live/fipu-praksa-test.unipu.hr:ro
+      - /etc/letsencrypt/archive/fipu-praksa-test.unipu.hr:/etc/letsencrypt/archive/fipu-praksa-test.unipu.hr:ro

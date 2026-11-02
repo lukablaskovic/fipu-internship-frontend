@@ -5,6 +5,7 @@ export const darkModeKey = "darkMode";
 export const containerMaxW = "xl:max-w-8xl xl:mx-auto";
 
 export const DEV_MODE = import.meta.env.DEV;
+const testDeployment = import.meta.env.PROD && import.meta.env.VITE_FRONTEND_CHANNEL === "test";
 const dataModeKey = "dev-data-mode";
 let dataMode;
 if (DEV_MODE) {
@@ -38,7 +39,7 @@ export const endpoints = LOCAL_DEV ? {
 	VITE_EMAILJS_API_URL: "http://localhost:8083",
 	VITE_PDF_API_URL: "http://localhost:8084",
 } : {
-	VITE_FRONTEND_URL: "https://fipu-praksa.unipu.hr",
+	VITE_FRONTEND_URL: testDeployment ? window.location.origin : "https://fipu-praksa.unipu.hr",
 
 	VITE_BPMN_ENGINE_API_URL: "https://fipubot.unipu.hr/api/python-bpmn-engine",
 	//VITE_BPMN_ENGINE_API_URL: "http://localhost:8080",
@@ -54,7 +55,7 @@ export const endpoints = LOCAL_DEV ? {
 };
 
 // Maintenance mode configuration
-export const MAINTENANCE_MODE = !DEV_MODE;
+export const MAINTENANCE_MODE = !DEV_MODE && !testDeployment;
 
 export const appConfig = Object.freeze({
 	praksa_version: `v${version}`,
@@ -64,3 +65,5 @@ export const appConfig = Object.freeze({
 	bpmn_process_name_A: "strucna_praksa_A",
 	bpmn_process_name_B: "strucna_praksa_B",
 });
+
+export const BPMN_STUDIO_URL = import.meta.env.DEV ? "http://localhost:5174" : "https://fipu-praksa.unipu.hr/studio";

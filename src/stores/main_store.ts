@@ -180,5 +180,5 @@ export const useMainStore = defineStore("main", {
 			this.maintenanceMode = false;
 		},
 	},
-	persist: persistSession(["currentUser", "maintenanceMode"]),
+	persist: persistSession(["currentUser"]),
 });

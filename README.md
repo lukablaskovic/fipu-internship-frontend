@@ -45,7 +45,7 @@ For Companies:
 
 - **Frontend**: Vue3, generated using Pro template from [justboil](https://github.com/justboil/admin-one-vue-tailwind)
 - **BPMN Display**: The shared `@fipu/bpmn` XML toolkit and SVG renderer from FIPU BPMN Studio display the authoritative models served by the Python engine.
-- **Backend Engine**: Custom-built [Python BPMN Engine](https://github.com/lukablaskovic/python-bpmn-engine) (originally developed by [ntankovic](https://github.com/ntankovic/python-bpmn-engine)).
+- **Backend Engine**: Custom-built [Python BPMN Engine](https://github.com/lukablaskovic/fipu-internship-bpmn-engine) (originally developed by [ntankovic](https://github.com/ntankovic/python-bpmn-engine)).
 
 ### UI components
 
@@ -57,11 +57,11 @@ The Docker development frontend copies package manifests into its image. After d
 
 ### Services :wrench:
 
-1. [**Baserow Connector Service**](https://github.com/lukablaskovic/internship-application-services/tree/main/baserow-connector-service): Manages internship data on Baserow’s no-code database platform.
-2. [**EmailJS Connector Service**](https://github.com/lukablaskovic/internship-application-services/tree/main/emailjs-connector-service): Handles email communications via the EmailJS platform.
-3. [**PDF Connector Service**](https://github.com/lukablaskovic/internship-application-services/tree/main/pdf-connector-service): Generates internship certificates based on application form data.
+1. [**Baserow Connector Service**](https://github.com/lukablaskovic/fipu-internship-services/tree/main/baserow-connector-service): Manages internship data on Baserow’s no-code database platform.
+2. [**EmailJS Connector Service**](https://github.com/lukablaskovic/fipu-internship-services/tree/main/emailjs-connector-service): Handles email communications via the EmailJS platform.
+3. [**PDF Connector Service**](https://github.com/lukablaskovic/fipu-internship-services/tree/main/pdf-connector-service): Generates internship certificates based on application form data.
 
-These services are located in the Internship Application Services directory [(internship-application-services)](https://github.com/lukablaskovic/internship-application-services).
+These services are located in the Internship Application Services directory [(fipu-internship-services)](https://github.com/lukablaskovic/fipu-internship-services).
 
 ### Contributing & Feedback :mailbox:
 

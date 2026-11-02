@@ -1,5 +1,5 @@
 <script setup>
-import { appConfig } from "@/config";
+import { appConfig, endpoints } from "@/config";
 import { Accordion, Tabs } from "reka-ui/namespaced";
 import BaseIcon from "@/components/Base/BaseIcon.vue";
 
@@ -42,7 +42,7 @@ onMounted(async () => {
 		<LayoutAuthenticated v-if="userAuthenticated">
 			<SectionMain>
 				<SectionTitleLineWithButton :icon="mdiLaptop" title="FIPU Praksa" main>
-					<a href="https://fipu-praksa.unipu.hr/" target="_blank">
+					<a :href="endpoints.VITE_FRONTEND_URL" target="_blank">
 						<img :src="FIPU_praksa_logo_transparent" class="max-h-14 object-contain" />
 					</a>
 				</SectionTitleLineWithButton>
@@ -71,7 +71,7 @@ onMounted(async () => {
 							<p>Studentima je ovo izborni kolegij i oni koji su prijavljeni, motivirani su i spremni za rad!</p>
 							<br />
 							<p>
-								Kako bismo stvarili učinili jednostavnijima, proces izvođenja prakse odlučili smo automatizirati kroz novu aplikaciju <a href="https://fipu-praksa.unipu.hr/" class="text-fipu_blue" target="_blank">FIPU Praksa</a>. Ova aplikacija rezultat je
+								Kako bismo stvarili učinili jednostavnijima, proces izvođenja prakse odlučili smo automatizirati kroz novu aplikaciju <a :href="endpoints.VITE_FRONTEND_URL" class="text-fipu_blue" target="_blank">FIPU Praksa</a>. Ova aplikacija rezultat je
 								istraživačkog rada te suradnje između studenata i profesora na Fakultetu informatike u Puli. Temelji se na eksperimentalnom razvoju baziranom na procesnim modelima (BPMN).
 							</p>
 						</Accordion.Content>
@@ -275,7 +275,7 @@ onMounted(async () => {
 		<LayoutGuest v-else>
 			<SectionMain>
 				<SectionTitleLineWithButton :icon="mdiLaptop" title="FIPU Praksa" main>
-					<a href="https://fipu-praksa.unipu.hr/" target="_blank">
+					<a :href="endpoints.VITE_FRONTEND_URL" target="_blank">
 						<img :src="FIPU_praksa_logo_transparent" class="max-h-14 object-contain" />
 					</a>
 				</SectionTitleLineWithButton>
@@ -304,7 +304,7 @@ onMounted(async () => {
 							<p>Studentima je ovo izborni kolegij i oni koji su prijavljeni, motivirani su i spremni za rad!</p>
 							<br />
 							<p>
-								Kako bismo stvarali učinili jednostavnijima, proces izvođenja prakse odlučili smo automatizirati kroz novu aplikaciju <a href="https://fipu-praksa.unipu.hr/" class="text-fipu_blue" target="_blank">FIPU Praksa</a>. Ova aplikacija rezultat je
+								Kako bismo stvarali učinili jednostavnijima, proces izvođenja prakse odlučili smo automatizirati kroz novu aplikaciju <a :href="endpoints.VITE_FRONTEND_URL" class="text-fipu_blue" target="_blank">FIPU Praksa</a>. Ova aplikacija rezultat je
 								istraživačkog rada te suradnje između studenata i profesora na Fakultetu informatike u Puli. Temelji se na eksperimentalnom razvoju baziranom na procesnim modelima (BPMN).
 							</p>
 						</Accordion.Content>
