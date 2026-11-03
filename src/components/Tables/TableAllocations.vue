@@ -170,8 +170,8 @@ watch(filteredAllocations, () => { currentPage.value = 0; });
 				<td data-label="Prijavnica ispunjena">
 					<div class="flex items-center">
 						<TableCheckboxCell readonly :value="allocation['popunjena_prijavnica']" />
-						<a v-if="allocation['popunjena_prijavnica'] && mainStore.userAdmin" class="ml-8 cursor-pointer text-sm underline hover:text-fipu_light_blue" @click="adminStore.openPDF(allocation)">
-							Generirana potvrda</a
+						<button v-if="allocation['popunjena_prijavnica'] && mainStore.userAdmin" type="button" class="ml-8 cursor-pointer text-sm underline hover:text-fipu_light_blue" @click="adminStore.openPDF(allocation)">
+							Generirana potvrda</button
 						>
 					</div>
 				</td>

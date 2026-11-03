@@ -5,6 +5,7 @@ import { defineStore } from "pinia";
 import { Model, ProcessInstance, type ProcessInstanceData } from "@/services/bpmn_engine_api";
 import { Admin, Student, fetchAvailableAssignments } from "@/services/baserow_client_api";
 import { EmailJS } from "@/services/emailjs_client_api";
+import { useSnackBarStore } from "@/stores/snackbar_store";
 import Utils from "@/helpers/utils";
 
 let studentsRequest: Promise<boolean> | null = null;
@@ -108,13 +109,23 @@ export const useAdminStore = defineStore("admin", {
 				return null;
 			}
 		},
-		openPDF(allocation: any) {
-			const student = this.students.find((student) => student.process_instance_data.variables.id_alokacija === allocation.id_alokacija);
-			if (!student) {
-				console.error("Student not found");
+		async openPDF(allocation: { process_instance_id?: string; id_alokacija: string }) {
+			const tab = window.open("about:blank", "_blank");
+			if (!tab) {
+				useSnackBarStore().pushMessage("Dopustite otvaranje nove kartice za prikaz potvrde.", "danger");
 				return;
 			}
-			window.open(student.process_instance_data.variables.pdf_attachment_url, "_blank");
+			tab.opener = null;
+			const instance = allocation.process_instance_id
+				? await ProcessInstance.get(allocation.process_instance_id)
+				: this.students.find(student => allocation.id_alokacija && student.process_instance_data.variables.id_alokacija === allocation.id_alokacija)?.process_instance_data;
+			const url = instance?.variables?.pdf_attachment_url;
+			if (url && /^https?:\/\//i.test(url)) {
+				tab.location.replace(url);
+			} else {
+				tab.close();
+				useSnackBarStore().pushMessage("Potvrda za ovu alokaciju nije dostupna.", "danger");
+			}
 		},
 
 		async fetchPDF(query: string = "") {
