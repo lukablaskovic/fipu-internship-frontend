@@ -69,4 +69,13 @@ function select(id) {
 .bpmn-zoom-controls :deep(button) { width: 40px; height: 40px; border: 0; color: #294358; box-shadow: none; }
 .bpmn-zoom-controls :deep(button:focus-visible) { outline: 2px solid #087caa; outline-offset: -3px; }
 @media (max-width: 600px) { .bpmn-container { position: relative; height: 50vh; } }
+.bpmn-container.landscape-diagram { height: 100%; min-height: 0; }
+@media (max-width: 639px) and (orientation: portrait) {
+	.bpmn-container.landscape-diagram {
+		width: 100cqh;
+		height: 100cqw;
+		transform-origin: top left;
+		transform: translateX(100cqw) rotate(90deg);
+	}
+}
 </style>

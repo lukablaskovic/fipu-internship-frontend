@@ -16,6 +16,10 @@ const props = defineProps({
 		type: String,
 		default: null,
 	},
+	iconRight: {
+		type: String,
+		default: null,
+	},
 	iconSize: {
 		type: [String, Number],
 		default: null,
@@ -140,6 +144,7 @@ const componentClass = computed(() => {
 
 		<BaseIcon v-if="icon && !loading" :path="icon" :size="iconSize" />
 		<span v-if="label" :class="loading ? 'sr-only' : labelClass">{{ label }}</span>
+		<BaseIcon v-if="iconRight && !loading" :path="iconRight" :size="iconSize" aria-hidden="true" />
 	</component>
 </template>
 <style>

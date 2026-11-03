@@ -1,5 +1,6 @@
 <script setup>
 import { ref } from "vue";
+import { mdiUndo } from "@mdi/js";
 import { ProcessInstance } from "@/services/bpmn_engine_api";
 import { useSnackBarStore } from "@/stores/snackbar_store";
 import BaseButton from "@/components/Base/BaseButton.vue";
@@ -42,7 +43,7 @@ async function move() {
 
 <template>
 	<div>
-		<BaseButton label="Rollback" :disabled="loading || moving" @click="choose" />
+		<BaseButton color="info" outline label="Rollback" :icon-right="mdiUndo" :disabled="loading || moving" @click="choose" />
 		<CardBoxModal v-model="open" is-bpmn title="Rollback" description="Odaberite ranije dovršeni zadatak na koji želite vratiti ovu praksu." has-cancel button-label="Rollback" :disabled-condition="loading || moving || !target" @confirm="move">
 			<p v-if="loading" role="status">Učitavanje prethodnih zadataka…</p>
 			<p v-else-if="!options" role="alert">Dohvat prethodnih zadataka nije uspio.</p>

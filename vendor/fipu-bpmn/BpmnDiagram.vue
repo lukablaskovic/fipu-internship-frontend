@@ -44,9 +44,9 @@ function setView(x, y, width, height) {
 }
 function fit() {
   unitsPerPixel = null;
-  const rect = svg.value?.getBoundingClientRect();
+  const canvas = svg.value;
   const box = bounds.value;
-  const ratio = rect?.height ? rect.width / rect.height : box.width / box.height;
+  const ratio = canvas?.clientHeight ? canvas.clientWidth / canvas.clientHeight : box.width / box.height;
   const width = Math.max(box.width, box.height * ratio);
   const height = width / ratio;
   view.value = { x: box.x + (box.width - width) / 2, y: box.y + (box.height - height) / 2, width, height };
@@ -56,12 +56,49 @@ function point(event) {
   p.x = event.clientX; p.y = event.clientY;
   return p.matrixTransform(svg.value.getScreenCTM().inverse());
 }
-function zoom(factor, anchor) {
+function zoom(factor, anchor, destination = anchor) {
   const old = view.value;
   const width = Math.min(bounds.value.width * 5, Math.max(200, old.width * factor));
   const actual = width / old.width;
   const center = anchor || { x: old.x + old.width / 2, y: old.y + old.height / 2 };
-  setView(center.x - (center.x - old.x) * actual, center.y - (center.y - old.y) * actual, width, old.height * actual);
+  const target = destination || center;
+  setView(center.x - (target.x - old.x) * actual, center.y - (target.y - old.y) * actual, width, old.height * actual);
+}
+// Read-only touch gestures share the same bounded viewport as the zoom controls.
+const fingers = new Map();
+let tap;
+
+function touchDown(event) {
+  if (props.editable || event.pointerType !== 'touch') return;
+  event.stopPropagation();
+  svg.value.setPointerCapture(event.pointerId);
+  fingers.set(event.pointerId, event);
+  tap = fingers.size === 1 ? event : null;
+}
+function gesture() {
+  const [a, b = a] = fingers.values();
+  return {
+    center: point({ clientX: (a.clientX + b.clientX) / 2, clientY: (a.clientY + b.clientY) / 2 }),
+    distance: Math.hypot(a.clientX - b.clientX, a.clientY - b.clientY),
+  };
+}
+function touchMove(event) {
+  if (!fingers.has(event.pointerId)) return;
+  if (tap && Math.hypot(event.clientX - tap.clientX, event.clientY - tap.clientY) < 5) return;
+  tap = null;
+  const before = gesture();
+  fingers.set(event.pointerId, event);
+  const after = gesture();
+  zoom(before.distance && after.distance ? before.distance / after.distance : 1, before.center, after.center);
+}
+function touchEnd(event) {
+  if (!fingers.delete(event.pointerId)) return;
+  if (tap && event.type === 'pointerup') {
+    const item = tap.target.closest('[data-node-id], [data-flow-id], [data-label-id]')?.dataset;
+    if (item) emit('select', item.nodeId || item.flowId || item.labelId);
+    else emit('background', point(event));
+  }
+  tap = null;
 }
 function wheel(event) {
   if (event.ctrlKey || event.metaKey) {
@@ -434,7 +471,7 @@ defineExpose({ fit, focus, center, zoomIn: () => zoom(0.8), zoomOut: () => zoom(
 </script>
 
 <template>
-  <svg ref="svg" class="fipu-bpmn-canvas" :class="{ connecting, editable, panning: dragging && !dragging.id && !dragging.label }" :viewBox="`${view.x} ${view.y} ${view.width} ${view.height}`" role="group" aria-label="BPMN dijagram procesa. Za pomicanje povucite pozadinu ili kliznite dvama prstima po dodirnoj pločici; Control i kotačić za zumiranje." @wheel.prevent="wheel" @pointerdown.self="begin($event)" @pointermove="move" @pointerup="end" @pointercancel="dragging = null" @keydown.esc="dragging = null">
+  <svg ref="svg" class="fipu-bpmn-canvas" :class="{ connecting, editable, panning: dragging && !dragging.id && !dragging.label }" :viewBox="`${view.x} ${view.y} ${view.width} ${view.height}`" role="group" :aria-label="editable ? 'BPMN dijagram procesa. Za pomicanje povucite pozadinu; Control i kotačić za zumiranje.' : 'BPMN dijagram procesa. Povucite jednim prstom za pomicanje. Približite ili razmaknite dva prsta za zumiranje.'" @pointerdown.capture="touchDown" @pointermove.capture="touchMove" @pointerup.capture="touchEnd" @lostpointercapture="touchEnd" @pointercancel.capture="touchEnd" @wheel.prevent="wheel" @pointerdown.self="begin($event)" @pointermove="move" @pointerup="end" @pointercancel="dragging = null" @keydown.esc="dragging = null">
     <defs><marker :id="markerId" markerWidth="8" markerHeight="8" refX="9" refY="4" orient="auto" markerUnits="userSpaceOnUse"><path d="M0 0 8 4 0 8Z" fill="#5f7185" /></marker>
       <marker :id="markerId + '-open'" markerWidth="10" markerHeight="10" refX="9" refY="5" orient="auto" markerUnits="userSpaceOnUse"><path d="M1 1 9 5 1 9" fill="none" stroke="#5f7185" /></marker>
     </defs>
@@ -451,7 +488,7 @@ defineExpose({ fit, focus, center, zoomIn: () => zoom(0.8), zoomOut: () => zoom(
       </g>
     </component>
     <component :is="tooltipComponent || 'g'" :svg="!!tooltipComponent" v-for="node in displayedNodes" :key="node.id" :content="`${node.name || node.id} · ${node.type}`">
-      <g class="bpmn-node" :class="{ selected: selectedId === node.id, movable: editable, active: !!highlights[node.id] }" :transform="position(node)" tabindex="0" role="button" :aria-label="`${node.type}: ${node.name || node.id}`" :aria-pressed="selectedId === node.id" @pointerdown.stop="begin($event, node)" @keydown="key($event, node)" @dblclick.stop="editable ? !connecting && emit('edit-name', node.id) : focus(node.id)">
+      <g class="bpmn-node" :data-node-id="node.id" :class="{ selected: selectedId === node.id, movable: editable, active: !!highlights[node.id] }" :transform="position(node)" tabindex="0" role="button" :aria-label="`${node.type}: ${node.name || node.id}`" :aria-pressed="selectedId === node.id" @pointerdown.stop="begin($event, node)" @keydown="key($event, node)" @dblclick.stop="editable ? !connecting && emit('edit-name', node.id) : focus(node.id)">
         <title v-if="!tooltipComponent">{{ node.name || node.id }} · {{ node.type }}</title>
         <rect v-if="selectedId === node.id" x="-5" y="-5" :width="node.width + 10" :height="node.height + 10" rx="8" class="selection-outline" />
         <g v-if="node.type.endsWith('Event')">

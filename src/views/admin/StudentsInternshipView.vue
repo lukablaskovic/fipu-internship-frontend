@@ -39,7 +39,6 @@ function restoreDiagramFocus(event) {
 	}
 }
 
-import BPMN_msg_event from "/BPMN/msg_event.png";
 
 const adminStore = useAdminStore();
 const mainStore = useMainStore();
@@ -48,10 +47,15 @@ const snackBarStore = useSnackBarStore();
 const modal_select_bpmn_task = ref(false);
 const modal_past_bpmn_task = ref(false);
 const modal_send_task = ref(false);
-const bpmn_help_modal = ref(false);
 
 const router = useRouter();
 const process_instance_data = ref(null);
+const diagramTitle = computed(() => {
+	const model = process_instance_data.value?.model;
+	if (!model) return "Model prakse";
+	const name = model.model_path.replace(/^strucna_praksa_/, "Model ").replace(/\.bpmn$/, "");
+	return `${name}, ${model.version ? "v" + model.version : "verzija nepoznata"}`;
+});
 const bpmn_model = ref(null);
 const taskInfo = ref();
 const answers = ref(null);
@@ -237,7 +241,7 @@ onMounted(loadDataForStudent);
 	<div>
 		<LayoutAuthenticated v-if="mainStore.userAuthenticated">
 			<SectionMain>
-				<SectionTitleLineWithButton :icon="mdiAccountMultiple" title="Studenti u procesu prakse" button-enabled main @click="bpmn_help_modal = true"> </SectionTitleLineWithButton>
+				<SectionTitleLineWithButton :icon="mdiAccountMultiple" title="Studenti u procesu prakse" main />
 				<div class="table-filter-bar mb-3">
 					<div class="relative min-w-0 basis-full sm:flex-1 sm:basis-0">
 						<BaseIcon :path="mdiMagnify" :size="20" class="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-gray-500 dark:text-slate-400" aria-hidden="true" />
@@ -251,46 +255,26 @@ onMounted(loadDataForStudent);
 				<CardBox has-table>
 					<TableStudents :search="studentSearch" @show-student-diagram="handleProcessDiagram" />
 				</CardBox>
-
-				<CardBoxModal v-if="bpmn_help_modal" v-model="bpmn_help_modal" :title="'BPMN Graf - Legenda'" button-label="Povratak">
-					<div class="mb-4 flex items-center space-x-4">
-						<span aria-hidden="true" class="h-12 w-12 shrink-0 rounded-lg border border-slate-600 bg-[#fde047]"></span>
-						<p class="text-sm"><b>Žuta boja</b> - aktivnosti i događaji koji čekaju izvršavanje, neovisno o izvršitelju.</p>
-					</div>
-
-					<div class="mb-4 flex items-center space-x-4">
-						<span aria-hidden="true" class="h-12 w-12 shrink-0 rounded-lg border border-slate-600 bg-[#86efac]"></span>
-						<p class="text-sm"><b>Zelena boja</b> - završene aktivnosti i događaji.</p>
-					</div>
-
-					<div class="mb-4 flex items-center space-x-4">
-						<img :src="BPMN_msg_event" alt="Description 3" class="h-32 w-32 object-contain" />
-						<p class="text-sm"><b>Send task</b> - Prošle <i>message taskove</i> je moguće ponovno pozvati.</p>
-					</div>
-
-					<hr />
-					<br />
-				</CardBoxModal>
 			</SectionMain>
 
 			<Dialog.Root v-model:open="bpmn_diagram_active">
 				<Dialog.Portal>
 					<Dialog.Overlay class="reka-animated fixed inset-0 z-[4000] bg-slate-950/80" />
 					<Dialog.Content
-						class="reka-animated fixed inset-2 z-[4001] flex min-h-0 flex-col overflow-hidden rounded-2xl bg-white text-slate-900 shadow-lg dark:bg-slate-900 dark:text-slate-100 sm:inset-4"
+						class="process-dialog reka-animated fixed inset-2 z-[4001] flex min-h-0 flex-col overflow-hidden rounded-2xl bg-white text-slate-900 shadow-lg dark:bg-slate-900 dark:text-slate-100 sm:inset-4"
 						:aria-describedby="undefined"
 						@close-auto-focus="restoreDiagramFocus">
 						<header class="flex shrink-0 items-center justify-between gap-4 border-b border-slate-200 p-4 dark:border-slate-700">
 							<div class="min-w-0">
-								<Dialog.Title class="text-xl font-semibold">BPMN dijagram</Dialog.Title>
+								<Dialog.Title class="text-xl font-semibold">{{ diagramTitle }}</Dialog.Title>
 								<p v-if="selectedStudent" class="truncate text-sm text-slate-600 dark:text-slate-300">{{ selectedStudent.ime }} {{ selectedStudent.prezime }}</p>
 							</div>
 							<InstanceRollback v-if="process_instance_data && ['running', 'failed'].includes(process_instance_data.state)" :key="process_instance_data.id" :instance-id="process_instance_data.id" class="ml-auto" @moved="refreshAfterRollback" />
-							<Dialog.Close as-child><BaseButton :icon="mdiClose" aria-label="Zatvori BPMN prikaz" /></Dialog.Close>
+							<Dialog.Close as-child><BaseButton class="h-11 w-11 shrink-0" :icon="mdiClose" aria-label="Zatvori BPMN prikaz" /></Dialog.Close>
 						</header>
 						<BpmnDiagram
 							v-if="bpmn_model && process_instance_data"
-							class="bpmn-dialog-canvas"
+							class="process-canvas"
 							:xml="bpmn_model"
 							:instance="process_instance_data"
 							@current-task-modal="selectedTaskId = $event.id; modal_select_bpmn_task = true"
@@ -339,10 +323,30 @@ onMounted(loadDataForStudent);
 </template>
 
 <style scoped>
-.bpmn-dialog-canvas {
+.process-dialog .process-canvas {
 	flex: 1;
-	height: auto;
 	min-height: 0;
 	overflow: hidden;
+}
+@media (max-width: 639px), (pointer: coarse) and (max-height: 639px) {
+	.process-dialog {
+		inset: 0;
+		border-radius: 0;
+	}
+	.process-dialog > header {
+		gap: .5rem;
+		padding: max(.5rem, env(safe-area-inset-top)) max(.75rem, env(safe-area-inset-right)) .5rem max(.75rem, env(safe-area-inset-left));
+	}
+}
+@media (max-width: 639px) and (orientation: portrait) {
+	.process-dialog {
+		width: 100dvh;
+		height: 100vw;
+		transform-origin: top left;
+		transform: translateX(100vw) rotate(90deg);
+	}
+	.process-dialog > header {
+		padding: max(.5rem, env(safe-area-inset-right)) max(.75rem, env(safe-area-inset-bottom)) .5rem max(.75rem, env(safe-area-inset-top));
+	}
 }
 </style>
