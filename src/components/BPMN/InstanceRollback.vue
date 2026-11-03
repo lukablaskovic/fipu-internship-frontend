@@ -3,6 +3,7 @@ import { ref } from "vue";
 import { ProcessInstance } from "@/services/bpmn_engine_api";
 import { useSnackBarStore } from "@/stores/snackbar_store";
 import BaseButton from "@/components/Base/BaseButton.vue";
+import FormControl from "@/components/Form/FormControl.vue";
 import CardBoxModal from "@/components/Cardbox/CardBoxModal.vue";
 
 const props = defineProps({ instanceId: { type: String, required: true } });
@@ -12,11 +13,11 @@ const open = ref(false);
 const loading = ref(false);
 const moving = ref(false);
 const options = ref(null);
-const target = ref("");
+const target = ref(null);
 
 async function choose() {
 	loading.value = true;
-	target.value = "";
+	target.value = null;
 	open.value = true;
 	options.value = await ProcessInstance.rollbackOptions(props.instanceId);
 	loading.value = false;
@@ -26,7 +27,7 @@ async function move() {
 	if (moving.value || !target.value) return;
 	moving.value = true;
 	try {
-		const result = await ProcessInstance.rollback(props.instanceId, options.value.checkpoint, target.value);
+		const result = await ProcessInstance.rollback(props.instanceId, options.value.checkpoint, target.value.id);
 		if (!result) {
 			snack.pushMessage("Povratak nije potvrđen. Ponovno otvorite odabir i provjerite stanje prakse.", "danger");
 		} else {
@@ -41,18 +42,14 @@ async function move() {
 
 <template>
 	<div>
-		<BaseButton label="Vrati na prethodni zadatak" :disabled="loading || moving" @click="choose" />
-		<CardBoxModal v-model="open" is-bpmn title="Povratak na prethodni zadatak" description="Odaberite ranije dovršeni zadatak na koji želite vratiti ovu praksu." has-cancel button-label="Vrati praksu" :disabled-condition="loading || moving || !target" @confirm="move">
+		<BaseButton label="Rollback" :disabled="loading || moving" @click="choose" />
+		<CardBoxModal v-model="open" is-bpmn title="Rollback" description="Odaberite ranije dovršeni zadatak na koji želite vratiti ovu praksu." has-cancel button-label="Rollback" :disabled-condition="loading || moving || !target" @confirm="move">
 			<p v-if="loading" role="status">Učitavanje prethodnih zadataka…</p>
 			<p v-else-if="!options" role="alert">Dohvat prethodnih zadataka nije uspio.</p>
 			<p v-else-if="!options.targets.length">U trenutačnom stanju nema dostupnog prethodnog zadatka.</p>
 			<template v-else>
-				<label class="block">Prethodni zadatak
-					<select v-model="target" class="mt-1 block w-full rounded border-slate-300 dark:bg-slate-800">
-						<option disabled value="">Odaberite zadatak</option>
-						<option v-for="task in options.targets" :key="task.id" :value="task.id">{{ task.name }}</option>
-					</select>
-				</label>
+				<label :for="`rollback-target-${instanceId}`" class="block mb-1">Prethodni zadatak</label>
+				<FormControl :id="`rollback-target-${instanceId}`" v-model="target" :options="options.targets.map(task => ({ id: task.id, label: task.name }))" placeholder="Odaberite zadatak" />
 				<p class="mt-4">Zadržavaju se trenutačne vrijednosti obrasca i postojeći zapisi. Ponovnim prolaskom kroz proces mogu nastati novi zapisi, potvrde i e-poruke.</p>
 			</template>
 		</CardBoxModal>

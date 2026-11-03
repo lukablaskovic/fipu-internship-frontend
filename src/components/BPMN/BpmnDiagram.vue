@@ -1,4 +1,5 @@
 <script setup>
+import Tooltip from "@/components/Base/Tooltip.vue";
 import { computed, shallowRef, watch } from "vue";
 import { mdiFitToScreenOutline, mdiMinus, mdiPlus } from "@mdi/js";
 import { Toolbar } from "reka-ui/namespaced";
@@ -52,11 +53,11 @@ function select(id) {
 	<div class="bpmn-container">
 		<p v-if="error" role="alert">{{ error }}</p>
 		<template v-else-if="model">
-			<Diagram ref="diagram" :model="model" :highlights="highlights" @select="select" />
+			<Diagram ref="diagram" :model="model" :tooltip-component="Tooltip" :highlights="highlights" @select="select" />
 			<Toolbar.Root class="bpmn-zoom-controls" aria-label="Prikaz dijagrama">
-				<Toolbar.Button as-child><BaseButton :icon="mdiMinus" :icon-size="22" aria-label="Umanji" title="Umanji" @click="diagram?.zoomOut()" /></Toolbar.Button>
-				<Toolbar.Button as-child><BaseButton :icon="mdiFitToScreenOutline" :icon-size="22" aria-label="Prikaži cijeli model" title="Prikaži cijeli model" @click="diagram?.fit()" /></Toolbar.Button>
-				<Toolbar.Button as-child><BaseButton :icon="mdiPlus" :icon-size="22" aria-label="Uvećaj" title="Uvećaj" @click="diagram?.zoomIn()" /></Toolbar.Button>
+				<Tooltip content="Umanji"><Toolbar.Button as-child><BaseButton :icon="mdiMinus" :icon-size="22" aria-label="Umanji" @click="diagram?.zoomOut()" /></Toolbar.Button></Tooltip>
+				<Tooltip content="Prikaži cijeli model"><Toolbar.Button as-child><BaseButton :icon="mdiFitToScreenOutline" :icon-size="22" aria-label="Prikaži cijeli model" @click="diagram?.fit()" /></Toolbar.Button></Tooltip>
+				<Tooltip content="Uvećaj"><Toolbar.Button as-child><BaseButton :icon="mdiPlus" :icon-size="22" aria-label="Uvećaj" @click="diagram?.zoomIn()" /></Toolbar.Button></Tooltip>
 			</Toolbar.Root>
 		</template>
 	</div>

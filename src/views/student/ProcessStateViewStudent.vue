@@ -1,14 +1,14 @@
 <script setup>
 import SectionMain from "@/components/Section/SectionMain.vue";
 import { mdiChartTimeline } from "@mdi/js";
-import { ref, onMounted } from "vue";
-import { computed } from "vue";
+import { computed, ref, onMounted, watch } from "vue";
 
 
 import { UserTaskMappings } from "@/helpers/maps";
 import { useMainStore } from "@/stores/main_store";
 
-import { ProcessInstance } from "@/services/bpmn_engine_api";
+import { BPMN_STUDIO_URL } from "@/config";
+import { Model, ProcessInstance } from "@/services/bpmn_engine_api";
 
 import SectionTitleLineWithButton from "@/components/Section/SectionTitleLineWithButton.vue";
 import TableInstanceData from "@/components/BPMN/TableInstanceData.vue";
@@ -38,13 +38,40 @@ const attemptOptions = computed(() => attempts.value.map((attempt, index) => ({
 	label: `${attempts.value.length - index}. Model ${attempt.model.model_path.slice(-6, -5)} · ${attempt.model.version ? "v" + attempt.model.version : "verzija nepoznata"} · ${attempt.state === "cancelled" ? "Odustajanje" : "Trenutna praksa"}`,
 })));
 
-async function showAttempt(attempt) {
+const loadError = ref(false);
+const diagramVersion = ref(null);
+const modelName = computed(() => process_instance_data.value?.model.model_path.replace(/^strucna_praksa_/, "Model ").replace(/\.bpmn$/, ""));
+
+function showAttempt(attempt) {
 	selectedAttempt.value = attempt.id;
 	process_instance_data.value = attempt;
-	bpmn_model.value = null;
-	const xml = await ProcessInstance.diagram(attempt.id);
-	if (selectedAttempt.value === attempt.id) bpmn_model.value = xml;
 }
+
+watch(process_instance_data, async (attempt, _, onCleanup) => {
+	let current = true;
+	onCleanup(() => { current = false; });
+	bpmn_model.value = null;
+	diagramVersion.value = null;
+	loadError.value = false;
+	const file = encodeURIComponent(attempt.model.model_path);
+	try {
+		let xml;
+		if (import.meta.env.DEV) {
+			const response = await fetch(BPMN_STUDIO_URL + "/api/models/" + file, { cache: "no-store" });
+			if (!response.ok) throw new Error();
+			xml = (await response.json()).xml;
+		} else {
+			xml = await Model.get(file);
+		}
+		if (!current) return;
+		const root = new DOMParser().parseFromString(xml, "application/xml").documentElement;
+		if (root.localName !== "definitions") throw new Error();
+		diagramVersion.value = Number(root.getAttribute("processVersion") || 1);
+		bpmn_model.value = xml;
+	} catch {
+		if (current) loadError.value = true;
+	}
+});
 
 onMounted(async () => {
 	let id = mainStore.currentUser.internship_process.id;
@@ -52,7 +79,7 @@ onMounted(async () => {
 		const attempt = await ProcessInstance.get(id);
 		if (!attempt) break;
 		attempts.value.push(attempt);
-		if (attempts.value.length === 1) await showAttempt(attempt);
+		if (attempts.value.length === 1) showAttempt(attempt);
 		id = attempt.variables?.previous_instance_id;
 	}
 });
@@ -72,12 +99,14 @@ onMounted(async () => {
 						left
 						@update:model-value="showAttempt" />
 				</div>
+				<div v-if="process_instance_data" class="mb-4">
+					<p class="font-semibold">{{ modelName }}<template v-if="bpmn_model"> · {{ diagramVersion ? "v" + diagramVersion : "verzija nepoznata" }}</template></p>
+					<p>Najnoviji spremljeni model · Verzija pokušaja: {{ process_instance_data.model.version ? "v" + process_instance_data.model.version : "nepoznata" }}</p>
+				</div>
 				<div class="hidden sm:block">
 					<p class="mb-4">Ovdje možete pronaći BPMN graf koji prikazuje aktualno stanje vašeg procesa prakse.</p>
 					<p><span class="font-bold text-yellow-700 dark:text-yellow-300">Žutom</span> bojom označene su aktivnosti i događaji koji čekaju izvršavanje.</p>
 					<p><span class="font-bold text-green-700 dark:text-green-300">Zelenom</span> bojom označene su završene aktivnosti i događaji.</p>
-					<hr class="my-4" />
-					<p>Pronašli ste pogrešku? Molimo da kontaktirate voditelja prakse.</p>
 					<!-- Modal for past tasks (without FormDynamic) -->
 					<CardBoxModal v-if="modal_past_bpmn_task" v-model="modal_past_bpmn_task" :title="UserTaskMappings.getTaskProperty(selectedTaskId, 'form_title')" button-label="Povratak">
 						<p class="mb-2">Ovaj zadatak je već obavljen.</p>
@@ -94,6 +123,7 @@ onMounted(async () => {
 					:xml="bpmn_model"
 					:instance="process_instance_data"
 					@past-task-modal="selectedTaskId = $event.id; modal_past_bpmn_task = true" />
+				<p v-else-if="loadError" role="alert">Učitavanje odabranog modela nije uspjelo.</p>
 				<div v-else-if="process_instance_data" class="flex items-center justify-center pt-36">
 					<LoadingAnimatedIcon></LoadingAnimatedIcon>
 				</div>
