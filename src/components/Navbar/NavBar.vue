@@ -29,7 +29,7 @@ const isMenuNavBarActive = ref(false);
 </script>
 
 <template>
-	<nav class="fixed inset-x-0 top-0 z-30 h-14 w-screen bg-gray-50 transition-position dark:bg-slate-800 lg:w-auto">
+	<nav class="fixed inset-x-0 top-0 z-30 h-14 w-screen bg-gray-50 transition-position dark:bg-slate-800 lg:w-[calc(100%-var(--scrollbar-width,0px))]">
 		<div class="flex lg:items-stretch" :class="containerMaxW">
 			<div class="flex h-14 min-w-0 flex-1 items-stretch"><slot /></div>
 			<div v-if="uiStore.isLg && !menu[0].some((item) => item.isCurrentUser)" class="flex h-14 items-center px-1"><ThemeToggle /></div>
