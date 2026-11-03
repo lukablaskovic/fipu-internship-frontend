@@ -1,5 +1,10 @@
 export const preferenceTable = "selectFromTable-'studentPreferences'";
 
+export function approvalAssignmentOptions(assignments) {
+	return assignments.filter(row => row.voditelj_odobrio?.value === "odobreno" && row.id_zadatak?.trim() && row.dostupno_mjesta > 0)
+		.map(row => ({ id: row.id_zadatak, label: `${row.id_zadatak} (slobodna mjesta: ${row.dostupno_mjesta})` }));
+}
+
 export function visibleTaskFields(fields, values) {
 	return Object.entries(fields ?? {}).filter(([, { type }]) =>
 		type !== "var-string" && !(type === preferenceTable && values.odabir_prihvacen === "false"));

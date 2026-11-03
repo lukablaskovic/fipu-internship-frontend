@@ -1,5 +1,5 @@
 import assert from "node:assert/strict";
-import { visibleTaskFields, taskFormAnswers } from "../src/helpers/task-form.mjs";
+import { approvalAssignmentOptions, visibleTaskFields, taskFormAnswers } from "../src/helpers/task-form.mjs";
 
 const submit = (fields, values) => taskFormAnswers(visibleTaskFields(fields, values), values);
 const allocation = {
@@ -19,3 +19,15 @@ assert.equal(submit(evaluation, { kandidat_odobren: false }), null);
 assert.equal(submit({ id_zadatak: { type: "input" } }, { id_zadatak: "   " }), null);
 assert.equal(submit({ ...evaluation, unknown: { type: "unsupported" } }, { kandidat_odobren: "true" }), null);
 assert.equal(submit({}, selected), null);
+
+const approved = { id_zadatak: "Zadatak 1 - Demo", voditelj_odobrio: { value: "odobreno" }, dostupno_mjesta: "2" };
+const options = approvalAssignmentOptions([
+	approved, { ...approved, dostupno_mjesta: "0" }, { ...approved, dostupno_mjesta: -1 },
+	{ ...approved, dostupno_mjesta: null }, { ...approved, voditelj_odobrio: { value: "u razradi" } },
+	{ ...approved, voditelj_odobrio: { value: "odbijeno" } }, { ...approved, id_zadatak: "" },
+]);
+assert.deepEqual(options, [{ id: approved.id_zadatak, label: "Zadatak 1 - Demo (slobodna mjesta: 2)" }]);
+const approval = { zadatak_odobren: { type: "yes-no-boolean" }, id_zadatak: { type: "input" } };
+assert.equal(submit(approval, { zadatak_odobren: "true" }), null);
+const answers = { zadatak_odobren: "true", id_zadatak: options[0].id };
+assert.deepEqual(submit(approval, answers), answers);

@@ -1,11 +1,12 @@
 <script setup>
 import { computed, onMounted, reactive, ref, watchEffect } from "vue";
 import { fetchAvailableAssignments } from "@/services/baserow_client_api";
-import { preferenceTable, visibleTaskFields, taskFormAnswers } from "@/helpers/task-form.mjs";
+import { approvalAssignmentOptions, preferenceTable, visibleTaskFields, taskFormAnswers } from "@/helpers/task-form.mjs";
 import CardBox from "@/components/Cardbox/CardBox.vue";
 import TableStudentPreferences from "@/components/Tables/TableStudentPreferences.vue";
 import FormCheckRadioGroup from "./FormCheckRadioGroup.vue";
 import FormControl from "./FormControl.vue";
+import FormControlListbox from "./FormControlListbox.vue";
 import FormField from "./FormField.vue";
 
 const props = defineProps({
@@ -22,23 +23,21 @@ onMounted(async () => {
 	if (props.checkAssignment) assignments.value = (await fetchAvailableAssignments()) ?? null;
 });
 
-const assignmentError = computed(() => {
-	if (!props.checkAssignment) return null;
+const approvalDeclined = computed(() => props.checkAssignment && values.zadatak_odobren === "false");
+const assignmentOptions = computed(() => approvalAssignmentOptions(assignments.value ?? []));
+const selectedAssignment = computed({
+	get: () => assignmentOptions.value.find(option => option.id === values.id_zadatak),
+	set: option => { values.id_zadatak = option?.id; },
+});
+const assignmentPlaceholder = computed(() => {
+	if (assignments.value === undefined) return "Učitavanje zadataka…";
 	if (assignments.value === null) return "Popis zadataka nije učitan. Ponovno otvorite obrazac.";
-	const id = values.id_zadatak;
-	if (!assignments.value || !id?.trim()) return null;
-	const assignment = assignments.value.find((row) => row.id_zadatak === id);
-	if (!assignment) return `Zadatak "${id}" ne postoji. Provjerite točan ID zadatka u tabu Zadaci.`;
-	switch (assignment.voditelj_odobrio?.value) {
-		case "odobreno": return null;
-		case "odbijeno": return `Zadatak "${id}" je odbijen i nije moguće odobriti ga za studenta.`;
-		case "u razradi": return `Zadatak "${id}" je još u razradi. Najprije ga odobrite u tabu Zadaci.`;
-		default: return `Zadatak "${id}" ima nepoznat status. Provjerite status zadatka u tabu Zadaci.`;
-	}
+	if (!assignmentOptions.value.length) return "Nema odobrenih zadataka sa slobodnim mjestima.";
+	return "Odaberite zadatak";
 });
 
 watchEffect(() => {
-	const blocked = props.checkAssignment && (!assignments.value || assignmentError.value);
+	const blocked = props.checkAssignment && (approvalDeclined.value || !selectedAssignment.value);
 	emit("answers", blocked ? null : taskFormAnswers(fields.value, values));
 });
 </script>
@@ -51,7 +50,11 @@ watchEffect(() => {
 			<FormField v-else-if="field.type === 'yes-no-boolean'" :name="key" :label="field.label">
 				<FormCheckRadioGroup v-model="values[key]" :name="key" type="radio" :options="{ true: 'Da', false: 'Ne' }" />
 			</FormField>
-			<FormField v-else-if="field.type === 'input'" :name="key" :label="field.label" :error="key === 'id_zadatak' ? assignmentError : null">
+			<p v-else-if="approvalDeclined && key === 'id_zadatak'" role="status">Zadatak ostaje na čekanju dok ga ne odobrite.</p>
+			<FormField v-else-if="checkAssignment && key === 'id_zadatak' && field.type === 'input'" :name="key" label="Zadatak za ovog studenta">
+				<FormControlListbox v-model="selectedAssignment" button-class="form-control-surface w-full rounded border px-3 py-2 text-left" :name="key" :options="assignmentOptions" :placeholder="assignmentPlaceholder" :disabled="!assignmentOptions.length" required aria-label="Zadatak za ovog studenta" />
+			</FormField>
+			<FormField v-else-if="field.type === 'input'" :name="key" :label="field.label">
 				<FormControl v-model="values[key]" class="my-2" type="text" />
 			</FormField>
 			<template v-else-if="field.type === preferenceTable">
