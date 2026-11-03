@@ -13,6 +13,7 @@ assert.equal(submit(allocation, { odabir_prihvacen: "true" }), null);
 assert.deepEqual(submit(allocation, { ...selected, JMBAG: "unused", Student: [1] }), selected);
 assert.deepEqual(submit(allocation, { ...selected, odabir_prihvacen: "false" }), { odabir_prihvacen: "false" });
 const evaluation = { kandidat_odobren: { type: "yes-no-boolean" } };
+assert.deepEqual(submit({ ocjena_unesena_studomat: { type: "yes-no-boolean" } }, {}), { ocjena_unesena_studomat: "true" });
 assert.deepEqual(submit(evaluation, { kandidat_odobren: "false" }), { kandidat_odobren: "false" });
 assert.equal(submit(evaluation, { kandidat_odobren: false }), null);
 assert.equal(submit({ id_zadatak: { type: "input" } }, { id_zadatak: "   " }), null);

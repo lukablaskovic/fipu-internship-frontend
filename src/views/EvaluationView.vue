@@ -69,7 +69,7 @@ async function handleNewInstance() {
 				<img :src="FIPU_praksa_logo_transparent" alt="FIPU Praksa" class="max-h-14 object-contain" />
 			</SectionTitleLineWithButton>
 			<div>
-				<div class="mb-4">
+				<div class="mb-8">
 					<h1 class="text-lg font-bold sm:text-2xl">{{ evaluation.variables.student_ime }} {{ evaluation.variables.student_prezime }}</h1>
 					<h3 class="text-base font-bold">
 						{{ evaluation.variables.student_email }}
@@ -88,7 +88,7 @@ async function handleNewInstance() {
 
 				<p class="mb-4">Molimo da nakon što evaluirate studenta (bilo to kroz intervju, tehnički ispit ili pak bez procesa selekcije) potvrdite prihvaćate li studenta za obavljanje prakse u Vašem poduzeću.</p>
 
-				<FormDynamic class="mb-4 rounded-md p-1" :task="evaluation.task" @answers="answers = $event" />
+				<FormDynamic class="mb-4 rounded-xl border border-gray-200 p-4 dark:border-slate-700 sm:p-6" :task="evaluation.task" @answers="answers = $event" />
 
 				<BaseButton v-if="answers?.kandidat_odobren" class="mb-4" label="Potvrdi" :loading="isLoading" color="fipu_blue" @click="handleNewInstance()" />
 			</div>

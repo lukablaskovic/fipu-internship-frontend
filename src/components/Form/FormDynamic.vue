@@ -47,7 +47,8 @@ watchEffect(() => {
 	<CardBox vertical-centered>
 		<p v-if="task.documentation" class="mb-2">{{ task.documentation }}</p>
 		<template v-for="[key, field] in fields" :key="key">
-			<FormField v-if="field.type === 'yes-no-boolean'" :name="key" :label="field.label">
+			<p v-if="key === 'ocjena_unesena_studomat' && field.type === 'yes-no-boolean'">Potvrdite da je ocjena unesena u ISVU.</p>
+			<FormField v-else-if="field.type === 'yes-no-boolean'" :name="key" :label="field.label">
 				<FormCheckRadioGroup v-model="values[key]" :name="key" type="radio" :options="{ true: 'Da', false: 'Ne' }" />
 			</FormField>
 			<FormField v-else-if="field.type === 'input'" :name="key" :label="field.label" :error="key === 'id_zadatak' ? assignmentError : null">

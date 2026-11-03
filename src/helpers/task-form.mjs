@@ -12,6 +12,10 @@ export function taskFormAnswers(fields, values) {
 		const value = values[key];
 		switch (type) {
 			case "yes-no-boolean":
+				if (key === "ocjena_unesena_studomat") {
+					answers[key] = "true";
+					continue;
+				}
 				if (value !== "true" && value !== "false") return null;
 				break;
 			case "input":
