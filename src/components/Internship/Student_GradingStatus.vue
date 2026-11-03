@@ -1,4 +1,5 @@
 <script setup>
+import BaseButton from "@/components/Base/BaseButton.vue";
 import InternshipPageHeader from "@/components/Internship/InternshipPageHeader.vue";
 import StudentWithdrawAction from "@/components/Internship/StudentWithdrawAction.vue";
 import { computed, ref, watch } from "vue";
@@ -53,6 +54,7 @@ watch(diaryId, loadDiary, { immediate: true });
 			<template v-if="finished">
 				<p>Vaš proces prakse je završio. Profesor je potvrdio unos ocjene u Studomat.</p>
 				<p class="mt-4">Nadamo se da vam je kolegij bio od koristi i da ste puno toga naučili! Sretno u daljnjem studiranju! 🎓</p>
+				<BaseButton to="/odabir-procesa" label="Novi proces prakse" color="fipu_blue" class="mt-4" />
 			</template>
 			<template v-else>
 				<p>Vaš proces prakse je završio. Nakon što vam profesor pregleda potvrdu i odobri dnevnik prakse, ocjena će vam biti unesena u Studomat.</p>

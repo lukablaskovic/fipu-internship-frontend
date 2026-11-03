@@ -1,5 +1,6 @@
 import { createRouter, createWebHistory } from "vue-router";
 import { useMainStore } from "@/stores/main_store";
+import { useStudentStore } from "@/stores/student_store";
 import { MAINTENANCE_MODE, DEV_MODE } from "@/config.js";
 
 import { ProcessInstance } from "@/services/bpmn_engine_api";
@@ -55,7 +56,7 @@ router.beforeEach(async (to, from, next) => {
 	}
 
 	// User without active instance trying to access '/moja-praksa'
-	if (to.path === "/moja-praksa" && !mainStore.userHasActiveInstance && userAuthenticated) {
+	if (to.path === "/moja-praksa" && !mainStore.currentUser.internship_process.id && userAuthenticated) {
 		return next("/odabir-procesa");
 	}
 
@@ -64,9 +65,13 @@ router.beforeEach(async (to, from, next) => {
 		return next("/moja-praksa");
 	}
 
-	if (userAuthenticated && to.path === "/odabir-procesa" && mainStore.userHasActiveInstance) {
-		const instance = await ProcessInstance.get(mainStore.currentUser.internship_process.id);
-		if (instance?.state !== "cancelled" && instance?.pending?.[0] !== "end_event_student") return next("/moja-praksa");
+	const instanceId = mainStore.currentUser.internship_process.id;
+	if (userAuthenticated && to.path === "/odabir-procesa" && instanceId) {
+		const loaded = useStudentStore().student_process_instance_data;
+		const closedStates = ["finished", "cancelled"];
+		if (loaded.id === instanceId && closedStates.includes(loaded.state)) return next();
+		const instance = await ProcessInstance.get(instanceId);
+		if (!closedStates.includes(instance?.state)) return next("/moja-praksa");
 	}
 	if (userAuthenticated && to.path === "/prijava") {
 		return next(userAdmin ? "/dashboard" : "/moja-praksa");

@@ -3,17 +3,14 @@ import { useMainStore } from "@/stores/main_store";
 import { useStudentStore } from "@/stores/student_store";
 
 import { UserTaskMappings } from "@/helpers/maps";
-import { useRouter } from "vue-router";
 import { ref, computed, onMounted } from "vue";
 
 import Student_InternshipCancelled from "@/components/Internship/Student_InternshipCancelled.vue";
 import LoadingOverlay from "@/components/LoadingOverlay.vue";
 
-const router = useRouter();
 const mainStore = useMainStore();
 const studentStore = useStudentStore();
 
-const processInstance = ref(null);
 const pendingProcessTask = computed(() => studentStore.student_process_instance_data.pending?.[0]);
 const error = ref(null);
 const isLoaded = ref(false);
@@ -21,9 +18,7 @@ const isLoaded = ref(false);
 onMounted(async () => {
 	if (mainStore.userAuthenticated) {
 		try {
-			processInstance.value = mainStore.currentUser.internship_process.id;
-			const pending = await studentStore.getPendingUserTask(processInstance.value);
-			if (pending === "end_event_student") return router.replace("/odabir-procesa");
+			await studentStore.getPendingUserTask(mainStore.currentUser.internship_process.id);
 			isLoaded.value = true;
 		} catch (cause) {
 			error.value = "An error occurred while fetching instance info.";

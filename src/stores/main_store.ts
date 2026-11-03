@@ -22,9 +22,6 @@ export const useMainStore = defineStore("main", {
 		userAdmin(state): boolean {
 			return state.currentUser.coordinator === true;
 		},
-		userHasActiveInstance(state): boolean {
-			return !!state.currentUser.internship_process.id && state.currentUser.internship_process.pending_user_task !== "end_event_student";
-		},
 		get_userModelPrakse(state): string {
 			return state.currentUser.model_prakse == "A" ? appConfig.bpmn_process_name_A : appConfig.bpmn_process_name_B;
 		},
@@ -91,11 +88,7 @@ export const useMainStore = defineStore("main", {
 						if (processInstance) {
 							await useStudentStore().getPendingUserTask(processInstance);
 							if (!sessionStorage.getItem("google-id-token")) return { status: "error" };
-							if (this.userHasActiveInstance) {
-								await router.push("/moja-praksa");
-							} else {
-								await router.push("/odabir-procesa");
-							}
+							await router.push("/moja-praksa");
 						}
 						// No active process instance, so redirect to odabir-procesa
 						else {
