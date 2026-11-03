@@ -36,7 +36,7 @@ export default defineComponent({
 			{ class: parentClass, orientation: "horizontal", loop: true },
 			() => hasSlot
 				? this.$slots.default().map((element) => {
-						if (element && element.children && typeof element.children === "object") {
+						if (element && Array.isArray(element.children)) {
 							return h(
 								element,
 								{},

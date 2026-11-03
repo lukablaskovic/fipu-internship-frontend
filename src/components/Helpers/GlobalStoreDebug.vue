@@ -1,4 +1,5 @@
 <script setup>
+import Tooltip from "@/components/Base/Tooltip.vue";
 import DebugSelectButton from "@/components/Helpers/DebugSelectButton.vue";
 import BaseIcon from "@/components/Base/BaseIcon.vue";
 import VueJsonPretty from "vue-json-pretty";
@@ -48,7 +49,7 @@ const newValueFormatted = computed(() => {
 	<div v-if="debug" class="fixed z-[1000] flex h-screen w-screen items-center justify-center px-[8%] py-16 backdrop-blur-sm">
 		<div class="flex h-full w-full flex-col rounded-xl bg-black bg-opacity-90 p-4 text-slate-400 shadow-xl">
 			<div class="text-center text-2xl font-bold">DEBUG INFO</div>
-			<Slider v-model="depth" class="slider my-4 h-[8px] min-h-[8px] w-64 self-center" :min="1" :max="8" show-tooltip="focus" :merge="1" :lazy="false" />
+			<Tooltip :content="String(depth)"><div tabindex="0" class="self-center"><Slider v-model="depth" class="slider my-4 h-[8px] min-h-[8px] w-64 self-center" :min="1" :max="8" :show-tooltip="false" :merge="1" :lazy="false" /></div></Tooltip>
 			<div class="fipu_vertical_scrollbar flex w-full items-center justify-start overflow-x-auto overflow-y-hidden py-1 pb-4">
 				<DebugSelectButton v-for="name in storeNames" :key="name" :name="name" :selected="storeSelected === name" @select="storeSelected = name" />
 			</div>
@@ -77,6 +78,5 @@ input:-webkit-autofill:active {
 .slider {
 	--slider-bg: #f1f5f9;
 	--slider-connect-bg: theme("colors.fipu_blue");
-	--slider-tooltip-bg: theme("colors.fipu_blue");
 }
 </style>

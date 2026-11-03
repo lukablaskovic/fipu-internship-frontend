@@ -1,4 +1,5 @@
 <script setup>
+import Tooltip from "@/components/Base/Tooltip.vue";
 import { mdiClose, mdiChevronRight, mdiChevronLeft } from "@mdi/js";
 import AsideMenuLayer from "@/components/AsideMenu/AsideMenuLayer.vue";
 import BaseButton from "@/components/Base/BaseButton.vue";
@@ -99,16 +100,17 @@ router.afterEach(() => {
 
 		<template #footer>
 			<div class="hidden shrink-0 p-3 lg:block">
-				<BaseButton
-					:icon="isPrimaryMenuCompact ? mdiChevronRight : mdiChevronLeft"
-					:icon-size="22"
-					:label="isPrimaryMenuCompact ? null : 'Smanji'"
-					:aria-label="isPrimaryMenuCompact ? 'Proširi izbornik' : 'Smanji izbornik'"
-					:aria-expanded="!isPrimaryMenuCompact"
-					:title="isPrimaryMenuCompact ? 'Proširi izbornik' : 'Smanji izbornik'"
-					color="border-transparent bg-fipu_blue/10 text-fipu_blue hover:bg-fipu_blue/20 hover:text-fipu_light_blue"
-					class="h-11 w-full !rounded-xl text-sm font-medium focus:ring-inset motion-reduce:transition-none"
-					@click="isPrimaryMenuCompact = !isPrimaryMenuCompact" />
+				<Tooltip :content="isPrimaryMenuCompact ? 'Proširi izbornik' : 'Smanji izbornik'">
+					<BaseButton
+						:icon="isPrimaryMenuCompact ? mdiChevronRight : mdiChevronLeft"
+						:icon-size="22"
+						:label="isPrimaryMenuCompact ? null : 'Smanji'"
+						:aria-label="isPrimaryMenuCompact ? 'Proširi izbornik' : 'Smanji izbornik'"
+						:aria-expanded="!isPrimaryMenuCompact"
+						color="border-transparent bg-fipu_blue/10 text-fipu_blue hover:bg-fipu_blue/20 hover:text-fipu_light_blue"
+						class="h-11 w-full !rounded-xl text-sm font-medium focus:ring-inset motion-reduce:transition-none"
+						@click="isPrimaryMenuCompact = !isPrimaryMenuCompact" />
+				</Tooltip>
 			</div>
 		</template>
 	</AsideMenuLayer>

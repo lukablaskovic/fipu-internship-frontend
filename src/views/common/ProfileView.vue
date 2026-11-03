@@ -1,4 +1,5 @@
 <script setup>
+import Tooltip from "@/components/Base/Tooltip.vue";
 import { computed, onBeforeUnmount, ref } from "vue";
 import { Popover } from "reka-ui/namespaced";
 import { useMainStore } from "@/stores/main_store";
@@ -121,16 +122,17 @@ const details = computed(() => [
 					<div class="relative h-28 w-28 shrink-0">
 						<UserAvatarCurrentUser class="profile-avatar h-full w-full" />
 						<Popover.Root :open="editing" @update:open="editAvatar">
-							<Popover.Trigger as-child>
-								<BaseButton
-									:icon="mdiCameraOutline"
-									:icon-size="22"
-									color="fipu_blue"
-									class="avatar-edit-button absolute bottom-0 right-0 h-11 w-14 border-0"
-									aria-label="Promijeni avatar"
-									title="Promijeni avatar"
-									:disabled="saving" />
-							</Popover.Trigger>
+							<Tooltip content="Promijeni avatar">
+								<Popover.Trigger as-child>
+									<BaseButton
+										:icon="mdiCameraOutline"
+										:icon-size="22"
+										color="fipu_blue"
+										class="avatar-edit-button absolute bottom-0 right-0 h-11 w-14 border-0"
+										aria-label="Promijeni avatar"
+										:disabled="saving" />
+								</Popover.Trigger>
+							</Tooltip>
 							<Popover.Portal>
 								<Popover.Content
 									align="start"

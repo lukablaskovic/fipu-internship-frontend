@@ -1,5 +1,5 @@
 <template>
-	<article :key="props.data.id_zadatak" class="min-w-0 break-words text-sm text-gray-700 dark:text-gray-200">
+	<article :key="props.data.id_zadatak" class="min-w-0 break-words rounded-xl border border-gray-200 p-4 dark:border-slate-700 text-sm text-gray-700 dark:text-gray-200">
 		<header class="flex items-center gap-4">
 			<UserAvatar v-if="companyLogo" :username="props.data.Poslodavac?.[0]?.value" :avatar="companyLogo" class="h-12 w-12 [&_img]:object-contain" />
 			<div class="min-w-0">
@@ -37,13 +37,13 @@
 					<ExpandableText class="max-w-prose" :text="props.data[field]" />
 				</section>
 			</template>
+			<section>
+				<h2 class="font-semibold text-gray-900 dark:text-white">Selekcija</h2>
+				<ExpandableText class="max-w-prose" :text="props.data.selekcija === true ? props.data.proces_selekcije || 'Da' : 'Ne'" />
+			</section>
 		</div>
 
-		<dl class="mt-5 space-y-2 border-t border-gray-200 pt-4 dark:border-slate-700 [&_dt]:font-medium">
-			<div class="flex flex-wrap items-baseline gap-x-3">
-				<dt>Selekcija</dt>
-				<dd><ExpandableText :text="props.data.selekcija === true ? props.data.proces_selekcije || 'Da' : 'Ne'" /></dd>
-			</div>
+		<dl class="mt-2 [&_dt]:font-medium">
 			<div v-if="props.data.angazman_fipu !== 'Ne'" class="flex flex-wrap items-baseline gap-x-3">
 				<dt>FIPU angažman</dt>
 				<dd class="whitespace-pre-line">{{ props.data.angazman_fipu || "Ne" }}</dd>

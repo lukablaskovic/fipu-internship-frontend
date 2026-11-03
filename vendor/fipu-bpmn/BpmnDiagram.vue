@@ -7,6 +7,7 @@ import { attachedWaypoints, gatewayRoute, newFlowRoute, portsForGateway } from '
 
 const props = defineProps({
   model: { type: Object, required: true },
+  tooltipComponent: { type: [Object, Function], default: null },
   selectedId: { type: String, default: '' },
   editable: { type: Boolean, default: false },
   highlights: { type: Object, default: () => ({}) },
@@ -441,45 +442,51 @@ defineExpose({ fit, focus, center, zoomIn: () => zoom(0.8), zoomOut: () => zoom(
       <g v-for="pool in model.pools" :key="pool.id"><rect :x="pool.x" :y="pool.y" :width="pool.width" :height="pool.height" fill="#fff" stroke="#9babbc" /><line :x1="pool.x + 30" :x2="pool.x + 30" :y1="pool.y" :y2="pool.y + pool.height" stroke="#9babbc" /><text :transform="`translate(${pool.x + 19} ${pool.y + pool.height / 2}) rotate(-90)`" text-anchor="middle" class="pool-label">{{ pool.name }}</text></g>
       <g v-for="(lane, index) in model.lanes" :key="lane.id"><rect :x="lane.x" :y="lane.y" :width="lane.width" :height="lane.height" :fill="index % 2 ? '#f7fafc' : '#fff'" stroke="#cbd5df" /><line :x1="lane.x + 30" :x2="lane.x + 30" :y1="lane.y" :y2="lane.y + lane.height" stroke="#cbd5df" /><text :transform="`translate(${lane.x + 19} ${lane.y + lane.height / 2}) rotate(-90)`" text-anchor="middle" class="lane-label">{{ lane.name }}</text></g>
     </g>
-    <g v-for="flow in displayedFlows" :key="flow.id" :data-flow-id="flow.id" class="bpmn-flow" :class="{ selected: selectedId === flow.id }" tabindex="0" role="button" :aria-label="`${flow.type === 'messageFlow' ? 'Message Flow' : 'Sequence Flow'}: ${flow.name || flow.id}`" @dblclick.stop="editable && !connecting && emit('edit-name', flow.id)" @pointerdown.stop="emit('select', flow.id)" @keydown.enter.prevent="emit('select', flow.id)" @keydown.space.prevent="emit('select', flow.id)">
-      <title>{{ flow.name || flow.id }}{{ flow.condition ? ` · ${flow.condition}` : '' }}</title>
-      <polyline :points="flowPoints(routePoints(flow))" fill="none" stroke="transparent" stroke-width="14" />
-      <polyline class="flow-line" :stroke-dasharray="flow.type === 'messageFlow' ? '6 4' : undefined" :points="flowPoints(visibleRoute(flow))" fill="none" :stroke="selectedId === flow.id ? '#087caa' : '#5f7185'" :stroke-width="selectedId === flow.id ? 2.5 : 1.4" :marker-end="`url(#${markerId}${flow.type === 'messageFlow' ? '-open' : ''})`" />
-      <path v-if="defaultFlows.has(flow.id)" :d="defaultMark(flow)" stroke="#5f7185" stroke-width="1.6" />
-    </g>
-    <g v-for="node in displayedNodes" :key="node.id" class="bpmn-node" :class="{ selected: selectedId === node.id, movable: editable, active: !!highlights[node.id] }" :transform="position(node)" tabindex="0" role="button" :aria-label="`${node.type}: ${node.name || node.id}`" :aria-pressed="selectedId === node.id" @pointerdown.stop="begin($event, node)" @keydown="key($event, node)" @dblclick.stop="editable ? !connecting && emit('edit-name', node.id) : focus(node.id)">
-      <title>{{ node.name || node.id }} · {{ node.type }}</title>
-      <rect v-if="selectedId === node.id" x="-5" y="-5" :width="node.width + 10" :height="node.height + 10" rx="8" class="selection-outline" />
-      <g v-if="node.type.endsWith('Event')">
-      <circle class="node-shape" :class="{ 'end-event': node.type === 'endEvent' }" :cx="node.width / 2" :cy="node.height / 2" :r="Math.min(node.width, node.height) / 2 - 2" :fill="highlights[node.id] || '#fff'" :stroke-width="node.type === 'endEvent' ? 3.5 : 1.7" />
-      <circle v-if="node.type.startsWith('intermediate')" :cx="node.width / 2" :cy="node.height / 2" :r="Math.min(node.width, node.height) / 2 - 5" fill="none" stroke="#536c82" />
-      <BpmnMarker :type="node.timerDuration != null ? 'timerCatch' : node.terminate ? 'terminateEnd' : node.type" :x="node.width * .2" :y="node.height * .2" :width="node.width * .6" :height="node.height * .6" color="#253d54" />
+    <component :is="tooltipComponent || 'g'" :svg="!!tooltipComponent" v-for="flow in displayedFlows" :key="flow.id" :content="`${flow.name || flow.id}${flow.condition ? ` · ${flow.condition}` : ''}`">
+      <g :data-flow-id="flow.id" class="bpmn-flow" :class="{ selected: selectedId === flow.id }" tabindex="0" role="button" :aria-label="`${flow.type === 'messageFlow' ? 'Message Flow' : 'Sequence Flow'}: ${flow.name || flow.id}`" @dblclick.stop="editable && !connecting && emit('edit-name', flow.id)" @pointerdown.stop="emit('select', flow.id)" @keydown.enter.prevent="emit('select', flow.id)" @keydown.space.prevent="emit('select', flow.id)">
+        <title v-if="!tooltipComponent">{{ flow.name || flow.id }}{{ flow.condition ? ` · ${flow.condition}` : '' }}</title>
+        <polyline :points="flowPoints(routePoints(flow))" fill="none" stroke="transparent" stroke-width="14" />
+        <polyline class="flow-line" :stroke-dasharray="flow.type === 'messageFlow' ? '6 4' : undefined" :points="flowPoints(visibleRoute(flow))" fill="none" :stroke="selectedId === flow.id ? '#087caa' : '#5f7185'" :stroke-width="selectedId === flow.id ? 2.5 : 1.4" :marker-end="`url(#${markerId}${flow.type === 'messageFlow' ? '-open' : ''})`" />
+        <path v-if="defaultFlows.has(flow.id)" :d="defaultMark(flow)" stroke="#5f7185" stroke-width="1.6" />
       </g>
-      <g v-else-if="node.type.endsWith('Gateway')">
-        <polygon class="node-shape" :points="`${node.width / 2},0 ${node.width},${node.height / 2} ${node.width / 2},${node.height} 0,${node.height / 2}`" :fill="highlights[node.id] || '#fff'" />
-        <BpmnMarker :type="node.type" :x="node.width * .2" :y="node.height * .2" :width="node.width * .6" :height="node.height * .6" color="#253d54" />
-      </g>
-      <g v-else>
-        <rect class="node-shape" x="0" y="0" :width="node.width" :height="node.height" rx="10" :fill="highlights[node.id] || '#fff'" />
-        <BpmnMarker :type="node.type" x="8" y="7" width="18" height="18" color="#36536b" />
-        <text class="node-label" :x="node.width / 2" :y="Math.max(31, node.height / 2 - (lines(node.name, node.width - 14).length - 1) * 6 + 7)" text-anchor="middle"><tspan v-for="(line, i) in lines(node.name, node.width - 14)" :key="i" :x="node.width / 2" :dy="i ? 12 : 0">{{ line }}</tspan></text>
-        <g v-if="editable && !connecting && selectedId === node.id">
-          <g v-for="(label, corner) in corners" :key="corner" class="resize-handle" :style="{ cursor: ['nw','se'].includes(corner) ? 'nwse-resize' : 'nesw-resize' }" :transform="`translate(${corner.endsWith('w') ? 0 : node.width} ${corner.startsWith('n') ? 0 : node.height})`" tabindex="0" role="button" :aria-label="'Promijeni veličinu: ' + label + ' kut'" @pointerdown.stop="startResize($event, node, corner)" @keydown="resizeKey($event, node, corner)" @dblclick.stop>
-            <rect x="-8" y="-8" width="16" height="16" fill="transparent" />
-            <rect x="-3.5" y="-3.5" width="7" height="7" fill="white" stroke="#087caa" stroke-width="1.5" />
+    </component>
+    <component :is="tooltipComponent || 'g'" :svg="!!tooltipComponent" v-for="node in displayedNodes" :key="node.id" :content="`${node.name || node.id} · ${node.type}`">
+      <g class="bpmn-node" :class="{ selected: selectedId === node.id, movable: editable, active: !!highlights[node.id] }" :transform="position(node)" tabindex="0" role="button" :aria-label="`${node.type}: ${node.name || node.id}`" :aria-pressed="selectedId === node.id" @pointerdown.stop="begin($event, node)" @keydown="key($event, node)" @dblclick.stop="editable ? !connecting && emit('edit-name', node.id) : focus(node.id)">
+        <title v-if="!tooltipComponent">{{ node.name || node.id }} · {{ node.type }}</title>
+        <rect v-if="selectedId === node.id" x="-5" y="-5" :width="node.width + 10" :height="node.height + 10" rx="8" class="selection-outline" />
+        <g v-if="node.type.endsWith('Event')">
+        <circle class="node-shape" :class="{ 'end-event': node.type === 'endEvent' }" :cx="node.width / 2" :cy="node.height / 2" :r="Math.min(node.width, node.height) / 2 - 2" :fill="highlights[node.id] || '#fff'" :stroke-width="node.type === 'endEvent' ? 3.5 : 1.7" />
+        <circle v-if="node.type.startsWith('intermediate')" :cx="node.width / 2" :cy="node.height / 2" :r="Math.min(node.width, node.height) / 2 - 5" fill="none" stroke="#536c82" />
+        <BpmnMarker :type="node.timerDuration != null ? 'timerCatch' : node.terminate ? 'terminateEnd' : node.type" :x="node.width * .2" :y="node.height * .2" :width="node.width * .6" :height="node.height * .6" color="#253d54" />
+        </g>
+        <g v-else-if="node.type.endsWith('Gateway')">
+          <polygon class="node-shape" :points="`${node.width / 2},0 ${node.width},${node.height / 2} ${node.width / 2},${node.height} 0,${node.height / 2}`" :fill="highlights[node.id] || '#fff'" />
+          <BpmnMarker :type="node.type" :x="node.width * .2" :y="node.height * .2" :width="node.width * .6" :height="node.height * .6" color="#253d54" />
+        </g>
+        <g v-else>
+          <rect class="node-shape" x="0" y="0" :width="node.width" :height="node.height" rx="10" :fill="highlights[node.id] || '#fff'" />
+          <BpmnMarker :type="node.type" x="8" y="7" width="18" height="18" color="#36536b" />
+          <text class="node-label" :x="node.width / 2" :y="Math.max(31, node.height / 2 - (lines(node.name, node.width - 14).length - 1) * 6 + 7)" text-anchor="middle"><tspan v-for="(line, i) in lines(node.name, node.width - 14)" :key="i" :x="node.width / 2" :dy="i ? 12 : 0">{{ line }}</tspan></text>
+          <g v-if="editable && !connecting && selectedId === node.id">
+            <g v-for="(label, corner) in corners" :key="corner" class="resize-handle" :style="{ cursor: ['nw','se'].includes(corner) ? 'nwse-resize' : 'nesw-resize' }" :transform="`translate(${corner.endsWith('w') ? 0 : node.width} ${corner.startsWith('n') ? 0 : node.height})`" tabindex="0" role="button" :aria-label="'Promijeni veličinu: ' + label + ' kut'" @pointerdown.stop="startResize($event, node, corner)" @keydown="resizeKey($event, node, corner)" @dblclick.stop>
+              <rect x="-8" y="-8" width="16" height="16" fill="transparent" />
+              <rect x="-3.5" y="-3.5" width="7" height="7" fill="white" stroke="#087caa" stroke-width="1.5" />
+            </g>
           </g>
         </g>
       </g>
-    </g>
+    </component>
     <g class="external-labels">
-      <text v-for="label in labels" :key="label.id" :class="label.isFlow ? 'flow-label' : 'node-label'" :data-label-id="label.id"
-        :pointer-events="editable && !connecting || label.isFlow ? 'bounding-box' : 'none'" :tabindex="editable && !connecting ? 0 : undefined"
-        :aria-label="'Oznaka: ' + label.name" :x="label.box.x + label.box.width / 2" :y="label.box.y + (label.isFlow ? 12 : 11)"
-        :transform="dragging?.label?.id === label.id ? `translate(${dragging.dx} ${dragging.dy})` : undefined" text-anchor="middle"
-        @dblclick.stop="editable && !connecting && emit('edit-name', label.id)" @pointerdown.stop="startLabel($event, label)" @keydown="labelKey($event, label)">
-        <title>{{ editable ? 'Povucite za pomak oznake' : label.name }}</title>
-        <tspan v-for="(line, i) in label.lines" :key="i" :x="label.box.x + label.box.width / 2" :dy="i ? 12 : 0">{{ line }}</tspan>
-      </text>
+      <component :is="tooltipComponent || 'g'" :svg="!!tooltipComponent" v-for="label in labels" :key="label.id" :content="editable ? 'Povucite za pomak oznake' : label.name">
+      <text :class="label.isFlow ? 'flow-label' : 'node-label'" :data-label-id="label.id"
+          :pointer-events="editable && !connecting || label.isFlow ? 'bounding-box' : 'none'" :tabindex="editable && !connecting ? 0 : undefined"
+          :aria-label="'Oznaka: ' + label.name" :x="label.box.x + label.box.width / 2" :y="label.box.y + (label.isFlow ? 12 : 11)"
+          :transform="dragging?.label?.id === label.id ? `translate(${dragging.dx} ${dragging.dy})` : undefined" text-anchor="middle"
+          @dblclick.stop="editable && !connecting && emit('edit-name', label.id)" @pointerdown.stop="startLabel($event, label)" @keydown="labelKey($event, label)">
+          <title v-if="!tooltipComponent">{{ editable ? 'Povucite za pomak oznake' : label.name }}</title>
+          <tspan v-for="(line, i) in label.lines" :key="i" :x="label.box.x + label.box.width / 2" :dy="i ? 12 : 0">{{ line }}</tspan>
+        </text>
+    </component>
     </g>
     <g class="alignment-guides" pointer-events="none" aria-hidden="true" stroke="#087caa" stroke-dasharray="5 4">
       <line v-if="dragging?.guideX != null" :x1="dragging.guideX" :x2="dragging.guideX" :y1="view.y" :y2="view.y + view.height" vector-effect="non-scaling-stroke" />
@@ -487,24 +494,30 @@ defineExpose({ fit, focus, center, zoomIn: () => zoom(0.8), zoomOut: () => zoom(
     </g>
     <polyline v-if="dragging?.creation" :points="flowPoints(dragging.points)" fill="none" stroke="#087caa" stroke-width="2" stroke-dasharray="5 3" pointer-events="none" />
     <g v-if="creationPorts.length" class="route-handles">
-      <g v-for="port in creationPorts" :key="port.side" :transform="`translate(${port.x} ${port.y})`" tabindex="0" role="button"
-        :aria-label="'Nova veza: ' + port.side" @pointerdown.stop="startFlow(port, $event)" @keydown.enter.stop.prevent="startFlow(port)" @keydown.space.stop.prevent="startFlow(port)">
-        <title>Povucite do zadatka za novu vezu</title>
-        <circle r="9" fill="transparent" /><circle r="4.5" />
-      </g>
+      <component :is="tooltipComponent || 'g'" :svg="!!tooltipComponent" v-for="port in creationPorts" :key="port.side" :content="'Povucite do zadatka za novu vezu'">
+      <g :transform="`translate(${port.x} ${port.y})`" tabindex="0" role="button"
+          :aria-label="'Nova veza: ' + port.side" @pointerdown.stop="startFlow(port, $event)" @keydown.enter.stop.prevent="startFlow(port)" @keydown.space.stop.prevent="startFlow(port)">
+          <title v-if="!tooltipComponent">Povucite do zadatka za novu vezu</title>
+          <circle r="9" fill="transparent" /><circle r="4.5" />
+        </g>
+    </component>
     </g>
     <g v-if="selectedFlow" class="route-handles" @keydown.delete.stop.prevent>
-      <g v-for="h in handles" :key="h.i + ':' + !!h.segment" :transform="`translate(${h.x} ${h.y})`" tabindex="0" role="button" :aria-label="(h.segment ? 'Pomakni segment ' : 'Pomakni zavoj ') + (h.i + 1)" @pointerdown.stop="startHandle($event, h)" @keydown="nudge($event, h)" @keydown.delete.stop.prevent="deleteWaypoint($event, h)">
-        <title>{{ h.segment ? 'Delete: ukloni susjedni zavoj' : 'Delete: ukloni zavoj' }}</title>
-        <circle r="8" fill="transparent" />
-        <rect v-if="h.segment" x="-3.5" y="-3.5" width="7" height="7" />
-        <circle v-else r="4.5" />
-      </g>
-      <g v-for="port in gatewayPorts" :key="port.ref + port.side" :class="{ snapped: dragging?.snapPort?.ref === port.ref && dragging.snapPort.side === port.side }" :transform="`translate(${port.x} ${port.y})`" tabindex="0" role="button"
-        :aria-label="`Spoji ${port.ref === 'sourceRef' ? 'početak' : 'kraj'} veze: ${port.side}`" @pointerdown.stop="startDock($event, port)" @keydown.enter.stop.prevent="commitRoute(selectedFlow, gatewayRoute(port, selectedFlow.waypoints))" @keydown.space.stop.prevent="commitRoute(selectedFlow, gatewayRoute(port, selectedFlow.waypoints))">
-        <title>{{ 'Spoji vezu: ' + port.side }}</title>
-        <circle r="9" fill="transparent" /><circle r="4.5" />
-      </g>
+      <component :is="tooltipComponent || 'g'" :svg="!!tooltipComponent" v-for="h in handles" :key="h.i + ':' + !!h.segment" :content="h.segment ? 'Delete: ukloni susjedni zavoj' : 'Delete: ukloni zavoj'">
+      <g :transform="`translate(${h.x} ${h.y})`" tabindex="0" role="button" :aria-label="(h.segment ? 'Pomakni segment ' : 'Pomakni zavoj ') + (h.i + 1)" @pointerdown.stop="startHandle($event, h)" @keydown="nudge($event, h)" @keydown.delete.stop.prevent="deleteWaypoint($event, h)">
+          <title v-if="!tooltipComponent">{{ h.segment ? 'Delete: ukloni susjedni zavoj' : 'Delete: ukloni zavoj' }}</title>
+          <circle r="8" fill="transparent" />
+          <rect v-if="h.segment" x="-3.5" y="-3.5" width="7" height="7" />
+          <circle v-else r="4.5" />
+        </g>
+    </component>
+      <component :is="tooltipComponent || 'g'" :svg="!!tooltipComponent" v-for="port in gatewayPorts" :key="port.ref + port.side" :content="'Spoji vezu: ' + port.side">
+      <g :class="{ snapped: dragging?.snapPort?.ref === port.ref && dragging.snapPort.side === port.side }" :transform="`translate(${port.x} ${port.y})`" tabindex="0" role="button"
+          :aria-label="`Spoji ${port.ref === 'sourceRef' ? 'početak' : 'kraj'} veze: ${port.side}`" @pointerdown.stop="startDock($event, port)" @keydown.enter.stop.prevent="commitRoute(selectedFlow, gatewayRoute(port, selectedFlow.waypoints))" @keydown.space.stop.prevent="commitRoute(selectedFlow, gatewayRoute(port, selectedFlow.waypoints))">
+          <title v-if="!tooltipComponent">{{ 'Spoji vezu: ' + port.side }}</title>
+          <circle r="9" fill="transparent" /><circle r="4.5" />
+        </g>
+    </component>
     </g>
     <foreignObject v-if="actionAnchor && $slots['node-actions']" class="node-actions" :transform="`translate(${actionAnchor.x} ${actionAnchor.y}) scale(${actionAnchor.scale})`" width="44" height="44" @pointerdown.stop @dblclick.stop>
       <div xmlns="http://www.w3.org/1999/xhtml" style="padding: 4px"><slot name="node-actions" :node="selectedNode" /></div>

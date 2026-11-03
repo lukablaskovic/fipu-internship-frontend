@@ -84,12 +84,12 @@ const cancel = () => confirmCancel("cancel");
 			<Dialog.Overlay class="reka-animated fixed inset-0 z-[5000]" :class="isLogout || isBpmn ? 'bg-slate-950/50' : 'bg-gradient-to-tr from-gray-700 via-gray-800 to-gray-900 opacity-90'" />
 			<div class="pointer-events-none fixed inset-0 z-[5001] flex items-center justify-center"><Dialog.Content class="reka-animated" as-child v-bind="description ? {} : { 'aria-describedby': undefined }" @close-auto-focus="restoreFocus">
 				<CardBox
-					class="pointer-events-auto [&>div]:min-w-0"
+					class="pointer-events-auto rounded-2xl [&>div]:min-w-0"
 					:class="{
-						'2xl:3/12 modal-scrollable fipu_vertical_scrollbar z-50 max-h-modal w-11/12 rounded shadow-lg md:w-3/5 lg:w-2/5 xl:w-6/12': !large && !isLogout && !isBpmn,
-						'modal-scrollable fipu_vertical_scrollbar z-50 max-h-modal w-11/12 max-w-6xl rounded-xl shadow-lg': large && !isLogout && !isBpmn,
-						'modal-scrollable fipu_vertical_scrollbar w-11/12 max-w-md rounded-2xl shadow-2xl': isLogout,
-						'bpmn-task-dialog w-[calc(100%-2rem)] max-w-2xl overflow-hidden rounded-xl text-slate-900 shadow-2xl dark:text-slate-100': isBpmn,
+						'2xl:3/12 modal-scrollable fipu_vertical_scrollbar z-50 max-h-modal w-11/12 shadow-lg md:w-3/5 lg:w-2/5 xl:w-6/12': !large && !isLogout && !isBpmn,
+						'modal-scrollable fipu_vertical_scrollbar z-50 max-h-modal w-11/12 max-w-6xl shadow-lg': large && !isLogout && !isBpmn,
+						'modal-scrollable fipu_vertical_scrollbar w-11/12 max-w-md shadow-2xl': isLogout,
+						'bpmn-task-dialog w-[calc(100%-2rem)] max-w-2xl overflow-hidden text-slate-900 shadow-2xl dark:text-slate-100': isBpmn,
 					}"
 					:has-component-layout="isBpmn"
 					is-modal>

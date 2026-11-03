@@ -1,4 +1,5 @@
 <script setup>
+import Tooltip from "@/components/Base/Tooltip.vue";
 import { computed, onMounted } from "vue";
 import { useAdminStore } from "@/stores/admin_store";
 
@@ -17,9 +18,11 @@ onMounted(() => {
 
 <template>
 	<span class="pointer-events-none absolute left-1/2 top-0 ml-1.5 flex gap-1">
-		<span v-for="indicator in indicators" :key="indicator.task" role="img" :aria-label="indicator.label" :title="indicator.label" class="relative flex h-2 w-2">
-			<span aria-hidden="true" class="absolute inline-flex h-full w-full rounded-full opacity-75 motion-safe:animate-ping" :class="indicator.color" />
-			<span aria-hidden="true" class="relative inline-flex h-2 w-2 rounded-full" :class="indicator.color" />
-		</span>
+		<Tooltip v-for="indicator in indicators" :key="indicator.task" :content="indicator.label">
+			<span role="img" tabindex="0" :aria-label="indicator.label" class="pointer-events-auto relative flex h-2 w-2" @pointermove.stop>
+				<span aria-hidden="true" class="absolute inline-flex h-full w-full rounded-full opacity-75 motion-safe:animate-ping" :class="indicator.color" />
+				<span aria-hidden="true" class="relative inline-flex h-2 w-2 rounded-full" :class="indicator.color" />
+			</span>
+		</Tooltip>
 	</span>
 </template>
