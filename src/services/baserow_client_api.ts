@@ -31,6 +31,10 @@ const Guest = {
 };
 
 const Student = {
+	removeAvatar() {
+		return AxiosWrapper.delete("/student/avatar");
+	},
+
 	updateAvatar(avatar: string | File) {
 		if (avatar instanceof File) {
 			const data = new FormData();
