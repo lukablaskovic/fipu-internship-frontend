@@ -14,6 +14,9 @@ import piniaPluginPersistedstate from "pinia-plugin-persistedstate";
 
 import vue3GoogleLogin from "vue3-google-login";
 
+// Drop profile snapshots saved by older dashboard versions.
+for (const key of ["main", "student", "token", "real-api-session"]) sessionStorage.removeItem(key);
+
 /* Init Pinia */
 const pinia = createPinia();
 /* Init Pinia Persisted state plugin */

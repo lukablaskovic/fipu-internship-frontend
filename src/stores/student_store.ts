@@ -2,6 +2,7 @@ import { ProcessInstance } from "@/services/bpmn_engine_api";
 import { Student } from "@/services/baserow_client_api";
 import { defineStore } from "pinia";
 import { useMainStore } from "@/stores/main_store";
+import { isAxiosError } from "axios";
 
 interface AssignmentData {
 	id_zadatak: number;
@@ -115,17 +116,26 @@ export const useStudentStore = defineStore("student", {
 
 		async getInstanceInfo(process_instance_id: string | number) {
 			try {
-				const response = await ProcessInstance.get(process_instance_id);
+				const response = await ProcessInstance.getOrThrow(process_instance_id);
 				if (response) this.student_process_instance_data = response;
 				return response;
 			} catch (error) {
-				console.log("[student_store].getInstanceInfo error:", error);
+				const mainStore = useMainStore();
+				if (isAxiosError(error) && error.response?.status === 404 && !mainStore.userAdmin && mainStore.currentUser.internship_process.id === process_instance_id) {
+					if (sessionStorage.getItem("google-id-token")) {
+						sessionStorage.clear();
+						window.location.replace("/prijava");
+					}
+					return null;
+				}
+				console.error("Could not fetch student process instance.");
 			}
 		},
 
 		async getPendingUserTask(process_instance_id: string | number) {
 			const mainStore = useMainStore();
 			const response = await this.getInstanceInfo(process_instance_id);
+			if (response === null) return null;
 			if (!response) throw new Error("Process instance could not be fetched");
 			const pendingUserTask = response.pending?.[0] || null;
 			mainStore.currentUser.internship_process.pending_user_task = pendingUserTask;

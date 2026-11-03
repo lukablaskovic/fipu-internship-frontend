@@ -16,7 +16,7 @@ function createAxiosInstance(API_URL: string, authenticated = false) {
 			return config;
 		});
 		instance.interceptors.response.use(undefined, (error) => {
-			if (error.response?.status === 401 && !error.config?.headers?.has("X-Evaluation-Token") && sessionStorage.getItem("token")) {
+			if (error.response?.status === 401 && !error.config?.headers?.has("X-Evaluation-Token") && sessionStorage.getItem("google-id-token")) {
 				sessionStorage.clear();
 				if (window.location.pathname !== "/prijava") window.location.assign("/prijava");
 			}

@@ -1,4 +1,3 @@
-import { persistSession } from "@/helpers/persist-session";
 import { Guest, Student } from "@/services/baserow_client_api";
 import { defineStore } from "pinia";
 import { router } from "@/router";
@@ -13,16 +12,13 @@ export const useMainStore = defineStore("main", {
 		allCompanies: [] as any[],
 
 		currentUser: new CurrentUser(),
+		userAuthenticated: false,
 
 		// Maintenance mode
 		maintenanceMode: MAINTENANCE_MODE,
 	}),
 
 	getters: {
-		userAuthenticated(): boolean {
-			const token = sessionStorage.getItem("token");
-			return token ? true : false;
-		},
 		userAdmin(state): boolean {
 			return state.currentUser.coordinator === true;
 		},
@@ -35,37 +31,29 @@ export const useMainStore = defineStore("main", {
 	},
 
 	actions: {
-		async fetchCurrentUser(): Promise<void> {
-			try {
-				const response = await Student.session();
-				const data = response?.student;
-				if (!data) return;
+		async fetchCurrentUser(response?: Awaited<ReturnType<typeof Student.session>>) {
+			response ??= await Student.session();
+			const data = response?.student;
+			if (!data) return false;
 
-				// Initialize currentUser from fetched data
-				this.currentUser.initializeFromData({
-					coordinator: response.coordinator,
-					ime: data.ime,
-					prezime: data.prezime,
-					JMBAG: data.JMBAG,
-					email: data.email,
-					godina_studija: data.godina_studija?.value || "",
-					avatar: data.avatar,
-					baserow_id: data.id,
-					loggedAt: new Date(),
-					internship_process: { id: data.process_instance_id, pending_user_task: data.pending_user_task || null },
-					model_prakse: data.Model_prakse?.value || data.Model_prakse,
-				});
-			} catch (error) {
-				console.error("[fetchCurrentUser] Error:", error);
-			}
+			// Initialize currentUser from fetched data
+			this.currentUser.initializeFromData({
+				coordinator: response.coordinator,
+				ime: data.ime,
+				prezime: data.prezime,
+				JMBAG: data.JMBAG,
+				email: data.email,
+				godina_studija: data.godina_studija?.value || "",
+				avatar: data.avatar,
+				baserow_id: data.id,
+				loggedAt: new Date(),
+				internship_process: { id: data.process_instance_id, pending_user_task: data.pending_user_task || null },
+				model_prakse: data.Model_prakse?.value || data.Model_prakse,
+			});
+			return true;
 		},
-		async handleLogin(decodedToken: any, credential = "") {
+		async handleLogin(decodedToken: any, credential: string) {
 			sessionStorage.setItem("google-id-token", credential);
-			const { iss, sub, hd, email, nbf, name, picture, iat, jti } = decodedToken;
-			const storageToken = { iss, sub, hd, email, nbf, name, picture, iat, jti };
-
-			sessionStorage.setItem("token", JSON.stringify(storageToken));
-
 			try {
 				const student_data = {
 					JMBAG: "0000000000", // default value, student must change this
@@ -85,10 +73,12 @@ export const useMainStore = defineStore("main", {
 				if (!response_student.student) {
 					response = await Student.create(student_data);
 					if (!response?.data) throw new Error("Student nije spremljen");
-					await this.fetchCurrentUser();
+					if (!(await this.fetchCurrentUser())) throw new Error("Prijava nije uspjela");
+					this.userAuthenticated = true;
 					await router.push(this.userAdmin ? "/dashboard" : "/odabir-procesa");
 				} else {
-					await this.fetchCurrentUser();
+					await this.fetchCurrentUser(response_student);
+					this.userAuthenticated = true;
 
 					// If admin is logged in, redirect to dashboard
 					if (this.userAdmin) {
@@ -100,6 +90,7 @@ export const useMainStore = defineStore("main", {
 						// Has active process instance, so redirect to moja-praksa
 						if (processInstance) {
 							await useStudentStore().getPendingUserTask(processInstance);
+							if (!sessionStorage.getItem("google-id-token")) return { status: "error" };
 							if (this.userHasActiveInstance) {
 								await router.push("/moja-praksa");
 							} else {
@@ -116,6 +107,7 @@ export const useMainStore = defineStore("main", {
 				return { status: "success", data: response };
 			} catch (error) {
 				sessionStorage.clear();
+				this.userAuthenticated = false;
 				this.currentUser.reset();
 				console.error("Login failed");
 				return { status: "error", error };
@@ -123,6 +115,7 @@ export const useMainStore = defineStore("main", {
 		},
 
 		logout() {
+			this.userAuthenticated = false;
 			this.currentUser.reset();
 			sessionStorage.clear();
 			router.go(0); // Refresh the page
@@ -180,5 +173,4 @@ export const useMainStore = defineStore("main", {
 			this.maintenanceMode = false;
 		},
 	},
-	persist: persistSession(["currentUser"]),
 });

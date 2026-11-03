@@ -2,10 +2,10 @@
 	<div class="login-page">
 		<main class="login-panel">
 			<header class="login-header">
-				<a href="https://fipu.unipu.hr/" target="_blank" rel="noopener noreferrer" aria-label="Fakultet informatike u Puli (otvara se u novoj kartici)">
+				<a class="faculty-header-link" href="https://fipu.unipu.hr/" target="_blank" rel="noopener noreferrer" aria-label="Fakultet informatike u Puli (otvara se u novoj kartici)">
 					<img :src="fipu_unipu" alt="Fakultet informatike u Puli - logotip" class="faculty-logo" />
 				</a>
-				<div class="flex flex-wrap items-center gap-x-4">
+				<div class="login-resources flex flex-wrap items-center gap-x-4">
 					<RouterLink to="/upute" class="help-link">Upute za praksu <span aria-hidden="true">↗</span></RouterLink>
 					<a href="https://chat.google.com/room/AAAASZREDy8?cls=7" target="_blank" rel="noopener noreferrer" class="help-link inline-flex items-center gap-2" aria-label="Google Chat (otvara se u novoj kartici)">
 						Google Chat <span aria-hidden="true">↗</span>
@@ -13,7 +13,7 @@
 					<a href="https://drive.google.com/file/d/13BKZekCS6FwdlKfTlTLyCKB6tkNjZLIe/view?usp=sharing" target="_blank" rel="noopener noreferrer" class="help-link inline-flex items-center gap-2" aria-label="Silabus (otvara se u novoj kartici)">
 						Silabus <span aria-hidden="true">↗</span>
 					</a>
-					<ThemeToggle />
+					<ThemeToggle class="login-theme-toggle" />
 				</div>
 			</header>
 
@@ -32,8 +32,8 @@
 				<section class="login-actions" aria-labelledby="login-title">
 					<h2 id="login-title">Prijava</h2>
 					<p class="login-note">Prije nego se prijavite, pročitajte <RouterLink to="/upute">upute</RouterLink> kako izvodimo praksu na FIPU.</p>
-					<div class="sign-in flex flex-col items-start gap-3">
-						<GoogleLogin :key="uiStore.darkMode" :callback="loginCallback" :button-config="{ theme: uiStore.darkMode ? 'filled_black' : 'outline', size: 'large' }" />
+					<div ref="signIn" class="sign-in flex flex-col items-start gap-3">
+						<GoogleLogin :key="`${uiStore.darkMode}-${googleButtonWidth}`" :callback="loginCallback" :button-config="{ theme: uiStore.darkMode ? 'filled_black' : 'outline', size: 'large', ...(googleButtonWidth && { width: googleButtonWidth }) }" />
 					</div>
 					<div class="guest-access">
 						<p>Ako želite samo pregledati dostupne zadatke i poduzeća, možete nastaviti kao gost.</p>
@@ -47,6 +47,9 @@
 				<RouterLink to="/poslodavci/novi-zadatak">Prijavite zadatak <span aria-hidden="true">→</span></RouterLink>
 			</footer>
 		</main>
+		<a class="faculty-footer-link" href="https://fipu.unipu.hr/" target="_blank" rel="noopener noreferrer" aria-label="Fakultet informatike u Puli (otvara se u novoj kartici)">
+			<img :src="fipu_unipu" alt="Fakultet informatike u Puli - logotip" class="faculty-logo" />
+		</a>
 		<SnackBar />
 	</div>
 </template>
@@ -60,15 +63,25 @@ import { useUiStore } from "@/stores/ui_store";
 import { useSnackBarStore } from "@/stores/snackbar_store";
 
 import fipu_unipu from "/fipu_unipu.png";
-import { useRouter } from "vue-router";
 
-import { ref } from "vue";
+import { onMounted, onUnmounted, ref } from "vue";
 
 const uiStore = useUiStore();
 const mainStore = useMainStore();
 const snackBarStore = useSnackBarStore();
 
-const router = useRouter();
+
+const signIn = ref(null);
+const googleButtonWidth = ref();
+let buttonObserver;
+onMounted(() => {
+	// Google reads its iframe width in pixels when the button mounts.
+	buttonObserver = new ResizeObserver(([entry]) => {
+		googleButtonWidth.value = window.matchMedia("(max-width: 640px)").matches ? Math.min(400, Math.floor(entry.contentRect.width)) : undefined;
+	});
+	buttonObserver.observe(signIn.value);
+});
+onUnmounted(() => buttonObserver.disconnect());
 
 const isBouncing = ref(false);
 const startBounce = () => {
@@ -92,11 +105,6 @@ const loginCallback = async (response) => {
 			const ime = decodedToken.given_name || "";
 			const prezime = decodedToken.family_name || "";
 			snackBarStore.pushMessage(`Dobrodošli, ${ime} ${prezime}!`, "success");
-
-			// Add a small delay to allow browser state to settle before reload
-			await new Promise((resolve) => setTimeout(resolve, 500));
-
-			window.location.href = router.currentRoute.value.fullPath;
 		} else {
 			snackBarStore.pushMessage("Prijava nije uspjela. Koristite sveučilišni račun ili se obratite voditelju prakse.", "error");
 		}
@@ -282,7 +290,6 @@ h2 {
 }
 .login-note {
 	margin-top: 12px;
-	text-align: left;
 	font-size: 13px;
 	line-height: 1.7;
 	color: #212529;
@@ -357,30 +364,6 @@ h2 {
 		color: #4b5563;
 	}
 }
-@media (max-width: 640px) {
-	.login-page {
-		padding: 24px 20px;
-	}
-	.login-header {
-		flex-wrap: wrap;
-		padding-bottom: 16px;
-	}
-	.faculty-logo {
-		width: 200px;
-	}
-	.welcome {
-		padding-top: 28px;
-	}
-	.welcome-heading {
-		gap: 12px;
-	}
-	.praksa-logo {
-		width: 64px;
-	}
-	h1 {
-		font-size: clamp(24px, 6.5vw, 32px);
-	}
-}
 .dark .login-page {
 	background: #0f172a;
 	color: #f1f5f9;
@@ -413,6 +396,117 @@ h2 {
 	.dark .login-panel,
 	.dark .welcome {
 		background: transparent;
+	}
+}
+.faculty-footer-link {
+	display: none;
+}
+@media (max-width: 640px) {
+	.faculty-header-link {
+		display: none;
+	}
+	.faculty-footer-link {
+		display: grid;
+		place-items: center;
+		flex: 1;
+		padding: 20px 0;
+	}
+	.login-page {
+		--brand-blue: theme("colors.fipu_blue");
+		--surface: white;
+		--hero-bg: color-mix(in srgb, var(--brand-blue) 16%, var(--surface));
+		--footer-bg: color-mix(in srgb, var(--brand-blue) 9%, var(--surface));
+		--guest-bg: color-mix(in srgb, var(--brand-blue) 22%, var(--surface));
+		--action-color: color-mix(in srgb, var(--brand-blue) 56%, black);
+		padding: 0;
+	}
+	.dark .login-page {
+		--surface: #0f172a;
+		--action-color: var(--brand-blue);
+	}
+	.login-header {
+		position: relative;
+		flex-wrap: wrap;
+		justify-content: center;
+		gap: 0 16px;
+		padding: 12px 16px 4px;
+	}
+	.login-header :deep(.login-theme-toggle) {
+		position: absolute;
+		top: calc(100% + 4px);
+		right: 4px;
+		z-index: 1;
+	}
+	.login-resources {
+		justify-content: center;
+		column-gap: 8px;
+	}
+	.faculty-logo {
+		width: min(78vw, 320px);
+	}
+	.login-content {
+		grid-template-columns: minmax(0, 1fr);
+	}
+	.login-content,
+	.login-footer {
+		text-align: center;
+	}
+	.welcome,
+	.dark .welcome {
+		padding: 38px 24px 28px;
+		background-color: var(--hero-bg);
+	}
+	.welcome-heading {
+		flex-direction: column;
+		gap: 14px;
+	}
+	.praksa-logo {
+		width: 88px;
+	}
+	h1 {
+		font-size: clamp(30px, 8vw, 38px);
+	}
+	.welcome p,
+	.login-note,
+	.guest-access p,
+	.login-footer p {
+		line-height: 1.5;
+		text-wrap: balance;
+	}
+	.welcome p {
+		max-width: 36ch;
+		margin: 16px auto 0;
+	}
+	.login-actions {
+		width: 100%;
+		max-width: 448px;
+		margin: auto;
+		padding: 32px 24px 24px;
+	}
+	h2 {
+		font-size: 28px;
+	}
+	.login-note,
+	.login-footer {
+		font-size: 15px;
+	}
+	.sign-in,
+	.login-footer {
+		align-items: center;
+	}
+	.login-page .guest-link {
+		justify-content: center;
+		gap: 8px;
+		background: var(--guest-bg);
+		color: var(--action-color);
+		border-color: transparent;
+	}
+	.login-footer {
+		padding: 22px 24px 16px;
+		background: var(--footer-bg);
+	}
+	.login-footer a {
+		color: var(--action-color);
 	}
 }
 </style>

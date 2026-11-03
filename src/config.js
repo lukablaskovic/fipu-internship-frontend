@@ -8,12 +8,6 @@ export const DEV_MODE = import.meta.env.DEV;
 const testDeployment = import.meta.env.PROD && import.meta.env.VITE_FRONTEND_CHANNEL === "test";
 export const BASEROW_URL = "https://baserow.unipu.hr/dashboard";
 
-// Discard cached dev identities and workflow IDs created against the previous backend.
-if (DEV_MODE && !sessionStorage.getItem("real-api-session")) {
-	sessionStorage.clear();
-	sessionStorage.setItem("real-api-session", "1");
-}
-
 export const endpoints = {
 	VITE_FRONTEND_URL: DEV_MODE || testDeployment ? window.location.origin : "https://fipu-praksa.unipu.hr",
 

@@ -102,8 +102,12 @@ const ProcessInstance = {
 		}
 	},
 
+	getOrThrow(id: string | number): Promise<ProcessInstanceData> {
+		return AxiosWrapper.get(`/instance/${id}`);
+	},
+
 	async get(id: string | number): Promise<ProcessInstanceData | null> {
-		return safeRequest(() => AxiosWrapper.get(`/instance/${id}`));
+		return safeRequest(() => ProcessInstance.getOrThrow(id));
 	},
 
 	async getTaskInfo(id: string, task: string): Promise<TaskData | null> {

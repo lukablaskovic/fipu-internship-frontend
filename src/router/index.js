@@ -19,9 +19,6 @@ const router = createRouter({
 
 router.beforeEach(async (to, from, next) => {
 	const mainStore = useMainStore();
-	const userAuthenticated = mainStore.userAuthenticated;
-	const userAdmin = mainStore.userAdmin;
-
 	const requiresAuth = to.matched.some((record) => record.meta.requiresAuth);
 	const requiresAdmin = to.matched.some((record) => record.meta.requiresAdmin);
 
@@ -29,6 +26,13 @@ router.beforeEach(async (to, from, next) => {
 	if (!DEV_MODE && (MAINTENANCE_MODE || mainStore.maintenanceMode) && to.path !== "/odrzavanje") {
 		return next("/odrzavanje");
 	}
+
+	if (!mainStore.userAuthenticated && !["maintenance", "evaluacija"].includes(to.name) && sessionStorage.getItem("google-id-token")) {
+		mainStore.userAuthenticated = await mainStore.fetchCurrentUser();
+		if (!mainStore.userAuthenticated && to.path === "/moja-praksa") return next("/prijava");
+	}
+	const userAuthenticated = mainStore.userAuthenticated;
+	const userAdmin = mainStore.userAdmin;
 
 	// Handle redirection from root path
 	if (to.path === "/") {
@@ -62,7 +66,7 @@ router.beforeEach(async (to, from, next) => {
 
 	if (userAuthenticated && to.path === "/odabir-procesa" && mainStore.userHasActiveInstance) {
 		const instance = await ProcessInstance.get(mainStore.currentUser.internship_process.id);
-		if (instance?.state !== "cancelled") return next("/moja-praksa");
+		if (instance?.state !== "cancelled" && instance?.pending?.[0] !== "end_event_student") return next("/moja-praksa");
 	}
 	if (userAuthenticated && to.path === "/prijava") {
 		return next(userAdmin ? "/dashboard" : "/moja-praksa");
