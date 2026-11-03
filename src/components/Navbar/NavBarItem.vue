@@ -45,7 +45,7 @@ const componentClass = computed(() => {
 	const isActive = isDropdownActive.value || (props.item.isCurrentUser && route.path === "/profil");
 
 	if (props.item.isLogout) {
-		return "px-3 py-2 lg:ml-3 lg:w-11 lg:justify-center text-red-700 dark:text-red-400 max-lg:mt-1 max-lg:w-full max-lg:border-t max-lg:border-gray-300 dark:max-lg:border-slate-600";
+		return "px-3 py-2 lg:ml-3 lg:w-11 lg:justify-center text-red-700 dark:text-red-400";
 	}
 
 	const base = [
@@ -124,7 +124,7 @@ onBeforeUnmount(() => {
 				:aria-label="itemLabel"
 				:aria-expanded="item.menu ? isDropdownActive : undefined"
 				class="navbar-control relative block cursor-pointer items-center lg:flex"
-				:class="[componentClass, { 'lg:mx-1 lg:h-11 lg:self-center': !isSubmenu }]"
+				:class="[componentClass, { 'max-lg:mt-1 max-lg:w-full max-lg:border-t max-lg:border-gray-300 dark:max-lg:border-slate-600': item.isLogin || item.isLogout, 'lg:mx-1 lg:h-11 lg:self-center': !isSubmenu }]"
 				:to="item.to ?? null"
 				v-bind="item.to ? {} : { href: item.href }"
 				:target="item.target ?? null"
