@@ -1,6 +1,8 @@
 # Production preparation
 
-These files describe the deployment configuration; changing them does not deploy services.
+Pushes to `main` publish both `:latest` and `:sha-<full-commit>` to Docker Hub. The VM checks GitHub main every two minutes. When its commit-tagged image becomes available, the VM checks the image revision, pins its digest in the live Compose file, and runs `docker compose up -d --no-deps fipu-praksa-frontend`. It reloads Nginx to resolve the frontend container address, checks the public login shell and JavaScript asset, and restores the previous frontend on failure. Pushes to `test` only publish the test image.
+
+The deploy user's crontab runs `~/.local/bin/deploy-praksa-frontend`, installed from `deploy-frontend.py`. To pause automatic releases, remove its tagged cron entry (`praksa-frontend-autodeploy`). Release errors and output go to syslog under that tag. A successfully rolled-back commit is skipped until a new commit is pushed or the operator removes `~/.local/state/praksa-frontend/failed-revision` to retry. GitHub Actions reports image publication; check the VM's running frontend revision for deployment status. Reinstall the script on the VM after changing it.
 
 Baserow is pinned to 2.4.1. Before upgrading a 1.20.2 installation, stop its writers, keep
 a verified cold copy of the complete data directory, and upgrade the embedded PostgreSQL

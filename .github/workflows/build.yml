@@ -25,5 +25,9 @@ jobs:
           IMAGE: lukablaskovic/fp-fipu-internship-frontend
           TAG: ${{ github.ref_name == 'test' && 'test' || 'latest' }}
         run: |
-          docker build --build-arg FRONTEND_CHANNEL="$TAG" -t "$IMAGE:$TAG" .
+          docker build --label "org.opencontainers.image.revision=$GITHUB_SHA" --build-arg FRONTEND_CHANNEL="$TAG" -t "$IMAGE:$TAG" .
           docker push "$IMAGE:$TAG"
+          if [ "$GITHUB_REF" = refs/heads/main ]; then
+            docker tag "$IMAGE:$TAG" "$IMAGE:sha-$GITHUB_SHA"
+            docker push "$IMAGE:sha-$GITHUB_SHA"
+          fi
