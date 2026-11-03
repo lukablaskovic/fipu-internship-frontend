@@ -22,6 +22,9 @@ export const useMainStore = defineStore("main", {
 		userAdmin(state): boolean {
 			return state.currentUser.coordinator === true;
 		},
+		canViewAdministrators(): boolean {
+			return this.userAdmin && this.currentUser.email?.toLowerCase() === "lblaskovi@unipu.hr";
+		},
 		get_userModelPrakse(state): string {
 			return state.currentUser.model_prakse == "A" ? appConfig.bpmn_process_name_A : appConfig.bpmn_process_name_B;
 		},

@@ -65,6 +65,8 @@ router.beforeEach(async (to, from, next) => {
 		return next("/moja-praksa");
 	}
 
+	if (to.name === "administratori" && !mainStore.canViewAdministrators) return next("/dashboard");
+
 	const instanceId = mainStore.currentUser.internship_process.id;
 	if (userAuthenticated && to.path === "/odabir-procesa" && instanceId) {
 		const loaded = useStudentStore().student_process_instance_data;

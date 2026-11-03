@@ -6,7 +6,7 @@ import { mdiForwardburger, mdiChartTimeline, mdiInformation, mdiBackburger, mdiM
 import { useMainStore } from "@/stores/main_store";
 import { useUiStore } from "@/stores/ui_store";
 
-import { ref, onMounted, computed } from "vue";
+import { ref, computed } from "vue";
 
 import AsideMenu from "@/components/AsideMenu/AsideMenu.vue";
 import menuAsideAdmin from "@/menus/menuAsideAdmin.ts";
@@ -39,22 +39,11 @@ const router = useRouter();
 const logoutModalActive = ref(false);
 const helpModalActive = ref(false);
 
-const userAdmin = ref(false);
+const menuAside = computed(() => mainStore.userAdmin ? menuAsideAdmin(mainStore.canViewAdministrators) : menuAsideStudent);
 
-let menuAside = ref([]);
-onMounted(() => {
-	userAdmin.value = mainStore.userAdmin;
-
-	if (userAdmin.value) {
-		menuAside.value = menuAsideAdmin;
-	}
-	if (!userAdmin.value) {
-		menuAside.value = menuAsideStudent;
-	}
-}),
-	router.beforeEach(() => {
-		uiStore.isAsideMobileExpanded = false;
-	});
+router.beforeEach(() => {
+	uiStore.isAsideMobileExpanded = false;
+});
 
 const menuClick = (event, item) => {
 	if (item.isToggleLightDark) {
@@ -85,7 +74,7 @@ const menuClick = (event, item) => {
 				<NavBarItemPlain display="hidden lg:flex xl:hidden" @click.prevent="uiStore.asideLgToggle()">
 					<BaseIcon :path="uiStore.isAsideLgActive ? mdiBackburger : mdiMenu" size="24" />
 				</NavBarItemPlain>
-				<div v-if="mainStore.userAdmin" class="self-center px-3">
+				<div v-if="mainStore.userAdmin" class="min-w-0 flex-1 self-center px-3 lg:flex-none">
 					<FormControl :icon="mdiMagnify" search-bar />
 				</div>
 			</NavBar>

@@ -9,7 +9,7 @@ interface MenuItem {
 	externalURL?: string;
 }
 
-const menuAsideAdmin: MenuItem[] = [
+const menuAsideAdmin = (canViewAdministrators: boolean): MenuItem[] => [
 	{
 		to: "/dashboard",
 		icon: mdiMonitor,
@@ -41,7 +41,7 @@ const menuAsideAdmin: MenuItem[] = [
 		icon: mdiSecurity,
 		menu: [
 			{ label: "BPMN engine", to: "/engine" },
-			{ label: "Administratori", to: "/administratori" },
+			...(canViewAdministrators ? [{ label: "Administratori", to: "/administratori" }] : []),
 			{
 				to: "/poslodavci/novi-zadatak",
 				label: "Prijava zadatka",
