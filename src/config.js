@@ -21,7 +21,7 @@ export const endpoints = {
 };
 
 // Maintenance mode configuration
-export const MAINTENANCE_MODE = !DEV_MODE && !testDeployment;
+export const MAINTENANCE_MODE = false;
 
 export const appConfig = Object.freeze({
 	praksa_version: `v${version}`,
