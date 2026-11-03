@@ -2,14 +2,14 @@
 import { FieldControl, Primitive, injectFieldRootContext } from "reka-ui";
 const fieldContext = injectFieldRootContext(null);
 import { mdiUnfoldMoreHorizontal, mdiAlertCircle, mdiCheckCircle, mdiAsterisk, mdiLockOff, mdiContentCopy, mdiCheck } from "@mdi/js";
-import FormControlListbox from "@/components/Premium/FormControlListbox.vue";
-import FormControlIcon from "@/components/Premium/FormControlIcon.vue";
-import FormFieldHelp from "@/components/Premium/FormFieldHelp.vue";
+import FormControlListbox from "@/components/Form/FormControlListbox.vue";
+import FormControlIcon from "@/components/Form/FormControlIcon.vue";
+import FormFieldHelp from "@/components/Form/FormFieldHelp.vue";
 import FormDatePicker from "@/components/Form/FormDatePicker.vue";
 import { computed, ref, onMounted, onBeforeUnmount } from "vue";
 import SearchOptions from "@/components/SearchOptions.vue";
 import BaseIcon from "@/components/Base/BaseIcon.vue";
-import TipTag from "@/components/Premium/TipTag.vue";
+import TipTag from "@/components/Base/TipTag.vue";
 import { getButtonColor, controlTextColor } from "@/colors.js";
 import { useMainStore } from "@/stores/main_store";
 
@@ -90,7 +90,7 @@ const wrapperClass = computed(() => {
 	}
 
 	if (!props.searchBar) {
-		base.push(borderColor.value, "dark:bg-slate-800", props.borderless ? "bg-gray-50" : "");
+		base.push(borderColor.value, wrapperBorder.value ? "dark:bg-slate-800" : "", props.borderless && wrapperBorder.value ? "bg-gray-50" : "");
 		if (wrapperBorder.value) base.push("border-t border-b", !props.firstAddon && !props.lastAddon && !props.middleAddon ? "rounded border-l border-r" : "");
 		if (props.firstAddon) base.push("rounded-l border-l");
 		if (props.lastAddon) base.push("rounded-r border-r");
@@ -184,7 +184,7 @@ if (props.ctrlKFocus) {
 
 			<!-- Textarea -->
 			<component :is="fieldContext ? FieldControl : Primitive" v-else-if="computedType === 'textarea'" as-child :model-value="fieldContext ? computedValue : undefined" v-bind="fieldContext ? { id, name, disabled, required } : {}">
-				<textarea v-bind="fieldContext ? {} : { id, name, required, disabled }" v-model="computedValue" class="peer relative" :placeholder="placeholder" :class="inputElClass" :readonly="readonly"></textarea>
+				<textarea v-bind="fieldContext ? {} : { id, name, required, disabled }" v-model="computedValue" class="peer relative block" :placeholder="placeholder" :class="inputElClass" :readonly="readonly"></textarea>
 			</component>
 
 			<!-- Button -->

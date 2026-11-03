@@ -1,32 +1,17 @@
 <script setup>
+import BaseIcon from "@/components/Base/BaseIcon.vue";
+import SortableTableHeader from "@/components/Tables/SortableTableHeader.vue";
 import TableCellText from "@/components/Tables/TableCellText.vue";
 import { countInternshipStages } from "@/helpers/internship-stages";
 import { appConfig } from "@/config";
 
 import { Tabs } from "reka-ui/namespaced";
-import FormControlListbox from "@/components/Premium/FormControlListbox.vue";
+import FormControlListbox from "@/components/Form/FormControlListbox.vue";
 import { searchAndSortEvents } from "@/helpers/log-events.js";
 import CardBoxComponentEmpty from "@/components/Cardbox/CardBoxComponentEmpty.vue";
-import BasePagination from "@/components/Base/BasePagination.vue";
+import TablePagination from "@/components/Tables/TablePagination.vue";
 import { usePagination } from "@/composables/usePagination.js";
-import {
-	mdiNoteAlert,
-	mdiAccountTie,
-	mdiAccountMultiple,
-	mdiAccountSchoolOutline,
-	mdiProgressClock,
-	mdiViewDashboard,
-	mdiCardSearch,
-	mdiAccountCancel,
-	mdiAlphaSBox,
-	mdiSort,
-	mdiSortAscending,
-	mdiSortDescending,
-	mdiSourceBranch,
-	mdiPlayCircleOutline,
-	mdiClockOutline,
-} from "@mdi/js";
-import BaseIcon from "@/components/Base/BaseIcon.vue";
+import { mdiNoteAlert, mdiAccountTie, mdiAccountMultiple, mdiAccountSchoolOutline, mdiProgressClock, mdiViewDashboard, mdiCardSearch, mdiAccountCancel, mdiAlphaSBox, mdiSourceBranch, mdiPlayCircleOutline, mdiClockOutline, mdiMagnify } from "@mdi/js";
 import { useAdminStore } from "@/stores/admin_store";
 import { useMainStore } from "@/stores/main_store";
 import { useSnackBarStore } from "@/stores/snackbar_store";
@@ -46,7 +31,6 @@ import CardBoxWidget from "@/components/Cardbox/CardBoxWidget.vue";
 import SectionMain from "@/components/Section/SectionMain.vue";
 import SkeletonLoader from "@/components/SkeletonLoader.vue";
 
-import BaseLevel from "@/components/Base/BaseLevel.vue";
 import PillTag from "@/components/PillTag/PillTag.vue";
 
 import { ActivityEventMappings } from "@/helpers/maps.js";
@@ -119,6 +103,27 @@ onMounted(async () => {
 	}
 });
 
+const statisticGroups = computed(() => [
+	{ id: "AB", color: "text-fipu_blue", pill: "info", metrics: [
+		{ number: finished_internships.value, icon: mdiAccountSchoolOutline, label: "Uspješno odrađenih praksi (A + B)" },
+		{ number: ongoing_internships.value, icon: mdiAccountMultiple, label: "Ukupno aktivnih procesa (A + B)", to: "/studenti?model=AB" },
+		{ number: adminStore.dashboard_data.cancelled_internships, icon: mdiAccountCancel, label: "Odustalo od prakse" },
+		{ number: waiting_for_mark.value, icon: mdiAlphaSBox, label: "Čeka na upis ocjene" },
+	] },
+	{ id: "A", color: "text-rose-600", pill: "danger", metrics: [
+		{ number: a_finished_internships.value, icon: mdiAccountSchoolOutline, label: "Uspješno odrađenih praksi (A)" },
+		{ number: a_ongoing_internships.value, icon: mdiAccountMultiple, label: "Ukupno aktivnih procesa (A)", to: "/studenti?model=A" },
+		{ number: waiting_for_allocation.value, icon: mdiProgressClock, label: "Čeka na alokaciju", to: "/studenti?stage=ceka_alokaciju" },
+		{ number: waiting_for_evaluation.value, icon: mdiAccountTie, label: "Evaluacija poslodavca u tijeku" },
+	] },
+	{ id: "B", color: "text-emerald-500", pill: "success", metrics: [
+		{ number: b_finished_internships.value, icon: mdiAccountSchoolOutline, label: "Uspješno odrađenih praksi (B)" },
+		{ number: b_ongoing_internships.value, icon: mdiAccountMultiple, label: "Ukupno aktivnih procesa (B)", to: "/studenti?model=B" },
+		{ number: b_waiting_for_assignment_approval.value, icon: mdiProgressClock, label: "Čeka na odobrenje zadatka", to: "/studenti?stage=ceka_odobrenje" },
+		{ number: b_waiting_for_direct_assignment.value, icon: mdiNoteAlert, label: "Nije se još prijavilo" },
+	] },
+]);
+
 const statisticsModel = ref("AB");
 const stageCounts = computed(() => countInternshipStages(adminStore.students, statisticsModel.value));
 const maxStageCount = computed(() => Math.max(1, ...stageCounts.value.map(({ count }) => count)));
@@ -186,7 +191,7 @@ const formattedDate = (timestamp) => {
 	}
 };
 
-const { perPage, currentPage, itemsPaginated, numPages, currentPageHuman } = usePagination(filteredEvents);
+const { perPage, currentPage, itemsPaginated } = usePagination(filteredEvents);
 
 </script>
 
@@ -200,97 +205,24 @@ const { perPage, currentPage, itemsPaginated, numPages, currentPageHuman } = use
 					<Tabs.List aria-label="Statistika po modelu prakse" class="mb-4 inline-flex rounded-lg bg-white p-1 text-sm dark:bg-slate-800">
 						<Tabs.Trigger v-for="model in [{ id: 'A', label: 'A' }, { id: 'B', label: 'B' }, { id: 'AB', label: 'Sve' }]" :key="model.id" :value="model.id" class="rounded px-3 py-1.5 focus-visible:outline focus-visible:outline-2 focus-visible:outline-fipu_blue data-[state=active]:bg-fipu_blue data-[state=active]:text-white">{{ model.label }}</Tabs.Trigger>
 					</Tabs.List>
-					<Tabs.Content value="AB">
-						<p class="mb-4"><b>Statistika | Općenito</b></p>
-
+					<Tabs.Content v-for="group in statisticGroups" :key="group.id" :value="group.id">
+						<p class="mb-4"><b>Statistika | <template v-if="group.id === 'AB'">Općenito</template><template v-else>Model prakse <PillTag :color="group.pill" :label="group.id" /></template></b></p>
 						<div class="mb-6 grid grid-cols-1 gap-6 lg:grid-cols-3">
-							<CardBoxWidget v-if="adminStore.studentsFetched" color="text-fipu_blue" class="rounded-lg" :icon="mdiAccountSchoolOutline" :number="finished_internships" label="Uspješno odrađenih praksi (A + B)" />
-							<SkeletonLoader v-else></SkeletonLoader>
-
-							<CardBoxWidget
-								v-if="adminStore.studentsFetched"
-								color="text-fipu_blue"
-								class="cursor-pointer rounded-lg hover:bg-fipu_blue/10"
-								:icon="mdiAccountMultiple"
-								:number="ongoing_internships"
-								label="Ukupno aktivnih procesa (A + B)"
-								@click="router.push('/studenti?model=AB')" />
-							<SkeletonLoader v-else></SkeletonLoader>
-
-							<CardBoxWidget v-if="adminStore.studentsFetched" color="text-fipu_blue" class="rounded-lg" :icon="mdiAccountCancel" :number="adminStore.dashboard_data.cancelled_internships" label="Odustalo od prakse" />
-							<SkeletonLoader v-else></SkeletonLoader>
-
-							<CardBoxWidget v-if="adminStore.studentsFetched" color="text-fipu_blue" class="rounded-lg" :icon="mdiAlphaSBox" :number="waiting_for_mark" label="Čeka na upis ocjene" />
-							<SkeletonLoader v-else></SkeletonLoader>
+							<template v-for="metric in group.metrics" :key="metric.label">
+								<CardBoxWidget
+									v-if="adminStore.studentsFetched"
+									:color="group.color"
+									class="rounded-lg"
+									:class="{ 'cursor-pointer hover:bg-fipu_blue/10': metric.to }"
+									:icon="metric.icon"
+									:number="metric.number"
+									:label="metric.label"
+									v-on="metric.to ? { click: () => router.push(metric.to) } : {}" />
+								<SkeletonLoader v-else />
+							</template>
 						</div>
 					</Tabs.Content>
-					<Tabs.Content value="A">
-						<p class="mb-4">
-							<b>Statistika | Model prakse <PillTag color="danger" label="A" /></b>
-						</p>
-
-						<div class="mb-6 grid grid-cols-1 gap-6 lg:grid-cols-3">
-							<CardBoxWidget v-if="adminStore.studentsFetched" color="text-rose-600" class="rounded-lg" :icon="mdiAccountSchoolOutline" :number="a_finished_internships" label="Uspješno odrađenih praksi (A)" />
-							<SkeletonLoader v-else></SkeletonLoader>
-
-							<CardBoxWidget
-								v-if="adminStore.studentsFetched"
-								color="text-rose-600"
-								class="cursor-pointer rounded-lg hover:bg-fipu_blue/10"
-								:icon="mdiAccountMultiple"
-								:number="a_ongoing_internships"
-								label="Ukupno aktivnih procesa (A)"
-								@click="router.push('/studenti?model=A')" />
-							<SkeletonLoader v-else></SkeletonLoader>
-
-							<CardBoxWidget
-								v-if="adminStore.studentsFetched"
-								color="text-rose-600"
-								class="cursor-pointer rounded-lg hover:bg-fipu_blue/10"
-								:icon="mdiProgressClock"
-								:number="waiting_for_allocation"
-								label="Čeka na alokaciju"
-								@click="router.push('/studenti?stage=ceka_alokaciju')" />
-							<SkeletonLoader v-else></SkeletonLoader>
-
-							<CardBoxWidget v-if="adminStore.studentsFetched" color="text-rose-600" class="rounded-lg" :icon="mdiAccountTie" :number="waiting_for_evaluation" label="Evaluacija poslodavca u tijeku" />
-							<SkeletonLoader v-else></SkeletonLoader>
-						</div>
-					</Tabs.Content>
-					<Tabs.Content value="B">
-						<p class="mb-4">
-							<b>Statistika | Model prakse <PillTag color="success" label="B" /></b>
-						</p>
-
-						<div class="mb-6 grid grid-cols-1 gap-6 lg:grid-cols-3">
-							<CardBoxWidget v-if="adminStore.studentsFetched" color="text-emerald-500" class="rounded-lg" :icon="mdiAccountSchoolOutline" :number="b_finished_internships" label="Uspješno odrađenih praksi (B)" />
-							<SkeletonLoader v-else></SkeletonLoader>
-
-							<CardBoxWidget
-								v-if="adminStore.studentsFetched"
-								color="text-emerald-500"
-								class="cursor-pointer rounded-lg hover:bg-fipu_blue/10"
-								:icon="mdiAccountMultiple"
-								:number="b_ongoing_internships"
-								label="Ukupno aktivnih procesa (B)"
-								@click="router.push('/studenti?model=B')" />
-							<SkeletonLoader v-else></SkeletonLoader>
-
-							<CardBoxWidget
-								v-if="adminStore.studentsFetched"
-								color="text-emerald-500"
-								class="cursor-pointer rounded-lg hover:bg-fipu_blue/10"
-								:icon="mdiProgressClock"
-								:number="b_waiting_for_assignment_approval"
-								label="Čeka na odobrenje zadatka"
-								@click="router.push('/studenti?stage=ceka_odobrenje')" />
-							<SkeletonLoader v-else></SkeletonLoader>
-
-							<CardBoxWidget v-if="adminStore.studentsFetched" color="text-emerald-500" class="rounded-lg" :icon="mdiNoteAlert" :number="b_waiting_for_direct_assignment" label="Nije se još prijavilo" />
-							<SkeletonLoader v-else></SkeletonLoader>
-						</div>
-					</Tabs.Content>
-				</Tabs.Root>
+					</Tabs.Root>
 
 				<section aria-labelledby="internship-stages-title" class="mb-6 rounded-lg bg-white p-5 dark:bg-slate-900/70">
 					<div class="mb-2 flex flex-wrap items-center gap-2">
@@ -325,11 +257,14 @@ const { perPage, currentPage, itemsPaginated, numPages, currentPageHuman } = use
 				<SectionTitleLineWithButton :icon="mdiCardSearch" title="Događaji (BPMN engine logs)" main> </SectionTitleLineWithButton>
 
 				<template v-if="!eventsFetchError">
-					<div class="table-filter-bar mb-3 flex flex-wrap items-center gap-2 text-sm">
-						<input v-model="logSearch" type="search" aria-label="Pretraži događaje" placeholder="Ime, JMBAG ili email…" class="min-w-0 flex-1 rounded-lg border-gray-300 py-1.5 text-sm dark:border-slate-700 dark:bg-slate-800" />
-						<FormControlListbox v-model="modelFilter" :icon="mdiSourceBranch" :options="modelOptions" aria-label="Model prakse" button-class="rounded-lg bg-white px-3 py-2 dark:bg-slate-800" />
-						<FormControlListbox v-model="processFilter" :icon="mdiPlayCircleOutline" :options="processOptions" aria-label="Status instance" button-class="rounded-lg bg-white px-3 py-2 dark:bg-slate-800" />
-						<FormControlListbox v-model="dateFormat" :icon="mdiClockOutline" :options="dateOptions" aria-label="Format vremena" button-class="rounded-lg bg-white px-3 py-2 dark:bg-slate-800" />
+					<div class="table-filter-bar mb-3">
+						<div class="relative min-w-0 flex-1">
+							<BaseIcon :path="mdiMagnify" :size="20" class="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-gray-500 dark:text-slate-400" aria-hidden="true" />
+							<input v-model="logSearch" type="search" aria-label="Pretraži događaje" placeholder="Ime, JMBAG ili email…" class="table-filter-search w-full pl-10" />
+						</div>
+						<FormControlListbox v-model="modelFilter" :icon="mdiSourceBranch" :options="modelOptions" aria-label="Model prakse" button-class="table-filter-select" />
+						<FormControlListbox v-model="processFilter" :icon="mdiPlayCircleOutline" :options="processOptions" aria-label="Status instance" button-class="table-filter-select" />
+						<FormControlListbox v-model="dateFormat" :icon="mdiClockOutline" :options="dateOptions" aria-label="Format vremena" button-class="table-filter-select" />
 						<PillTagFilter trend-type="filter" trend="Događaji" :options="latestEvents" :left="true" small />
 					</div>
 					<p v-if="!eventsLoading" class="mb-2 text-xs text-gray-500 dark:text-slate-400" role="status">{{ filteredEvents.length }} događaja</p>
@@ -338,12 +273,7 @@ const { perPage, currentPage, itemsPaginated, numPages, currentPageHuman } = use
 							<caption class="sr-only">Događaji (BPMN engine logs)</caption>
 							<thead class="border-b dark:border-slate-700">
 								<tr>
-									<th v-for="column in logColumns" :key="column.id" scope="col" class="px-3 py-2" :aria-sort="logSort.column === column.id ? (logSort.direction === 'asc' ? 'ascending' : 'descending') : 'none'">
-										<button type="button" class="flex items-center gap-2 rounded hover:text-fipu_blue focus-visible:outline focus-visible:outline-2 focus-visible:outline-fipu_blue" @click="sortByColumn(column.id)">
-											{{ column.label }}
-											<BaseIcon :path="logSort.column === column.id ? (logSort.direction === 'asc' ? mdiSortAscending : mdiSortDescending) : mdiSort" w="w-4" h="h-4" :size="16" aria-hidden="true" />
-										</button>
-									</th>
+									<SortableTableHeader v-for="column in logColumns" :key="column.id" :label="column.label" :active="logSort.column === column.id" :direction="logSort.direction" class="px-3 py-2" @sort="sortByColumn(column.id)" />
 								</tr>
 							</thead>
 							<tbody v-if="eventsLoading" aria-hidden="true">
@@ -364,14 +294,7 @@ const { perPage, currentPage, itemsPaginated, numPages, currentPageHuman } = use
 					<CardBoxComponentEmpty v-else-if="!filteredEvents.length" />
 				</template>
 				<div v-else class="mb-6 text-red-500">Nakon više ponovljenih pokušaja, nije moguće dohvatiti evente.</div>
-				<div v-if="!eventsFetchError && filteredEvents.length" class="border-t border-gray-100 p-3 dark:border-slate-800 lg:px-6">
-					<BaseLevel>
-						<div class="flex flex-wrap items-center justify-center gap-3">
-							<BasePagination :page="currentPage + 1" :total="filteredEvents.length" :items-per-page="perPage" @update:page="currentPage = $event - 1" />
-						</div>
-						<small>Stranica {{ currentPageHuman }} od {{ numPages }}</small>
-					</BaseLevel>
-				</div>
+				<TablePagination v-if="!eventsFetchError && filteredEvents.length" v-model:page="currentPage" v-model:per-page="perPage" :total="filteredEvents.length" :show-per-page="false" />
 			</SectionMain>
 		</LayoutAuthenticated>
 	</div>

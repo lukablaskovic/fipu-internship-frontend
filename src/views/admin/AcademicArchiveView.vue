@@ -1,4 +1,5 @@
 <script setup>
+import { mdiMagnify } from "@mdi/js";
 import { computed, onMounted, ref, watch } from "vue";
 import axios from "axios";
 import { useMainStore } from "@/stores/main_store";
@@ -105,7 +106,7 @@ onMounted(async () => {
 				<div class="grid items-start gap-4 md:grid-cols-3 [&>*]:mb-0">
 					<FormField label="Akademska godina"><FormControl v-model="year" :options="index.years.map((item) => item.year)" /></FormField>
 					<FormField label="Tablica"><FormControl v-model="table" :options="Object.keys(snapshot?.tables || { Student: [] })" @update:model-value="changeTable" /></FormField>
-					<FormField label="Pretraži arhivu"><FormControl v-model="search" type="search" placeholder="Ime, JMBAG ili drugi podatak" /></FormField>
+					<FormField label="Pretraži arhivu"><FormControl v-model="search" type="search" :icon-left="mdiMagnify" placeholder="Ime, JMBAG ili drugi podatak" /></FormField>
 				</div>
 				<BaseButton v-if="databaseUrl" :href="databaseUrl" target="_blank" class="mt-4" color="info" outline label="Otvori godinu u lokalnom Baserowu" small />
 			</CardBox>

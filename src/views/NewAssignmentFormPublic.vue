@@ -1,18 +1,18 @@
 <script setup>
 import { submitNewInternshipProject } from "@/services/baserow_client_api";
 
-import { appConfig, endpoints } from "@/config";
+import { appConfig, endpoints, internshipContacts } from "@/config";
 
 import { mdiBallot, mdiNewBox, mdiEmail, mdiLaptop, mdiDomain, mdiMapMarker, mdiClipboardTextClockOutline, mdiAccountGroup, mdiSchool, mdiTextLong, mdiXml, mdiThumbsUpDown, mdiClockTimeFiveOutline, mdiNoteTextOutline } from "@mdi/js";
 import { ref, reactive, onMounted, watch, computed, nextTick, toRefs } from "vue";
-import { Stepper } from "reka-ui/namespaced";
 import SectionMain from "@/components/Section/SectionMain.vue";
-import UserAvatar from "@/components/User/UserAvatar.vue";
+import ContactCard from "@/components/User/ContactCard.vue";
+import { Stepper } from "reka-ui/namespaced";
 
 import SectionTitleLineWithButton from "@/components/Section/SectionTitleLineWithButton.vue";
 
+import SnackBar from "@/components/Notification/SnackBar.vue";
 import BaseButton from "@/components/Base/BaseButton.vue";
-import SnackBar from "@/components/Premium/SnackBar.vue";
 import FooterBar from "@/components/FooterBar.vue";
 
 import CardBox from "@/components/Cardbox/CardBox.vue";
@@ -22,15 +22,14 @@ import FormCheckRadioGroup from "@/components/Form/FormCheckRadioGroup.vue";
 import FormCombobox from "@/components/Form/FormCombobox.vue";
 import FormControl from "@/components/Form/FormControl.vue";
 import FormField from "@/components/Form/FormField.vue";
+import FormTechnologyPicker from "@/components/Form/FormTechnologyPicker.vue";
 
 import { required, email, helpers } from "@vuelidate/validators";
 import { getFirstErrorForField } from "@/helpers/validators";
 import { useVuelidate } from "@vuelidate/core";
 
-
-import { useMainStore } from "@/stores/main_store";
 import { useSnackBarStore } from "@/stores/snackbar_store";
-
+import { useMainStore } from "@/stores/main_store";
 
 import FIPU_praksa_logo_transparent from "/FIPU_praksa_logo_transparent.svg";
 
@@ -60,11 +59,9 @@ const DEFAULT_FORM_VALUES = {
 };
 
 const form = reactive({ ...DEFAULT_FORM_VALUES, new_company: emptyCompany() });
+const selectedTechnologies = ref([]);
 const partnerType = ref("");
-const partnerOptions = [
-	"Prijavljujem zadatak kao postojeći partner s Fakultetom",
-	"Prijavljujem zadatak kao novi partner s Fakultetom",
-];
+const partnerOptions = ["Prijavljujem zadatak kao postojeći partner s Fakultetom", "Prijavljujem zadatak kao novi partner s Fakultetom"];
 const isNewPartner = computed(() => partnerType.value === partnerOptions[1]);
 const currentStep = ref(1);
 const stepPanel = ref(null);
@@ -88,9 +85,9 @@ const companyRules = {
 
 const rules = reactive({
 	partnerType: { required: requiredField },
-	Poslodavac: computed(() => isNewPartner.value ? {} : { required: requiredField }),
-	Poslodavac_novi_naziv: computed(() => isNewPartner.value ? { required: requiredField } : {}),
-	new_company: computed(() => isNewPartner.value ? companyRules : {}),
+	Poslodavac: computed(() => (isNewPartner.value ? {} : { required: requiredField })),
+	Poslodavac_novi_naziv: computed(() => (isNewPartner.value ? { required: requiredField } : {})),
+	new_company: computed(() => (isNewPartner.value ? companyRules : {})),
 	poslodavac_email: {
 		required: helpers.withMessage("Polje je obavezno", required),
 		email: helpers.withMessage("Molimo unesite ispravnu e-mail adresu", email),
@@ -141,7 +138,6 @@ const rules = reactive({
 });
 
 const isLoading = ref(false);
-
 const v$ = useVuelidate(rules, { ...toRefs(form), partnerType });
 
 async function showStep(step, focusInvalid = false) {
@@ -165,6 +161,7 @@ function goToStep(step) {
 }
 
 function resetForm(notify = true) {
+	selectedTechnologies.value = [];
 	for (const key in DEFAULT_FORM_VALUES) {
 		form[key] = DEFAULT_FORM_VALUES[key];
 	}
@@ -199,7 +196,7 @@ async function onSubmit() {
 
 	let saved = false;
 	try {
-		const result = await submitNewInternshipProject(form);
+		const result = await submitNewInternshipProject({ ...form, preferirane_tehnologije: [...selectedTechnologies.value, form.preferirane_tehnologije.trim()].filter(Boolean).join(", ") });
 		if (!result) throw new Error("Project submission failed");
 		saved = true;
 		resetForm(false);
@@ -217,6 +214,12 @@ const mappedCompanies = ref([]);
 
 const angazmanSelect = { true: "Da", false: "Ne" };
 const selectionSelect = { true: "Da", false: "Ne" };
+const selectionValue = computed({
+	get: () => String(form.selekcija),
+	set: (value) => {
+		form.selekcija = value === "true";
+	},
+});
 
 async function refreshCompanies() {
 	let results = await mainStore.fetchCompanies("", true);
@@ -236,15 +239,6 @@ watch(partnerType, () => {
 	form.new_company = emptyCompany();
 	for (const field of steps[1].fields) v$.value[field].$reset();
 });
-
-watch(
-	() => form.selekcija,
-	(newValue) => {
-		if (typeof newValue === "string") {
-			form.selekcija = newValue === "true";
-		}
-	},
-);
 </script>
 
 <template>
@@ -256,7 +250,7 @@ watch(
 				</a>
 			</SectionTitleLineWithButton>
 			<p><b>Akademska godina:</b> {{ appConfig.academicYear }}</p>
-			<p><b>Voditelj:</b> doc. dr. sc. Ivan Lorencin</p>
+			<p><b>Voditelj:</b> {{ appConfig.voditelj_prakse }}</p>
 			<hr />
 			<br />
 			<SectionTitleLineWithButton :icon="mdiNewBox" main title="Prijava zadatka"></SectionTitleLineWithButton>
@@ -285,34 +279,26 @@ watch(
 
 			<div class="w-full shrink-0 grow-0 basis-auto lg:w-7/12">
 				<div class="flex flex-wrap">
-					<div class="mb-6 w-full shrink-0 grow-0 basis-auto md:w-6/12">
-						<div class="flex items-start">
-							<div class="shrink-0">
-								<div class="bg-primary-100 text-primary inline-block h-24 w-24 items-center rounded-md p-4">
-									<a href="https://fipu.unipu.hr/fipu/ivan.lorencin" target="_blank"><UserAvatar class="h-16 w-16" avatar="https://fipu.unipu.hr/images/users_profiles/Ivan-Lorencin.jpg" username="Ivan Lorencin" /></a>
-								</div>
-							</div>
-							<div class="ml-3 grow">
-								<p class="mb-2 font-bold dark:text-white">doc. dr. sc. Ivan Lorencin</p>
-								<p class="text-neutral-500 dark:text-neutral-200">ivan.lorencin@unipu.hr</p>
-								<p class="text-neutral-500 dark:text-neutral-200">+385 98 96 12 042</p>
-							</div>
-						</div>
-					</div>
+					<ContactCard :contact="internshipContacts[0]" />
 				</div>
 			</div>
 			<div class="mb-6 grid grid-cols-1 gap-6">
 				<CardBox :icon="mdiBallot" class="mb-6 lg:col-span-2 lg:mb-0 xl:col-span-3 [&>div]:min-w-0" is-form novalidate @submit.prevent="onSubmit">
-					<CardBoxComponentTitle class="text-center" title="💼 Prijava projekta za studentsku praksu " />
+					<CardBoxComponentTitle class="text-center" title="Prijava projekta za studentsku praksu " />
 
 					<Stepper.Root :model-value="currentStep" class="mb-8 flex items-start" aria-label="Koraci prijave zadatka" @update:model-value="goToStep">
 						<Stepper.Item v-for="(step, index) in steps" :key="step.title" :step="index + 1" :disabled="isLoading" class="group relative flex min-w-0 flex-1 flex-col items-center">
-							<Stepper.Trigger class="relative z-10 flex w-full flex-col items-center gap-2 rounded p-1 text-center focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-fipu_blue disabled:cursor-not-allowed" @mousedown.left.prevent>
-								<Stepper.Indicator class="flex h-10 w-10 items-center justify-center rounded-full transition-colors duration-200 motion-reduce:transition-none border-2 border-gray-300 bg-white font-semibold text-gray-600 group-data-[state=active]:border-fipu_blue group-data-[state=active]:bg-fipu_blue group-data-[state=active]:text-slate-900 group-data-[state=completed]:border-fipu_blue group-data-[state=completed]:text-slate-900 group-data-[state=completed]:dark:text-slate-100 dark:border-slate-600 dark:bg-slate-900 dark:text-slate-300">{{ index + 1 }}</Stepper.Indicator>
+							<Stepper.Trigger
+								class="relative z-10 flex w-full flex-col items-center gap-2 rounded p-1 text-center focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-fipu_blue disabled:cursor-not-allowed"
+								@mousedown.left.prevent>
+								<Stepper.Indicator
+									class="flex h-10 w-10 items-center justify-center rounded-full border-2 border-gray-300 bg-white font-semibold text-gray-600 transition-colors duration-200 group-data-[state=active]:border-fipu_blue group-data-[state=completed]:border-fipu_blue group-data-[state=active]:bg-fipu_blue group-data-[state=completed]:bg-cyan-50 group-data-[state=active]:text-slate-900 group-data-[state=completed]:text-slate-900 motion-reduce:transition-none dark:border-slate-600 dark:bg-slate-900 dark:text-slate-300 group-data-[state=active]:dark:bg-fipu_blue group-data-[state=completed]:dark:bg-cyan-950 group-data-[state=active]:dark:text-slate-900 group-data-[state=completed]:dark:text-slate-100"
+									>{{ index + 1 }}</Stepper.Indicator
+								>
 								<Stepper.Title class="text-sm font-semibold sm:text-base">{{ step.title }}</Stepper.Title>
 								<Stepper.Description class="hidden text-sm text-gray-600 dark:text-slate-300 sm:block">{{ step.description }}</Stepper.Description>
 							</Stepper.Trigger>
-							<Stepper.Separator v-if="index < steps.length - 1" class="absolute left-1/2 top-6 h-px w-full transition-colors duration-200 motion-reduce:transition-none bg-gray-300 group-data-[state=completed]:bg-fipu_blue dark:bg-slate-600" />
+							<Stepper.Separator v-if="index < steps.length - 1" class="absolute left-1/2 top-6 h-px w-full bg-gray-300 transition-colors duration-200 group-data-[state=completed]:bg-fipu_blue motion-reduce:transition-none dark:bg-slate-600" />
 						</Stepper.Item>
 					</Stepper.Root>
 
@@ -345,7 +331,6 @@ watch(
 								help="E-mail adresa pri kojoj će se student obratiti oko dogovora za izvođenje studentske prakse ili provedbu selekcije. Ne mora nužno biti budući mentor.">
 								<FormControl v-model="form.poslodavac_email" :icon-left="mdiEmail" type="email" placeholder="Vaš kontakt email" />
 							</FormField>
-
 						</fieldset>
 						<fieldset v-if="currentStep === 3" :disabled="isLoading" aria-labelledby="assignment-step-title" class="min-w-0">
 							<FormField
@@ -359,13 +344,17 @@ watch(
 
 							<FormField
 								name="preferirane_tehnologije"
-								label="Preferirane tehnologije/platforme
-		"
+								label="Preferirane tehnologije/platforme"
 								horizontal
 								:error="getFirstErrorForField(v$, 'preferirane_tehnologije')"
-								help="Što sve koristi vaša organizacija ili na čemu će se temeljiti rad studenta? Navedite konkretne tehnologij/programske jezike, razvojne okvire...
-		">
-								<FormControl v-model="form.preferirane_tehnologije" type="textarea" :placeholder="`npr. PHP, Laravel, Python, Django, JavaScript, Vue.js, Unity, WordPress, TensorFlow...`" :icon-left="mdiXml" />
+								help="Odaberite više tehnologija koje koristite ili na kojima će se temeljiti rad studenta. Odabrane tehnologije i slobodni unos bit će spojeni u jedan popis.">
+								<div class="min-w-0 space-y-3">
+									<FormTechnologyPicker v-model="selectedTechnologies" :disabled="isLoading" />
+									<div class="space-y-1">
+										<label for="custom-technologies" class="block text-sm text-gray-600 dark:text-slate-300">Druge tehnologije ili dodatni detalji</label>
+										<FormControl id="custom-technologies" v-model="form.preferirane_tehnologije" type="textarea" class="dark:[&_textarea]:text-slate-100" placeholder="Upišite vlastite tehnologije, verzije ili dodatne napomene…" :icon-left="mdiXml" />
+									</div>
+								</div>
 							</FormField>
 
 							<FormField
@@ -383,13 +372,16 @@ watch(
 								horizontal
 								:error="getFirstErrorForField(v$, 'preferencije_za_studenta')"
 								help="U koliko smatrate važnim, opišite odlike poželjnog kandidata na praksi. Ako već imate dogovor sa studentom, navedite ovdje njegovo ime i prezime.">
-								<FormControl v-model="form.preferencije_za_studenta" type="textarea" placeholder="Poželjni kandidat posjeduje znanja iz... mora imati iskustva u... (model A) ILI ime i prezime željenog studenta (model B)" :icon-left="mdiThumbsUpDown" />
+								<FormControl
+									v-model="form.preferencije_za_studenta"
+									type="textarea"
+									placeholder="Poželjni kandidat posjeduje znanja iz... mora imati iskustva u... (model A) ILI ime i prezime željenog studenta (model B)"
+									:icon-left="mdiThumbsUpDown" />
 							</FormField>
 
 							<FormField name="potrebno_imati" label="Potrebna infrastruktura koju student mora posjedovati" horizontal :error="getFirstErrorForField(v$, 'potrebno_imati')" help="Potrebna infrastruktura koju student mora posjedovati">
 								<FormControl v-model="form.potrebno_imati" :icon-left="mdiDomain" placeholder="npr. Osobno računalo, određeni softver, hardver..." />
 							</FormField>
-
 						</fieldset>
 						<fieldset v-if="currentStep === 4" :disabled="isLoading" aria-labelledby="assignment-step-title" class="min-w-0">
 							<FormField
@@ -440,7 +432,7 @@ watch(
 		"
 								horizontal
 								:error="getFirstErrorForField(v$, 'selekcija')">
-								<FormCheckRadioGroup v-model="form.selekcija" name="selekcija_selection" type="radio" :options="selectionSelect" component-class="check-radio-warning" />
+								<FormCheckRadioGroup v-model="selectionValue" name="selekcija_selection" type="radio" :options="selectionSelect" component-class="check-radio-warning" />
 							</FormField>
 
 							<FormField
@@ -452,7 +444,6 @@ watch(
 								help="Molimo da opišete postupak selekcije, kako bi studenti znali što otprilike očekivati.">
 								<FormControl v-model="form.proces_selekcije" type="textarea" :disabled="form.selekcija === false" />
 							</FormField>
-
 						</fieldset>
 					</div>
 

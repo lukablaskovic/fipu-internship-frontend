@@ -1,7 +1,8 @@
 <script setup>
-import { appConfig } from "@/config";
+import InternshipPageHeader from "@/components/Internship/InternshipPageHeader.vue";
+import StudentWithdrawAction from "@/components/Internship/StudentWithdrawAction.vue";
 
-import { mdiProgressClock, mdiLaptop, mdiClipboardCheck } from "@mdi/js";
+import { mdiProgressClock, mdiClipboardCheck } from "@mdi/js";
 import { ref, computed, onMounted } from "vue";
 
 import LayoutAuthenticated from "@/layouts/LayoutAuthenticated.vue";
@@ -42,9 +43,7 @@ const Layout = computed(() => {
 <template>
 	<component :is="Layout">
 		<SectionMain v-if="allocated_assignment != null" class="relative">
-			<SectionTitleLineWithButton :icon="mdiLaptop" title="Moja Praksa" main> </SectionTitleLineWithButton>
-			<p><b>Akademska godina:</b> {{ appConfig.academicYear }}</p>
-			<p><b>Voditelj:</b> {{ appConfig.voditelj_prakse }}</p>
+			<InternshipPageHeader />
 
 			<img src="/illustrations/evaluation.svg" class="absolute right-0 top-0 mr-6 mt-4 hidden w-1/5 max-w-full md:block" />
 
@@ -72,6 +71,7 @@ const Layout = computed(() => {
 			<br />
 			<SectionTitleLineWithButton :icon="mdiClipboardCheck" main title="Alocirani zadatak"></SectionTitleLineWithButton>
 			<CardboxAllocation v-if="allocated_assignment != null" :data="allocated_assignment"></CardboxAllocation>
+			<StudentWithdrawAction />
 		</SectionMain>
 	</component>
 </template>

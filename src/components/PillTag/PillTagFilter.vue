@@ -135,7 +135,7 @@ const toggleSelection = (option) => {
 <template>
 	<div class="relative inline-block text-left">
 		<DropdownMenu.Root v-model:open="open">
-			<DropdownMenu.Trigger :disabled="disabled" class="flex items-center gap-2 rounded-[10px] bg-white px-3 py-2 text-left focus-visible:outline focus-visible:outline-2 focus-visible:outline-fipu_blue disabled:cursor-not-allowed disabled:opacity-50 dark:bg-slate-800" :aria-label="trend">
+			<DropdownMenu.Trigger :disabled="disabled" class="flex items-center gap-2 rounded-[10px] border border-fipu_blue bg-white px-3 py-2 text-left focus-visible:outline focus-visible:outline-2 focus-visible:outline-fipu_blue disabled:cursor-not-allowed disabled:opacity-50 dark:bg-slate-800" :aria-label="trend">
 				<BaseIcon :path="trendStyle.icon" w="w-4" h="h-4" :size="16" :class="{ 'text-fipu_blue': !defualtEventsSet }" aria-hidden="true" />
 				<span>{{ trend }}</span>
 				<BaseIcon :path="mdiChevronDown" w="w-4" h="h-4" :size="16" class="shrink-0 text-gray-500 dark:text-slate-400" aria-hidden="true" />

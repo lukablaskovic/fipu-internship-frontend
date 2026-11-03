@@ -1,21 +1,19 @@
 <script setup>
+import AssignmentDetailsModal from "@/components/Internship/AssignmentDetailsModal.vue";
+import SortableTableHeader from "@/components/Tables/SortableTableHeader.vue";
 import TableCellText from "@/components/Tables/TableCellText.vue";
 import { fetchAvailableAssignments } from "@/services/baserow_client_api";
 import { computed, ref, onMounted, watch, nextTick } from "vue";
 import { useRoute } from "vue-router";
-import { mdiEye, mdiCheckCircle, mdiCloseBox, mdiMenuDown, mdiSortAscending, mdiSortDescending } from "@mdi/js";
+import { mdiEye, mdiCheckCircle, mdiCloseBox } from "@mdi/js";
 import { useAdminStore } from "@/stores/admin_store";
 import { useSnackBarStore } from "@/stores/snackbar_store";
-import { usePagination, tableButtonMenuOptions } from "@/composables/usePagination.js";
+import { usePagination } from "@/composables/usePagination.js";
 import CardBoxComponentEmpty from "@/components/Cardbox/CardBoxComponentEmpty.vue";
 import CardBoxModal from "@/components/Cardbox/CardBoxModal.vue";
-import CardBoxAllocation from "@/components/Cardbox/CardBoxAllocation.vue";
-import BasePagination from "@/components/Base/BasePagination.vue";
+import TablePagination from "@/components/Tables/TablePagination.vue";
 import BaseButtons from "@/components/Base/BaseButtons.vue";
 import BaseButton from "@/components/Base/BaseButton.vue";
-import BaseLevel from "@/components/Base/BaseLevel.vue";
-import BaseIcon from "@/components/Base/BaseIcon.vue";
-import ButtonMenu from "@/components/Premium/ButtonMenu.vue";
 import PillTag from "@/components/PillTag/PillTag.vue";
 
 const adminStore = useAdminStore();
@@ -61,7 +59,7 @@ const filteredAssignments = computed(() => {
 		return String(valueA ?? "").localeCompare(String(valueB ?? ""), "hr", { numeric: true, sensitivity: "base" }) * (sortDirection.value === "asc" ? 1 : -1);
 	});
 });
-const { perPage, currentPage, itemsPaginated: assignmentsPaginated, numPages, currentPageHuman, handlePerPageChange } = usePagination(filteredAssignments);
+const { perPage, currentPage, itemsPaginated: assignmentsPaginated } = usePagination(filteredAssignments);
 
 function toggleSort(column) {
 	sortDirection.value = sortColumn.value === column && sortDirection.value === "asc" ? "desc" : "asc";
@@ -133,11 +131,7 @@ const cancelTaskAction = () => {
 </script>
 
 <template>
-	<CardBoxModal v-if="isModalActive" v-model="isModalActive" large button-label="Zatvori" button="fipu_blue">
-		<CardBoxAllocation :data="isModalActive"></CardBoxAllocation>
-
-		<br />
-	</CardBoxModal>
+	<AssignmentDetailsModal v-model="isModalActive" />
 
 	<CardBoxModal v-model="confirmationModal.isActive" :disabled-condition="isLoading" title="Potvrda akcije" :button-label="confirmationModal.action === 'accept' ? 'Prihvati' : 'Odbij'" has-cancel @cancel="cancelTaskAction" @confirm="confirmTaskAction">
 		<div v-if="confirmationModal.action === 'accept'" class="mb-4">
@@ -159,12 +153,7 @@ const cancelTaskAction = () => {
 		<table v-if="filteredAssignments.length">
 			<thead>
 				<tr>
-					<th v-for="column in columns" :key="column.key" :aria-sort="sortColumn === column.key ? (sortDirection === 'asc' ? 'ascending' : 'descending') : 'none'">
-						<button type="button" class="flex items-center gap-1 text-left" @click="toggleSort(column.key)">
-							{{ column.label }}
-							<BaseIcon v-if="sortColumn === column.key" :path="sortDirection === 'asc' ? mdiSortAscending : mdiSortDescending" :size="16" w="w-4" h="h-4" aria-hidden="true" />
-						</button>
-					</th>
+					<SortableTableHeader v-for="column in columns" :key="column.key" :label="column.label" :active="sortColumn === column.key" :direction="sortDirection" @sort="toggleSort(column.key)" />
 					<th><span class="sr-only">Akcije</span></th>
 				</tr>
 			</thead>
@@ -187,14 +176,6 @@ const cancelTaskAction = () => {
 			</tbody>
 		</table>
 		<CardBoxComponentEmpty v-else />
-		<div v-if="filteredAssignments.length" class="border-t border-gray-100 p-3 dark:border-slate-800 lg:px-6">
-			<BaseLevel>
-				<div class="flex flex-wrap items-center justify-center gap-3">
-					<ButtonMenu class="pagination-page-size" :options="tableButtonMenuOptions" :icon="mdiMenuDown" small left @update:model-value="handlePerPageChange" />
-					<BasePagination :page="currentPage + 1" :total="filteredAssignments.length" :items-per-page="perPage" @update:page="currentPage = $event - 1" />
-				</div>
-				<small>{{ filteredAssignments.length }} od {{ assignments.length }} zadataka · Stranica {{ currentPageHuman }} od {{ numPages }}</small>
-			</BaseLevel>
-		</div>
+		<TablePagination v-model:page="currentPage" v-model:per-page="perPage" :total="filteredAssignments.length">{{ filteredAssignments.length }} od {{ assignments.length }} zadataka · </TablePagination>
 	</template>
 </template>

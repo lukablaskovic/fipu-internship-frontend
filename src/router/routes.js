@@ -189,6 +189,7 @@ const routes = [
 			requiresAdmin: false,
 		},
 		path: "/poslodavci/novi-zadatak",
+		alias: "/novi-zadatak",
 		name: "dodavanje zadatka",
 		component: () => import("@/views/NewAssignmentFormPublic.vue"),
 	},

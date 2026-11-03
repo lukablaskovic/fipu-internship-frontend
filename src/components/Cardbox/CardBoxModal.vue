@@ -90,7 +90,6 @@ const cancel = () => confirmCancel("cancel");
 						'modal-scrollable fipu_vertical_scrollbar z-50 max-h-modal w-11/12 max-w-6xl rounded-xl shadow-lg': large && !isLogout && !isBpmn,
 						'modal-scrollable fipu_vertical_scrollbar w-11/12 max-w-md rounded-2xl shadow-2xl': isLogout,
 						'bpmn-task-dialog w-[calc(100%-2rem)] max-w-2xl overflow-hidden rounded-xl text-slate-900 shadow-2xl dark:text-slate-100': isBpmn,
-						'mobile-fullscreen': !isLogout && !isBpmn,
 					}"
 					:has-component-layout="isBpmn"
 					is-modal>
@@ -144,29 +143,5 @@ const cancel = () => confirmCancel("cancel");
 .modal-scrollable {
 	max-height: 90vh;
 	overflow-y: auto;
-}
-
-/* Fullscreen modal on mobile */
-@media (max-width: 640px) {
-	.mobile-fullscreen {
-		width: 100vw;
-		height: 100vh;
-		max-height: 100vh;
-		max-width: none;
-		top: 0;
-		left: 0;
-		position: fixed;
-		margin: 0;
-		border-radius: 0;
-		overflow-y: auto;
-	}
-
-	/* Center the content inside the modal */
-	.modal-content {
-		display: flex;
-		flex-direction: column;
-		align-items: stretch;
-		min-height: 100%;
-	}
 }
 </style>

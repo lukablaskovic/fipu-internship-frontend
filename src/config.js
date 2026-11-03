@@ -15,11 +15,11 @@ if (DEV_MODE && !sessionStorage.getItem("real-api-session")) {
 }
 
 export const endpoints = {
-	VITE_FRONTEND_URL: testDeployment ? window.location.origin : "https://fipu-praksa.unipu.hr",
+	VITE_FRONTEND_URL: DEV_MODE || testDeployment ? window.location.origin : "https://fipu-praksa.unipu.hr",
 
 	VITE_BPMN_ENGINE_API_URL: "https://fipubot.unipu.hr/api/python-bpmn-engine",
 
-	VITE_BASEROW_API_URL: "https://fipubot.unipu.hr/api/baserow-connector",
+	VITE_BASEROW_API_URL: import.meta.env.VITE_BASEROW_API_URL || "https://fipubot.unipu.hr/api/baserow-connector",
 
 	VITE_EMAILJS_API_URL: "https://fipubot.unipu.hr/api/emailjs-connector",
 
@@ -37,5 +37,30 @@ export const appConfig = Object.freeze({
 	bpmn_process_name_A: "strucna_praksa_A",
 	bpmn_process_name_B: "strucna_praksa_B",
 });
+
+export const internshipContacts = [
+	{
+		name: appConfig.voditelj_prakse,
+		role: "voditelj",
+		profile: "https://fipu.unipu.hr/fipu/ivan.lorencin",
+		avatar: "https://fipu.unipu.hr/images/users_profiles/Ivan-Lorencin.jpg",
+		email: "ivan.lorencin@unipu.hr",
+		phone: "+385 98 96 12 042",
+	},
+	{
+		name: "Marijela Miličević, mag. educ. inf.",
+		role: "administratorica",
+		profile: "https://fipu.unipu.hr/fipu/marijela.milicevic",
+		avatar: "https://i1.rgstatic.net/ii/profile.image/11431281279391644-1727018247353_Q512/Marijela-Milicevic-2.jpg",
+		email: "marijela.milicevic@unipu.hr",
+	},
+	{
+		name: "Luka Blašković, mag. inf.",
+		role: "tehnička podrška",
+		profile: "https://fipu.unipu.hr/fipu/luka.blaskovic",
+		avatar: "https://fipu.unipu.hr/images/users_profiles/1748527029profile_main.jpg",
+		email: "luka.blaskovic@unipu.hr",
+	},
+];
 
 export const BPMN_STUDIO_URL = import.meta.env.DEV ? "http://localhost:5174" : "https://fipu-praksa.unipu.hr/studio";

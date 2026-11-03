@@ -1,6 +1,6 @@
 <script setup>
 import { Toast } from "reka-ui/namespaced";
-import SnackBarItem from "@/components/Premium/SnackBarItem.vue";
+import SnackBarItem from "@/components/Notification/SnackBarItem.vue";
 import { useSnackBarStore } from "@/stores/snackbar_store";
 
 const snackBarStore = useSnackBarStore();

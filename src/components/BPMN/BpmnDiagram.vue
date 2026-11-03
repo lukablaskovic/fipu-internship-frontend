@@ -27,8 +27,7 @@ watch(() => props.xml, (xml) => {
 const highlights = computed(() => {
 	const colors = Object.fromEntries((props.instance.completed_activity_ids ?? []).map(id => [id, "#86efac"]));
 	for (const id of props.instance.pending) {
-		const task = UserTaskMappings.tasks.find(task => task._id === id);
-		colors[id] = task?.bpmn_task_color ?? "#79d4f2";
+		colors[id] = "#fde047";
 	}
 	return colors;
 });

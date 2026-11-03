@@ -54,7 +54,7 @@
 <script setup>
 import { decodeCredential, GoogleLogin } from "vue3-google-login";
 import ThemeToggle from "@/components/Navbar/ThemeToggle.vue";
-import SnackBar from "@/components/Premium/SnackBar.vue";
+import SnackBar from "@/components/Notification/SnackBar.vue";
 import { useMainStore } from "@/stores/main_store";
 import { useUiStore } from "@/stores/ui_store";
 import { useSnackBarStore } from "@/stores/snackbar_store";

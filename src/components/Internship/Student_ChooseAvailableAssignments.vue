@@ -1,9 +1,11 @@
 <script setup>
-import { appConfig } from "@/config";
+import { useCompanyLogos } from "@/composables/useCompanyLogos.js";
+import InternshipPageHeader from "@/components/Internship/InternshipPageHeader.vue";
+import StudentWithdrawAction from "@/components/Internship/StudentWithdrawAction.vue";
 
 import SectionTitleLineWithButton from "@/components/Section/SectionTitleLineWithButton.vue";
 import TableAvailableAssignments from "@/components/Tables/TableAvailableAssignments.vue";
-import { mdiNumeric, mdiClipboardTextOutline, mdiLaptop } from "@mdi/js";
+import { mdiNumeric, mdiClipboardTextOutline } from "@mdi/js";
 import LayoutAuthenticated from "@/layouts/LayoutAuthenticated.vue";
 import { useMainStore } from "@/stores/main_store";
 import { useStudentStore } from "@/stores/student_store";
@@ -19,8 +21,7 @@ import CardBox from "@/components/Cardbox/CardBox.vue";
 import LayoutGuest from "@/layouts/LayoutGuest.vue";
 import UserAvatar from "@/components/User/UserAvatar.vue";
 
-import { ref, computed, nextTick, onMounted, watch } from "vue";
-import { DEFAULT_COMPANY_LOGO, fetchCompanyForAssignment, findCompanyForAssignment, getCompanyLogoKey, getCompanyLogoUrl, rememberCompany } from "@/helpers/company-logo.js";
+import { ref, computed, nextTick, watch } from "vue";
 import draggable from "vuedraggable";
 
 const mainStore = useMainStore();
@@ -35,9 +36,6 @@ const isLoading = ref(false);
 const napomena = ref(null);
 const vas_odabir = ref(null);
 const hasScrolledForFirstTime = ref(false);
-const companiesLoaded = ref(false);
-const companyLogoCache = ref({});
-const loadingCompanyLogoKeys = new Set();
 
 const registerPreferences = async () => {
 	if (isLoading.value) return;
@@ -61,11 +59,6 @@ const registerPreferences = async () => {
 	}
 };
 
-onMounted(async () => {
-	mainStore.allCompanies = await mainStore.fetchCompanies();
-	companiesLoaded.value = true;
-	loadCompanyLogos(checkedAssignments.value);
-});
 
 watch(
 	() => checkedAssignments.value.length,
@@ -77,45 +70,8 @@ watch(
 	},
 );
 
-const getCompanyLogo = (assignment) => {
-	const key = getCompanyLogoKey(assignment);
+const { getCompanyLogo } = useCompanyLogos(checkedAssignments);
 
-	return (key && companyLogoCache.value[key]) || getCompanyLogoUrl(findCompanyForAssignment(assignment, mainStore.allCompanies)) || DEFAULT_COMPANY_LOGO;
-};
-
-const loadCompanyLogo = async (assignment) => {
-	const key = getCompanyLogoKey(assignment);
-
-	if (!key || companyLogoCache.value[key] || loadingCompanyLogoKeys.has(key)) {
-		return;
-	}
-
-	if (!companiesLoaded.value && !mainStore.allCompanies.length) {
-		return;
-	}
-
-	const cachedLogo = getCompanyLogoUrl(findCompanyForAssignment(assignment, mainStore.allCompanies));
-	if (cachedLogo) {
-		companyLogoCache.value[key] = cachedLogo;
-		return;
-	}
-
-	loadingCompanyLogoKeys.add(key);
-	try {
-		const company = await fetchCompanyForAssignment(mainStore, assignment);
-		rememberCompany(mainStore, company);
-		companyLogoCache.value[key] = getCompanyLogoUrl(company) || DEFAULT_COMPANY_LOGO;
-	} finally {
-		loadingCompanyLogoKeys.delete(key);
-	}
-};
-
-const loadCompanyLogos = (assignments) => {
-	assignments.forEach((assignment) => loadCompanyLogo(assignment));
-};
-
-watch(checkedAssignments, loadCompanyLogos, { immediate: true, deep: true });
-watch(() => mainStore.allCompanies, () => loadCompanyLogos(checkedAssignments.value), { deep: true });
 
 const getDefaultImage = (index) => {
 	const defaultImages = ["/select_task_1.svg", "/select_task_2.svg", "/select_task_3.svg"];
@@ -168,15 +124,12 @@ const moveAssignment = async (index, offset, button) => {
 	<component :is="Layout">
 		<SectionMain class="assignment-picker relative">
 			<div class="flex items-start gap-6">
-				<div class="min-w-0 flex-1">
-					<SectionTitleLineWithButton :icon="mdiLaptop" title="Moja Praksa" main />
-
-					<p><b>Akademska godina:</b> {{ appConfig.academicYear }}</p>
-					<p><b>Voditelj:</b> {{ appConfig.voditelj_prakse }}</p>
+				<div class="assignment-intro min-w-0 flex-1">
+					<InternshipPageHeader />
 
 					<br />
 					<SectionTitleLineWithButton :icon="mdiClipboardTextOutline" main title="Dostupni zadaci" />
-					<p>U tablici označite tri zadatka koja želite odraditi. Njihov redoslijed možete zatim urediti u odjeljku „Vaš odabir”.</p>
+					<p>U tablici označite tri zadatka koja želite odraditi. Njihov redoslijed možete zatim urediti u odjeljku <a href="#vas-odabir" class="text-fipu_blue underline" @click.prevent="vas_odabir?.$el.scrollIntoView({ behavior: 'smooth' })">Vaš odabir</a>.</p>
 					<br />
 					<p>Molimo da <b>ne prijavljujete</b> zadatke gdje su poslodavci naveli ime i prezime studenta u <b>Preferencijama za studenta</b>.</p>
 					<br />
@@ -190,7 +143,7 @@ const moveAssignment = async (index, offset, button) => {
 			</CardBox>
 			<hr />
 			<br />
-			<SectionTitleLineWithButton ref="vas_odabir" :icon="mdiNumeric" main title="Vaš odabir" class="mt-22" />
+			<SectionTitleLineWithButton id="vas-odabir" ref="vas_odabir" :icon="mdiNumeric" main title="Vaš odabir" class="mt-22" />
 			<p class="mb-1 font-semibold" role="status">Odabrano {{ checkedAssignments.length }} od 3</p>
 			<p class="mb-4">{{ isDraggableEnabled ? "Na prvo mjesto stavite zadatak koji najviše želite." : "Označite zadatke u tablici iznad. Nakon trećeg odabira možete urediti redoslijed." }}</p>
 
@@ -204,10 +157,11 @@ const moveAssignment = async (index, offset, button) => {
 			<draggable v-model="assignmentsForDrag" :disabled="!isDraggableEnabled" item-key="id" handle=".rank-card" :animation="reorderAnimation" ghost-class="rank-destination" class="grid max-w-2xl grid-cols-3 gap-2" @start="isDragging = true" @end="isDragging = false">
 				<template #item="{ element, index }">
 					<div class="relative min-w-0 rounded-lg border p-2 text-center" :class="{ 'border-dashed': isEmptySlot(element) }">
+						<button v-if="isEmptySlot(element)" type="button" class="absolute inset-0 cursor-pointer rounded-lg focus-visible:outline-fipu_blue" :aria-label="`${index + 1}. izbor: Odaberite zadatak u tablici`" @click="snackBarStore.pushMessage('Odaberite zadatak u tablici', 'warning')" />
 						<div class="rank-card" :class="{ 'cursor-grab active:cursor-grabbing': isDraggableEnabled }">
 							<span class="sr-only">{{ index + 1 }}. izbor</span>
 							<UserAvatar v-if="isAssignment(element)" class="my-2 h-12 w-12" :avatar="getCompanyLogo(element)" :username="element.Poslodavac?.[0]?.value || 'Poslodavac'" />
-							<img v-else class="mx-auto my-2 h-12 w-12" :src="getDefaultImage(index)" alt="" />
+							<img v-else class="mx-auto my-2 h-12 w-12 dark:brightness-0 dark:invert" :src="getDefaultImage(index)" alt="" />
 							<p class="break-words text-sm">{{ isAssignment(element) ? element.id_zadatak : "Slobodno mjesto" }}</p>
 						</div>
 						<div v-if="isDraggableEnabled" class="mt-2 flex flex-wrap justify-center gap-1">
@@ -235,6 +189,7 @@ const moveAssignment = async (index, offset, button) => {
 				</p>
 				<p class="mb-2"><b>Napomena:</b> {{ napomena || "Nema napomene." }}</p>
 			</CardBoxModal>
+			<StudentWithdrawAction />
 		</SectionMain>
 	</component>
 </template>
@@ -242,6 +197,31 @@ const moveAssignment = async (index, offset, button) => {
 <style scoped>
 .assignment-picker {
 	--rank-accent: theme("colors.fipu_blue");
+}
+@media (max-width: 639px) {
+	.assignment-picker {
+		padding: 16px 12px;
+	}
+	.assignment-intro {
+		padding-bottom: 16px;
+		font-size: 14px;
+		line-height: 1.5;
+	}
+	.assignment-intro > br {
+		display: none;
+	}
+	.assignment-intro > p {
+		margin-top: 8px;
+	}
+	.assignment-intro :deep(section) {
+		margin: 16px 0 12px;
+	}
+	.assignment-intro :deep(section:first-child) {
+		margin-top: 0;
+	}
+	.assignment-intro :deep(h1) {
+		font-size: 24px;
+	}
 }
 .drop-label {
 	display: none;

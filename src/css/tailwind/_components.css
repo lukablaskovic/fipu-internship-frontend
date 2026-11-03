@@ -10,3 +10,36 @@ thead :focus-visible {
 	outline: 2px solid theme("colors.fipu_blue");
 	outline-offset: 2px;
 }
+
+.hover-underline-animation {
+	display: inline-block;
+	z-index: 0;
+	overflow: visible;
+}
+
+.hover-underline-animation:after {
+	content: "";
+	display: block;
+	width: 100%;
+	height: 2px;
+	background-color: #9de0f7;
+	transform: scaleX(0);
+	transform-origin: bottom right;
+	transition: transform 0.25s ease-out;
+	z-index: -1;
+}
+
+.hover-underline-animation:hover:after {
+	transform: scaleX(1);
+	transform-origin: bottom left;
+}
+
+.table-filter-bar {
+	@apply flex flex-wrap items-center gap-2 text-sm;
+}
+.table-filter-search {
+	@apply min-w-0 rounded-lg border-gray-300 py-1.5 text-sm dark:border-slate-700 dark:bg-slate-800;
+}
+.table-filter-select {
+	@apply rounded-lg bg-white px-3 py-2 dark:bg-slate-800;
+}

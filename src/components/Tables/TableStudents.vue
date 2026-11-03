@@ -1,20 +1,20 @@
 <script setup>
+import SortableTableHeader from "@/components/Tables/SortableTableHeader.vue";
 import TableCellText from "@/components/Tables/TableCellText.vue";
 import { getInternshipStage } from "@/helpers/internship-stages";
 import CardBoxComponentEmpty from "@/components/Cardbox/CardBoxComponentEmpty.vue";
-import BasePagination from "@/components/Base/BasePagination.vue";
-import { usePagination, tableButtonMenuOptions } from "@/composables/usePagination.js";
+import TablePagination from "@/components/Tables/TablePagination.vue";
+import { usePagination } from "@/composables/usePagination.js";
 import { Progress } from "reka-ui/namespaced";
-import { mdiEye, mdiMenuDown, mdiCloseOutline, mdiSortAscending, mdiSortDescending } from "@mdi/js";
+import { mdiEye, mdiCloseOutline } from "@mdi/js";
 import SkeletonLoaderTableRow from "../SkeletonLoaderTableRow.vue";
 import { UserTaskMappings } from "@/helpers/maps";
 import CardBoxModal from "@/components/Cardbox/CardBoxModal.vue";
-import ButtonMenu from "@/components/Premium/ButtonMenu.vue";
+import FormField from "@/components/Form/FormField.vue";
+import FormControl from "@/components/Form/FormControl.vue";
 import BaseButtons from "@/components/Base/BaseButtons.vue";
 import BaseButton from "@/components/Base/BaseButton.vue";
-import BaseLevel from "@/components/Base/BaseLevel.vue";
 import PillTag from "@/components/PillTag/PillTag.vue";
-import BaseIcon from "@/components/Base/BaseIcon.vue";
 import { computed, ref, watch } from "vue";
 import LoadingOverlay from "../LoadingOverlay.vue";
 import { useAdminStore } from "@/stores/admin_store";
@@ -37,6 +37,8 @@ const sortColumn = ref("ime");
 const selectedStudentInstanceID = ref(null);
 const selectedStudentForDelete = ref(null);
 const instanceDeleteModalActive = ref(false);
+const deletionConfirmationText = ref("");
+const deletionConfirmed = computed(() => deletionConfirmationText.value.toLowerCase() === "prekidam odabrani proces prakse");
 
 // --- Sorting ---
 function getProgressValue(student) {
@@ -101,7 +103,7 @@ const filteredAndSortedStudents = computed(() => {
 	return sortStudents(filtered);
 });
 
-const { perPage, currentPage, itemsPaginated: studentsPaginated, numPages, currentPageHuman, handlePerPageChange } = usePagination(filteredAndSortedStudents);
+const { perPage, currentPage, itemsPaginated: studentsPaginated } = usePagination(filteredAndSortedStudents);
 
 watch(filteredAndSortedStudents, () => { currentPage.value = 0; });
 
@@ -113,7 +115,13 @@ function showDiagram(student) {
 
 function deleteProcessInstance(student) {
 	selectedStudentForDelete.value = student;
+	deletionConfirmationText.value = "";
 	instanceDeleteModalActive.value = true;
+}
+
+function confirmInstanceDeletion() {
+	if (!deletionConfirmed.value || !selectedStudentForDelete.value) return;
+	return adminStore.removeInstanceData(selectedStudentForDelete.value);
 }
 
 // --- Lifecycle and Watchers ---
@@ -146,29 +154,14 @@ watch(selectedStudentInstanceID, (newVal) => {
 	<table v-if="filteredAndSortedStudents.length || !studentsFetched">
 		<thead>
 			<tr>
-				<th class="cursor-pointer px-4 py-2 text-left">
-					<div class="flex items-center space-x-1">
-						<span>Ime</span>
-						<BaseIcon :path="sortColumn === 'ime' && sortDirection === 'asc' ? mdiSortAscending : mdiSortDescending" h="h-4" w="w-4" class="text-gray-600 hover:text-fipu_blue" @click="toggleSortDirection('ime')" />
-					</div>
-				</th>
+				<SortableTableHeader label="Ime" :active="sortColumn === 'ime'" :direction="sortDirection" class="px-4 py-2 text-left" @sort="toggleSortDirection('ime')" />
 
-				<th class="cursor-pointer px-4 py-2 text-left">
-					<div class="flex items-center space-x-1">
-						<span>Prezime</span>
-						<BaseIcon :path="sortColumn === 'prezime' && sortDirection === 'asc' ? mdiSortAscending : mdiSortDescending" h="h-4" w="w-4" class="text-gray-600 hover:text-fipu_blue" @click="toggleSortDirection('prezime')" />
-					</div>
-				</th>
+				<SortableTableHeader label="Prezime" :active="sortColumn === 'prezime'" :direction="sortDirection" class="px-4 py-2 text-left" @sort="toggleSortDirection('prezime')" />
 
 				<th>Model</th>
 				<th>JMBAG</th>
 
-				<th class="cursor-pointer px-4 py-2 text-left">
-					<div class="flex items-center space-x-1">
-						<span>Napredak</span>
-						<BaseIcon :path="sortColumn === 'progress' && sortDirection === 'asc' ? mdiSortAscending : mdiSortDescending" h="h-4" w="w-4" class="text-gray-600 hover:text-fipu_blue" @click="toggleSortDirection('progress')" />
-					</div>
-				</th>
+				<SortableTableHeader label="Napredak" :active="sortColumn === 'progress'" :direction="sortDirection" class="px-4 py-2 text-left" @sort="toggleSortDirection('progress')" />
 
 				<th>Trenutno stanje</th>
 				<th />
@@ -183,7 +176,7 @@ watch(selectedStudentInstanceID, (newVal) => {
 				<tr v-for="student in studentsPaginated" :key="student['process_instance_id']" :class="{ 'selected-row bg-fipu_blue/10 dark:bg-fipu_blue/20': selectedStudentInstanceID === student['process_instance_id'] }">
 					<td data-label="Ime"><TableCellText :value="student['ime']" /></td>
 					<td data-label="Prezime"><TableCellText :value="student['prezime']" /></td>
-					<td data-label="Model_prakse" class="lg:text-center">
+					<td data-label="Model_prakse">
 						<PillTag :color="student.Model_prakse.value == 'A' ? 'danger' : 'success'" :label="`Model ${student.Model_prakse.value} · ${student.process_instance_data?.model?.version ? 'v' + student.process_instance_data.model.version : 'verzija nepoznata'}`" />
 					</td>
 					<td data-label="JMBAG"><TableCellText :value="student['JMBAG']" /></td>
@@ -199,11 +192,11 @@ watch(selectedStudentInstanceID, (newVal) => {
 								:style="{ width: `${(getProgressValue(student) / 7) * 100}%` }" />
 						</Progress.Root>
 					</td>
-					<td data-label="Stanje" class="lg:text-center">
+					<td data-label="Stanje">
 						<TableCellText :value="UserTaskMappings.getTaskProperty(student['process_instance_data']['pending'][0], 'name', student['process_instance_data']['state'])" />
 					</td>
 					<td class="whitespace-nowrap before:hidden lg:w-1">
-						<BaseButtons type="justify-start lg:justify-end" no-wrap>
+						<BaseButtons type="justify-start" no-wrap>
 							<BaseButton color="fipu_blue" :icon="mdiEye" :aria-label="`Otvori BPMN prikaz: ${student.ime} ${student.prezime}`" small @click="showDiagram(student)" />
 							<BaseButton color="danger" :icon="mdiCloseOutline" small @click="deleteProcessInstance(student)" />
 						</BaseButtons>
@@ -214,7 +207,7 @@ watch(selectedStudentInstanceID, (newVal) => {
 	</table>
 	<CardBoxComponentEmpty v-if="!filteredAndSortedStudents.length && studentsFetched" />
 	<div v-if="instanceDeleteModalActive">
-		<CardBoxModal v-model="instanceDeleteModalActive" title="Brisanje procesne instance" button="danger" has-cancel button-label="Obriši" @confirm="adminStore.removeInstanceData(selectedStudentForDelete)">
+		<CardBoxModal v-model="instanceDeleteModalActive" title="Brisanje procesne instance" button="danger" has-cancel button-label="Obriši" :disabled-condition="!deletionConfirmed" @confirm="confirmInstanceDeletion">
 			<p>
 				<b>OPREZ!</b> Ova radnja će obrisati kompletnu procesnu instancu prakse za studenta: <b>{{ selectedStudentForDelete.ime }} {{ selectedStudentForDelete.prezime }}</b> uključujući sve podatke koje je student unio,
 				generirane prijavnice i dnevnik prakse. <b>Radnja je nepovratna.</b>
@@ -226,19 +219,12 @@ watch(selectedStudentInstanceID, (newVal) => {
 			<p><b>Baserow id_prijavnica:</b> {{ selectedStudentForDelete["process_instance_data"]["variables"]["id_prijavnica"] }}</p>
 			<p><b>Baserow id_dnevnik_prakse:</b> {{ selectedStudentForDelete["process_instance_data"]["variables"]["id_dnevnik_prakse"] }}</p>
 			<p class="mt-2">Jeste li sigurni da želite obrisati instancu i sve podatke?</p>
-			<br />
+			<FormField class="mt-4" name="instance-deletion-confirmation" label="Za potvrdu upišite: Prekidam odabrani proces prakse">
+				<FormControl v-model="deletionConfirmationText" autocomplete="off" />
+			</FormField>
 		</CardBoxModal>
 	</div>
-	<div v-if="filteredAndSortedStudents.length" class="border-t border-gray-100 p-3 dark:border-slate-800 lg:px-6">
-		<BaseLevel>
-			<div class="flex flex-wrap items-center justify-center gap-3">
-				<ButtonMenu class="pagination-page-size" :options="tableButtonMenuOptions" :icon="mdiMenuDown" small left @update:model-value="handlePerPageChange" />
-
-				<BasePagination :page="currentPage + 1" :total="filteredAndSortedStudents.length" :items-per-page="perPage" @update:page="currentPage = $event - 1" />
-			</div>
-			<small>Stranica {{ currentPageHuman }} od {{ numPages }}</small>
-		</BaseLevel>
-	</div>
+	<TablePagination v-model:page="currentPage" v-model:per-page="perPage" :total="filteredAndSortedStudents.length" />
 </template>
 
 <style scoped>

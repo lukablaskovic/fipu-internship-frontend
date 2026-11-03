@@ -1,7 +1,8 @@
 <script setup>
-import { appConfig } from "@/config";
+import InternshipPageHeader from "@/components/Internship/InternshipPageHeader.vue";
+import StudentWithdrawAction from "@/components/Internship/StudentWithdrawAction.vue";
 
-import { mdiLaptop, mdiBallot, mdiNotebook, mdiBriefcase } from "@mdi/js";
+import { mdiBallot, mdiNotebook, mdiBriefcase } from "@mdi/js";
 import { ref, computed, onMounted, reactive } from "vue";
 
 import { getFirstErrorForField } from "@/helpers/validators";
@@ -150,9 +151,7 @@ async function submit_diary_form() {
 <template>
 	<component :is="Layout">
 		<SectionMain v-if="allocated_assignment != null" class="relative">
-			<SectionTitleLineWithButton :icon="mdiLaptop" title="Moja Praksa" main> </SectionTitleLineWithButton>
-			<p><b>Akademska godina:</b> {{ appConfig.academicYear }}</p>
-			<p><b>Voditelj: </b> {{ appConfig.voditelj_prakse }}</p>
+			<InternshipPageHeader />
 			<img src="/illustrations/in_progress.svg" class="absolute right-0 top-0 mr-6 mt-4 hidden w-1/5 max-w-full md:block" />
 
 			<SectionTitleLineWithButton :icon="mdiBriefcase" main class="mt-24" title="Izvođenje prakse u tijeku"></SectionTitleLineWithButton>
@@ -207,6 +206,7 @@ async function submit_diary_form() {
 					</FormField>
 				</CardBox>
 			</div>
+			<StudentWithdrawAction />
 		</SectionMain>
 	</component>
 </template>

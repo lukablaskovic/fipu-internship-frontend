@@ -1,14 +1,15 @@
 <script setup>
-import { appConfig } from "@/config";
+import AssignmentDetailsModal from "@/components/Internship/AssignmentDetailsModal.vue";
+import InternshipPageHeader from "@/components/Internship/InternshipPageHeader.vue";
+import StudentWithdrawAction from "@/components/Internship/StudentWithdrawAction.vue";
 
-import { mdiClipboardText, mdiLaptop } from "@mdi/js";
+import { mdiClipboardText } from "@mdi/js";
 import { ref, computed, onMounted } from "vue";
 
 import LayoutAuthenticated from "@/layouts/LayoutAuthenticated.vue";
 import LayoutGuest from "@/layouts/LayoutGuest.vue";
 
 import SectionTitleLineWithButton from "@/components/Section/SectionTitleLineWithButton.vue";
-import CardboxAllocation from "@/components/Cardbox/CardBoxAllocation.vue";
 
 import CardBoxModal from "@/components/Cardbox/CardBoxModal.vue";
 import SectionMain from "@/components/Section/SectionMain.vue";
@@ -32,7 +33,6 @@ let prviOdabirDetails = ref(null);
 
 let PrviPoslodavacLogo = ref(null);
 
-const isModalActive = ref(false);
 let selectedAssignmentDetails = ref(null);
 
 async function fetchAssignmentDetails(assignmentId) {
@@ -60,7 +60,6 @@ const Layout = computed(() => {
 
 function openModal(assignmentDetails) {
 	selectedAssignmentDetails.value = assignmentDetails;
-	isModalActive.value = true;
 }
 const isLoading = ref(false);
 const modalConfirmApplication = ref(false);
@@ -92,9 +91,7 @@ const directApplication = async () => {
 <template>
 	<component :is="Layout">
 		<SectionMain class="relative">
-			<SectionTitleLineWithButton :icon="mdiLaptop" title="Moja Praksa" main> </SectionTitleLineWithButton>
-			<p><b>Akademska godina:</b> {{ appConfig.academicYear }}</p>
-			<p><b>Voditelj:</b> {{ appConfig.voditelj_prakse }}</p>
+			<InternshipPageHeader />
 
 			<br />
 			<img src="/illustrations/selection.svg" class="absolute right-0 top-0 mb-12 mr-6 mt-4 hidden w-1/5 max-w-full md:block" />
@@ -110,10 +107,7 @@ const directApplication = async () => {
 				<CardBoxWidget :class="!prviOdabirDetails ? 'cursor-wait' : 'cursor-pointer'" color="text-fipu_blue" hoverable :logo="PrviPoslodavacLogo" :number="null" :text="prviOdabir" label="Odobreni zadatak" @click="openModal(prviOdabirDetails)" />
 			</div>
 
-			<CardBoxModal v-if="isModalActive" v-model="isModalActive" large button-label="Zatvori" button="fipu_blue" has-cancel:false>
-				<CardboxAllocation :data="selectedAssignmentDetails"></CardboxAllocation>
-				<br />
-			</CardBoxModal>
+			<AssignmentDetailsModal v-model="selectedAssignmentDetails" />
 
 			<FormField class="lg:mt-4" label="Napomena (nije obavezno)">
 				<FormControl v-model="napomena" type="textarea" placeholder="Ovdje dodajte napomenu..." />
@@ -125,6 +119,7 @@ const directApplication = async () => {
 			<CardBoxModal v-model="modalConfirmApplication" title="Molimo potvrdite vaš odabir" button-label="Potvrđujem" has-cancel @confirm="directApplication">
 				<p class="mb-2"><b>Napomena:</b> {{ napomena || "Nema napomene." }}</p>
 			</CardBoxModal>
+			<StudentWithdrawAction />
 		</SectionMain>
 	</component>
 </template>

@@ -8,6 +8,8 @@ import { EmailJS } from "@/services/emailjs_client_api";
 import { useSnackBarStore } from "@/stores/snackbar_store";
 import Utils from "@/helpers/utils";
 
+let studentsRequest: Promise<boolean> | null = null;
+
 // Define interfaces for state properties
 interface DashboardData {
 	waiting_for_mark: number;
@@ -125,7 +127,11 @@ export const useAdminStore = defineStore("admin", {
 				console.log("Error:", error);
 			}
 		},
-		async getStudents() {
+		getStudents(): Promise<boolean> {
+			// The sidebar and page can request the same student list on mount.
+			return studentsRequest ??= this.fetchStudents().finally(() => { studentsRequest = null; });
+		},
+		async fetchStudents() {
 			try {
 				this.studentsFetched = false;
 				const response = await Student.fetch();

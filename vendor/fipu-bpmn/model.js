@@ -649,20 +649,6 @@ export function validateModel(model, connectors) {
     }
   }
   for (const reference of all(document, NS.bpmn, 'flowNodeRef')) if (!knownIds.has(reference.textContent.trim())) report('Lane refers to an unknown flow node.', attr(reference.parentElement, 'id'));
-  for (const gateway of model.nodes.filter(node => node.type === 'parallelGateway')) {
-    const pending = model.flows.filter(flow => flow.sourceRef === gateway.id).map(flow => flow.targetRef);
-    const visited = new Set();
-    while (pending.length) {
-      const id = pending.pop();
-      if (id === gateway.id) {
-        report('Cycles through Parallel Gateways are not supported by this engine: join tokens are not reset between iterations.', gateway.id);
-        break;
-      }
-      if (visited.has(id)) continue;
-      visited.add(id);
-      pending.push(...model.flows.filter(flow => flow.sourceRef === id).map(flow => flow.targetRef));
-    }
-  }
   const reachable = new Set();
   const visit = id => { if (reachable.has(id)) return; reachable.add(id); for (const flow of model.flows.filter(item => item.sourceRef === id)) visit(flow.targetRef); };
   for (const start of model.nodes.filter(node => node.type === 'startEvent')) visit(start.id);

@@ -28,51 +28,31 @@ const addNewAssignmentLink = ref(`${VITE_FRONTEND_URL}/poslodavci/novi-zadatak`)
 </script>
 
 <template>
-	<div>
-		<LayoutAuthenticated v-if="userAuthenticated">
-			<SectionMain>
-				<div v-if="userAdmin">
-					<SectionTitleLineWithButton :icon="mdiDomainPlus" title="Novi poslodavci" main> </SectionTitleLineWithButton>
-					<p class="mb-4">U tablici se nalaze poduzeća koja su prijavili zadatke za izvođenje prakse međutim još nisu registrirani za provođenje - potrebno je ručno unijeti podatke o poduzeću.</p>
-
-					<CardBox has-table>
-						<TableNewCompanies />
-					</CardBox>
-
-				</div>
-				<SectionTitleLineWithButton class="mt-4" :icon="mdiDomain" title="Poslodavci" main> </SectionTitleLineWithButton>
-				<p class="mb-4">U tablici se nalaze poslovne organizacije koje su sklopile ugovor za provođenje studentske prakse u suradnji s Fakultetom informatike u Puli.</p>
-				<div v-if="!userAdmin" class="mb-4">
-					<p class="mb-2 text-sm md:text-base">Ukoliko ne možete naći zadatak koji vam se sviđa, javite se poslodavcu, predstavite se i zamolite ih da ispune zadatak putem poveznice ispod.</p>
-					<p class="mb-4 text-sm md:text-base">Novoprijavljeni zadaci bit će dostupni <b>jednom kad ih voditelj odobri.</b></p>
-					<FormField class="md:w-1/2" label="Forma za prijavu novog zadatka">
-						<FormControl v-model="addNewAssignmentLink" :icon-left="mdiClipboardCheck" :icon-right="mdiContentCopy" name="addNewAssignmentLink" readonly copyable />
-					</FormField>
-				</div>
+	<component :is="userAuthenticated ? LayoutAuthenticated : LayoutGuest">
+		<SectionMain>
+			<div v-if="userAuthenticated && userAdmin">
+				<SectionTitleLineWithButton :icon="mdiDomainPlus" title="Novi poslodavci" main> </SectionTitleLineWithButton>
+				<p class="mb-4">U tablici se nalaze poduzeća koja su prijavili zadatke za izvođenje prakse međutim još nisu registrirani za provođenje - potrebno je ručno unijeti podatke o poduzeću.</p>
 
 				<CardBox has-table>
-					<TableCompanies />
+					<TableNewCompanies />
 				</CardBox>
-			</SectionMain>
-		</LayoutAuthenticated>
 
-		<LayoutGuest v-else>
-			<SectionMain>
-				<SectionTitleLineWithButton class="mt-4" :icon="mdiDomain" title="Poslodavci" main> </SectionTitleLineWithButton>
-				<p class="mb-4">U tablici se nalaze poslovne organizacije koje su sklopile ugovor za provođenje studentske prakse u suradnji s Fakultetom informatike u Puli.</p>
-				<div class="mb-4">
-					<p class="mb-2 text-sm md:text-base">Ukoliko ne možete naći zadatak koji vam se sviđa, javite se poslodavcu, predstavite se i zamolite ih da ispune zadatak putem poveznice ispod.</p>
-					<p class="mb-4 text-sm md:text-base">Novoprijavljeni zadaci bit će dostupni <b>jednom kad ih voditelj odobri.</b></p>
+			</div>
+			<SectionTitleLineWithButton class="mt-4" :icon="mdiDomain" title="Poslodavci" main> </SectionTitleLineWithButton>
+			<p class="mb-4">U tablici se nalaze poslovne organizacije koje su sklopile ugovor za provođenje studentske prakse u suradnji s Fakultetom informatike u Puli.</p>
+			<div v-if="!userAuthenticated || !userAdmin" class="mb-4">
+				<p class="mb-2 text-sm md:text-base">Ukoliko ne možete naći zadatak koji vam se sviđa, javite se poslodavcu, predstavite se i zamolite ih da ispune zadatak putem poveznice ispod.</p>
+				<p class="mb-4 text-sm md:text-base">Novoprijavljeni zadaci bit će dostupni <b>jednom kad ih voditelj odobri.</b></p>
+				<FormField class="md:w-1/2" label="Forma za prijavu novog zadatka">
+					<FormControl v-model="addNewAssignmentLink" :icon-left="mdiClipboardCheck" :icon-right="mdiContentCopy" name="addNewAssignmentLink" readonly copyable />
+				</FormField>
+			</div>
 
-					<FormField class="md:w-1/2" label="Forma za prijavu novog zadatka">
-						<FormControl v-model="addNewAssignmentLink" :icon-left="mdiClipboardCheck" :icon-right="mdiContentCopy" name="addNewAssignmentLink" readonly copyable />
-					</FormField>
-				</div>
+			<CardBox has-table>
+				<TableCompanies />
+			</CardBox>
+		</SectionMain>
 
-				<CardBox has-table>
-					<TableCompanies />
-				</CardBox>
-			</SectionMain>
-		</LayoutGuest>
-	</div>
+	</component>
 </template>

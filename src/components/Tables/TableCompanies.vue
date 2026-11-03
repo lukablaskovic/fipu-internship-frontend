@@ -1,21 +1,21 @@
 <script setup>
 import TableCellText from "@/components/Tables/TableCellText.vue";
 import CardBoxComponentEmpty from "@/components/Cardbox/CardBoxComponentEmpty.vue";
-import BasePagination from "@/components/Base/BasePagination.vue";
-import { usePagination, tableButtonMenuOptions } from "@/composables/usePagination.js";
+import TablePagination from "@/components/Tables/TablePagination.vue";
+import { usePagination } from "@/composables/usePagination.js";
+import BaseIcon from "@/components/Base/BaseIcon.vue";
+import { filterByCompany, normalizeString } from "@/helpers/search-utils.js";
 import { computed, ref, onMounted, watch } from "vue";
 
 import TableCheckboxCell from "@/components/Tables/TableCheckboxCell.vue";
-import ButtonMenu from "@/components/Premium/ButtonMenu.vue";
 import BaseButtons from "@/components/Base/BaseButtons.vue";
 import BaseButton from "@/components/Base/BaseButton.vue";
 import UserAvatar from "@/components/User/UserAvatar.vue";
-import { DEFAULT_COMPANY_LOGO } from "@/helpers/company-logo.js";
-import BaseLevel from "@/components/Base/BaseLevel.vue";
+import { DEFAULT_COMPANY_LOGO, getCompanyLogoUrl } from "@/helpers/company-logo.js";
 import LoadingOverlay from "../LoadingOverlay.vue";
-import { mdiWeb, mdiMenuDown } from "@mdi/js";
+import { mdiMagnify, mdiWeb } from "@mdi/js";
 
-import { useRoute } from "vue-router";
+import { useRoute, useRouter } from "vue-router";
 import { useMainStore } from "@/stores/main_store";
 
 const mainStore = useMainStore();
@@ -26,19 +26,25 @@ defineProps({
 });
 
 const allCompanies = ref([]);
-
-const filteredCompanies = computed(() => {
-	return allCompanies.value.filter((company) => {
-		return company["OIB"] && company["maticni_broj"];
-	});
+const route = useRoute();
+const router = useRouter();
+const searchQuery = computed({
+	get: () => typeof route.query.p === "string" ? route.query.p : "",
+	set: (value) => router.replace({ query: { ...route.query, p: value || undefined } }),
 });
 
-const { perPage, currentPage, itemsPaginated: companiesPaginated, numPages, currentPageHuman, handlePerPageChange } = usePagination(filteredCompanies);
+const filteredCompanies = computed(() => {
+	return filterByCompany(allCompanies.value.filter((company) => {
+		return company["OIB"] && company["maticni_broj"];
+	}), normalizeString(searchQuery.value));
+});
+
+const { perPage, currentPage, itemsPaginated: companiesPaginated } = usePagination(filteredCompanies);
+watch(searchQuery, () => { currentPage.value = 0; });
 
 const dataLoaded = ref(false);
 
 let company_highlight = ref("");
-const route = useRoute();
 
 async function loadData() {
 	const naziv = route.params.naziv;
@@ -54,7 +60,7 @@ async function loadData() {
 }
 
 function getAssignmentPage(naziv) {
-	const index = allCompanies.value.findIndex((assignment) => assignment["naziv"] === naziv);
+	const index = filteredCompanies.value.findIndex((company) => company["naziv"] === naziv);
 	if (index === -1) return 0;
 	return Math.floor(index / perPage.value);
 }
@@ -76,6 +82,12 @@ const goToCompanyWeb = (url) => {
 
 <template>
 	<LoadingOverlay :is-active="!dataLoaded" title="Učitavanje..." description="Može potrajati nekoliko sekundi, molimo ne zatvarajte stranicu."> </LoadingOverlay>
+	<div class="table-filter-bar p-3 lg:px-6">
+		<div class="relative w-full">
+			<BaseIcon :path="mdiMagnify" :size="20" class="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-gray-500 dark:text-slate-400" aria-hidden="true" />
+			<input v-model="searchQuery" type="search" aria-label="Pretraži poslodavce" placeholder="Pretraži poslodavce po nazivu…" class="table-filter-search w-full pl-10" />
+		</div>
+	</div>
 	<table v-if="filteredCompanies.length || !dataLoaded" style="table-layout: fixed; width: 100%">
 		<thead>
 			<tr v-if="!mainStore.userAdmin">
@@ -101,12 +113,9 @@ const goToCompanyWeb = (url) => {
 			<tr v-for="company in companiesPaginated" :key="company['naziv']">
 				<TableCheckboxCell v-if="checkable" :assignment-data="company" />
 
-				<td v-if="company['logo'][0]" class="border-b-0 before:hidden lg:w-6">
-					<UserAvatar :avatar="company['logo'][0]['url']" class="mx-auto h-24 w-24 lg:h-6 lg:w-6" />
-				</td>
-				<td v-else>
-					<UserAvatar :avatar="DEFAULT_COMPANY_LOGO" class="mx-auto h-24 w-24 lg:h-6 lg:w-6" />
-				</td>
+				<td class="border-b-0 before:hidden lg:w-6 lg:text-center">
+						<UserAvatar :avatar="getCompanyLogoUrl(company) || DEFAULT_COMPANY_LOGO" :username="company.naziv" class="mx-auto h-24 w-24 lg:h-6 lg:w-6" />
+					</td>
 
 				<td data-label="Naziv">
 					<div class="break-words">
@@ -127,7 +136,7 @@ const goToCompanyWeb = (url) => {
 				</td>
 
 				<td class="whitespace-nowrap before:hidden lg:w-1">
-					<BaseButtons type="justify-start lg:justify-end" no-wrap>
+					<BaseButtons type="justify-center" class="w-full" no-wrap>
 						<BaseButton color="fipu_blue" :icon="mdiWeb" small @click="goToCompanyWeb(company['web'])" />
 					</BaseButtons>
 				</td>
@@ -142,12 +151,9 @@ const goToCompanyWeb = (url) => {
 				}">
 				<TableCheckboxCell v-if="checkable" :assignment-data="company" />
 
-				<td v-if="company['logo'][0]" class="border-b-0 before:hidden lg:w-6">
-					<UserAvatar :avatar="company['logo'][0]['url']" class="mx-auto h-24 w-24 lg:h-6 lg:w-6" />
-				</td>
-				<td v-else>
-					<UserAvatar :avatar="DEFAULT_COMPANY_LOGO" class="mx-auto h-24 w-24 lg:h-6 lg:w-6" />
-				</td>
+				<td class="border-b-0 before:hidden lg:w-6 lg:text-center">
+						<UserAvatar :avatar="getCompanyLogoUrl(company) || DEFAULT_COMPANY_LOGO" :username="company.naziv" class="mx-auto h-24 w-24 lg:h-6 lg:w-6" />
+					</td>
 
 				<td data-label="Naziv">
 					<div class="break-words">
@@ -184,7 +190,7 @@ const goToCompanyWeb = (url) => {
 				</td>
 
 				<td class="whitespace-nowrap before:hidden lg:w-1">
-					<BaseButtons type="justify-start lg:justify-end" no-wrap>
+					<BaseButtons type="justify-center" class="w-full" no-wrap>
 						<BaseButton color="fipu_blue" :icon="mdiWeb" small @click="goToCompanyWeb(company['web'])" />
 					</BaseButtons>
 				</td>
@@ -193,15 +199,5 @@ const goToCompanyWeb = (url) => {
 	</table>
 	<CardBoxComponentEmpty v-if="!filteredCompanies.length && dataLoaded" />
 
-	<div v-if="filteredCompanies.length" class="mb-12 border-t border-gray-100 p-3 dark:border-slate-800 lg:px-6">
-		<BaseLevel>
-			<div class="flex flex-wrap items-center justify-center gap-3">
-				<ButtonMenu class="pagination-page-size" :options="tableButtonMenuOptions" :icon="mdiMenuDown" small left @update:model-value="handlePerPageChange" />
-
-				<BasePagination :page="currentPage + 1" :total="filteredCompanies.length" :items-per-page="perPage" @update:page="currentPage = $event - 1" />
-			</div>
-
-			<small class=""> Stranica {{ currentPageHuman }} od {{ numPages }}</small>
-		</BaseLevel>
-	</div>
+	<TablePagination v-model:page="currentPage" v-model:per-page="perPage" :total="filteredCompanies.length" class="mb-12" />
 </template>

@@ -1,6 +1,6 @@
 @layer base {
 	table {
-		@apply w-full;
+		@apply w-full overflow-hidden rounded-xl;
 	}
 
 	thead {

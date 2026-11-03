@@ -90,6 +90,21 @@ const displayedFlows = computed(() => {
     ? { ...flow, waypoints: attachedWaypoints(flow, drag.node, node) } : flow);
 });
 const selectedFlow = computed(() => props.editable && !props.connecting && flows.value.find(f => f.id === props.selectedId));
+const selectedNode = computed(() => props.editable && props.model.nodes.find(node => node.id === props.selectedId));
+const actionAnchor = computed(() => {
+  const node = selectedNode.value;
+  if (!node || props.connecting || dragging.value || !svg.value?.clientWidth) return null;
+  const { x, y, width, height } = view.value;
+  if (node.x + node.width < x || node.x > x + width || node.y + node.height < y || node.y > y + height) return null;
+  const scale = width / svg.value.clientWidth;
+  const right = node.x + node.width + 12 * scale;
+  const left = right + 44 * scale <= x + width ? right : node.x - 56 * scale;
+  return {
+    x: Math.max(x + 6 * scale, Math.min(left, x + width - 50 * scale)),
+    y: Math.max(y + 6 * scale, Math.min(node.y, y + height - 50 * scale)),
+    scale,
+  };
+});
 const gatewayPorts = computed(() => {
   const flow = selectedFlow.value;
   if (flow?.type !== 'sequenceFlow') return [];
@@ -491,6 +506,9 @@ defineExpose({ fit, focus, center, zoomIn: () => zoom(0.8), zoomOut: () => zoom(
         <circle r="9" fill="transparent" /><circle r="4.5" />
       </g>
     </g>
+    <foreignObject v-if="actionAnchor && $slots['node-actions']" class="node-actions" :transform="`translate(${actionAnchor.x} ${actionAnchor.y}) scale(${actionAnchor.scale})`" width="44" height="44" @pointerdown.stop @dblclick.stop>
+      <div xmlns="http://www.w3.org/1999/xhtml" style="padding: 4px"><slot name="node-actions" :node="selectedNode" /></div>
+    </foreignObject>
   </svg>
 </template>
 

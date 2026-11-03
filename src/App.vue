@@ -1,7 +1,5 @@
 <script setup>
-import MaintenanceNotice from "@/components/Notification/MaintenanceNotice.vue";
 import { Tooltip } from "reka-ui/namespaced";
-import { DEV_MODE } from "@/config";
 </script>
 
 <template>
@@ -11,12 +9,11 @@ import { DEV_MODE } from "@/config";
 		<router-view v-slot="{ Component, route }">
 			<Transition name="page-fade" mode="out-in">
 				<!-- A DOM root also supports pages with fragments or Suspense. -->
-				<div v-if="Component" :key="route.fullPath" class="min-h-screen">
+				<div v-if="Component" :key="route.path" class="min-h-screen">
 					<component :is="Component" />
 				</div>
 			</Transition>
 		</router-view>
-		<MaintenanceNotice v-if="!DEV_MODE && $route.name && $route.name !== 'maintenance'" />
 	</Tooltip.Provider>
 </template>
 

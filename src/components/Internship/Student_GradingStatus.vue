@@ -1,7 +1,8 @@
 <script setup>
+import InternshipPageHeader from "@/components/Internship/InternshipPageHeader.vue";
+import StudentWithdrawAction from "@/components/Internship/StudentWithdrawAction.vue";
 import { computed, ref, watch } from "vue";
-import { mdiAlphaSBox, mdiCheckDecagram, mdiClipboardCheck, mdiLaptop } from "@mdi/js";
-import { appConfig } from "@/config";
+import { mdiAlphaSBox, mdiCheckDecagram, mdiClipboardCheck } from "@mdi/js";
 import { Student } from "@/services/baserow_client_api";
 import { useMainStore } from "@/stores/main_store";
 import { useStudentStore } from "@/stores/student_store";
@@ -45,9 +46,7 @@ watch(diaryId, loadDiary, { immediate: true });
 <template>
 	<component :is="mainStore.userAuthenticated ? LayoutAuthenticated : LayoutGuest">
 		<SectionMain class="relative">
-			<SectionTitleLineWithButton :icon="mdiLaptop" title="Moja Praksa" main />
-			<p><b>Akademska godina:</b> {{ appConfig.academicYear }}</p>
-			<p><b>Voditelj:</b> {{ appConfig.voditelj_prakse }}</p>
+			<InternshipPageHeader />
 
 			<img :src="finished ? '/illustrations/success.svg' : '/illustrations/finish.svg'" alt="" class="absolute right-0 top-0 mr-6 mt-4 hidden max-w-full md:block" :class="finished ? 'w-1/5' : 'w-1/6'" />
 			<SectionTitleLineWithButton class="mt-4" :icon="finished ? mdiCheckDecagram : mdiAlphaSBox" :title="finished ? 'Praksa gotova!' : 'Ocjenjivanje u tijeku'" main />
@@ -77,6 +76,7 @@ watch(diaryId, loadDiary, { immediate: true });
 			<SectionTitleLineWithButton class="mt-4" :icon="mdiClipboardCheck" main title="Odrađeni zadatak" />
 			<CardBoxAllocation v-if="assignment" :key="assignment.id_zadatak" :data="assignment" />
 			<p v-else>{{ assignmentId }}</p>
+			<StudentWithdrawAction />
 		</SectionMain>
 	</component>
 </template>

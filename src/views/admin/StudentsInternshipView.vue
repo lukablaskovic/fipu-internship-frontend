@@ -1,6 +1,7 @@
 <script setup>
-import { internshipStages } from "@/helpers/internship-stages";
-import { mdiAccountMultiple, mdiAccount, mdiClose } from "@mdi/js";
+import BaseIcon from "@/components/Base/BaseIcon.vue";
+import { getInternshipStages } from "@/helpers/internship-stages";
+import { mdiAccountMultiple, mdiAccount, mdiClose, mdiMagnify } from "@mdi/js";
 import { useRouter, useRoute } from "vue-router";
 import { computed, ref, onMounted, watch } from "vue";
 import { Dialog } from "reka-ui/namespaced";
@@ -24,7 +25,7 @@ import FormDynamic from "@/components/Form/FormDynamic.vue";
 import FormControl from "@/components/Form/FormControl.vue";
 import BpmnDiagram from "@/components/BPMN/BpmnDiagram.vue";
 import FormField from "@/components/Form/FormField.vue";
-import FormControlListbox from "@/components/Premium/FormControlListbox.vue";
+import FormControlListbox from "@/components/Form/FormControlListbox.vue";
 import CardBox from "@/components/Cardbox/CardBox.vue";
 import BaseButton from "@/components/Base/BaseButton.vue";
 const bpmn_diagram_active = ref(false);
@@ -38,9 +39,6 @@ function restoreDiagramFocus(event) {
 	}
 }
 
-import BPMN_red from "/BPMN/red_bpmn_professor_pending.png";
-import BPMN_blue from "/BPMN/blue_bpmn_default.png";
-import BPMN_green from "/BPMN/green_bpmn_done.png";
 import BPMN_msg_event from "/BPMN/msg_event.png";
 
 const adminStore = useAdminStore();
@@ -122,7 +120,7 @@ function getPostDataForSendEmail() {
 const studentSearch = ref("");
 const modelOptions = [{ id: "AB", label: "Svi modeli" }, { id: "A", label: "Model A" }, { id: "B", label: "Model B" }];
 const processOptions = [{ id: true, label: "Sve instance" }, { id: false, label: "Aktivne instance" }];
-const stageOptions = [{ id: "all", label: "Sve faze procesa" }, { id: "ceka_alokaciju", label: "Čeka alokaciju (A)" }, { id: "ceka_odobrenje", label: "Čeka odobrenje (B)" }, ...internshipStages.map((stage) => ({ id: stage, label: stage }))];
+const stageOptions = [{ id: "all", label: "Sve faze procesa" }, { id: "ceka_alokaciju", label: "Čeka alokaciju (A)" }, { id: "ceka_odobrenje", label: "Čeka odobrenje (B)" }, ...getInternshipStages().map((stage) => ({ id: stage, label: stage }))];
 const modelFilter = computed({
 	get: () => modelOptions.find((option) => option.id === adminStore.filterModelState),
 	set: (option) => {
@@ -240,11 +238,14 @@ onMounted(loadDataForStudent);
 		<LayoutAuthenticated v-if="mainStore.userAuthenticated">
 			<SectionMain>
 				<SectionTitleLineWithButton :icon="mdiAccountMultiple" title="Studenti u procesu prakse" button-enabled main @click="bpmn_help_modal = true"> </SectionTitleLineWithButton>
-				<div class="table-filter-bar mb-3 flex flex-wrap items-center gap-2 text-sm">
-					<input v-model="studentSearch" type="search" aria-label="Pretraži studente" placeholder="Ime, JMBAG ili email…" class="min-w-0 basis-full rounded-lg border-gray-300 py-1.5 text-sm dark:border-slate-700 dark:bg-slate-800 sm:flex-1 sm:basis-0" />
-					<FormControlListbox v-model="modelFilter" :options="modelOptions" aria-label="Model prakse" button-class="rounded-lg bg-white px-3 py-2 dark:bg-slate-800" />
-					<FormControlListbox v-model="processFilter" :options="processOptions" aria-label="Status instance" button-class="rounded-lg bg-white px-3 py-2 dark:bg-slate-800" />
-					<FormControlListbox v-model="stageFilter" :options="stageOptions" aria-label="Faza procesa" button-class="rounded-lg bg-white px-3 py-2 dark:bg-slate-800" />
+				<div class="table-filter-bar mb-3">
+					<div class="relative min-w-0 basis-full sm:flex-1 sm:basis-0">
+						<BaseIcon :path="mdiMagnify" :size="20" class="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-gray-500 dark:text-slate-400" aria-hidden="true" />
+						<input v-model="studentSearch" type="search" aria-label="Pretraži studente" placeholder="Ime, JMBAG ili email…" class="table-filter-search w-full pl-10" />
+					</div>
+					<FormControlListbox v-model="modelFilter" :options="modelOptions" aria-label="Model prakse" button-class="table-filter-select" />
+					<FormControlListbox v-model="processFilter" :options="processOptions" aria-label="Status instance" button-class="table-filter-select" />
+					<FormControlListbox v-model="stageFilter" :options="stageOptions" aria-label="Faza procesa" button-class="table-filter-select" />
 				</div>
 
 				<CardBox has-table>
@@ -253,18 +254,13 @@ onMounted(loadDataForStudent);
 
 				<CardBoxModal v-if="bpmn_help_modal" v-model="bpmn_help_modal" :title="'BPMN Graf - Legenda'" button-label="Povratak">
 					<div class="mb-4 flex items-center space-x-4">
-						<img :src="BPMN_blue" alt="Description 1" class="h-32 w-32 object-contain" />
-						<p class="text-sm"><b>Plava boja</b> - <i> pending task</i>. Zahtjeva akciju studenta ili poslodavca.</p>
+						<span aria-hidden="true" class="h-12 w-12 shrink-0 rounded-lg border border-slate-600 bg-[#fde047]"></span>
+						<p class="text-sm"><b>Žuta boja</b> - aktivnosti i događaji koji čekaju izvršavanje, neovisno o izvršitelju.</p>
 					</div>
 
 					<div class="mb-4 flex items-center space-x-4">
-						<img :src="BPMN_green" alt="Description 2" class="h-32 w-32 object-contain" />
-						<p class="text-sm"><b>Zelena boja</b> - <i>finished task</i>. Uspješno procesirani kroz BPMN engine.</p>
-					</div>
-
-					<div class="mb-4 flex items-center space-x-4">
-						<img :src="BPMN_red" alt="Description 3" class="h-32 w-32 object-contain" />
-						<p class="text-sm"><b>Crvena boja</b> - <i>pending task</i>. Zahtjeva akciju voditelja prakse.</p>
+						<span aria-hidden="true" class="h-12 w-12 shrink-0 rounded-lg border border-slate-600 bg-[#86efac]"></span>
+						<p class="text-sm"><b>Zelena boja</b> - završene aktivnosti i događaji.</p>
 					</div>
 
 					<div class="mb-4 flex items-center space-x-4">

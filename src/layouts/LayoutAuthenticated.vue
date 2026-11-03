@@ -1,5 +1,4 @@
 <script setup>
-import { appConfig } from "@/config";
 
 import { BASEROW_URL } from "@/config.js";
 
@@ -22,11 +21,11 @@ import BaseDivider from "@/components/Base/BaseDivider.vue";
 import IconTextLink from "@/components/IconTextLink.vue";
 import BaseIcon from "@/components/Base/BaseIcon.vue";
 import NavBar from "@/components/Navbar/NavBar.vue";
-import StudentWithdrawAction from "@/components/Internship/StudentWithdrawAction.vue";
 import FooterBar from "@/components/FooterBar.vue";
+import StudentProgress from "@/components/Internship/StudentProgress.vue";
 
 
-import SnackBar from "@/components/Premium/SnackBar.vue";
+import SnackBar from "@/components/Notification/SnackBar.vue";
 
 const layoutAsidePadding = computed(() => (uiStore.isAsideLgActive ? "lg:pl-22" : "xl:pl-22"));
 
@@ -90,6 +89,7 @@ const menuClick = (event, item) => {
 					<FormControl :icon="mdiMagnify" search-bar />
 				</div>
 			</NavBar>
+			<StudentProgress v-if="!mainStore.userAdmin" />
 
 			<CardBoxModal v-model="logoutModalActive" has-cancel is-logout title="Jeste li sigurni da se želite odjaviti?" button-label="Odjava" class="z-100" @cancel="logoutModalActive = false" @confirm="mainStore.logout()"> </CardBoxModal>
 
@@ -268,40 +268,12 @@ const menuClick = (event, item) => {
 
 			<AsideMenu :menu="menuAside" @menu-click="menuClick" />
 			<div class="relative grow">
-				<StudentWithdrawAction v-if="!mainStore.userAdmin && router.currentRoute.value.path === '/moja-praksa'" />
 				<slot></slot>
 			</div>
 			<div class="mt-6">
-				<FooterBar
-					><br />
-					Made with <span style="color: #e25555">&#9829;</span> at <a :href="appConfig.fipulab_web" target="_blank" class="hover-underline-animation cursor-pointer text-fipu_text_blue hover:text-fipu_blue">FIPUlab</a></FooterBar
-				>
+				<FooterBar />
 			</div>
 			<SnackBar />
 		</div>
 	</div>
 </template>
-<style>
-.hover-underline-animation {
-	display: inline-block;
-	z-index: 0;
-	overflow: visible;
-}
-
-.hover-underline-animation:after {
-	content: "";
-	display: block;
-	width: 100%;
-	height: 2px;
-	background-color: #9de0f7;
-	transform: scaleX(0);
-	transform-origin: bottom right;
-	transition: transform 0.25s ease-out;
-	z-index: -1;
-}
-
-.hover-underline-animation:hover:after {
-	transform: scaleX(1);
-	transform-origin: bottom left;
-}
-</style>

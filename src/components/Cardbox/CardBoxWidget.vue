@@ -57,7 +57,7 @@ defineProps({
 </script>
 
 <template>
-	<CardBox is-hoverable :class="{ 'stat-card': icon, 'hover:border hover:border-fipu_blue hover:ring': hoverable }">
+	<CardBox is-hoverable class="stat-card" :class="{ 'hover:border-fipu_blue': hoverable }">
 		<BaseLevel v-if="trend" class="mb-3" mobile>
 			<PillTagTrend :trend="trend" :trend-type="trendType" small />
 			<BaseButton :icon="mdiCog" icon-size="18" color="lightDark" small />

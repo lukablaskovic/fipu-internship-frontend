@@ -1,7 +1,8 @@
 <script setup>
-import { appConfig } from "@/config";
+import InternshipPageHeader from "@/components/Internship/InternshipPageHeader.vue";
+import StudentWithdrawAction from "@/components/Internship/StudentWithdrawAction.vue";
 
-import { mdiProgressClock, mdiLaptop, mdiNewBox } from "@mdi/js";
+import { mdiProgressClock, mdiNewBox } from "@mdi/js";
 import IconTextLink from "@/components/IconTextLink.vue";
 import { computed } from "vue";
 
@@ -28,9 +29,7 @@ const Layout = computed(() => {
 <template>
 	<component :is="Layout">
 		<SectionMain class="relative">
-			<SectionTitleLineWithButton :icon="mdiLaptop" title="Moja Praksa" main> </SectionTitleLineWithButton>
-			<p><b>Akademska godina:</b> {{ appConfig.academicYear }}</p>
-			<p><b>Voditelj:</b> {{ appConfig.voditelj_prakse }}</p>
+			<InternshipPageHeader />
 			<br />
 			<img src="/illustrations/selection.svg" class="absolute right-0 top-0 mr-6 mt-4 w-1/5 max-w-full" />
 			<SectionTitleLineWithButton :icon="mdiProgressClock" main title="Postupak odobrenja je u tijeku"></SectionTitleLineWithButton>
@@ -41,6 +40,7 @@ const Layout = computed(() => {
 			<hr class="mb-4" />
 			<div class="flex flex-wrap text-base">Ukoliko nemate dogovor s voditeljem prakse i poslodavcem, odabrali ste pogrešan proces prakse te u tom slučaju molimo da kontaktirate voditelja.</div>
 			<br />
+			<StudentWithdrawAction />
 		</SectionMain>
 	</component>
 </template>

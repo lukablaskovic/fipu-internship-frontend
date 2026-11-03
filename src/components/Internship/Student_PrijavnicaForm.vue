@@ -1,7 +1,8 @@
 <script setup>
-import { appConfig } from "@/config";
+import InternshipPageHeader from "@/components/Internship/InternshipPageHeader.vue";
+import StudentWithdrawAction from "@/components/Internship/StudentWithdrawAction.vue";
 
-import { mdiFileDocumentEdit, mdiLaptop, mdiBallot, mdiAccount, mdiMail, mdiClipboardCheck, mdiPhone, mdiCardAccountDetailsOutline, mdiDomain, mdiClockTimeFiveOutline, mdiTextLong, mdiCalendar } from "@mdi/js";
+import { mdiFileDocumentEdit, mdiBallot, mdiAccount, mdiMail, mdiClipboardCheck, mdiPhone, mdiCardAccountDetailsOutline, mdiDomain, mdiClockTimeFiveOutline, mdiTextLong, mdiCalendar } from "@mdi/js";
 import { croatianAlpha, getFirstErrorForField, exactLength, containsNumeric } from "@/helpers/validators";
 import { required, email, helpers, numeric, minLength } from "@vuelidate/validators";
 import { ref, computed, onMounted, reactive } from "vue";
@@ -183,9 +184,7 @@ async function submit_application_form() {
 <template>
 	<component :is="Layout">
 		<SectionMain v-if="allocated_assignment != null" class="relative">
-			<SectionTitleLineWithButton :icon="mdiLaptop" title="Moja Praksa" main> </SectionTitleLineWithButton>
-			<p><b>Akademska godina:</b> {{ appConfig.academicYear }}</p>
-			<p><b>Voditelj:</b> {{ appConfig.voditelj_prakse }}</p>
+			<InternshipPageHeader />
 			<img src="/illustrations/prijavnica.svg" class="absolute right-0 top-0 mr-6 hidden w-1/4 max-w-full md:block" />
 			<br />
 			<div class="sm:mt-32">
@@ -284,6 +283,7 @@ async function submit_application_form() {
 					</FormField>
 				</CardBox>
 			</div>
+			<StudentWithdrawAction />
 		</SectionMain>
 	</component>
 </template>

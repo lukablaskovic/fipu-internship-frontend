@@ -1,7 +1,7 @@
 <script setup>
 import TableCellText from "@/components/Tables/TableCellText.vue";
 import CardBoxComponentEmpty from "@/components/Cardbox/CardBoxComponentEmpty.vue";
-import BasePagination from "@/components/Base/BasePagination.vue";
+import TablePagination from "@/components/Tables/TablePagination.vue";
 import { usePagination } from "@/composables/usePagination.js";
 import { computed, ref, onMounted, watch, reactive } from "vue";
 import { FieldRoot, FieldLabel } from "reka-ui";
@@ -13,9 +13,8 @@ import { useSnackBarStore } from "@/stores/snackbar_store";
 
 import BaseButtons from "@/components/Base/BaseButtons.vue";
 import UserAvatar from "@/components/User/UserAvatar.vue";
-import { DEFAULT_COMPANY_LOGO } from "@/helpers/company-logo.js";
+import { DEFAULT_COMPANY_LOGO, getCompanyLogoUrl } from "@/helpers/company-logo.js";
 import BaseButton from "@/components/Base/BaseButton.vue";
-import BaseLevel from "@/components/Base/BaseLevel.vue";
 import CardBoxModal from "../Cardbox/CardBoxModal.vue";
 import { mdiContentSaveCheckOutline } from "@mdi/js";
 import FormControl from "../Form/FormControl.vue";
@@ -36,6 +35,14 @@ defineProps({
 });
 
 const newCompanies = ref([]);
+
+const editableFields = [
+	{ key: "web", label: "Web mjesto" },
+	{ key: "direktor", label: "Direktor" },
+	{ key: "maticni_broj", label: "Matični broj" },
+	{ key: "OIB", label: "OIB" },
+	{ key: "adresa", label: "Adresa" },
+];
 
 const rules = {
 	web: {
@@ -164,7 +171,7 @@ async function saveUpdatedCompany() {
 	}
 }
 
-const { perPage, currentPage, itemsPaginated: companiesPaginated, numPages, currentPageHuman } = usePagination(newCompanies, 5);
+const { perPage, currentPage, itemsPaginated: companiesPaginated } = usePagination(newCompanies, 5);
 </script>
 
 <template>
@@ -192,13 +199,9 @@ const { perPage, currentPage, itemsPaginated: companiesPaginated, numPages, curr
 				}">
 				<TableCheckboxCell v-if="checkable" :assignment-data="company" />
 
-				<td v-if="company['logo'][0]" class="border-b-0 before:hidden lg:w-6">
-					<UserAvatar :avatar="company['logo'][0]['url']" class="mx-auto h-24 w-24 lg:h-6 lg:w-6" />
-				</td>
-
-				<td v-else>
-					<UserAvatar :avatar="DEFAULT_COMPANY_LOGO" class="mx-auto h-24 w-24 lg:h-6 lg:w-6" />
-				</td>
+				<td class="border-b-0 before:hidden lg:w-6 lg:text-center">
+						<UserAvatar :avatar="getCompanyLogoUrl(company) || DEFAULT_COMPANY_LOGO" :username="company.naziv" class="mx-auto h-24 w-24 lg:h-6 lg:w-6" />
+					</td>
 
 				<td data-label="Naziv">
 					<FieldRoot>
@@ -207,40 +210,12 @@ const { perPage, currentPage, itemsPaginated: companiesPaginated, numPages, curr
 					</FieldRoot>
 				</td>
 
-				<td data-label="Web mjesto">
-					<FieldRoot :invalid="!!getFirstErrorForField(v$, 'web')">
-						<FieldLabel as="div" :native-label="false" class="sr-only">Web mjesto</FieldLabel>
-						<FormControl v-model="companyForms[company.id].web" :error="getFirstErrorForField(v$, 'web')"></FormControl>
-					</FieldRoot>
-				</td>
-
-				<td data-label="Direktor">
-					<FieldRoot :invalid="!!getFirstErrorForField(v$, 'direktor')">
-						<FieldLabel as="div" :native-label="false" class="sr-only">Direktor</FieldLabel>
-						<FormControl v-model="companyForms[company.id].direktor" :error="getFirstErrorForField(v$, 'direktor')"></FormControl>
-					</FieldRoot>
-				</td>
-
-				<td data-label="Matični broj">
-					<FieldRoot :invalid="!!getFirstErrorForField(v$, 'maticni_broj')">
-						<FieldLabel as="div" :native-label="false" class="sr-only">Matični broj</FieldLabel>
-						<FormControl v-model="companyForms[company.id].maticni_broj" :error="getFirstErrorForField(v$, 'maticni_broj')"></FormControl>
-					</FieldRoot>
-				</td>
-
-				<td data-label="OIB">
-					<FieldRoot :invalid="!!getFirstErrorForField(v$, 'OIB')">
-						<FieldLabel as="div" :native-label="false" class="sr-only">OIB</FieldLabel>
-						<FormControl v-model="companyForms[company.id].OIB" :error="getFirstErrorForField(v$, 'OIB')"></FormControl>
-					</FieldRoot>
-				</td>
-
-				<td data-label="Adresa">
-					<FieldRoot :invalid="!!getFirstErrorForField(v$, 'adresa')">
-						<FieldLabel as="div" :native-label="false" class="sr-only">Adresa</FieldLabel>
-						<FormControl v-model="companyForms[company.id].adresa" :error="getFirstErrorForField(v$, 'adresa')"></FormControl>
-					</FieldRoot>
-				</td>
+				<td v-for="field in editableFields" :key="field.key" :data-label="field.label">
+						<FieldRoot :invalid="!!getFirstErrorForField(v$[company.id], field.key)">
+							<FieldLabel as="div" :native-label="false" class="sr-only">{{ field.label }}</FieldLabel>
+							<FormControl v-model="companyForms[company.id][field.key]" :error="getFirstErrorForField(v$[company.id], field.key)" />
+						</FieldRoot>
+					</td>
 
 				<td class="whitespace-nowrap before:hidden lg:w-1">
 					<BaseButtons type="justify-start lg:justify-end" no-wrap>
@@ -269,12 +244,5 @@ const { perPage, currentPage, itemsPaginated: companiesPaginated, numPages, curr
 		</div>
 	</CardBoxModal>
 
-	<div v-if="newCompanies.length" class="border-t border-gray-100 p-3 dark:border-slate-800 lg:px-6">
-		<BaseLevel>
-			<div class="flex flex-wrap items-center justify-center gap-3">
-				<BasePagination :page="currentPage + 1" :total="newCompanies.length" :items-per-page="perPage" @update:page="currentPage = $event - 1" />
-			</div>
-			<small>Stranica {{ currentPageHuman }} od {{ numPages }}</small>
-		</BaseLevel>
-	</div>
+	<TablePagination v-model:page="currentPage" v-model:per-page="perPage" :total="newCompanies.length" :show-per-page="false" />
 </template>

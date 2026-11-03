@@ -1,8 +1,8 @@
 <script setup>
 import TableCellText from "@/components/Tables/TableCellText.vue";
 import CardBoxComponentEmpty from "@/components/Cardbox/CardBoxComponentEmpty.vue";
-import BasePagination from "@/components/Base/BasePagination.vue";
-import { usePagination, tableButtonMenuOptions } from "@/composables/usePagination.js";
+import TablePagination from "@/components/Tables/TablePagination.vue";
+import { usePagination } from "@/composables/usePagination.js";
 import { computed, ref, onMounted } from "vue";
 
 import TableCheckboxCell from "@/components/Tables/TableCheckboxCell.vue";
@@ -10,12 +10,9 @@ import { useMainStore } from "@/stores/main_store";
 import { useStudentStore } from "@/stores/student_store";
 import { useAdminStore } from "@/stores/admin_store";
 
-import ButtonMenu from "@/components/Premium/ButtonMenu.vue";
-import BaseLevel from "@/components/Base/BaseLevel.vue";
 import LoadingOverlay from "../LoadingOverlay.vue";
 import { StudentMappings } from "@/helpers/maps";
 import PillTag from "../PillTag/PillTag.vue";
-import { mdiMenuDown } from "@mdi/js";
 
 const mainStore = useMainStore();
 const studentStore = useStudentStore();
@@ -64,7 +61,7 @@ async function fetchPDF(type, search) {
 	window.open(url, "_blank");
 }
 
-const { perPage, currentPage, itemsPaginated: allocationsPaginated, numPages, currentPageHuman, handlePerPageChange } = usePagination(filteredAllocations);
+const { perPage, currentPage, itemsPaginated: allocationsPaginated } = usePagination(filteredAllocations);
 
 </script>
 
@@ -131,14 +128,5 @@ const { perPage, currentPage, itemsPaginated: allocationsPaginated, numPages, cu
 	</table>
 	<CardBoxComponentEmpty v-if="!filteredAllocations.length && dataLoaded" />
 
-	<div v-if="filteredAllocations.length" class="border-t border-gray-100 p-3 dark:border-slate-800 lg:px-6">
-		<BaseLevel>
-			<div class="flex flex-wrap items-center justify-center gap-3">
-				<ButtonMenu class="pagination-page-size" :options="tableButtonMenuOptions" :icon="mdiMenuDown" small left @update:model-value="handlePerPageChange" />
-
-				<BasePagination :page="currentPage + 1" :total="filteredAllocations.length" :items-per-page="perPage" @update:page="currentPage = $event - 1" />
-			</div>
-			<small>Stranica {{ currentPageHuman }} od {{ numPages }}</small>
-		</BaseLevel>
-	</div>
+	<TablePagination v-model:page="currentPage" v-model:per-page="perPage" :total="filteredAllocations.length" />
 </template>

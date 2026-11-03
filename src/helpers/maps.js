@@ -146,7 +146,6 @@ class UserTaskMappings {
 			_id: "end_event_odustajanje",
 			name: "Student odustao",
 			form_title: "Odustajanje od prakse",
-			bpmn_task_color: "#EF4444",
 			component: Student_InternshipCancelled,
 		},
 		{
@@ -158,7 +157,6 @@ class UserTaskMappings {
 			snackbar_msg: "",
 			snackbar_color: "",
 			bpmn_pending_info_msg: "Student još nije prijavio preferencije.",
-			bpmn_task_color: "#79d4f2", //fipu blue
 			component: Student_ChooseAvailableAssignments,
 		},
 		{
@@ -169,7 +167,6 @@ class UserTaskMappings {
 			form_title: "Alokacija studenta",
 			snackbar_msg: "Radnja registrirana. Hvala!",
 			snackbar_color: "success",
-			bpmn_task_color: "#EF4444", //bg-red-500
 			component: Student_WaitingForAllocation,
 		},
 		{
@@ -180,7 +177,6 @@ class UserTaskMappings {
 			form_title: "Evaluacija poslodavca",
 			snackbar_msg: "Evaluacija pohranjena. Hvala!",
 			snackbar_color: "success",
-			bpmn_task_color: "#EF4444", //bg-red-500
 			component: Student_WaitingForEvaluation,
 		},
 		{
@@ -191,7 +187,6 @@ class UserTaskMappings {
 			snackbar_msg: "Prijavnica pohranjena. Hvala!",
 			bpmn_pending_info_msg: "Student nije još ispunio prijavnicu.",
 			snackbar_color: "success",
-			bpmn_task_color: "#79d4f2",
 			form_title: "Ispunjena prijavnica",
 			component: Student_PrijavnicaForm,
 		},
@@ -202,7 +197,6 @@ class UserTaskMappings {
 			name: "Mora predati dnevnik prakse",
 			bpmn_pending_info_msg: "Student nije još predao dnevnik prakse i ispunjenu potvrdu.",
 			snackbar_msg: "Dnevnik i potvrda pohranjeni.",
-			bpmn_task_color: "#79d4f2",
 			snackbar_color: "success",
 			form_title: "Dnevnik prakse",
 			component: Student_DnevnikPrakseForm, //DnevnikPrakseForm
@@ -214,7 +208,6 @@ class UserTaskMappings {
 			name: "Potrebno je potvrditi upis ocjene",
 			snackbar_msg: "Upis ocjene potvrđen. Hvala!",
 			snackbar_color: "success",
-			bpmn_task_color: "#EF4444", //bg-red-500
 			form_title: "Upis ocjene (ISVU)",
 			component: Student_GradingStatus,
 		},
@@ -237,7 +230,6 @@ class UserTaskMappings {
 			snackbar_msg: "Radnja registrirana. Hvala!",
 			snackbar_color: "success",
 			bpmn_pending_info_msg: "Student čeka odobrenje zadatka.",
-			bpmn_task_color: "#EF4444", //bg-red-500
 			component: Model_B_Student_WaitingForApproval,
 		},
 		{
@@ -249,7 +241,6 @@ class UserTaskMappings {
 			snackbar_msg: "",
 			snackbar_color: "",
 			bpmn_pending_info_msg: "Student se još nije prijavio na zadatak.",
-			bpmn_task_color: "#79d4f2",
 			component: Model_B_Student_DirectApplication,
 		},
 	];

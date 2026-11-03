@@ -1,13 +1,13 @@
 <template>
-	<span class="inline-flex cursor-pointer items-center whitespace-normal text-fipu_blue" @click="router.push(to)">
-		<BaseIcon :path="icon" class="flex-none align-middle" :size="18"></BaseIcon>
+	<RouterLink :to="to" class="inline-flex items-center whitespace-normal text-fipu_blue hover:underline focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-fipu_blue">
+		<BaseIcon :path="icon" class="flex-none align-middle" :size="18" aria-hidden="true"></BaseIcon>
 		{{ text }}
-	</span>
+	</RouterLink>
 </template>
 
 <script setup>
 import BaseIcon from "@/components/Base/BaseIcon.vue";
-import { router } from "@/router";
+import { RouterLink } from "vue-router";
 
 defineProps({
 	icon: {

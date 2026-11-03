@@ -28,3 +28,6 @@ node_modules
 
 # Generated production build output.
 /dist/
+
+# Private Sudski registar deployment credentials.
+.env.sudreg

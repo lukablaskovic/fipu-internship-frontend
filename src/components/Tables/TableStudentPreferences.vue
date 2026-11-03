@@ -1,12 +1,11 @@
 <script setup>
+import AssignmentDetailsModal from "@/components/Internship/AssignmentDetailsModal.vue";
 import TableCellText from "@/components/Tables/TableCellText.vue";
 import CardBoxComponentEmpty from "@/components/Cardbox/CardBoxComponentEmpty.vue";
 import { ref, onMounted } from "vue";
 
-import CardBoxModal from "@/components/Cardbox/CardBoxModal.vue";
 import { mdiEye } from "@mdi/js";
 
-import CardboxAllocation from "@/components/Cardbox/CardBoxAllocation.vue";
 import LoadingOverlay from "@/components/LoadingOverlay.vue";
 import BaseButtons from "@/components/Base/BaseButtons.vue";
 import BaseButton from "@/components/Base/BaseButton.vue";
@@ -46,11 +45,7 @@ onMounted(async () => {
 </script>
 
 <template>
-	<CardBoxModal v-if="isModalActive" v-model="isModalActive" large button-label="Zatvori" button="fipu_blue" has-cancel:false @cancel="isModalActive = null">
-		<CardboxAllocation :data="isModalActive"></CardboxAllocation>
-
-		<br />
-	</CardBoxModal>
+	<AssignmentDetailsModal v-model="isModalActive" />
 
 	<LoadingOverlay :is-active="!dataLoaded" title="Učitavanje..." description="Može potrajati nekoliko sekundi, molimo ne zatvarajte stranicu."> </LoadingOverlay>
 

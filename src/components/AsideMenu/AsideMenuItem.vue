@@ -2,6 +2,7 @@
 import { RovingFocusItem } from "reka-ui";
 import AsideMenuList from "@/components/AsideMenu/AsideMenuList.vue";
 import Tooltip from "@/components/Base/Tooltip.vue";
+import StudentPendingIndicator from "@/components/AsideMenu/StudentPendingIndicator.vue";
 
 import { mdiMinus, mdiPlus, mdiChevronRight } from "@mdi/js";
 import BaseIcon from "@/components/Base/BaseIcon.vue";
@@ -30,7 +31,7 @@ const emit = defineEmits(["menu-click"]);
 
 const asideMenuItemInactiveStyle = computed(() => (hasColor.value ? "" : `${uiStore.asideMenuItemInactiveStyle} dark:text-gray-300`));
 
-const asideMenuItemActiveBgStyle = computed(() => `${uiStore.asideMenuItemActiveBgStyle} dark:bg-slate-700/25`);
+const asideMenuItemActiveBgStyle = computed(() => uiStore.asideMenuItemActiveBgStyle);
 
 const asideMenuItemActiveStyle = computed(() => (hasColor.value ? "" : uiStore.asideMenuItemActiveStyle));
 
@@ -104,10 +105,11 @@ const menuClick = (event) => {
 					<BaseIcon
 						v-if="item.icon"
 						:path="item.icon"
-						class="flex-none transition-all duration-300 group-hover:text-white"
+						class="flex-none transition-all duration-300"
 						:w="isCompact ? 'w-8 lg:w-16' : 'w-8'"
 						:size="item.size ? item.size : 18"
-						:class="[vSlot && vSlot.isExactActive ? asideMenuItemActiveStyle : asideMenuItemInactiveStyle, { relative: item.updateMark }, item.color == 'info' ? 'text-slate-800' : '']">
+						:class="[vSlot && vSlot.isExactActive ? asideMenuItemActiveStyle : asideMenuItemInactiveStyle, { relative: item.updateMark || item.to === '/studenti' }, item.color == 'info' ? 'text-slate-800' : '']">
+						<StudentPendingIndicator v-if="item.to === '/studenti'" />
 					</BaseIcon>
 
 					<span

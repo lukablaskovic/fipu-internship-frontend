@@ -1,16 +1,16 @@
 <script setup>
-import { appConfig } from "@/config";
+import AssignmentDetailsModal from "@/components/Internship/AssignmentDetailsModal.vue";
+import InternshipPageHeader from "@/components/Internship/InternshipPageHeader.vue";
+import StudentWithdrawAction from "@/components/Internship/StudentWithdrawAction.vue";
 
-import { mdiProgressClock, mdiLaptop, mdiNumeric } from "@mdi/js";
+import { mdiProgressClock, mdiNumeric } from "@mdi/js";
 import { ref, computed, onMounted } from "vue";
 
 import LayoutAuthenticated from "@/layouts/LayoutAuthenticated.vue";
 import LayoutGuest from "@/layouts/LayoutGuest.vue";
 
 import SectionTitleLineWithButton from "@/components/Section/SectionTitleLineWithButton.vue";
-import CardboxAllocation from "@/components/Cardbox/CardBoxAllocation.vue";
 import CardBoxWidget from "@/components/Cardbox/CardBoxWidget.vue";
-import CardBoxModal from "@/components/Cardbox/CardBoxModal.vue";
 import SectionMain from "@/components/Section/SectionMain.vue";
 
 
@@ -33,7 +33,6 @@ let PrviPoslodavacLogo = ref(null);
 let DrugiPoslodavacLogo = ref(null);
 let TreciPoslodavacLogo = ref(null);
 
-const isModalActive = ref(false);
 let selectedAssignmentDetails = ref(null);
 
 async function fetchAssignmentDetails(assignmentId) {
@@ -67,16 +66,13 @@ const Layout = computed(() => {
 
 function openModal(assignmentDetails) {
 	selectedAssignmentDetails.value = assignmentDetails;
-	isModalActive.value = true;
 }
 </script>
 
 <template>
 	<component :is="Layout">
 		<SectionMain class="relative">
-			<SectionTitleLineWithButton :icon="mdiLaptop" title="Moja Praksa" main> </SectionTitleLineWithButton>
-			<p><b>Akademska godina:</b> {{ appConfig.academicYear }}</p>
-			<p><b>Voditelj:</b> {{ appConfig.voditelj_prakse }}</p>
+			<InternshipPageHeader />
 
 			<br />
 
@@ -88,15 +84,13 @@ function openModal(assignmentDetails) {
 			<SectionTitleLineWithButton :icon="mdiNumeric" main title="Vaš odabir"></SectionTitleLineWithButton>
 
 			<div class="mb-6 grid grid-cols-1 gap-6 lg:grid-cols-3">
-				<CardBoxWidget :class="!prviOdabirDetails ? 'cursor-wait' : 'cursor-pointer'" color="text-fipu_blue" hoverable :logo="PrviPoslodavacLogo" :number="null" :text="prviOdabir" label="1. odabir" @click="openModal(prviOdabirDetails)" />
-				<CardBoxWidget :class="!drugiOdabirDetails ? 'cursor-wait' : 'cursor-pointer'" color="text-fipu_blue" hoverable :logo="DrugiPoslodavacLogo" :number="null" :text="drugiOdabir" label="2. odabir" @click="openModal(drugiOdabirDetails)" />
-				<CardBoxWidget :class="!treciOdabirDetails ? 'cursor-wait' : 'cursor-pointer'" color="text-fipu_blue" hoverable :logo="TreciPoslodavacLogo" :number="null" :text="treciOdabir" label="3. odabir" @click="openModal(treciOdabirDetails)" />
+				<CardBoxWidget class="rounded-lg" :class="!prviOdabirDetails ? 'cursor-wait' : 'cursor-pointer'" color="text-fipu_blue" hoverable :logo="PrviPoslodavacLogo" :number="null" :text="prviOdabir" label="1. odabir" @click="openModal(prviOdabirDetails)" />
+				<CardBoxWidget class="rounded-lg" :class="!drugiOdabirDetails ? 'cursor-wait' : 'cursor-pointer'" color="text-fipu_blue" hoverable :logo="DrugiPoslodavacLogo" :number="null" :text="drugiOdabir" label="2. odabir" @click="openModal(drugiOdabirDetails)" />
+				<CardBoxWidget class="rounded-lg" :class="!treciOdabirDetails ? 'cursor-wait' : 'cursor-pointer'" color="text-fipu_blue" hoverable :logo="TreciPoslodavacLogo" :number="null" :text="treciOdabir" label="3. odabir" @click="openModal(treciOdabirDetails)" />
 			</div>
 
-			<CardBoxModal v-if="isModalActive" v-model="isModalActive" large button-label="Zatvori" button="fipu_blue" has-cancel:false>
-				<CardboxAllocation :data="selectedAssignmentDetails"></CardboxAllocation>
-				<br />
-			</CardBoxModal>
+			<AssignmentDetailsModal v-model="selectedAssignmentDetails" />
+			<StudentWithdrawAction />
 		</SectionMain>
 	</component>
 </template>

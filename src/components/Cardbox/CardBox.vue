@@ -22,6 +22,10 @@ const hasFooterSlot = computed(() => slots.footer && !!slots.footer());
 const componentClass = computed(() => {
 	const base = [props.isModal ? "dark:bg-slate-900" : "dark:bg-slate-900/70"];
 
+	if (props.hasTable) {
+		base.push("overflow-hidden rounded-xl");
+	}
+
 	if (props.isHoverable) {
 		base.push("hover:shadow-lg transition-shadow duration-500");
 	}

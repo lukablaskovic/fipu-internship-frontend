@@ -1,7 +1,7 @@
 <script setup>
 import { FieldRoot, FieldLabel } from "reka-ui";
 
-import FormFieldHelp from "@/components/Premium/FormFieldHelp.vue";
+import FormFieldHelp from "@/components/Form/FormFieldHelp.vue";
 import { controlTextColor } from "@/colors.js";
 import { computed, useSlots } from "vue";
 

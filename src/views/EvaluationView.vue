@@ -16,7 +16,7 @@ import CardBoxAllocation from "@/components/Cardbox/CardBoxAllocation.vue";
 import SectionMain from "@/components/Section/SectionMain.vue";
 import FormDynamic from "@/components/Form/FormDynamic.vue";
 import BaseButton from "@/components/Base/BaseButton.vue";
-import SnackBar from "@/components/Premium/SnackBar.vue";
+import SnackBar from "@/components/Notification/SnackBar.vue";
 import FooterBar from "@/components/FooterBar.vue";
 
 import FIPU_praksa_logo_transparent from "/FIPU_praksa_logo_transparent.svg";

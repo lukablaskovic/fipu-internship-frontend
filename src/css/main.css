@@ -62,6 +62,7 @@ td[data-label]::before {
 }
 
 .pagination-page-size > button {
+	@apply text-gray-400 dark:text-slate-400;
 	@apply inline-flex h-9 min-w-[2.25rem] items-center justify-center rounded border border-fipu_blue bg-white px-2 text-sm transition-colors hover:bg-gray-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-fipu_blue focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-40 dark:bg-slate-900 dark:hover:bg-slate-800;
 }
 

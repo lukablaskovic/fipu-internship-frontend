@@ -32,6 +32,8 @@ export default defineConfig({
 		},
 	},
 	build: {
+		// Keep the technology catalog's SVGs as assets so browsers load only visible icons.
+		assetsInlineLimit: 0,
 		rollupOptions: {
 			output: {
 				manualChunks: {
