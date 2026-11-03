@@ -53,13 +53,12 @@ class StudentMappings {
 		return getMappedProperty(this.statusZahtjeva, "dbLabel", dbLabel, property);
 	}
 }
+import { defineAsyncComponent } from "vue";
 import Student_ChooseAvailableAssignments from "@/components/Internship/Student_ChooseAvailableAssignments.vue";
 import Student_WaitingForEvaluation from "@/components/Internship/Student_WaitingForEvaluation.vue";
 import Student_WaitingForAllocation from "@/components/Internship/Student_WaitingForAllocation.vue";
 import Student_InternshipCancelled from "@/components/Internship/Student_InternshipCancelled.vue";
 import Student_GradingStatus from "@/components/Internship/Student_GradingStatus.vue";
-import Student_DnevnikPrakseForm from "@/components/Internship/Student_DnevnikPrakseForm.vue";
-import Student_PrijavnicaForm from "@/components/Internship/Student_PrijavnicaForm.vue";
 
 //model B
 import Model_B_Student_WaitingForApproval from "@/components/Internship/Model_B/Model_B_Student_WaitingForApproval.vue";
@@ -188,7 +187,7 @@ class UserTaskMappings {
 			bpmn_pending_info_msg: "Student nije još ispunio prijavnicu.",
 			snackbar_color: "success",
 			form_title: "Ispunjena prijavnica",
-			component: Student_PrijavnicaForm,
+			component: defineAsyncComponent(() => import("@/components/Internship/Student_PrijavnicaForm.vue")),
 		},
 		{
 			order: 5,
@@ -199,7 +198,7 @@ class UserTaskMappings {
 			snackbar_msg: "Dnevnik i potvrda pohranjeni.",
 			snackbar_color: "success",
 			form_title: "Dnevnik prakse",
-			component: Student_DnevnikPrakseForm, //DnevnikPrakseForm
+			component: defineAsyncComponent(() => import("@/components/Internship/Student_DnevnikPrakseForm.vue")),
 		},
 		{
 			order: 6,

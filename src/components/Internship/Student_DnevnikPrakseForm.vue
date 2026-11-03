@@ -1,6 +1,6 @@
 <script setup>
-import InternshipPageHeader from "@/components/Internship/InternshipPageHeader.vue";
 import StudentWithdrawAction from "@/components/Internship/StudentWithdrawAction.vue";
+import InternshipPageHeader from "@/components/Internship/InternshipPageHeader.vue";
 
 import { mdiBallot, mdiNotebook, mdiBriefcase } from "@mdi/js";
 import { ref, computed, onMounted, reactive } from "vue";
@@ -24,10 +24,9 @@ import BaseButton from "@/components/Base/BaseButton.vue";
 import FormField from "@/components/Form/FormField.vue";
 import CardBox from "@/components/Cardbox/CardBox.vue";
 
-import { useMainStore } from "@/stores/main_store";
 import { useSnackBarStore } from "@/stores/snackbar_store";
 import { useStudentStore } from "@/stores/student_store";
-
+import { useMainStore } from "@/stores/main_store";
 
 import { UserTaskMappings } from "@/helpers/maps";
 
@@ -62,13 +61,16 @@ const form = reactive({
 	prijavljen_rok: null,
 });
 
+const pdfRules = {
+	required: helpers.withMessage("Stavka je obavezna", required),
+	format: helpers.withMessage("Odaberite PDF datoteku.", file => !file || file.type === "application/pdf" || (!file.type && /\.pdf$/i.test(file.name))),
+	size: helpers.withMessage("Datoteka je prevelika. Najveća dopuštena veličina je 10 MB po PDF-u.", file => !file || file.size <= 10 * 1024 * 1024),
+	$autoDirty: true,
+};
+
 const rules = {
-	potvrda_attachment: {
-		required: helpers.withMessage("Stavka je obavezna", required),
-	},
-	dnevnik_attachment: {
-		required: helpers.withMessage("Stavka je obavezna", required),
-	},
+	potvrda_attachment: pdfRules,
+	dnevnik_attachment: pdfRules,
 	prijavljen_rok: {
 		required: helpers.withMessage("Stavka je obavezna", required),
 	},
@@ -76,58 +78,18 @@ const rules = {
 
 const v$ = useVuelidate(rules, form);
 
-let isLoading = ref(false);
+const isLoading = ref(false);
+const serverSizeError = ref("");
 
 async function submit_diary_form() {
 	if (isLoading.value) return;
 	isLoading.value = true;
+	serverSizeError.value = "";
 
 	v$.value.$touch();
 	if (v$.value.$invalid) {
 		isLoading.value = false;
 		return;
-	}
-
-	if (form.potvrda_attachment == null || form.dnevnik_attachment == null || form.prijavljen_rok == null || form.nastavak_radnog_odnosa == null) {
-		snackBarStore.pushMessage("Molimo ispunite sva obavezna polja.", "error");
-		isLoading.value = false;
-		return;
-	}
-
-	// Validate file size and format for dnevnik_attachment
-	const maxFileSize = 10 * 1024 * 1024; // 10 MB in bytes
-
-	if (form.dnevnik_attachment) {
-		// Check file type
-		if (form.dnevnik_attachment.type !== "application/pdf") {
-			snackBarStore.pushMessage("Dnevnik prakse mora biti u PDF formatu.", "warning");
-			isLoading.value = false;
-			return;
-		}
-		// Check file size
-		if (form.dnevnik_attachment.size > maxFileSize) {
-			const fileSizeMB = (form.dnevnik_attachment.size / (1024 * 1024)).toFixed(2);
-			snackBarStore.pushMessage(`Dnevnik prakse je prevelik (${fileSizeMB} MB). Maksimalna veličina je 10 MB.`, "warning");
-			isLoading.value = false;
-			return;
-		}
-	}
-
-	// Validate file size and format for potvrda_attachment
-	if (form.potvrda_attachment) {
-		// Check file type
-		if (form.potvrda_attachment.type !== "application/pdf") {
-			snackBarStore.pushMessage("Potvrda o obavljenoj praksi mora biti u PDF formatu.", "warning");
-			isLoading.value = false;
-			return;
-		}
-		// Check file size
-		if (form.potvrda_attachment.size > maxFileSize) {
-			const fileSizeMB = (form.potvrda_attachment.size / (1024 * 1024)).toFixed(2);
-			snackBarStore.pushMessage(`Potvrda o obavljenoj praksi je prevelika (${fileSizeMB} MB). Maksimalna veličina je 10 MB.`, "warning");
-			isLoading.value = false;
-			return;
-		}
 	}
 
 	const task = studentStore.student_process_instance_data.pending[0];
@@ -141,6 +103,10 @@ async function submit_diary_form() {
 		}
 		await studentStore.getPendingUserTask(mainStore.currentUser.internship_process.id);
 	} catch (error) {
+		if (!saved && error.response?.status === 413) {
+			serverSizeError.value = "Poslužitelj je odbio privitke jer zahtjev premašuje ograničenje veličine. Ako su oba PDF-a unutar dopuštene veličine, javite se voditelju prakse.";
+			return;
+		}
 		snackBarStore.pushMessage(saved ? "Podaci su spremljeni, ali stanje prakse nije osvježeno. Ponovno otvorite Moju praksu." : "Podaci nisu poslani. Molimo pokušajte ponovno ili kontaktirajte voditelja prakse.", "danger");
 	} finally {
 		isLoading.value = false;
@@ -168,7 +134,7 @@ async function submit_diary_form() {
 			<br />
 			<p>
 				📓 Predložak za dnevnik prakse možete preuzeti
-				<a href="https://bit.ly/fipu-praksa-template" target="_blank" class="cursor-pointer text-fipu_blue">ovdje</a>.
+				<a href="/predlozak-dnevnika-prakse.docx" download class="cursor-pointer text-fipu_blue">ovdje</a>.
 			</p>
 			<p>
 				📃 Praznu potvrdu o obavljenoj praksi možete preuzeti
@@ -178,15 +144,15 @@ async function submit_diary_form() {
 			<hr />
 
 			<div class="mb-6 grid grid-cols-1 gap-6">
-				<CardBox :icon="mdiBallot" class="mb-6 lg:col-span-2 lg:mb-0 xl:col-span-3" is-form novalidate @submit.prevent="submit_diary_form">
-					<CardBoxComponentTitle title="📓 Dnevnik prakse" />
+				<CardBox :icon="mdiBallot" class="mb-6 rounded-xl lg:col-span-2 lg:mb-0 xl:col-span-3" is-form novalidate @submit.prevent="submit_diary_form">
+					<CardBoxComponentTitle title="Dnevnik prakse i potvrda o praksi" />
 
 					<FormField :error="getFirstErrorForField(v$, 'dnevnik_attachment')" label="PDF dnevnika prakse" help="obavezno PDF format, maksimalno 10 MB" horizontal>
-						<FormFilePicker v-model="form.dnevnik_attachment" pdf label="Prenesi" required />
+						<FormFilePicker v-model="form.dnevnik_attachment" pdf :disabled="isLoading" required @update:model-value="serverSizeError = ''" />
 					</FormField>
 
 					<FormField :error="getFirstErrorForField(v$, 'potvrda_attachment')" label="PDF ispunjene potvrde o obavljenoj praksi" help="obavezno PDF format, maksimalno 10 MB" horizontal>
-						<FormFilePicker v-model="form.potvrda_attachment" pdf label="Prenesi" required />
+						<FormFilePicker v-model="form.potvrda_attachment" pdf :disabled="isLoading" required @update:model-value="serverSizeError = ''" />
 					</FormField>
 
 					<BaseDivider />
@@ -201,8 +167,9 @@ async function submit_diary_form() {
 
 					<BaseDivider />
 
+					<p v-if="serverSizeError" role="alert" class="mb-4 text-red-600">{{ serverSizeError }}</p>
 					<FormField horizontal grouped>
-						<BaseButton label="Predaj" type="submit" :loading="isLoading" color="fipu_blue" />
+						<BaseButton label="Predaj" type="submit" :loading="isLoading" :disabled="v$.dnevnik_attachment.$error || v$.potvrda_attachment.$error" color="fipu_blue" />
 					</FormField>
 				</CardBox>
 			</div>

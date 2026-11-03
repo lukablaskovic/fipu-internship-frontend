@@ -2,7 +2,7 @@
 import InternshipPageHeader from "@/components/Internship/InternshipPageHeader.vue";
 import StudentWithdrawAction from "@/components/Internship/StudentWithdrawAction.vue";
 
-import { mdiFileDocumentEdit, mdiBallot, mdiAccount, mdiMail, mdiClipboardCheck, mdiPhone, mdiCardAccountDetailsOutline, mdiDomain, mdiClockTimeFiveOutline, mdiTextLong, mdiCalendar } from "@mdi/js";
+import { mdiFileDocumentEdit, mdiBallot, mdiAccount, mdiMail, mdiClipboardCheck, mdiPhone, mdiCardAccountDetailsOutline, mdiDomain, mdiClockTimeFiveOutline, mdiTextLong } from "@mdi/js";
 import { croatianAlpha, getFirstErrorForField, exactLength, containsNumeric } from "@/helpers/validators";
 import { required, email, helpers, numeric, minLength } from "@vuelidate/validators";
 import { ref, computed, onMounted, reactive } from "vue";
@@ -183,7 +183,7 @@ async function submit_application_form() {
 
 <template>
 	<component :is="Layout">
-		<SectionMain v-if="allocated_assignment != null" class="relative">
+		<SectionMain v-if="allocated_assignment != null" class="relative max-sm:px-3">
 			<InternshipPageHeader />
 			<img src="/illustrations/prijavnica.svg" class="absolute right-0 top-0 mr-6 hidden w-1/4 max-w-full md:block" />
 			<br />
@@ -200,89 +200,81 @@ async function submit_application_form() {
 			<br />
 			<hr />
 
-			<div class="mb-8 grid grid-cols-1 gap-6">
-				<CardBox :icon="mdiBallot" class="mb-6 lg:col-span-2 lg:mb-0 xl:col-span-3" is-form novalidate @submit.prevent="submit_application_form">
-					<CardBoxComponentTitle title="📃 Prijavnica na praksu" />
-					<div class="mb-6 grid grid-cols-1 gap-3 md:grid-cols-2">
-						<FormField :error="getFirstErrorForField(v$, 'student_ime')" label="Ime" horizontal>
-							<FormControl v-model="form.student_ime" disabled :icon-left="mdiAccount" help="Vaše ime" placeholder="Vaše ime" />
-						</FormField>
-						<FormField :error="getFirstErrorForField(v$, 'student_prezime')" label="Prezime" horizontal>
-							<FormControl v-model="form.student_prezime" disabled :icon-left="mdiAccount" help="Vaše prezime" placeholder="Vaše prezime" />
-						</FormField>
-					</div>
+			<CardBox :icon="mdiBallot" class="mb-8" is-form novalidate @submit.prevent="submit_application_form">
+				<CardBoxComponentTitle title="📃 Prijavnica na praksu" />
+				<FormField :error="getFirstErrorForField(v$, 'student_ime')" label="Ime" horizontal>
+					<FormControl v-model="form.student_ime" disabled :icon-left="mdiAccount" placeholder="Vaše ime" />
+				</FormField>
+				<FormField :error="getFirstErrorForField(v$, 'student_prezime')" label="Prezime" horizontal>
+					<FormControl v-model="form.student_prezime" disabled :icon-left="mdiAccount" placeholder="Vaše prezime" />
+				</FormField>
 
-					<FormField :error="getFirstErrorForField(v$, 'student_email')" label="UNIPU email" horizontal>
-						<FormControl v-model="form.student_email" disabled :icon-left="mdiMail" type="email" help="Vaša UNIPU email adresa" placeholder="Email" />
+				<FormField :error="getFirstErrorForField(v$, 'student_email')" label="UNIPU email" horizontal>
+					<FormControl v-model="form.student_email" disabled :icon-left="mdiMail" type="email" help="Vaša UNIPU email adresa" placeholder="Email" />
+				</FormField>
+
+				<FormField :error="getFirstErrorForField(v$, 'student_broj_mobitela')" label="Broj mobitela" help="Neće se trajno pohraniti. Samo za slučajeve brzog dogovora." horizontal>
+					<FormField addons>
+						<FormControl v-model="form.student_broj_mobitela" type="tel" :icon-left="mdiPhone" placeholder="Unesite vaš broj mobitela" expanded />
 					</FormField>
+				</FormField>
 
-					<FormField :error="getFirstErrorForField(v$, 'student_broj_mobitela')" label="Broj mobitela" help="Neće se trajno pohraniti. Samo za slučajeve brzog dogovora." horizontal>
-						<FormField addons>
-							<FormControl v-model="form.student_broj_mobitela" type="tel" :icon-left="mdiPhone" placeholder="Unesite vaš broj mobitela" expanded />
-						</FormField>
+				<FormField :error="getFirstErrorForField(v$, 'student_OIB')" label="Vaš OIB" horizontal>
+					<FormControl v-model="form.student_OIB" :icon-left="mdiCardAccountDetailsOutline" help="Za potrebe prijave osiguranja" placeholder="Unesite vaš OIB" />
+				</FormField>
+
+				<BaseDivider />
+
+				<FormField label="Poduzeće" horizontal>
+					<FormControl v-model="form.Poslodavac" :icon-left="mdiDomain" readonly disabled help="Odabrano poduzeće" placeholder="Odabrano poduzeće" />
+				</FormField>
+
+				<FormField :error="getFirstErrorForField(v$, 'mentor_ime')" label="Ime mentora" horizontal>
+					<FormControl v-model="form.mentor_ime" :icon-left="mdiAccount" placeholder="Ime mentora" />
+				</FormField>
+				<FormField :error="getFirstErrorForField(v$, 'mentor_prezime')" label="Prezime mentora" horizontal>
+					<FormControl v-model="form.mentor_prezime" :icon-left="mdiAccount" placeholder="Prezime mentora" />
+				</FormField>
+
+				<FormField :error="getFirstErrorForField(v$, 'mentor_email')" label="Email mentora" horizontal>
+					<FormControl v-model="form.mentor_email" :icon-left="mdiMail" type="email" help="Email mentora (provjeriti dvaput)" placeholder="Email mentora" />
+				</FormField>
+				<BaseDivider />
+				<FormField :error="getFirstErrorForField(v$, 'detaljan_opis_zadatka')" label="Detaljan opis zadatka" horizontal>
+					<FormControl v-model="form.detaljan_opis_zadatka" type="textarea" :icon-left="mdiTextLong" placeholder="Detaljno opišite zadatak koji će se izvršavati na praksi (min. 200 znakova)." />
+				</FormField>
+
+				<FormField :error="getFirstErrorForField(v$, 'dogovoreni_broj_sati')" label="Dogovoreni broj sati" horizontal>
+					<FormField addons>
+						<FormControl v-model="form.dogovoreni_broj_sati" type="number" :min="1" :icon-left="mdiClockTimeFiveOutline" placeholder="Dogovoreni broj sati" expanded />
 					</FormField>
+				</FormField>
 
-					<FormField :error="getFirstErrorForField(v$, 'student_OIB')" label="Vaš OIB" horizontal>
-						<FormControl v-model="form.student_OIB" :icon-left="mdiCardAccountDetailsOutline" help="Za potrebe prijave osiguranja" placeholder="Unesite vaš OIB" />
-					</FormField>
+				<FormField :error="getFirstErrorForField(v$, 'pocetak_prakse')" label="Datum početka" horizontal>
+					<FormControl v-model="form.pocetak_prakse" type="date" />
+				</FormField>
 
-					<BaseDivider />
+				<FormField :error="getFirstErrorForField(v$, 'kraj_prakse')" label="Datum završetka" horizontal>
+					<FormControl v-model="form.kraj_prakse" type="date" />
+				</FormField>
 
-					<FormField label="Poduzeće" horizontal>
-						<FormControl v-model="form.Poslodavac" :icon-left="mdiDomain" readonly disabled help="Odabrano poduzeće" placeholder="Odabrano poduzeće" />
-					</FormField>
+				<BaseDivider />
 
-					<div class="mb-6 grid grid-cols-1 gap-3 md:grid-cols-2">
-						<FormField :error="getFirstErrorForField(v$, 'mentor_ime')" label="Ime mentora" horizontal>
-							<FormControl v-model="form.mentor_ime" :icon-left="mdiAccount" help="Ime mentora" placeholder="Ime mentora" />
-						</FormField>
-						<FormField :error="getFirstErrorForField(v$, 'mentor_prezime')" label="Prezime mentora" horizontal>
-							<FormControl v-model="form.mentor_prezime" :icon-left="mdiAccount" help="Prezime mentora" placeholder="Prezime mentora" />
-						</FormField>
-					</div>
+				<FormField :error="getFirstErrorForField(v$, 'mjesto_izvrsavanja')" label="Praksu ću izvršavati" horizontal>
+					<FormCheckRadioGroup v-model="form.mjesto_izvrsavanja" name="sample-radio-two" type="radio" :options="nacinIzvrsavanjeRadioOptions" />
+				</FormField>
 
-					<FormField :error="getFirstErrorForField(v$, 'mentor_email')" label="Email mentora" horizontal>
-						<FormControl v-model="form.mentor_email" :icon-left="mdiMail" type="email" help="Email mentora (provjeriti dvaput)" placeholder="Email mentora" />
-					</FormField>
-					<BaseDivider />
-					<FormField :error="getFirstErrorForField(v$, 'detaljan_opis_zadatka')" label="Detaljan opis zadatka" horizontal>
-						<FormControl v-model="form.detaljan_opis_zadatka" type="textarea" :icon-left="mdiTextLong" placeholder="Detaljno opišite zadatak koji će se izvršavati na praksi (min. 200 znakova)." />
-					</FormField>
+				<BaseDivider />
 
-					<FormField :error="getFirstErrorForField(v$, 'dogovoreni_broj_sati')" label="Dogovoreni broj sati" horizontal>
-						<FormField addons>
-							<FormControl v-model="form.dogovoreni_broj_sati" type="number" :min="1" :icon-left="mdiClockTimeFiveOutline" placeholder="Dogovoreni broj sati" expanded />
-						</FormField>
-					</FormField>
+				<FormField :error="getFirstErrorForField(v$, 'kontakt_potvrda')" label="Potvrda" horizontal>
+					<FormCheckRadio v-model="form.kontakt_potvrda" name="sample-checkbox-two" label="Potvrđujem da sam kontaktirao poslodavca i dogovorio detalje koji su ovdje uneseni." is-column />
+				</FormField>
+				<BaseDivider />
 
-					<!-- Date pickers with fipu blue hover effects and cursor pointer -->
-					<!-- Note: Translation of native "Clear"/"Today" buttons requires custom date picker component -->
-					<FormField :error="getFirstErrorForField(v$, 'pocetak_prakse')" label="Datum početka" horizontal>
-						<FormControl v-model="form.pocetak_prakse" type="date" class="fipu-date-picker" :icon-left="mdiCalendar" />
-					</FormField>
-
-					<FormField :error="getFirstErrorForField(v$, 'kraj_prakse')" label="Datum završetka" horizontal>
-						<FormControl v-model="form.kraj_prakse" type="date" class="fipu-date-picker" :icon-left="mdiCalendar" />
-					</FormField>
-
-					<BaseDivider />
-
-					<FormField :error="getFirstErrorForField(v$, 'mjesto_izvrsavanja')" label="Praksu ću izvršavati" horizontal>
-						<FormCheckRadioGroup v-model="form.mjesto_izvrsavanja" name="sample-radio-two" type="radio" :options="nacinIzvrsavanjeRadioOptions" />
-					</FormField>
-
-					<BaseDivider />
-
-					<FormField :error="getFirstErrorForField(v$, 'kontakt_potvrda')" label="Potvrda" horizontal>
-						<FormCheckRadio v-model="form.kontakt_potvrda" name="sample-checkbox-two" label="Potvrđujem da sam kontaktirao poslodavca i dogovorio detalje koji su ovdje uneseni." is-column />
-					</FormField>
-					<BaseDivider />
-
-					<FormField horizontal grouped>
-						<BaseButton label="Pošalji" type="submit" :disabled="!form.kontakt_potvrda || isLoading" :loading="isLoading" color="fipu_blue" />
-					</FormField>
-				</CardBox>
-			</div>
+				<FormField horizontal grouped>
+					<BaseButton label="Pošalji" type="submit" :disabled="!form.kontakt_potvrda || isLoading" :loading="isLoading" color="fipu_blue" />
+				</FormField>
+			</CardBox>
 			<StudentWithdrawAction />
 		</SectionMain>
 	</component>

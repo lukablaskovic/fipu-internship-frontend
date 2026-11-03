@@ -129,7 +129,7 @@ const ProcessInstance = {
 
 	submitDiary(id: string | number | null, form: FormData) {
 		if (!id) return null;
-		return safeRequest(() => AxiosWrapper.post(`/instance/${id}/task/predavanje_dnevnika_student/form`, form, {}, 180000));
+		return AxiosWrapper.post(`/instance/${id}/task/predavanje_dnevnika_student/form`, form, {}, 180000);
 	},
 
 	async withdraw(instance_id: string | number): Promise<any | null> {

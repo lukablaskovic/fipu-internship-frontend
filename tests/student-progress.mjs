@@ -1,13 +1,13 @@
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import { runInNewContext } from "node:vm";
-import { computed, reactive, ref, watch } from "vue";
+import { computed, defineAsyncComponent, reactive, ref, watch } from "vue";
 
 const read = (path) => readFileSync(new URL(path, import.meta.url), "utf8");
 const mappingsSource = read("../src/helpers/maps.js").replace(/^import .*;\n/gm, "").replace(/^export .*;\n/gm, "");
 const components = Object.fromEntries([...mappingsSource.matchAll(/component: (\w+)/g)].map(([, name]) => [name, {}]));
 const icons = Object.fromEntries([...mappingsSource.matchAll(/icon: (\w+)/g)].map(([, name]) => [name, ""]));
-const UserTaskMappings = runInNewContext(`${mappingsSource}\nUserTaskMappings`, { ...components, ...icons });
+const UserTaskMappings = runInNewContext(`${mappingsSource}\nUserTaskMappings`, { ...components, ...icons, defineAsyncComponent });
 const helperSource = read("../src/helpers/internship-stages.js").replace(/^import .*;\n/gm, "").replaceAll("export ", "");
 assert.doesNotThrow(() => runInNewContext(`${helperSource}\nclass UserTaskMappings { static tasks = []; }\ngetInternshipStages();`), "The stage helper must initialize before its cyclic task-mapping dependency");
 const { getInternshipProgress, getInternshipStages, getInternshipStage, countInternshipStages } = runInNewContext(`${helperSource}\n({ getInternshipProgress, getInternshipStages, getInternshipStage, countInternshipStages })`, { UserTaskMappings });
