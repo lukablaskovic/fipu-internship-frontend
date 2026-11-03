@@ -1,5 +1,6 @@
 <script setup>
 import { nextTick, onBeforeUnmount, onMounted, ref, useId, watch } from "vue";
+import { ScrollAreaRoot, ScrollAreaScrollbar, ScrollAreaThumb, ScrollAreaViewport } from "reka-ui";
 
 const props = defineProps({ text: { type: String, default: "" } });
 const id = useId();
@@ -30,11 +31,21 @@ watch(() => props.text, async () => {
 
 <template>
 	<div class="min-w-0">
-		<p :id="id" ref="content" class="whitespace-pre-line break-words leading-7" :class="{ 'text-preview': !expanded }">{{ text }}</p>
+		<div :id="id" class="whitespace-pre-line break-words leading-7">
+			<p v-show="!expanded" ref="content" class="text-preview">{{ text }}</p>
+			<ScrollAreaRoot v-if="expanded" type="auto" class="relative">
+				<ScrollAreaViewport class="max-h-[8.75rem] overscroll-contain pr-4 focus-visible:outline-fipu_blue">
+					<p>{{ text }}</p>
+				</ScrollAreaViewport>
+				<ScrollAreaScrollbar orientation="vertical" class="flex w-2.5 touch-none select-none rounded-full bg-slate-100 p-0.5 dark:bg-slate-700">
+					<ScrollAreaThumb class="flex-1 rounded-full bg-fipu_blue" />
+				</ScrollAreaScrollbar>
+			</ScrollAreaRoot>
+		</div>
 		<button
 			v-if="overflowing"
 			type="button"
-			class="inline-flex min-h-11 items-center rounded text-sm font-semibold text-sky-700 underline-offset-4 hover:underline focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-fipu_blue dark:text-sky-300"
+			class="inline-flex min-h-11 items-center rounded text-sm font-semibold text-fipu_blue underline-offset-4 hover:underline focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-fipu_blue"
 			:aria-expanded="expanded"
 			:aria-controls="id"
 			@click="expanded = !expanded">

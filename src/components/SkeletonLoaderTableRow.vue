@@ -10,6 +10,9 @@
 			<div class="h-6 w-12 animate-pulse rounded bg-gray-200 dark:bg-slate-700"></div>
 		</td>
 		<td>
+			<div class="h-6 w-12 animate-pulse rounded bg-gray-200 dark:bg-slate-700"></div>
+		</td>
+		<td>
 			<div class="h-6 w-24 animate-pulse rounded bg-gray-200 dark:bg-slate-700"></div>
 		</td>
 		<td class="lg:w-32">

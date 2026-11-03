@@ -170,9 +170,8 @@ watch(selectedStudentInstanceID, (newVal) => {
 </script>
 
 <template>
-	<p v-if="studentsFetched" class="px-4 py-2 text-xs text-gray-500 dark:text-slate-400" role="status">{{ filteredAndSortedStudents.length }} studenata</p>
 	<LoadingOverlay :is-active="!studentsFetched" title="Učitavanje..." description="Može potrajati nekoliko sekundi, molimo ne zatvarajte stranicu."> </LoadingOverlay>
-	<table v-if="filteredAndSortedStudents.length || !studentsFetched">
+	<table v-if="filteredAndSortedStudents.length || !studentsFetched" class="rounded-b-none">
 		<thead>
 			<tr>
 				<SortableTableHeader label="Ime" :active="sortColumn === 'ime'" :direction="sortDirection" class="px-4 py-2 text-left" @sort="toggleSortDirection('ime')" />
@@ -180,6 +179,7 @@ watch(selectedStudentInstanceID, (newVal) => {
 				<SortableTableHeader label="Prezime" :active="sortColumn === 'prezime'" :direction="sortDirection" class="px-4 py-2 text-left" @sort="toggleSortDirection('prezime')" />
 
 				<th>Model</th>
+				<th>Verzija modela</th>
 				<th>JMBAG</th>
 
 				<SortableTableHeader label="Napredak" :active="sortColumn === 'progress'" :direction="sortDirection" class="px-4 py-2 text-left" @sort="toggleSortDirection('progress')" />
@@ -197,9 +197,10 @@ watch(selectedStudentInstanceID, (newVal) => {
 				<tr v-for="student in studentsPaginated" :key="student['process_instance_id']" :class="{ 'selected-row bg-fipu_blue/10 dark:bg-fipu_blue/20': selectedStudentInstanceID === student['process_instance_id'] }">
 					<td data-label="Ime"><TableCellText :value="student['ime']" /></td>
 					<td data-label="Prezime"><TableCellText :value="student['prezime']" /></td>
-					<td data-label="Model_prakse">
-						<PillTag :color="student.Model_prakse.value == 'A' ? 'danger' : 'success'" :label="`Model ${student.Model_prakse.value} · ${student.process_instance_data?.model?.version ? 'v' + student.process_instance_data.model.version : 'verzija nepoznata'}`" />
+					<td data-label="Model">
+						<PillTag :color="student.Model_prakse.value == 'A' ? 'danger' : 'success'" :label="`Model ${student.Model_prakse.value}`" />
 					</td>
+					<td data-label="Verzija modela"><TableCellText :value="student.process_instance_data?.model?.version ? 'v' + student.process_instance_data.model.version : 'verzija nepoznata'" /></td>
 					<td data-label="JMBAG"><TableCellText :value="student['JMBAG']" /></td>
 					<td data-label="Progress" class="lg:w-32">
 						<Progress.Root

@@ -31,8 +31,8 @@
 		@apply border-b-0;
 	}
 
-	tbody tr,
-	tbody tr:nth-child(odd) {
+	:where(table:not(.date-grid)) > tbody > tr,
+	:where(table:not(.date-grid)) > tbody > tr:nth-child(odd) {
 		@apply lg:hover:bg-gray-100 lg:dark:hover:bg-slate-700/70;
 	}
 
@@ -41,12 +41,77 @@
 		@apply lg:bg-fipu_light_blue lg:dark:bg-fipu_blue !important;
 	}
 
-	tbody tr:nth-child(odd) {
+	:where(table:not(.date-grid)) > tbody > tr:nth-child(odd) {
 		@apply lg:bg-gray-100/50 lg:dark:bg-slate-800/50;
 	}
 
 	td:before {
 		content: attr(data-label);
 		@apply pr-3 text-left font-semibold lg:hidden;
+	}
+}
+
+@media (max-width: 1023px) {
+	.compact-table tbody > tr {
+		display: grid;
+		grid-template-columns: 32px minmax(0, 1fr) 44px;
+		column-gap: 8px;
+		padding: 12px;
+	}
+	.compact-table td {
+		grid-column: 1 / -1;
+		min-width: 0;
+		gap: 12px;
+		padding: 6px 0;
+		font-size: 14px;
+		line-height: 1.4;
+		overflow-wrap: anywhere;
+	}
+	.compact-table td::before {
+		flex: 0 0 35%;
+		padding-right: 0;
+		font-weight: 500;
+	}
+	.compact-table .compact-logo {
+		grid-column: 1;
+		grid-row: 1;
+		align-self: start;
+	}
+	.compact-table .compact-title {
+		grid-column: 2;
+		grid-row: 1;
+		justify-content: flex-start;
+		align-self: center;
+		border: 0;
+		padding-bottom: 12px;
+		text-align: left;
+		font-size: 16px;
+		font-weight: 600;
+	}
+	.compact-table .compact-title::before,
+	.compact-table .compact-check::before {
+		display: none;
+	}
+	.compact-table .compact-check {
+		grid-column: 3;
+		grid-row: 1;
+		align-self: start;
+		border: 0;
+		padding: 0;
+	}
+	.compact-table .compact-check .checkbox {
+		display: flex;
+		width: 44px;
+		height: 44px;
+		align-items: center;
+		justify-content: center;
+	}
+	.compact-table .compact-actions {
+		padding-top: 10px;
+		padding-bottom: 0;
+	}
+	.compact-table .compact-actions button {
+		min-width: 44px;
+		min-height: 44px;
 	}
 }

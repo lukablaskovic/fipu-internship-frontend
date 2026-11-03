@@ -17,7 +17,7 @@
 		</div>
 	</div>
 
-	<table v-if="filteredAssignments.length || !dataLoaded" class="available-assignments">
+	<table v-if="filteredAssignments.length || !dataLoaded" class="compact-table">
 		<thead>
 			<tr>
 				<th v-if="checkable"></th>
@@ -32,16 +32,16 @@
 			</template>
 			<template v-else>
 				<tr v-for="assignment in paginatedAssignments" :key="assignment['id_zadatak']" :class="{ 'selected-row': assignment_highlight === assignment['id_zadatak'], 'assignment-checked': isCheckedAssignment(assignment) }">
-					<TableCheckboxCell v-if="checkable" class="assignment-check" :value="isCheckedAssignment(assignment)" :disabled="disableUnchecked && !isCheckedAssignment(assignment)" @checked="checked($event, assignment)" />
+					<TableCheckboxCell v-if="checkable" class="compact-check" :value="isCheckedAssignment(assignment)" :disabled="disableUnchecked && !isCheckedAssignment(assignment)" @checked="checked($event, assignment)" />
 
-					<td class="assignment-logo border-b-0 before:hidden lg:w-6 lg:text-center">
+					<td class="compact-logo border-b-0 before:hidden lg:w-6 lg:text-center">
 						<RouterLink v-if="getLinkedCompany(assignment)?.value" :to="{ name: 'poslodavci', query: { p: getLinkedCompany(assignment).value } }" :aria-label="`Poslodavac ${getLinkedCompany(assignment).value}`" class="inline-block rounded-full focus-visible:outline focus-visible:outline-2 focus-visible:outline-fipu_blue">
 							<UserAvatar :avatar="getCompanyLogo(assignment)" class="mx-auto h-8 w-8 lg:h-6 lg:w-6" />
 						</RouterLink>
 						<UserAvatar v-else :avatar="getCompanyLogo(assignment)" class="mx-auto h-8 w-8 lg:h-6 lg:w-6" />
 					</td>
 
-					<td data-label="ID Zadatka" class="assignment-title">
+					<td data-label="ID Zadatka" class="compact-title">
 						<TableCellText :value="assignment['id_zadatak']" />
 					</td>
 					<td data-label="Kontakt email" class="break-all">
@@ -66,7 +66,7 @@
 						<TableCellText :value="assignment['dostupno_mjesta']" />
 					</td>
 
-					<td class="assignment-actions whitespace-nowrap before:hidden lg:w-1">
+					<td class="compact-actions whitespace-nowrap before:hidden lg:w-1">
 						<BaseButtons type="justify-start lg:justify-end" no-wrap>
 							<BaseButton color="fipu_blue" :icon="mdiEye" :aria-label="`Detalji zadatka ${assignment.id_zadatak}`" small @click="isModalActive = assignment" />
 						</BaseButtons>
@@ -260,69 +260,7 @@ const checked = (value, assignment) => {
 		min-width: 44px;
 		min-height: 44px;
 	}
-	.available-assignments :deep(tbody > tr) {
-		display: grid;
-		grid-template-columns: 32px minmax(0, 1fr) 44px;
-		column-gap: 8px;
-		padding: 12px;
-	}
-	.available-assignments :deep(td) {
-		grid-column: 1 / -1;
-		min-width: 0;
-		gap: 12px;
-		padding: 6px 0;
-		font-size: 14px;
-		line-height: 1.4;
-		overflow-wrap: anywhere;
-	}
-	.available-assignments :deep(td::before) {
-		flex: 0 0 35%;
-		padding-right: 0;
-		font-weight: 500;
-	}
-	.available-assignments .assignment-logo {
-		grid-column: 1;
-		grid-row: 1;
-		align-self: start;
-	}
-	.available-assignments .assignment-title {
-		grid-column: 2;
-		grid-row: 1;
-		justify-content: flex-start;
-		align-self: center;
-		border: 0;
-		padding-bottom: 12px;
-		text-align: left;
-		font-size: 16px;
-		font-weight: 600;
-	}
-	.available-assignments .assignment-title::before,
-	.available-assignments :deep(.assignment-check::before) {
-		display: none;
-	}
-	.available-assignments :deep(.assignment-check) {
-		grid-column: 3;
-		grid-row: 1;
-		align-self: start;
-		border: 0;
-		padding: 0;
-	}
-	.available-assignments :deep(.assignment-check .checkbox) {
-		display: flex;
-		width: 44px;
-		height: 44px;
-		align-items: center;
-		justify-content: center;
-	}
-	.available-assignments .assignment-actions {
-		padding-top: 10px;
-		padding-bottom: 0;
-	}
-	.assignment-actions :deep(button) {
-		min-width: 44px;
-		min-height: 44px;
-	}
-	.available-assignments .assignment-checked {
+	.compact-table .assignment-checked {
 		@apply bg-fipu_light_blue/20 dark:bg-fipu_blue/20;
 	}
 }

@@ -88,7 +88,7 @@ const goToCompanyWeb = (url) => {
 			<input v-model="searchQuery" type="search" aria-label="Pretraži poslodavce" placeholder="Pretraži poslodavce po nazivu…" class="table-filter-search w-full pl-10" />
 		</div>
 	</div>
-	<table v-if="filteredCompanies.length || !dataLoaded" style="table-layout: fixed; width: 100%">
+	<table v-if="filteredCompanies.length || !dataLoaded" class="compact-table w-full table-fixed">
 		<thead>
 			<tr v-if="!mainStore.userAdmin">
 				<th style="width: 80px" />
@@ -111,33 +111,33 @@ const goToCompanyWeb = (url) => {
 		</thead>
 		<tbody v-if="!mainStore.userAdmin">
 			<tr v-for="company in companiesPaginated" :key="company['naziv']">
-				<TableCheckboxCell v-if="checkable" :assignment-data="company" />
+				<TableCheckboxCell v-if="checkable" class="compact-check" :assignment-data="company" />
 
-				<td class="border-b-0 before:hidden lg:w-6 lg:text-center">
-						<UserAvatar :avatar="getCompanyLogoUrl(company) || DEFAULT_COMPANY_LOGO" :username="company.naziv" class="mx-auto h-24 w-24 lg:h-6 lg:w-6" />
+				<td class="compact-logo border-b-0 before:hidden lg:w-6 lg:text-center">
+						<UserAvatar :avatar="getCompanyLogoUrl(company) || DEFAULT_COMPANY_LOGO" :username="company.naziv" class="mx-auto h-8 w-8 lg:h-6 lg:w-6" />
 					</td>
 
-				<td data-label="Naziv">
-					<div class="break-words">
+				<td data-label="Naziv" class="compact-title">
+					<div class="min-w-0 break-words">
 						<TableCellText :value="company['naziv']" />
 					</div>
 				</td>
 
 				<td data-label="Web">
-					<div class="break-words">
+					<div class="min-w-0 break-words">
 						<TableCellText :value="company['web']"><a class="underline" :href="company['web']" target="_blank">{{ company["web"] }}</a></TableCellText>
 					</div>
 				</td>
 
 				<td data-label="Adresa">
-					<div class="break-words">
+					<div class="min-w-0 break-words">
 						<TableCellText :value="company['adresa']" />
 					</div>
 				</td>
 
-				<td class="whitespace-nowrap before:hidden lg:w-1">
-					<BaseButtons type="justify-center" class="w-full" no-wrap>
-						<BaseButton color="fipu_blue" :icon="mdiWeb" small @click="goToCompanyWeb(company['web'])" />
+				<td class="compact-actions whitespace-nowrap before:hidden lg:w-1">
+					<BaseButtons type="justify-start lg:justify-center" class="w-full" no-wrap>
+						<BaseButton color="fipu_blue" :icon="mdiWeb" :aria-label="`Otvori web mjesto: ${company.naziv}`" small @click="goToCompanyWeb(company['web'])" />
 					</BaseButtons>
 				</td>
 			</tr>
@@ -149,49 +149,49 @@ const goToCompanyWeb = (url) => {
 				:class="{
 					'selected-row': company_highlight === company['naziv'],
 				}">
-				<TableCheckboxCell v-if="checkable" :assignment-data="company" />
+				<TableCheckboxCell v-if="checkable" class="compact-check" :assignment-data="company" />
 
-				<td class="border-b-0 before:hidden lg:w-6 lg:text-center">
-						<UserAvatar :avatar="getCompanyLogoUrl(company) || DEFAULT_COMPANY_LOGO" :username="company.naziv" class="mx-auto h-24 w-24 lg:h-6 lg:w-6" />
+				<td class="compact-logo border-b-0 before:hidden lg:w-6 lg:text-center">
+						<UserAvatar :avatar="getCompanyLogoUrl(company) || DEFAULT_COMPANY_LOGO" :username="company.naziv" class="mx-auto h-8 w-8 lg:h-6 lg:w-6" />
 					</td>
 
-				<td data-label="Naziv">
-					<div class="break-words">
+				<td data-label="Naziv" class="compact-title">
+					<div class="min-w-0 break-words">
 						<TableCellText :value="company['naziv']" />
 					</div>
 				</td>
 				<td data-label="Web">
-					<div class="break-words">
+					<div class="min-w-0 break-words">
 						<TableCellText :value="company['web']"><a class="underline" :href="company['web']" target="_blank">{{ company["web"] }}</a></TableCellText>
 					</div>
 				</td>
 				<td data-label="Direktor">
-					<div class="break-words">
+					<div class="min-w-0 break-words">
 						<TableCellText :value="company['direktor']" />
 					</div>
 				</td>
 
 				<td data-label="Matični broj">
-					<div class="break-words">
+					<div class="min-w-0 break-words">
 						<TableCellText :value="company['maticni_broj']" />
 					</div>
 				</td>
 
 				<td data-label="OIB">
-					<div class="break-words">
+					<div class="min-w-0 break-words">
 						<TableCellText :value="company['OIB']" />
 					</div>
 				</td>
 
 				<td data-label="Adresa">
-					<div class="break-words">
+					<div class="min-w-0 break-words">
 						<TableCellText :value="company['adresa']" />
 					</div>
 				</td>
 
-				<td class="whitespace-nowrap before:hidden lg:w-1">
-					<BaseButtons type="justify-center" class="w-full" no-wrap>
-						<BaseButton color="fipu_blue" :icon="mdiWeb" small @click="goToCompanyWeb(company['web'])" />
+				<td class="compact-actions whitespace-nowrap before:hidden lg:w-1">
+					<BaseButtons type="justify-start lg:justify-center" class="w-full" no-wrap>
+						<BaseButton color="fipu_blue" :icon="mdiWeb" :aria-label="`Otvori web mjesto: ${company.naziv}`" small @click="goToCompanyWeb(company['web'])" />
 					</BaseButtons>
 				</td>
 			</tr>

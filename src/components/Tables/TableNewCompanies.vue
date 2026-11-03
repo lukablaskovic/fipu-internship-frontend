@@ -175,7 +175,7 @@ const { perPage, currentPage, itemsPaginated: companiesPaginated } = usePaginati
 </script>
 
 <template>
-	<table v-if="newCompanies.length" style="table-layout: fixed; width: 100%">
+	<table v-if="newCompanies.length" class="compact-table w-full table-fixed">
 		<thead>
 			<tr>
 				<th style="width: 80px" />
@@ -197,13 +197,13 @@ const { perPage, currentPage, itemsPaginated: companiesPaginated } = usePaginati
 				:class="{
 					'selected-row': company_highlight === company['naziv'],
 				}">
-				<TableCheckboxCell v-if="checkable" :assignment-data="company" />
+				<TableCheckboxCell v-if="checkable" class="compact-check" :assignment-data="company" />
 
-				<td class="border-b-0 before:hidden lg:w-6 lg:text-center">
-						<UserAvatar :avatar="getCompanyLogoUrl(company) || DEFAULT_COMPANY_LOGO" :username="company.naziv" class="mx-auto h-24 w-24 lg:h-6 lg:w-6" />
+				<td class="compact-logo border-b-0 before:hidden lg:w-6 lg:text-center">
+						<UserAvatar :avatar="getCompanyLogoUrl(company) || DEFAULT_COMPANY_LOGO" :username="company.naziv" class="mx-auto h-8 w-8 lg:h-6 lg:w-6" />
 					</td>
 
-				<td data-label="Naziv">
+				<td data-label="Naziv" class="compact-title">
 					<FieldRoot>
 						<FieldLabel as="div" :native-label="false" class="sr-only">Naziv</FieldLabel>
 						<TableCellText :value="companyForms[company.id].naziv" />
@@ -211,15 +211,15 @@ const { perPage, currentPage, itemsPaginated: companiesPaginated } = usePaginati
 				</td>
 
 				<td v-for="field in editableFields" :key="field.key" :data-label="field.label">
-						<FieldRoot :invalid="!!getFirstErrorForField(v$[company.id], field.key)">
+						<FieldRoot class="min-w-0" :invalid="!!getFirstErrorForField(v$[company.id], field.key)">
 							<FieldLabel as="div" :native-label="false" class="sr-only">{{ field.label }}</FieldLabel>
 							<FormControl v-model="companyForms[company.id][field.key]" :error="getFirstErrorForField(v$[company.id], field.key)" />
 						</FieldRoot>
 					</td>
 
-				<td class="whitespace-nowrap before:hidden lg:w-1">
+				<td class="compact-actions whitespace-nowrap before:hidden lg:w-1">
 					<BaseButtons type="justify-start lg:justify-end" no-wrap>
-						<BaseButton :disabled="isLoading" color="fipu_blue" :icon="mdiContentSaveCheckOutline" small @click="previewCompany(company.id)" />
+						<BaseButton :disabled="isLoading" color="fipu_blue" :icon="mdiContentSaveCheckOutline" :aria-label="`Spremi podatke: ${company.naziv}`" small @click="previewCompany(company.id)" />
 					</BaseButtons>
 				</td>
 			</tr>

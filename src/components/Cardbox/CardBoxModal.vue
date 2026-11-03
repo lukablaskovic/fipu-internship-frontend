@@ -1,7 +1,6 @@
 <script setup>
 import { Dialog } from "reka-ui/namespaced";
-import { mdiClose, mdiLogout } from "@mdi/js";
-import BaseIcon from "@/components/Base/BaseIcon.vue";
+import { mdiClose } from "@mdi/js";
 import CardBoxComponentTitle from "@/components/Cardbox/CardBoxComponentTitle.vue";
 import BaseButtons from "@/components/Base/BaseButtons.vue";
 import BaseButton from "@/components/Base/BaseButton.vue";
@@ -87,7 +86,7 @@ const cancel = () => confirmCancel("cancel");
 					class="pointer-events-auto rounded-2xl [&>div]:min-w-0"
 					:class="{
 						'2xl:3/12 modal-scrollable fipu_vertical_scrollbar z-50 max-h-modal w-11/12 shadow-lg md:w-3/5 lg:w-2/5 xl:w-6/12': !large && !isLogout && !isBpmn,
-						'modal-scrollable fipu_vertical_scrollbar z-50 max-h-modal w-11/12 max-w-6xl shadow-lg': large && !isLogout && !isBpmn,
+						'modal-scrollable fipu_vertical_scrollbar z-50 max-h-modal w-11/12 max-w-6xl shadow-lg max-sm:[&>div]:p-3': large && !isLogout && !isBpmn,
 						'modal-scrollable fipu_vertical_scrollbar w-11/12 max-w-md shadow-2xl': isLogout,
 						'bpmn-task-dialog w-[calc(100%-2rem)] max-w-2xl overflow-hidden text-slate-900 shadow-2xl dark:text-slate-100': isBpmn,
 					}"
@@ -102,9 +101,6 @@ const cancel = () => confirmCancel("cancel");
 							<Dialog.Close as-child><BaseButton :icon="mdiClose" aria-label="Zatvori detalje zadatka" class="h-11 w-11 shrink-0 rounded-lg" /></Dialog.Close>
 						</header>
 						<template v-else-if="isLogout">
-							<div class="mb-4 flex h-11 w-11 items-center justify-center rounded-xl bg-fipu_blue/10 text-fipu_text_blue dark:text-fipu_blue">
-								<BaseIcon :path="mdiLogout" size="24" aria-hidden="true" />
-							</div>
 							<Dialog.Title class="text-xl font-semibold leading-7 text-gray-900 dark:text-slate-100">{{ title }}</Dialog.Title>
 						</template>
 						<Dialog.Title v-else-if="title" as-child><CardBoxComponentTitle :title="title" /></Dialog.Title>

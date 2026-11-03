@@ -19,12 +19,12 @@ watchEffect(() => {
 
 <template>
 	<PaginationRoot v-if="total > 0" :page="page" :total="total" :items-per-page="itemsPerPage" :sibling-count="1" show-edges aria-label="Navigacija po stranicama" @update:page="emit('update:page', $event)">
-		<PaginationList v-slot="{ items }" class="pagination flex flex-wrap items-center justify-center gap-1">
+		<PaginationList v-slot="{ items }" class="pagination flex items-center lg:flex-wrap justify-center gap-1">
 			<PaginationFirst aria-label="Prva stranica"><BaseIcon :path="mdiChevronDoubleLeft" aria-hidden="true" /></PaginationFirst>
 			<PaginationPrev aria-label="Prethodna stranica"><BaseIcon :path="mdiChevronLeft" aria-hidden="true" /></PaginationPrev>
 			<template v-for="(item, index) in items" :key="index">
-				<PaginationListItem v-if="item.type === 'page'" :value="item.value" :aria-label="`Stranica ${item.value}`">{{ item.value }}</PaginationListItem>
-				<PaginationEllipsis v-else :index="index" class="px-1">&#8230;</PaginationEllipsis>
+				<PaginationListItem v-if="item.type === 'page'" class="numbered-page" :value="item.value" :aria-label="`Stranica ${item.value}`">{{ item.value }}</PaginationListItem>
+				<PaginationEllipsis v-else :index="index" class="hidden px-1 lg:inline">&#8230;</PaginationEllipsis>
 			</template>
 			<PaginationNext aria-label="Sljedeća stranica"><BaseIcon :path="mdiChevronRight" aria-hidden="true" /></PaginationNext>
 			<PaginationLast aria-label="Posljednja stranica"><BaseIcon :path="mdiChevronDoubleRight" aria-hidden="true" /></PaginationLast>
@@ -38,5 +38,13 @@ watchEffect(() => {
 }
 .pagination :deep(button[data-selected]) {
 	@apply border-fipu_blue bg-fipu_blue text-white hover:bg-fipu_blue dark:border-fipu_blue dark:bg-fipu_blue dark:hover:bg-fipu_blue;
+}
+@media (max-width: 1023px) {
+	.pagination :deep(button) {
+		@apply h-11 min-w-[2.75rem];
+	}
+	.pagination :deep(button.numbered-page:not([data-selected])) {
+		display: none;
+	}
 }
 </style>
