@@ -1,11 +1,11 @@
 <script setup>
 import { appConfig, endpoints, internshipContacts } from "@/config";
-import { Accordion, Tabs } from "reka-ui/namespaced";
 import BaseIcon from "@/components/Base/BaseIcon.vue";
+import { Accordion, Tabs } from "reka-ui/namespaced";
 
-import ContactCard from "@/components/User/ContactCard.vue";
 import { mdiChevronDown, mdiCalendarRange, mdiChatQuestionOutline, mdiAlphaACircle, mdiNewBox, mdiAlphaBCircle, mdiInformation, mdiLaptop, mdiDomain } from "@mdi/js";
 import SectionMain from "@/components/Section/SectionMain.vue";
+import ContactCard from "@/components/User/ContactCard.vue";
 import { ref, onMounted, computed } from "vue";
 
 import SectionTitleLineWithButton from "@/components/Section/SectionTitleLineWithButton.vue";
@@ -15,7 +15,6 @@ import LayoutGuest from "@/layouts/LayoutGuest.vue";
 import IconTextLink from "@/components/IconTextLink.vue";
 
 import { useMainStore } from "@/stores/main_store";
-
 
 import FIPU_praksa_logo_transparent from "/FIPU_praksa_logo_transparent.svg";
 
@@ -54,10 +53,11 @@ onMounted(async () => {
 			<Accordion.Root type="single" collapsible class="mb-6 border-b border-gray-200 dark:border-slate-700">
 				<Accordion.Item value="about">
 					<Accordion.Header as="h2">
-						<Accordion.Trigger class="group flex w-full items-center gap-3 rounded py-4 text-left text-2xl hover:text-sky-800 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-fipu_blue dark:hover:text-sky-300">
+						<Accordion.Trigger
+							class="group flex w-full items-center gap-3 rounded py-4 text-left text-2xl hover:text-sky-800 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-fipu_blue dark:hover:text-sky-300">
 							<BaseIcon :path="mdiInformation" size="24" aria-hidden="true" />
 							<span class="grow">O praksi</span>
-							<BaseIcon :path="mdiChevronDown" size="24" class="motion-safe:transition-transform group-data-[state=open]:rotate-180" aria-hidden="true" />
+							<BaseIcon :path="mdiChevronDown" size="24" class="group-data-[state=open]:rotate-180 motion-safe:transition-transform" aria-hidden="true" />
 						</Accordion.Trigger>
 					</Accordion.Header>
 					<Accordion.Content class="reka-animated pb-6">
@@ -70,8 +70,8 @@ onMounted(async () => {
 						<p>Studentima je ovo izborni kolegij i oni koji su prijavljeni, motivirani su i spremni za rad!</p>
 						<br />
 						<p>
-							Kako bismo stvarili učinili jednostavnijima, proces izvođenja prakse odlučili smo automatizirati kroz novu aplikaciju <a :href="endpoints.VITE_FRONTEND_URL" class="text-fipu_blue" target="_blank">FIPU Praksa</a>. Ova aplikacija rezultat je
-							istraživačkog rada te suradnje između studenata i profesora na Fakultetu informatike u Puli. Temelji se na eksperimentalnom razvoju baziranom na procesnim modelima (BPMN).
+							Kako bismo stvarili učinili jednostavnijima, proces izvođenja prakse odlučili smo automatizirati kroz novu aplikaciju <a :href="endpoints.VITE_FRONTEND_URL" class="text-fipu_blue" target="_blank">FIPU Praksa</a>. Ova aplikacija rezultat
+							je istraživačkog rada te suradnje između studenata i profesora na Fakultetu informatike u Puli. Temelji se na eksperimentalnom razvoju baziranom na procesnim modelima (BPMN).
 						</p>
 					</Accordion.Content>
 				</Accordion.Item>
@@ -80,10 +80,11 @@ onMounted(async () => {
 			<Accordion.Root type="single" collapsible class="mb-6 border-b border-gray-200 dark:border-slate-700">
 				<Accordion.Item value="communication">
 					<Accordion.Header as="h2">
-						<Accordion.Trigger class="group flex w-full items-center gap-3 rounded py-4 text-left text-2xl hover:text-sky-800 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-fipu_blue dark:hover:text-sky-300">
+						<Accordion.Trigger
+							class="group flex w-full items-center gap-3 rounded py-4 text-left text-2xl hover:text-sky-800 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-fipu_blue dark:hover:text-sky-300">
 							<BaseIcon :path="mdiChatQuestionOutline" size="24" aria-hidden="true" />
 							<span class="grow">Komunikacija</span>
-							<BaseIcon :path="mdiChevronDown" size="24" class="motion-safe:transition-transform group-data-[state=open]:rotate-180" aria-hidden="true" />
+							<BaseIcon :path="mdiChevronDown" size="24" class="group-data-[state=open]:rotate-180 motion-safe:transition-transform" aria-hidden="true" />
 						</Accordion.Trigger>
 					</Accordion.Header>
 					<Accordion.Content class="reka-animated pb-6">
@@ -101,8 +102,8 @@ onMounted(async () => {
 			<SectionTitleLineWithButton :icon="mdiCalendarRange" title="Važni datumi"></SectionTitleLineWithButton>
 			<p>Za studente koji su upisali Stručnu praksu na prijediplomskom ili diplomskom studiju:</p>
 			<ul class="ml-8 list-disc">
-				<li>Najraniji datum početka izvođenja stručne prakse - <b> 15. listopad 2026.</b></li>
-				<li>Najkasniji datum završetka - <b> 15. rujna 2026.</b></li>
+				<li>Najraniji datum početka izvođenja stručne prakse: <b> 15. listopad 2026.</b></li>
+				<li>Najkasniji datum završetka: <b> 15. rujna 2027.</b></li>
 			</ul>
 			<br />
 			<p>Za sve dodatne informacije kontaktirajte administratore ili voditelja stručne prakse.</p>
@@ -226,12 +227,11 @@ onMounted(async () => {
 				</Tabs.Content>
 			</Tabs.Root>
 		</SectionMain>
-
 	</component>
 </template>
 
 <style scoped>
 .instructions-tab {
-	@apply flex min-w-0 flex-col gap-1 rounded px-3 py-3 text-left transition-colors data-[state=inactive]:hover:bg-gray-100 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-fipu_blue data-[state=active]:bg-sky-100 data-[state=active]:text-sky-900 dark:data-[state=inactive]:hover:bg-slate-800 dark:data-[state=active]:bg-sky-900 dark:data-[state=active]:text-sky-100;
+	@apply flex min-w-0 flex-col gap-1 rounded px-3 py-3 text-left transition-colors data-[state=active]:bg-sky-100 data-[state=active]:text-sky-900 data-[state=inactive]:hover:bg-gray-100 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-fipu_blue dark:data-[state=active]:bg-sky-900 dark:data-[state=active]:text-sky-100 dark:data-[state=inactive]:hover:bg-slate-800;
 }
 </style>
