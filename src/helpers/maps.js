@@ -54,7 +54,6 @@ class StudentMappings {
 	}
 }
 import { defineAsyncComponent } from "vue";
-import Student_ChooseAvailableAssignments from "@/components/Internship/Student_ChooseAvailableAssignments.vue";
 import Student_WaitingForEvaluation from "@/components/Internship/Student_WaitingForEvaluation.vue";
 import Student_WaitingForAllocation from "@/components/Internship/Student_WaitingForAllocation.vue";
 import Student_InternshipCancelled from "@/components/Internship/Student_InternshipCancelled.vue";
@@ -156,7 +155,7 @@ class UserTaskMappings {
 			snackbar_msg: "",
 			snackbar_color: "",
 			bpmn_pending_info_msg: "Student još nije prijavio preferencije.",
-			component: Student_ChooseAvailableAssignments,
+			component: defineAsyncComponent(() => import("@/components/Internship/Student_ChooseAvailableAssignments.vue")),
 		},
 		{
 			order: 2,
