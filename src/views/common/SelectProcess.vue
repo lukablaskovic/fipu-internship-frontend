@@ -45,7 +45,7 @@
 		<AlertDialogRoot v-model:open="confirming">
 			<AlertDialogPortal>
 				<AlertDialogOverlay class="fixed inset-0 z-40 bg-black/50" />
-				<AlertDialogContent class="fixed left-1/2 top-1/2 z-50 w-11/12 max-w-md -translate-x-1/2 -translate-y-1/2 rounded-xl bg-white p-6 shadow-xl dark:bg-slate-800">
+				<AlertDialogContent class="fixed left-1/2 top-1/2 z-50 w-11/12 max-w-md -translate-x-1/2 -translate-y-1/2 rounded-2xl bg-white p-6 shadow-xl dark:bg-slate-800">
 					<AlertDialogTitle class="text-lg font-semibold">Potvrda odabira prakse</AlertDialogTitle>
 					<AlertDialogDescription class="my-4">Želite li započeti stručnu praksu prema modelu {{ selectedProcess }}?</AlertDialogDescription>
 					<div class="flex justify-end gap-3">
@@ -60,6 +60,7 @@
 </template>
 
 <script setup>
+import { useUnsavedChangesWarning } from "@/composables/useUnsavedChangesWarning.mjs";
 import { AlertDialogRoot, AlertDialogPortal, AlertDialogOverlay, AlertDialogContent, AlertDialogTitle, AlertDialogDescription, AlertDialogCancel, AlertDialogAction } from "reka-ui";
 import { mdiEmail, mdiAccount, mdiCardAccountDetails, mdiLogin, mdiBookOpenPageVariantOutline } from "@mdi/js";
 import { required, helpers } from "@vuelidate/validators";
@@ -103,6 +104,7 @@ const fixedUserData = reactive({
 	email: "",
 });
 
+let stopRefreshWarning;
 onMounted(() => {
 	let currentUser = mainStore.currentUser;
 	fixedUserData.ime_prezime = currentUser.ime + " " + currentUser.prezime;
@@ -111,6 +113,9 @@ onMounted(() => {
 		form.jmbag = currentUser.JMBAG;
 		form.godina_studija = currentUser.godina_studija || form.godina_studija;
 	}
+
+	const { jmbag, godina_studija } = form;
+	stopRefreshWarning = useUnsavedChangesWarning(() => Boolean(selectedProcess.value) || form.jmbag !== jmbag || form.godina_studija !== godina_studija);
 });
 
 const logout = () => {
@@ -174,6 +179,7 @@ async function startProcess() {
 	try {
 		const response = await mainStore.createInternshipInstance(selectedProcess.value, form.godina_studija, form.jmbag);
 		if (!response) throw new Error("Process creation failed");
+		stopRefreshWarning();
 		snackBarStore.pushMessage("Uspješno ste započeli proces prakse!", "success");
 		await router.push("/moja-praksa");
 	} catch (error) {

@@ -1,3 +1,4 @@
+import { useUnsavedChangesWarning } from "../src/composables/useUnsavedChangesWarning.mjs";
 import assert from "node:assert/strict";
 import { existsSync, readFileSync } from "node:fs";
 import { createRequire } from "node:module";
@@ -54,6 +55,7 @@ try {
 	let acceptSubmission = true;
 	const form = scope.run(() => runInNewContext(`${script("../src/views/NewAssignmentFormPublic.vue")}\n({ form, selectedTechnologies, currentStep, onSubmit, resetForm })`, {
 		computed, reactive, ref, watch, nextTick, toRefs,
+		useUnsavedChangesWarning,
 		onMounted: () => {},
 		useMainStore: () => ({ fetchCompanies: async () => [] }),
 		useSnackBarStore: () => ({ pushMessage: () => {} }),

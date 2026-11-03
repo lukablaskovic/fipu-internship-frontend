@@ -1,4 +1,5 @@
 <script setup>
+import { useUnsavedChangesWarning } from "@/composables/useUnsavedChangesWarning.mjs";
 import { submitNewInternshipProject } from "@/services/baserow_client_api";
 
 import { appConfig, endpoints, internshipContacts } from "@/config";
@@ -233,6 +234,9 @@ async function refreshCompanies() {
 
 onMounted(refreshCompanies);
 
+// Choosing a partner type is the first edit and is required to reach every later field.
+useUnsavedChangesWarning(partnerType);
+
 watch(partnerType, () => {
 	form.Poslodavac = "";
 	form.Poslodavac_novi_naziv = "";
@@ -273,14 +277,13 @@ watch(partnerType, () => {
 			<p><b>Niste sigurni što su Modeli A i B?</b> <router-link class="text-fipu_blue" to="/upute">Proučite kako izvodimo praksu na FIPU.</router-link></p>
 
 			<br />
-			<p>Za sve dodatne informacije slobodno kontaktirajte voditelja stručne prakse.</p>
+			<p>Za sve dodatne informacije slobodno kontaktirajte voditelja stručne prakse ili administratoricu.</p>
 
 			<br />
 
-			<div class="w-full shrink-0 grow-0 basis-auto lg:w-7/12">
-				<div class="flex flex-wrap">
-					<ContactCard :contact="internshipContacts[0]" />
-				</div>
+			<div class="flex flex-wrap">
+				<ContactCard :contact="internshipContacts[0]" />
+				<ContactCard :contact="internshipContacts[1]" />
 			</div>
 			<div class="mb-6 grid grid-cols-1 gap-6">
 				<CardBox :icon="mdiBallot" class="mb-6 lg:col-span-2 lg:mb-0 xl:col-span-3 [&>div]:min-w-0" is-form novalidate @submit.prevent="onSubmit">
@@ -350,10 +353,13 @@ watch(partnerType, () => {
 								help="Odaberite više tehnologija koje koristite ili na kojima će se temeljiti rad studenta. Odabrane tehnologije i slobodni unos bit će spojeni u jedan popis.">
 								<div class="min-w-0 space-y-3">
 									<FormTechnologyPicker v-model="selectedTechnologies" :disabled="isLoading" />
-									<div class="space-y-1">
-										<label for="custom-technologies" class="block text-sm text-gray-600 dark:text-slate-300">Druge tehnologije ili dodatni detalji</label>
-										<FormControl id="custom-technologies" v-model="form.preferirane_tehnologije" type="textarea" class="dark:[&_textarea]:text-slate-100" placeholder="Upišite vlastite tehnologije, verzije ili dodatne napomene…" :icon-left="mdiXml" />
+									<div class="flex items-center gap-3 text-sm text-gray-600 dark:text-slate-300">
+										<span class="flex-1 border-t border-gray-300 dark:border-slate-600"></span>
+										ili
+										<span class="flex-1 border-t border-gray-300 dark:border-slate-600"></span>
 									</div>
+									<label for="custom-technologies" class="sr-only">Druge tehnologije ili dodatni detalji</label>
+									<FormControl id="custom-technologies" v-model="form.preferirane_tehnologije" type="textarea" class="dark:[&_textarea]:text-slate-100" placeholder="Upišite vlastite tehnologije, verzije ili dodatne napomene…" :icon-left="mdiXml" />
 								</div>
 							</FormField>
 

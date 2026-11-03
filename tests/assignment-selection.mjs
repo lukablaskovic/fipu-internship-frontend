@@ -1,3 +1,4 @@
+import { useUnsavedChangesWarning } from "../src/composables/useUnsavedChangesWarning.mjs";
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import { runInNewContext } from "node:vm";
@@ -11,16 +12,24 @@ const binding = source.match(/<FormCheckRadioGroup v-model="([^"]+)" name="selek
 const model = binding.includes(".") ? binding : `${binding}.value`;
 const submissions = [];
 const scope = effectScope();
+globalThis.window = new EventTarget();
+function refreshWouldWarn() {
+	const event = new Event("beforeunload", { cancelable: true });
+	Object.defineProperty(event, "returnValue", { writable: true });
+	return !window.dispatchEvent(event);
+}
 
 try {
 	const page = scope.run(() => runInNewContext(`${script}\n({ form, v$, currentStep, partnerType, onSubmit, resetForm, getSelection: () => ${model}, setSelection: value => { ${model} = value; } })`, {
-		computed, nextTick, reactive, ref, toRefs, watch, useVuelidate, email, helpers, required,
+		computed, nextTick, reactive, ref, toRefs, watch, useVuelidate, email, helpers, required, window,
+		useUnsavedChangesWarning,
 		onMounted: () => {},
 		useMainStore: () => ({ fetchCompanies: async () => [] }),
 		useSnackBarStore: () => ({ pushMessage: () => {} }),
 		submitNewInternshipProject: async payload => { submissions.push(payload); return { status: "OK" }; },
 	}));
 	assert.equal(page.getSelection(), "false", "The initial Ne option must match the radio's string key");
+	assert.equal(refreshWouldWarn(), false, "An untouched form can refresh freely");
 	assert.equal(page.form.selekcija, false);
 	assert.equal(page.v$.value.proces_selekcije.$invalid, false);
 
@@ -35,6 +44,7 @@ try {
 	for (const value of ["true", "false"]) {
 		page.partnerType.value = "Prijavljujem zadatak kao postojeći partner s Fakultetom";
 		await nextTick();
+		assert.equal(refreshWouldWarn(), true, "Choosing a partner must protect the draft");
 		Object.assign(page.form, {
 			Poslodavac: "Test partner", poslodavac_email: "test@example.com", opis_zadatka: "Test task",
 			broj_studenata: 1, trajanje_sati: 90, lokacija: "Remote", zeljeno_okvirno_vrijeme_pocetka: "Studeni",
@@ -43,6 +53,7 @@ try {
 		page.setSelection(value);
 		page.currentStep.value = 4;
 		await page.onSubmit();
+		assert.equal(refreshWouldWarn(), false, "Successful submission clears the refresh warning");
 		assert.equal(submissions.length, value === "true" ? 1 : 2);
 		assert.equal(submissions.at(-1).selekcija, value === "true");
 		assert.equal(submissions.at(-1).proces_selekcije, value === "true" ? "Intervju" : "Nema");
