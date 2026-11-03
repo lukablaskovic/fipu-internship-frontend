@@ -38,7 +38,7 @@ thead :focus-visible {
 	@apply flex flex-wrap items-center gap-2 text-sm;
 }
 .table-filter-search {
-	@apply min-w-0 rounded-lg border-gray-300 py-1.5 text-sm dark:border-slate-700 dark:bg-slate-800;
+	@apply min-w-0 rounded-lg border-gray-300 py-1.5 text-base dark:border-slate-700 dark:bg-slate-800 lg:text-sm;
 }
 .table-filter-select {
 	@apply rounded-lg bg-white px-3 py-2 dark:bg-slate-800;
