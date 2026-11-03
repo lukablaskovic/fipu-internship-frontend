@@ -13,12 +13,12 @@
 					<a href="https://drive.google.com/file/d/13BKZekCS6FwdlKfTlTLyCKB6tkNjZLIe/view?usp=sharing" target="_blank" rel="noopener noreferrer" class="help-link inline-flex items-center gap-2" aria-label="Silabus (otvara se u novoj kartici)">
 						Silabus <span aria-hidden="true">↗</span>
 					</a>
-					<ThemeToggle class="login-theme-toggle" />
 				</div>
 			</header>
 
 			<div class="login-content">
-				<section class="welcome" aria-labelledby="welcome-title">
+				<section class="welcome relative" aria-labelledby="welcome-title">
+					<ThemeToggle icon-only class="absolute right-1 top-1" />
 					<div class="welcome-heading">
 						<img src="/fipu-praksa-logo.png" alt="FIPU Praksa" class="praksa-logo" width="512" height="512" />
 						<h1 id="welcome-title">Dobrodošli na <span>FIPU Praksu</span></h1>
@@ -430,12 +430,6 @@ h2 {
 		justify-content: center;
 		gap: 0 16px;
 		padding: 12px 16px 4px;
-	}
-	.login-header :deep(.login-theme-toggle) {
-		position: absolute;
-		top: calc(100% + 4px);
-		right: 4px;
-		z-index: 1;
 	}
 	.login-resources {
 		justify-content: center;
