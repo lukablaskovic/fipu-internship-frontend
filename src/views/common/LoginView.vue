@@ -249,6 +249,7 @@ h2 {
 	border-top: 1px solid #e5e7eb;
 	padding-top: 24px;
 }
+.login-note,
 .guest-access p {
 	color: #4b5563;
 	font-size: 15px;
@@ -290,12 +291,9 @@ h2 {
 }
 .login-note {
 	margin-top: 12px;
-	font-size: 13px;
-	line-height: 1.7;
-	color: #212529;
 }
 .login-note a {
-	color: #212529;
+	color: inherit;
 	text-decoration: underline;
 }
 .bounce-6 {
@@ -361,7 +359,6 @@ h2 {
 	.login-note {
 		width: 100%;
 		max-width: 640px;
-		color: #4b5563;
 	}
 }
 .dark .login-page {
@@ -382,8 +379,7 @@ h2 {
 .dark .welcome p,
 .dark .guest-access p,
 .dark .login-footer p,
-.dark .login-note,
-.dark .login-note a {
+.dark .login-note {
 	color: #cbd5e1;
 }
 .dark .guest-link:hover {
@@ -480,7 +476,6 @@ h2 {
 	h2 {
 		font-size: 28px;
 	}
-	.login-note,
 	.login-footer {
 		font-size: 15px;
 	}
