@@ -110,6 +110,9 @@ onMounted(async () => {
 						left
 						@update:model-value="showAttempt" />
 				</div>
+				<p v-if="process_instance_data" class="mb-4 break-words" aria-live="polite">
+					ID instance procesa: <code>{{ process_instance_data.id }}</code>
+				</p>
 				<p class="mb-4">Ovdje možete pronaći BPMN graf koji prikazuje aktualno stanje vašeg procesa prakse.</p>
 				<p><span class="font-bold text-yellow-700 dark:text-yellow-300">Žutom</span> bojom označene su aktivnosti i događaji koji čekaju izvršavanje.</p>
 				<p><span class="font-bold text-green-700 dark:text-green-300">Zelenom</span> bojom označene su završene aktivnosti i događaji.</p>
@@ -120,7 +123,7 @@ onMounted(async () => {
 				</CardBoxModal>
 			</SectionMain>
 			<template v-if="bpmn_model && process_instance_data">
-				<Dialog.Root v-if="mobile" :key="selectedAttempt">
+				<Dialog.Root v-if="mobile" :key="'mobile-' + selectedAttempt">
 					<Dialog.Trigger as-child>
 						<BaseButton class="mx-4 mb-4" :icon="mdiFullscreen" label="Otvori dijagram preko cijelog zaslona" />
 					</Dialog.Trigger>
