@@ -161,7 +161,7 @@ function goToStep(step) {
 	showStep(step);
 }
 
-function resetForm(notify = true) {
+function resetForm() {
 	selectedTechnologies.value = [];
 	for (const key in DEFAULT_FORM_VALUES) {
 		form[key] = DEFAULT_FORM_VALUES[key];
@@ -170,7 +170,6 @@ function resetForm(notify = true) {
 	form.new_company = emptyCompany();
 	v$.value.$reset();
 	showStep(1);
-	if (notify) snackBarStore.pushMessage("Forma resetirana.", "success");
 }
 
 async function onSubmit() {
@@ -200,7 +199,7 @@ async function onSubmit() {
 		const result = await submitNewInternshipProject({ ...form, preferirane_tehnologije: [...selectedTechnologies.value, form.preferirane_tehnologije.trim()].filter(Boolean).join(", ") });
 		if (!result) throw new Error("Project submission failed");
 		saved = true;
-		resetForm(false);
+		resetForm();
 		snackBarStore.pushMessage("Uspješno ste prijavili zadatak!", "success");
 		await refreshCompanies();
 	} catch (error) {
@@ -286,11 +285,11 @@ watch(partnerType, () => {
 				<ContactCard :contact="internshipContacts[1]" />
 			</div>
 			<div class="mb-6 grid grid-cols-1 gap-6">
-				<CardBox :icon="mdiBallot" class="mb-6 lg:col-span-2 lg:mb-0 xl:col-span-3 [&>div]:min-w-0" is-form novalidate @submit.prevent="onSubmit">
+				<CardBox :icon="mdiBallot" class="mb-6 rounded-xl lg:col-span-2 lg:mb-0 xl:col-span-3 [&>div]:min-w-0" is-form novalidate @submit.prevent="onSubmit">
 					<CardBoxComponentTitle class="text-center" title="Prijava projekta za studentsku praksu " />
 
-					<Stepper.Root :model-value="currentStep" class="mb-8 flex items-start" aria-label="Koraci prijave zadatka" @update:model-value="goToStep">
-						<Stepper.Item v-for="(step, index) in steps" :key="step.title" :step="index + 1" :disabled="isLoading" class="group relative flex min-w-0 flex-1 flex-col items-center">
+					<Stepper.Root :model-value="currentStep" class="-mx-6 mb-4 grid grid-cols-4 items-start sm:mx-0 sm:mb-8" aria-label="Koraci prijave zadatka" @update:model-value="goToStep">
+						<Stepper.Item v-for="(step, index) in steps" :key="step.title" :step="index + 1" :disabled="isLoading" class="group relative flex min-w-0 flex-col items-center">
 							<Stepper.Trigger
 								class="relative z-10 flex w-full flex-col items-center gap-2 rounded p-1 text-center focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-fipu_blue disabled:cursor-not-allowed"
 								@mousedown.left.prevent>
@@ -298,7 +297,7 @@ watch(partnerType, () => {
 									class="flex h-10 w-10 items-center justify-center rounded-full border-2 border-gray-300 bg-white font-semibold text-gray-600 transition-colors duration-200 group-data-[state=active]:border-fipu_blue group-data-[state=completed]:border-fipu_blue group-data-[state=active]:bg-fipu_blue group-data-[state=completed]:bg-cyan-50 group-data-[state=active]:text-slate-900 group-data-[state=completed]:text-slate-900 motion-reduce:transition-none dark:border-slate-600 dark:bg-slate-900 dark:text-slate-300 group-data-[state=active]:dark:bg-fipu_blue group-data-[state=completed]:dark:bg-cyan-950 group-data-[state=active]:dark:text-slate-900 group-data-[state=completed]:dark:text-slate-100"
 									>{{ index + 1 }}</Stepper.Indicator
 								>
-								<Stepper.Title class="text-sm font-semibold sm:text-base">{{ step.title }}</Stepper.Title>
+								<Stepper.Title class="sr-only font-semibold sm:not-sr-only">{{ step.title }}</Stepper.Title>
 								<Stepper.Description class="hidden text-sm text-gray-600 dark:text-slate-300 sm:block">{{ step.description }}</Stepper.Description>
 							</Stepper.Trigger>
 							<Stepper.Separator v-if="index < steps.length - 1" class="absolute left-1/2 top-6 h-px w-full bg-gray-300 transition-colors duration-200 group-data-[state=completed]:bg-fipu_blue motion-reduce:transition-none dark:bg-slate-600" />
@@ -453,13 +452,10 @@ watch(partnerType, () => {
 						</fieldset>
 					</div>
 
-					<div class="mt-8 flex flex-wrap items-center justify-between gap-3 border-t border-gray-200 pt-6 dark:border-slate-700">
-						<BaseButton label="Resetiraj formu" color="danger" outline :disabled="isLoading" @click="resetForm()" />
-						<div class="flex gap-3">
-							<BaseButton v-if="currentStep > 1" label="Natrag" :disabled="isLoading" @click="goToStep(currentStep - 1)" />
-							<BaseButton v-if="currentStep < steps.length" label="Dalje" type="submit" color="fipu_blue" />
-							<BaseButton v-else label="Pošalji" type="submit" :disabled="isLoading" :loading="isLoading" color="fipu_blue" />
-						</div>
+					<div class="mt-8 flex flex-wrap justify-end gap-3 border-t border-gray-200 pt-6 dark:border-slate-700">
+						<BaseButton v-if="currentStep > 1" label="Natrag" :disabled="isLoading" @click="goToStep(currentStep - 1)" />
+						<BaseButton v-if="currentStep < steps.length" label="Dalje" type="submit" color="fipu_blue" />
+						<BaseButton v-else label="Pošalji" type="submit" :disabled="isLoading" :loading="isLoading" color="fipu_blue" />
 					</div>
 				</CardBox>
 			</div>

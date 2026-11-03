@@ -60,7 +60,7 @@ try {
 		assert.equal(page.getSelection(), "false", "Submission reset must restore the Ne option");
 	}
 	page.setSelection("true");
-	page.resetForm(false);
+	page.resetForm();
 	await nextTick();
 	assert.equal(page.getSelection(), "false");
 	assert.equal(page.form.proces_selekcije, "");

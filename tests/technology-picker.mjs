@@ -86,7 +86,7 @@ try {
 	await form.onSubmit();
 	assert.equal(form.selectedTechnologies.value[0], "Python");
 	assert.equal(form.form.preferirane_tehnologije, "Internal framework");
-	form.resetForm(false);
+	form.resetForm();
 	assert.equal(form.selectedTechnologies.value.length, 0);
 	assert.equal(form.form.preferirane_tehnologije, "");
 	console.log("Technology picker: catalog icons, search, removal, disabled state, combined string payload, reset and failed submission passed.");
