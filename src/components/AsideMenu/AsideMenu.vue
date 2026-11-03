@@ -23,7 +23,20 @@ defineProps({
 
 const emit = defineEmits(["menu-click"]);
 
-const isPrimaryMenuCompact = ref(true);
+const manuallyExpanded = ref(false);
+const hoverExpanded = ref(false);
+const isPrimaryMenuCompact = computed(() => !manuallyExpanded.value && !hoverExpanded.value);
+
+const collapsePrimaryMenu = () => {
+	manuallyExpanded.value = false;
+	hoverExpanded.value = false;
+};
+
+const expandOnHover = (event) => {
+	if (event.pointerType === "mouse" && window.matchMedia("(min-width: 640px)").matches) {
+		hoverExpanded.value = true;
+	}
+};
 const secondaryMenuItem = ref(null);
 
 const overlayLayerDisplayType = computed(() => {
@@ -31,7 +44,7 @@ const overlayLayerDisplayType = computed(() => {
 		return "flex";
 	}
 
-	if (!isPrimaryMenuCompact.value) {
+	if (manuallyExpanded.value) {
 		return "hidden lg:flex";
 	}
 
@@ -46,10 +59,11 @@ const menuClickPrimaryMenu = (event, item) => {
 	emit("menu-click", event, item);
 
 	if (item.menu) {
-		isPrimaryMenuCompact.value = false;
+		manuallyExpanded.value = true;
 	}
 
 	if (item.menuSecondary) {
+		if (hoverExpanded.value) manuallyExpanded.value = true;
 		if (secondaryMenuItem.value && item.key === secondaryMenuItem.value.key) {
 			closeSecondaryMenu();
 		} else {
@@ -66,7 +80,7 @@ const overlayClick = () => {
 	if (secondaryMenuItem.value) {
 		closeSecondaryMenu();
 	} else if (!isPrimaryMenuCompact.value) {
-		isPrimaryMenuCompact.value = true;
+		collapsePrimaryMenu();
 	}
 };
 
@@ -79,7 +93,7 @@ window.addEventListener("keydown", (e) => {
 const router = useRouter();
 
 router.afterEach(() => {
-	isPrimaryMenuCompact.value = true;
+	collapsePrimaryMenu();
 });
 
 </script>
@@ -91,6 +105,8 @@ router.afterEach(() => {
 		:is-compact="isPrimaryMenuCompact"
 		:z-index="secondaryMenuItem ? 'z-40 md:z-50' : 'z-50'"
 		:active-secondary-menu-key="secondaryMenuItem?.key"
+		@pointerenter="expandOnHover"
+		@pointerleave="hoverExpanded = false"
 		@menu-click="menuClickPrimaryMenu">
 		<router-link to="/">
 			<div class="flex flex-row items-center justify-center p-2 dark:bg-slate-900">
@@ -109,7 +125,7 @@ router.afterEach(() => {
 						:aria-expanded="!isPrimaryMenuCompact"
 						color="border-transparent bg-fipu_blue/10 text-fipu_blue hover:bg-fipu_blue/20 hover:text-fipu_light_blue"
 						class="h-11 w-full !rounded-xl text-sm font-medium focus:ring-inset motion-reduce:transition-none"
-						@click="isPrimaryMenuCompact = !isPrimaryMenuCompact" />
+						@click="isPrimaryMenuCompact ? (manuallyExpanded = true) : collapsePrimaryMenu()" />
 				</Tooltip>
 			</div>
 		</template>

@@ -1,5 +1,5 @@
 <template>
-	<aside id="aside" :class="[zIndex, 'fixed top-0 flex h-screen overflow-hidden transition-position lg:py-2 lg:pl-2', isCompact ? 'sm:w-20' : 'sm:w-64']">
+	<aside id="aside" :class="[zIndex, 'fixed top-0 flex h-screen overflow-hidden transition-[width,left,right] duration-300 ease-in-out motion-reduce:transition-none lg:py-2 lg:pl-2', isCompact ? 'sm:w-20' : 'sm:w-64']">
 		<div :class="uiStore.asideStyle" class="flex flex-1 flex-col overflow-hidden dark:bg-slate-900 lg:rounded-2xl">
 			<div :class="uiStore.asideBrandStyle" class="flex w-full shrink-0 flex-row items-center dark:bg-slate-900">
 				<slot />

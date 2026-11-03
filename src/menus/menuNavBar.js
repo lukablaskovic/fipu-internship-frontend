@@ -4,19 +4,7 @@ export default [
 	[
 		{
 			isCurrentUser: true,
-			menu: [
-				{
-					icon: mdiAccount,
-					label: "Moj profil",
-					to: "/profil",
-				},
-				{
-					icon: mdiLogout,
-					label: "Odjava",
-					isDesktopNoLabel: false,
-					isLogout: true,
-				},
-			],
+			to: "/profil",
 		},
 		{
 			icon: mdiHelpBoxOutline,
@@ -61,6 +49,7 @@ export default [
 			size: 22,
 		},
 
+		{ isThemeToggle: true },
 		{
 			icon: mdiLogout,
 			label: "Odjava",

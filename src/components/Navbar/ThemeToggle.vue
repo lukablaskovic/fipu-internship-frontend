@@ -14,11 +14,12 @@ const uiStore = useUiStore();
 		<button
 v-bind="$attrs"
 			type="button"
-			class="navbar-control inline-flex h-11 w-11 shrink-0 items-center justify-center text-gray-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-fipu_blue focus-visible:ring-offset-2 dark:text-slate-100 dark:focus-visible:ring-offset-slate-800"
+			class="navbar-control inline-flex h-11 w-full shrink-0 items-center gap-2 px-3 lg:w-11 lg:justify-center lg:px-0 text-fipu_gray focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-fipu_blue focus-visible:ring-offset-2 dark:text-white dark:focus-visible:ring-offset-slate-800"
 			aria-label="Tamni način rada"
 			:aria-pressed="uiStore.darkMode"
 			@click="uiStore.setDarkMode()">
 			<BaseIcon :path="uiStore.darkMode ? mdiWhiteBalanceSunny : mdiWeatherNight" size="22" />
+			<span class="lg:hidden">Tamni način rada</span>
 		</button>
 	</Tooltip>
 </template>

@@ -44,6 +44,10 @@ const componentClass = computed(() => {
 	// Check if this item should be highlighted (dropdown active OR user name on profile page)
 	const isActive = isDropdownActive.value || (props.item.isCurrentUser && route.path === "/profil");
 
+	if (props.item.isLogout) {
+		return "px-3 py-2 lg:ml-3 lg:w-11 lg:justify-center text-red-700 dark:text-red-400 max-lg:mt-1 max-lg:w-full max-lg:border-t max-lg:border-gray-300 dark:max-lg:border-slate-600";
+	}
+
 	const base = [
 		isActive ? `${uiStore.navBarItemLabelActiveColorStyle} dark:text-slate-400` : `${uiStore.navBarItemLabelStyle} dark:text-white`,
 		props.item.menu ? "lg:py-2 lg:px-3" : "py-2 px-3",
@@ -129,10 +133,10 @@ onBeforeUnmount(() => {
 				@keydown.space.self="is === 'div' && ($event.preventDefault(), menuClick($event))"
 				@click.stop="menuClick">
 				<div class="flex items-center" :class="{ 'p-3 lg:p-0': item.menu }">
-					<UserAvatarCurrentUser v-if="item.isCurrentUser" class="mr-3 inline-flex h-6 w-6" />
-					<BaseIcon v-if="item.icon" :size="item.size ? item.size : 19" :path="item.icon" class="text-fipu_gray dark:text-white" />
+					<UserAvatarCurrentUser v-if="item.isCurrentUser" class="inline-flex h-6 w-6 shrink-0" />
+					<BaseIcon v-if="item.icon" :size="item.size ? item.size : 19" :path="item.icon" :class="{ 'text-fipu_gray dark:text-white': !item.isLogout }" />
 
-					<span class="px-2 text-base transition-colors" :class="{ 'lg:hidden': item.isDesktopNoLabel && item.icon }">
+					<span class="px-2 text-base transition-colors" :class="{ 'whitespace-nowrap leading-none': item.isCurrentUser, 'lg:hidden': item.isDesktopNoLabel && item.icon }">
 						{{ itemLabel }}
 					</span>
 					<BaseIcon v-if="item.menu != undefined" :path="isDropdownActive ? mdiChevronUp : mdiChevronDown" class="hidden transition-colors lg:inline-flex" />

@@ -111,7 +111,7 @@ const menuClick = (event) => {
 					<BaseIcon
 						v-if="item.icon"
 						:path="item.icon"
-						class="flex-none transition-all duration-300"
+						class="flex-none transition-all duration-300 ease-in-out motion-reduce:transition-none"
 						:w="isCompact ? 'w-8 lg:w-16' : 'w-8'"
 						:size="item.size ? item.size : 18"
 						:class="[vSlot && vSlot.isExactActive ? asideMenuItemActiveStyle : asideMenuItemInactiveStyle, { relative: item.updateMark || item.to === '/studenti' || item.to === '/zadaci' }, item.color == 'info' ? 'text-slate-800' : '']">
@@ -125,7 +125,7 @@ const menuClick = (event) => {
 					</BaseIcon>
 
 					<span
-						class="line-clamp-1 text-clip transition-all duration-300"
+						class="line-clamp-1 text-clip transition-all duration-300 ease-in-out motion-reduce:transition-none"
 						:class="[
 							{ '': isCompact, '': !hasSub },
 							vSlot && vSlot.isExactActive ? asideMenuItemActiveStyle : asideMenuItemInactiveStyle,

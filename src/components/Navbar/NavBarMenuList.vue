@@ -1,5 +1,6 @@
 <script setup>
-import { RovingFocusGroup } from "reka-ui";
+import { RovingFocusGroup, RovingFocusItem } from "reka-ui";
+import ThemeToggle from "@/components/Navbar/ThemeToggle.vue";
 import NavBarItem from "@/components/Navbar/NavBarItem.vue";
 import { useUiStore } from "@/stores/ui_store";
 
@@ -26,6 +27,11 @@ const menuClick = (event, item) => {
 
 <template>
 	<RovingFocusGroup :orientation="isSubmenu || !uiStore.isLg ? 'vertical' : 'horizontal'" loop :class="isSubmenu ? '' : 'lg:flex lg:items-stretch'">
-		<NavBarItem v-for="(item, index) in isSubmenu ? menu : menu[uiStore.isLg ? 0 : 1]" :key="index" :is-submenu="isSubmenu" :item="item" @menu-click="menuClick" />
+		<template v-for="(item, index) in isSubmenu ? menu : menu[uiStore.isLg ? 0 : 1]" :key="index">
+			<RovingFocusItem v-if="item.isThemeToggle" as-child>
+				<ThemeToggle />
+			</RovingFocusItem>
+			<NavBarItem v-else :is-submenu="isSubmenu" :item="item" @menu-click="menuClick" />
+		</template>
 	</RovingFocusGroup>
 </template>
