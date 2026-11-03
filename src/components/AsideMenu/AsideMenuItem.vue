@@ -7,11 +7,13 @@ import StudentPendingIndicator from "@/components/AsideMenu/StudentPendingIndica
 import { mdiMinus, mdiPlus, mdiChevronRight } from "@mdi/js";
 import BaseIcon from "@/components/Base/BaseIcon.vue";
 import { getButtonColor } from "@/colors.js";
-import { ref, computed, watch } from "vue";
+import { ref, computed, watch, onMounted } from "vue";
 import { RouterLink } from "vue-router";
 import { useUiStore } from "@/stores/ui_store";
+import { useAdminStore } from "@/stores/admin_store";
 
 const uiStore = useUiStore();
+const adminStore = useAdminStore();
 
 
 const props = defineProps({
@@ -28,6 +30,10 @@ const props = defineProps({
 });
 
 const emit = defineEmits(["menu-click"]);
+
+onMounted(() => {
+	if (props.item.to === "/zadaci") adminStore.getAssignments();
+});
 
 const asideMenuItemInactiveStyle = computed(() => (hasColor.value ? "" : `${uiStore.asideMenuItemInactiveStyle} dark:text-gray-300`));
 
@@ -108,8 +114,14 @@ const menuClick = (event) => {
 						class="flex-none transition-all duration-300"
 						:w="isCompact ? 'w-8 lg:w-16' : 'w-8'"
 						:size="item.size ? item.size : 18"
-						:class="[vSlot && vSlot.isExactActive ? asideMenuItemActiveStyle : asideMenuItemInactiveStyle, { relative: item.updateMark || item.to === '/studenti' }, item.color == 'info' ? 'text-slate-800' : '']">
+						:class="[vSlot && vSlot.isExactActive ? asideMenuItemActiveStyle : asideMenuItemInactiveStyle, { relative: item.updateMark || item.to === '/studenti' || item.to === '/zadaci' }, item.color == 'info' ? 'text-slate-800' : '']">
 						<StudentPendingIndicator v-if="item.to === '/studenti'" />
+						<Tooltip v-if="item.to === '/zadaci' && adminStore.newAssignmentsFound" content="Neodobren zadatak">
+							<span role="img" tabindex="0" aria-label="Neodobren zadatak" class="absolute left-1/2 top-0 ml-1.5 flex h-2 w-2" @pointermove.stop>
+								<span aria-hidden="true" class="absolute inline-flex h-full w-full rounded-full bg-red-500 opacity-75 motion-safe:animate-ping" />
+								<span aria-hidden="true" class="relative inline-flex h-2 w-2 rounded-full bg-red-500" />
+							</span>
+						</Tooltip>
 					</BaseIcon>
 
 					<span

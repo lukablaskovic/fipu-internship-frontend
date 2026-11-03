@@ -3,12 +3,12 @@ import { appConfig } from "@/config";
 import { defineStore } from "pinia";
 
 import { Model, ProcessInstance, type ProcessInstanceData } from "@/services/bpmn_engine_api";
-import { Admin, Student } from "@/services/baserow_client_api";
+import { Admin, Student, fetchAvailableAssignments } from "@/services/baserow_client_api";
 import { EmailJS } from "@/services/emailjs_client_api";
-import { useSnackBarStore } from "@/stores/snackbar_store";
 import Utils from "@/helpers/utils";
 
 let studentsRequest: Promise<boolean> | null = null;
+let assignmentsRequest: Promise<any[] | undefined> | null = null;
 
 // Define interfaces for state properties
 interface DashboardData {
@@ -83,6 +83,14 @@ export const useAdminStore = defineStore("admin", {
 	}),
 
 	actions: {
+		getAssignments(): Promise<any[] | undefined> {
+			return assignmentsRequest ??= fetchAvailableAssignments().then((assignments) => {
+				if (Array.isArray(assignments)) {
+					this.newAssignmentsFound = assignments.some((task) => task.voditelj_odobrio?.value === "u razradi");
+				}
+				return assignments;
+			}).finally(() => { assignmentsRequest = null; });
+		},
 		async getAllocations() {
 			try {
 				const result = await Admin.getAllocations();
@@ -288,39 +296,6 @@ export const useAdminStore = defineStore("admin", {
 				return response;
 			} catch (error) {
 				console.log("[admin_store].sendAnAdditionalEmail(): ", error);
-			}
-		},
-		async removeInstanceData(student: InternshipStudent) {
-			if (!student?.process_instance_id) return false;
-			const data = {
-				process_instance_id: student.process_instance_id,
-				id_alokacija: student?.process_instance_data?.variables?.id_alokacija,
-				id_preferencije: student?.process_instance_data?.variables?.id_preferencije,
-				id_prijavnica: student?.process_instance_data?.variables?.id_prijavnica,
-				id_dnevnik_prakse: student?.process_instance_data?.variables?.id_dnevnik_prakse,
-			};
-
-			console.log("data:::", data);
-
-			try {
-				let process_instance_id = data.process_instance_id;
-
-				const response_engine = await ProcessInstance.removeInstance(process_instance_id);
-
-				let response_baserow = null;
-				if (process_instance_id || data.id_alokacija || data.id_preferencije || data.id_prijavnica || data.id_dnevnik_prakse) {
-					response_baserow = await Admin.completeInstanceRemoval(data);
-				}
-
-				if (response_engine && (response_baserow !== null || data.id_alokacija === undefined)) {
-					useSnackBarStore().pushMessage("Uspješno izbrisana instanca!", "success");
-					return true;
-				} else {
-					return false;
-				}
-			} catch (error) {
-				console.error("[admin_store].removeInstanceData(): ", error);
-				throw error; // Rethrow the error so it can be handled upstream
 			}
 		},
 	},

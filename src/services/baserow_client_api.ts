@@ -10,11 +10,6 @@ interface CompanyData {
 	[key: string]: any;
 }
 
-interface DeletionData {
-	process_instance_id: string;
-	[key: string]: any;
-}
-
 const AxiosWrapper = createAxiosInstance(endpoints.VITE_BASEROW_API_URL + "/api", true);
 
 const Guest = {
@@ -94,29 +89,6 @@ const Admin = {
 
 	saveUpdatedCompany(postData: CompanyData) {
 		return safeRequest(() => AxiosWrapper.patch("/poslodavac/update", postData));
-	},
-
-	completeInstanceRemoval(data: DeletionData) {
-		return safeRequest(async () => {
-			if (!data.process_instance_id) {
-				throw new Error('"process_instance_id" is required');
-			}
-
-			Object.keys(data).forEach((key) => {
-				if (key !== "process_instance_id" && (data[key] === undefined || data[key] === null)) {
-					delete data[key];
-				}
-			});
-
-			if (Object.keys(data).length === 0) {
-				throw new Error("No valid data to send");
-			}
-
-			console.log("data im sending:", data);
-			const result = await AxiosWrapper.delete("complete-deletion", data);
-			console.log("Baserow process instance complete deletion result:", result);
-			return result;
-		});
 	},
 };
 

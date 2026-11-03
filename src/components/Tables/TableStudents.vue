@@ -21,7 +21,11 @@ import { useAdminStore } from "@/stores/admin_store";
 
 import { useRoute } from "vue-router";
 
+import { ProcessInstance } from "@/services/bpmn_engine_api";
+import { useSnackBarStore } from "@/stores/snackbar_store";
+
 const adminStore = useAdminStore();
+const snackBar = useSnackBarStore();
 
 const props = defineProps({ checkable: Boolean, search: { type: String, default: "" } });
 
@@ -35,10 +39,10 @@ const sortDirection = ref("asc");
 const sortColumn = ref("ime");
 
 const selectedStudentInstanceID = ref(null);
-const selectedStudentForDelete = ref(null);
-const instanceDeleteModalActive = ref(false);
-const deletionConfirmationText = ref("");
-const deletionConfirmed = computed(() => deletionConfirmationText.value.toLowerCase() === "prekidam odabrani proces prakse");
+const withdrawalStudent = ref(null);
+const confirmingWithdrawal = ref(false);
+const confirmationText = ref("");
+const withdrawalConfirmed = computed(() => confirmationText.value.toLowerCase() === "prekidam odabrani proces prakse");
 
 // --- Sorting ---
 function getProgressValue(student) {
@@ -113,15 +117,32 @@ function showDiagram(student) {
 	emit("show-student-diagram", student);
 }
 
-function deleteProcessInstance(student) {
-	selectedStudentForDelete.value = student;
-	deletionConfirmationText.value = "";
-	instanceDeleteModalActive.value = true;
+const submittingWithdrawal = ref(false);
+function canWithdraw(student) {
+	const process = student?.process_instance_data;
+	return process?.state === "running" && !process.active_event && process.available_events?.includes("odustajanje_od_prakse");
 }
 
-function confirmInstanceDeletion() {
-	if (!deletionConfirmed.value || !selectedStudentForDelete.value) return;
-	return adminStore.removeInstanceData(selectedStudentForDelete.value);
+function openWithdrawal(student) {
+	withdrawalStudent.value = student;
+	confirmationText.value = "";
+	confirmingWithdrawal.value = true;
+}
+
+async function confirmWithdrawal() {
+	if (submittingWithdrawal.value || !withdrawalConfirmed.value || !canWithdraw(withdrawalStudent.value)) return;
+	submittingWithdrawal.value = true;
+	try {
+		const response = await ProcessInstance.withdraw(withdrawalStudent.value.process_instance_id);
+		if (response?.status === "OK") {
+			snackBar.pushMessage("Zahtjev za odustajanje od prakse je zaprimljen.", "success");
+		} else {
+			snackBar.pushMessage("Odustajanje nije potvrđeno. Provjerite stanje procesa.", "danger");
+		}
+		await adminStore.getStudents();
+	} finally {
+		submittingWithdrawal.value = false;
+	}
 }
 
 // --- Lifecycle and Watchers ---
@@ -198,7 +219,7 @@ watch(selectedStudentInstanceID, (newVal) => {
 					<td class="whitespace-nowrap before:hidden lg:w-1">
 						<BaseButtons type="justify-start" no-wrap>
 							<BaseButton color="fipu_blue" :icon="mdiEye" :aria-label="`Otvori BPMN prikaz: ${student.ime} ${student.prezime}`" small @click="showDiagram(student)" />
-							<BaseButton color="danger" :icon="mdiCloseOutline" small @click="deleteProcessInstance(student)" />
+							<BaseButton v-if="canWithdraw(student)" color="danger" :icon="mdiCloseOutline" :aria-label="`Odustajanje od prakse: ${student.ime} ${student.prezime}`" :disabled="submittingWithdrawal" small @click="openWithdrawal(student)" />
 						</BaseButtons>
 					</td>
 				</tr>
@@ -206,21 +227,11 @@ watch(selectedStudentInstanceID, (newVal) => {
 		</tbody>
 	</table>
 	<CardBoxComponentEmpty v-if="!filteredAndSortedStudents.length && studentsFetched" />
-	<div v-if="instanceDeleteModalActive">
-		<CardBoxModal v-model="instanceDeleteModalActive" title="Brisanje procesne instance" button="danger" has-cancel button-label="Obriši" :disabled-condition="!deletionConfirmed" @confirm="confirmInstanceDeletion">
-			<p>
-				<b>OPREZ!</b> Ova radnja će obrisati kompletnu procesnu instancu prakse za studenta: <b>{{ selectedStudentForDelete.ime }} {{ selectedStudentForDelete.prezime }}</b> uključujući sve podatke koje je student unio,
-				generirane prijavnice i dnevnik prakse. <b>Radnja je nepovratna.</b>
-			</p>
-			<br />
-			<p><b>ID procesne instance:</b> {{ selectedStudentForDelete.process_instance_id }}</p>
-			<p><b>Baserow id_preferencije:</b> {{ selectedStudentForDelete["process_instance_data"]["variables"]["id_preferencije"] }}</p>
-			<p><b>Baserow id_alokacija:</b> {{ selectedStudentForDelete["process_instance_data"]["variables"]["id_alokacija"] }}</p>
-			<p><b>Baserow id_prijavnica:</b> {{ selectedStudentForDelete["process_instance_data"]["variables"]["id_prijavnica"] }}</p>
-			<p><b>Baserow id_dnevnik_prakse:</b> {{ selectedStudentForDelete["process_instance_data"]["variables"]["id_dnevnik_prakse"] }}</p>
-			<p class="mt-2">Jeste li sigurni da želite obrisati instancu i sve podatke?</p>
-			<FormField class="mt-4" name="instance-deletion-confirmation" label="Za potvrdu upišite: Prekidam odabrani proces prakse">
-				<FormControl v-model="deletionConfirmationText" autocomplete="off" />
+	<div v-if="confirmingWithdrawal">
+		<CardBoxModal v-model="confirmingWithdrawal" title="Odustajanje od prakse" button="danger" has-cancel button-label="Potvrdi odustajanje" :disabled-condition="!withdrawalConfirmed" @confirm="confirmWithdrawal">
+			<p>Želite li završiti praksu za studenta <b>{{ withdrawalStudent.ime }} {{ withdrawalStudent.prezime }}</b>? Podaci o praksi, dokumenti i povijest procesa ostat će sačuvani.</p>
+			<FormField class="mt-4" name="withdrawal-confirmation" label="Za potvrdu upišite: Prekidam odabrani proces prakse">
+				<FormControl v-model="confirmationText" autocomplete="off" />
 			</FormField>
 		</CardBoxModal>
 	</div>

@@ -1,8 +1,8 @@
 <script setup>
+import Tooltip from "@/components/Base/Tooltip.vue";
 import AssignmentDetailsModal from "@/components/Internship/AssignmentDetailsModal.vue";
 import SortableTableHeader from "@/components/Tables/SortableTableHeader.vue";
 import TableCellText from "@/components/Tables/TableCellText.vue";
-import { fetchAvailableAssignments } from "@/services/baserow_client_api";
 import { computed, ref, onMounted, watch, nextTick } from "vue";
 import { useRoute } from "vue-router";
 import { mdiEye, mdiCheckCircle, mdiCloseBox } from "@mdi/js";
@@ -73,10 +73,9 @@ watch([() => route.params.id_zadatak, assignments], async () => {
 });
 
 async function refreshAssignments() {
-	const result = await fetchAvailableAssignments();
+	const result = await adminStore.getAssignments();
 	if (!Array.isArray(result)) throw new Error("Assignments could not be fetched");
 	assignments.value = result;
-	adminStore.newAssignmentsFound = result.some((task) => task.dostupno_mjesta > 0 && task.voditelj_odobrio?.value === "u razradi");
 }
 async function loadAssignments() {
 	loading.value = true;
@@ -165,10 +164,10 @@ const cancelTaskAction = () => {
 					</td>
 					<td class="whitespace-nowrap before:hidden lg:w-1">
 						<BaseButtons type="justify-start lg:justify-end" no-wrap>
-							<BaseButton color="fipu_blue" :icon="mdiEye" :aria-label="`Detalji zadatka ${assignment.id_zadatak}`" small @click="isModalActive = assignment" />
+							<Tooltip content="Detalji zadatka"><BaseButton color="fipu_blue" :icon="mdiEye" :aria-label="`Detalji zadatka ${assignment.id_zadatak}`" small @click="isModalActive = assignment" /></Tooltip>
 							<template v-if="assignment.voditelj_odobrio?.value === 'u razradi'">
-								<BaseButton :disabled="isLoading" color="success" :icon="mdiCheckCircle" :aria-label="`Prihvati zadatak ${assignment.id_zadatak}`" small @click="handleConfirmation('accept', assignment)" />
-								<BaseButton :disabled="isLoading" color="danger" :icon="mdiCloseBox" :aria-label="`Odbij zadatak ${assignment.id_zadatak}`" small @click="handleConfirmation('decline', assignment)" />
+								<Tooltip content="Prihvati zadatak"><BaseButton :disabled="isLoading" color="success" :icon="mdiCheckCircle" :aria-label="`Prihvati zadatak ${assignment.id_zadatak}`" small @click="handleConfirmation('accept', assignment)" /></Tooltip>
+								<Tooltip content="Odbij zadatak"><BaseButton :disabled="isLoading" color="danger" :icon="mdiCloseBox" :aria-label="`Odbij zadatak ${assignment.id_zadatak}`" small @click="handleConfirmation('decline', assignment)" /></Tooltip>
 							</template>
 						</BaseButtons>
 					</td>

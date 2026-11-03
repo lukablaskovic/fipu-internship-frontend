@@ -135,14 +135,6 @@ const ProcessInstance = {
 	async withdraw(instance_id: string | number): Promise<any | null> {
 		return safeRequest(() => AxiosWrapper.post(`/instance/${instance_id}/event/odustajanje_od_prakse`, {}));
 	},
-
-	async removeInstance(instance_id: string): Promise<any | null> {
-		const result = await safeRequest(() => AxiosWrapper.delete(`/instance/${instance_id}`));
-		if (result) {
-			console.log(`Successfully removed instance with id: ${instance_id} from BPMN engine.`);
-		}
-		return result;
-	},
 };
 
 export { ProcessInstance, Model };
