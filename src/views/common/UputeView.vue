@@ -88,8 +88,8 @@ onMounted(async () => {
 					</Accordion.Header>
 					<Accordion.Content class="reka-animated pb-6">
 						<p>
-							Studenti, imate pitanja vezana uz izvođenje prakse, sva komunikacija odvija se na <a href="https://chat.google.com/" target="_blank" class="text-fipu_blue">Google Chat</a> kanalu:
-							<b><a href="https://chat.google.com/room/AAAASZREDy8" target="_blank" class="text-fipu_blue">FIPU Praksa</a></b>
+							Studenti, imate pitanja vezana uz izvođenje prakse, sva komunikacija odvija se na <a href="https://chat.google.com/room/AAAASZREDy8?cls=7" target="_blank" class="text-fipu_blue">Google Chat</a> kanalu:
+							<b><a href="https://chat.google.com/room/AAAASZREDy8?cls=7" target="_blank" class="text-fipu_blue">FIPU Praksa</a></b>
 						</p>
 
 						<p class="mt-1">Poslodavci i mentori, za sve upite kontaktirajte administratoricu ili voditelja stručne prakse.</p>
