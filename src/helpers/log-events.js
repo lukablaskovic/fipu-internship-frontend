@@ -6,3 +6,15 @@ export function searchAndSortEvents(events, query, sort) {
 		return sort === "oldest" ? new Date(a.timestamp) - new Date(b.timestamp) : new Date(b.timestamp) - new Date(a.timestamp);
 	});
 }
+
+export function groupEventsByStudent(events) {
+	const groups = new Map();
+	for (const event of events) {
+		const jmbag = String(event.student_JMBAG ?? "").trim();
+		const email = event.student_email?.trim().toLowerCase();
+		const key = jmbag ? `jmbag:${jmbag}` : email ? `email:${email}` : `instance:${event.instance_id}`;
+		if (!groups.has(key)) groups.set(key, { key, events: [] });
+		groups.get(key).events.push(event);
+	}
+	return [...groups.values()];
+}

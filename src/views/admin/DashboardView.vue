@@ -6,12 +6,13 @@ import { countInternshipStages } from "@/helpers/internship-stages";
 import { appConfig } from "@/config";
 
 import { Tabs } from "reka-ui/namespaced";
+import FormCheckRadio from "@/components/Form/FormCheckRadio.vue";
 import FormControlListbox from "@/components/Form/FormControlListbox.vue";
-import { searchAndSortEvents } from "@/helpers/log-events.js";
+import { groupEventsByStudent, searchAndSortEvents } from "@/helpers/log-events.js";
 import CardBoxComponentEmpty from "@/components/Cardbox/CardBoxComponentEmpty.vue";
 import TablePagination from "@/components/Tables/TablePagination.vue";
 import { usePagination } from "@/composables/usePagination.js";
-import { mdiNoteAlert, mdiAccountTie, mdiAccountMultiple, mdiAccountSchoolOutline, mdiProgressClock, mdiViewDashboard, mdiCardSearch, mdiAccountCancel, mdiAlphaSBox, mdiSourceBranch, mdiPlayCircleOutline, mdiClockOutline, mdiMagnify } from "@mdi/js";
+import { mdiNoteAlert, mdiAccountTie, mdiAccountMultiple, mdiAccountSchoolOutline, mdiProgressClock, mdiViewDashboard, mdiCardSearch, mdiAccountCancel, mdiAlphaSBox, mdiSourceBranch, mdiPlayCircleOutline, mdiClockOutline, mdiMagnify, mdiChevronDown } from "@mdi/js";
 import { useAdminStore } from "@/stores/admin_store";
 import { useMainStore } from "@/stores/main_store";
 import { useSnackBarStore } from "@/stores/snackbar_store";
@@ -131,6 +132,7 @@ const studentsLoadError = ref(false);
 const logSearch = ref("");
 const studentName = (event) => [event.student_ime, event.student_prezime].filter(Boolean).join(" ") || "Nepoznat student";
 const logColumns = [
+	{ id: "instance_id", label: "ID instance", value: (event) => event.instance_id ?? "—" },
 	{ id: "student", label: "Student", value: studentName },
 	{ id: "jmbag", label: "JMBAG", value: (event) => event.student_JMBAG || "—" },
 	{ id: "email", label: "Email", value: (event) => event.student_email || "—" },
@@ -179,7 +181,18 @@ const filteredEvents = computed(() => {
 	return searchAndSortEvents(filtered, logSearch.value, logSort.value.compare);
 });
 
-watch(filteredEvents, () => {
+const groupByStudent = ref(true);
+const expandedGroups = ref(new Set());
+const logGroups = computed(() => groupByStudent.value
+	? groupEventsByStudent(filteredEvents.value)
+	: filteredEvents.value.map((event, index) => ({ key: index, events: [event] })));
+
+function toggleGroup(key) {
+	if (expandedGroups.value.has(key)) expandedGroups.value.delete(key);
+	else expandedGroups.value.add(key);
+}
+
+watch(logGroups, () => {
 	currentPage.value = 0;
 });
 
@@ -191,7 +204,7 @@ const formattedDate = (timestamp) => {
 	}
 };
 
-const { perPage, currentPage, itemsPaginated } = usePagination(filteredEvents);
+const { perPage, currentPage, itemsPaginated } = usePagination(logGroups);
 
 </script>
 
@@ -267,6 +280,7 @@ const { perPage, currentPage, itemsPaginated } = usePagination(filteredEvents);
 						<FormControlListbox v-model="dateFormat" :icon="mdiClockOutline" :options="dateOptions" aria-label="Format vremena" button-class="table-filter-select" />
 						<PillTagFilter trend-type="filter" trend="Događaji" :options="latestEvents" :left="true" small />
 					</div>
+					<FormCheckRadio v-model="groupByStudent" name="group-by-student" label="Grupiraj po studentu" class="mb-3 text-sm [&_.check]:border-fipu_blue [&_.check[data-state=checked]]:border" />
 					<p v-if="!eventsLoading" class="mb-2 text-xs text-gray-500 dark:text-slate-400" role="status">{{ filteredEvents.length }} događaja</p>
 					<div class="overflow-x-auto rounded-lg bg-white dark:bg-slate-900/70">
 						<table v-if="eventsLoading || filteredEvents.length" :aria-busy="eventsLoading" class="w-full text-left text-xs">
@@ -274,27 +288,39 @@ const { perPage, currentPage, itemsPaginated } = usePagination(filteredEvents);
 							<thead class="border-b dark:border-slate-700">
 								<tr>
 									<SortableTableHeader v-for="column in logColumns" :key="column.id" :label="column.label" :active="logSort.column === column.id" :direction="logSort.direction" class="px-3 py-2" @sort="sortByColumn(column.id)" />
+									<th v-if="groupByStudent" scope="col" class="px-3 py-2 text-right">Događaji</th>
 								</tr>
 							</thead>
 							<tbody v-if="eventsLoading" aria-hidden="true">
 								<tr v-for="row in 3" :key="row" class="motion-safe:animate-pulse">
 									<td v-for="column in logColumns" :key="column.id" class="px-3 py-3"><div class="h-4 w-20 rounded bg-gray-200 dark:bg-slate-700"></div></td>
+									<td v-if="groupByStudent"></td>
 								</tr>
 							</tbody>
-							<tbody v-else><tr v-for="(event, index) in itemsPaginated" :key="index" class="border-b last:border-0 hover:bg-fipu_blue/10 dark:border-slate-700">
-								<td class="px-3 py-2"><TableCellText :value="studentName(event)"><RouterLink :to="`/studenti/${event.instance_id}`" class="font-semibold text-fipu_blue underline">{{ studentName(event) }}</RouterLink></TableCellText></td>
-								<td class="px-3 py-2"><TableCellText :value="event.student_JMBAG || '—'" /></td><td class="px-3 py-2"><TableCellText :value="event.student_email || '—'" /></td>
-								<td class="px-3 py-2"><TableCellText :value="event.model_name === appConfig.bpmn_process_name_A + '.bpmn' ? 'A' : 'B'" /></td>
-								<td class="px-3 py-2"><TableCellText :value="event.model_version == null ? '—' : 'v' + event.model_version" /></td>
-								<td class="px-3 py-2"><TableCellText :value="ActivityEventMappings.getEvent(event.activity_id)?.message || event.activity_id" /></td><td class="whitespace-nowrap px-3 py-2"><TableCellText :value="formattedDate(event.timestamp)" /></td>
-							</tr></tbody>
+							<tbody v-for="group in itemsPaginated" :key="group.key" class="border-b last:border-0 dark:border-slate-700">
+								<tr v-for="(event, index) in expandedGroups.has(group.key) ? group.events : [group.events[0]]" :key="index" class="hover:bg-fipu_blue/10" :class="{ 'bg-slate-50 dark:bg-slate-800/50': index > 0 }">
+									<td class="px-3 py-2"><TableCellText :value="event.instance_id ?? '—'" /></td>
+									<td class="px-3 py-2"><TableCellText :value="studentName(event)"><RouterLink :to="`/studenti/${event.instance_id}`" class="font-semibold text-fipu_blue underline">{{ studentName(event) }}</RouterLink></TableCellText></td>
+									<td class="px-3 py-2"><TableCellText :value="event.student_JMBAG || '—'" /></td><td class="px-3 py-2"><TableCellText :value="event.student_email || '—'" /></td>
+									<td class="px-3 py-2"><TableCellText :value="event.model_name === appConfig.bpmn_process_name_A + '.bpmn' ? 'A' : 'B'" /></td>
+									<td class="px-3 py-2"><TableCellText :value="event.model_version == null ? '—' : 'v' + event.model_version" /></td>
+									<td class="px-3 py-2"><TableCellText :value="ActivityEventMappings.getEvent(event.activity_id)?.message || event.activity_id" /></td><td class="whitespace-nowrap px-3 py-2"><TableCellText :value="formattedDate(event.timestamp)" /></td>
+									<td v-if="groupByStudent" class="px-3 py-2 text-right">
+										<button v-if="index === 0 && group.events.length > 1" type="button" class="inline-flex items-center gap-1 rounded px-2 py-1 text-fipu_blue hover:bg-fipu_blue/10" :aria-expanded="expandedGroups.has(group.key)" :aria-label="`Događaji za studenta: ${studentName(event)} (${group.events.length})`" @click="toggleGroup(group.key)">
+											{{ group.events.length }}
+											<BaseIcon :path="mdiChevronDown" :size="18" :class="{ 'rotate-180': expandedGroups.has(group.key) }" aria-hidden="true" />
+										</button>
+										<span v-else-if="index === 0" class="px-2">1</span>
+									</td>
+								</tr>
+							</tbody>
 						</table>
 					</div>
 					<p v-if="eventsLoading" class="sr-only" role="status">Učitavanje događaja…</p>
 					<CardBoxComponentEmpty v-else-if="!filteredEvents.length" />
 				</template>
 				<div v-else class="mb-6 text-red-500">Nakon više ponovljenih pokušaja, nije moguće dohvatiti evente.</div>
-				<TablePagination v-if="!eventsFetchError && filteredEvents.length" v-model:page="currentPage" v-model:per-page="perPage" :total="filteredEvents.length" :show-per-page="false" />
+				<TablePagination v-if="!eventsFetchError && filteredEvents.length" v-model:page="currentPage" v-model:per-page="perPage" :total="logGroups.length" :show-per-page="false" />
 			</SectionMain>
 		</LayoutAuthenticated>
 	</div>
