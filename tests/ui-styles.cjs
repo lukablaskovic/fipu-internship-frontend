@@ -11,6 +11,7 @@ const { chromium, expect } = require(process.env.PLAYWRIGHT_PACKAGE || '@playwri
  import { createApp, h, ref } from 'vue';
  import { createPinia } from 'pinia';
  import { TooltipProvider } from 'reka-ui';
+ import Maintenance from '/src/views/common/MaintenanceView.vue';
  import FormField from '/src/components/Form/FormField.vue';
  import FormControl from '/src/components/Form/FormControl.vue';
  import FormCheckRadio from '/src/components/Form/FormCheckRadio.vue';
@@ -18,6 +19,7 @@ const { chromium, expect } = require(process.env.PLAYWRIGHT_PACKAGE || '@playwri
  import BasePagination from '/src/components/Base/BasePagination.vue';
  import '/src/css/main.css';
  createApp({ setup() {
+  if (location.search === '?maintenance') return () => h(TooltipProvider, {}, () => h(Maintenance));
   const checked = ref(false), selected = ref([]), page = ref(1);
   return () => h(TooltipProvider, {}, () => h('main', { style: 'padding: 24px; display: grid; gap: 24px' }, [
    h(FormField, { name: 'text', label: 'Text' }, () => h(FormControl, { id: 'text', modelValue: 'Test' })),
@@ -32,7 +34,7 @@ const { chromium, expect } = require(process.env.PLAYWRIGHT_PACKAGE || '@playwri
   resolveId(id) { if (id === '/__ui-styles.js') return id; },
   load(id) { if (id === '/__ui-styles.js') return client; },
   configureServer(server) { server.middlewares.use((req, res, next) => {
-   if (req.url === '/__ui-styles') { res.setHeader('Content-Type', 'text/html'); res.end('<meta name="viewport" content="width=device-width, initial-scale=1"><div id="app"></div><script type="module" src="/__ui-styles.js"></script>'); }
+   if (req.url.split('?')[0] === '/__ui-styles') { res.setHeader('Content-Type', 'text/html'); res.end('<meta name="viewport" content="width=device-width, initial-scale=1"><div id="app"></div><script type="module" src="/__ui-styles.js"></script>'); }
    else next();
   }); },
  }] });
@@ -85,7 +87,19 @@ const { chromium, expect } = require(process.env.PLAYWRIGHT_PACKAGE || '@playwri
    await expect(next).toHaveCSS('height', '44px');
    assert.ok(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth), 'No horizontal overflow');
   }
+  await page.setViewportSize({ width: 390, height: 844 });
+  await page.emulateMedia({ reducedMotion: 'no-preference' });
+  await page.goto(`http://127.0.0.1:${server.httpServer.address().port}/__ui-styles?maintenance`);
+  const heading = page.getByRole('heading', { name: 'Održavanje', exact: true });
+  await expect(heading).toBeVisible();
+  await expect(heading).toHaveCSS('animation-name', /^maintenance-enter/ );
+  await expect(heading).toHaveCSS('animation-delay', '0.5s');
+  await page.emulateMedia({ reducedMotion: 'reduce' });
+  await expect(heading).toHaveCSS('animation-name', 'none');
+  await expect(heading).toHaveCSS('opacity', '1');
+  await page.setViewportSize({ width: 1440, height: 900 });
+  await expect(page.getByRole('heading', { name: 'FIPU Praksa je na redovitom održavanju!' })).toBeVisible();
   assert.deepEqual(errors, []);
-  console.log('UI styles passed: input radii, select portal, checkbox state, SVG assets, technology selection/removal, pagination, dark mode and mobile layout.');
+  console.log('UI styles passed: input radii, select portal, checkbox state, SVG assets, technology selection/removal, pagination, dark mode, mobile layout and maintenance reduced-motion behavior.');
  } finally { await browser?.close(); await server.close(); rmSync(cacheDir, { recursive: true, force: true }); }
 })().catch(error => { console.error(error); process.exitCode = 1; });

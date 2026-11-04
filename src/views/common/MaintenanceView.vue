@@ -4,13 +4,13 @@
 		<div class="flex flex-col items-center sm:flex-row sm:items-start md:hidden">
 			<!-- Welcome texts -->
 			<div class="mt-2 flex flex-col justify-start bg-gray-50">
-				<h2 data-aos="zoom-in" class="mb-2 text-6xl font-bold text-fipu_blue">FIPU</h2>
-				<h2 data-aos="zoom-in" class="mb-4 text-6xl font-bold text-fipu_blue">Praksa</h2>
-				<h1 data-aos="zoom-in" data-aos-delay="500" class="text-7xl font-bold">Održavanje</h1>
+				<h2 class="maintenance-zoom-in mb-2 text-6xl font-bold text-fipu_blue">FIPU</h2>
+				<h2 class="maintenance-zoom-in mb-4 text-6xl font-bold text-fipu_blue">Praksa</h2>
+				<h1 style="--entry-delay: 500ms" class="maintenance-zoom-in text-7xl font-bold">Održavanje</h1>
 			</div>
 
 			<!-- Illustration -->
-			<div class="flex justify-center" data-aos="fade-up" data-aos-delay="1000">
+			<div class="maintenance-fade-up flex justify-center" style="--entry-delay: 1000ms">
 				<img src="/illustrations/robot.svg" class="mt-4 w-3/4 max-w-full" :class="{ 'bounce-6': isBouncing }" @click="startBounce" />
 			</div>
 		</div>
@@ -27,7 +27,7 @@
 					<hr class="hidden w-full sm:block" />
 					<!-- Hide heading on mobile -->
 
-					<div data-aos="zoom-in" data-aos-delay="200" class="hidden sm:block">
+					<div style="--entry-delay: 200ms" class="maintenance-zoom-in hidden sm:block">
 						<h2 class="mb-4 mt-4 text-center text-2xl font-bold text-fipu_gray lg:text-4xl"><span class="text-fipu_blue">FIPU Praksa</span> je na redovitom održavanju!</h2>
 					</div>
 					<!-- Content paragraphs -->
@@ -73,13 +73,7 @@ import BaseButton from "@/components/Base/BaseButton.vue";
 import SnackBar from "@/components/Notification/SnackBar.vue";
 import CardBox from "@/components/Cardbox/CardBox.vue";
 import fipu_unipu from "/fipu_unipu.png";
-import { onMounted } from "vue";
 import { ref } from "vue";
-import AOS from "aos";
-
-onMounted(() => {
-	AOS.init();
-});
 
 const isBouncing = ref(false);
 const startBounce = () => {
@@ -103,8 +97,18 @@ body {
 	overflow-y: auto;
 }
 
-.fast-animation {
-	animation-duration: 0.5s;
+@media (prefers-reduced-motion: no-preference) {
+	.maintenance-zoom-in { --entry-transform: scale(0.9); }
+	.maintenance-fade-up { --entry-transform: translateY(24px); }
+	.maintenance-zoom-in,
+	.maintenance-fade-up {
+		animation: maintenance-enter 700ms ease-out var(--entry-delay, 0ms) both;
+	}
+}
+
+@keyframes maintenance-enter {
+	from { opacity: 0; transform: var(--entry-transform); }
+	to { opacity: 1; transform: none; }
 }
 
 .bounce-6 {
@@ -112,6 +116,10 @@ body {
 	animation-timing-function: ease;
 	animation-duration: 2s;
 	animation-iteration-count: infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.bounce-6 { animation: none; }
 }
 
 @keyframes bounce-6 {

@@ -1,13 +1,10 @@
 <script setup>
 import { fetchAvailableAssignments } from "@/services/baserow_client_api";
 
+import BaseIcon from "@/components/Base/BaseIcon.vue";
+import { mdiPagePreviousOutline, mdiClipboardText, mdiMagnify, mdiAccount, mdiDomain } from "@mdi/js";
 import { Combobox } from "reka-ui/namespaced";
-import MdiPagePreviousOutline from "vue-material-design-icons/PagePreviousOutline.vue";
 import { ref, computed, onMounted, onUnmounted, watch, nextTick } from "vue";
-import MdiClipboardText from "vue-material-design-icons/ClipboardText.vue";
-import MdiMagnify from "vue-material-design-icons/Magnify.vue";
-import MdiAccount from "vue-material-design-icons/Account.vue";
-import MdiDomain from "vue-material-design-icons/Domain.vue";
 import { useAdminStore } from "@/stores/admin_store";
 import { useMainStore } from "@/stores/main_store";
 
@@ -145,7 +142,7 @@ onMounted(async () => {
 	<Combobox.Root v-model="selectedValue" v-model:open="open" ignore-filter open-on-focus open-on-click :reset-search-term-on-select="false" :reset-search-term-on-blur="false">
 		<Combobox.Anchor class="flex h-12 w-full items-center gap-3 rounded-xl border border-fipu_blue bg-gray-50 px-4 text-left transition-colors focus-within:ring-2 focus-within:ring-fipu_blue dark:bg-neutral-900 md:w-96">
 			<Combobox.Trigger class="flex shrink-0 items-center text-gray-500 hover:text-gray-900 focus-visible:outline-solid focus-visible:outline-fipu_blue dark:text-neutral-400 dark:hover:text-neutral-200" aria-label="Upute za pretraživanje" @click="showHelp">
-				<MdiMagnify :size="22" aria-hidden="true" />
+				<BaseIcon :path="mdiMagnify" :size="22" aria-hidden="true" />
 			</Combobox.Trigger>
 			<Combobox.Input
 				ref="searchInput"
@@ -181,10 +178,10 @@ onMounted(async () => {
 					</div>
 					<div v-else-if="query && !suggestedFilters.length && !filteredResults.length" role="status" class="px-3 py-3 text-gray-500 dark:text-neutral-400">Nema rezultata. Pokušajte s drugim pojmom ili filterom.</div>
 					<Combobox.Item v-for="(result, index) in filteredResults" :key="result.id || index" :value="result" class="relative cursor-pointer select-none rounded-lg py-2.5 pl-10 pr-3 outline-hidden data-highlighted:bg-gray-100 dark:data-highlighted:bg-neutral-800">
-						<MdiAccount v-if="result.ime && result.prezime" class="absolute left-3 h-5 w-5" aria-hidden="true" />
-						<MdiPagePreviousOutline v-else-if="routes.includes(result)" class="absolute left-3 h-5 w-5" aria-hidden="true" />
-						<MdiClipboardText v-else-if="result.id_zadatak" class="absolute left-3 h-5 w-5" aria-hidden="true" />
-						<MdiDomain v-else class="absolute left-3 h-5 w-5" aria-hidden="true" />
+						<BaseIcon v-if="result.ime && result.prezime" :path="mdiAccount" w="w-5" h="h-5" :size="24" class="absolute left-3 h-5 w-5" aria-hidden="true" />
+						<BaseIcon v-else-if="routes.includes(result)" :path="mdiPagePreviousOutline" w="w-5" h="h-5" :size="24" class="absolute left-3 h-5 w-5" aria-hidden="true" />
+						<BaseIcon v-else-if="result.id_zadatak" :path="mdiClipboardText" w="w-5" h="h-5" :size="24" class="absolute left-3 h-5 w-5" aria-hidden="true" />
+						<BaseIcon v-else :path="mdiDomain" w="w-5" h="h-5" :size="24" class="absolute left-3 h-5 w-5" aria-hidden="true" />
 						<span v-if="typeof result === 'string'" class="block truncate capitalize">{{ result }}</span>
 						<span v-else-if="result.ime && result.prezime" class="block truncate">{{ result.ime }} {{ result.prezime }} ({{ result.JMBAG }}) - {{ result.email }}</span>
 						<span v-else-if="result.id_zadatak" class="block truncate">Zadatak ID: {{ result.id_zadatak }}</span>

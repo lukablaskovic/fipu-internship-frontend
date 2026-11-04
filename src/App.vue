@@ -3,7 +3,6 @@ import { Tooltip } from "reka-ui/namespaced";
 </script>
 
 <template>
-	<!--<GlobalStoreDebug />-->
 
 	<Tooltip.Provider :delay-duration="1000">
 		<router-view v-slot="{ Component, route }">

@@ -59,6 +59,12 @@ Run the logic and SSR checks with `for test in tests/*.mjs tests/ui-reuse.cjs te
 
 shadcn-vue is initialized with the Reka Nova style and neutral light/dark tokens. Add components with `npx shadcn-vue add button` (replace `button` with the component name). Generated components go in `src/components/ui`, and the class-merging utility is `src/lib/utils.ts`. The theme lives in `src/css/_shadcn.css`; existing FIPU fonts, radii, and global styles are retained.
 
+### UI conventions
+
+Use `BaseIcon` with `@mdi/js` for existing application screens and Lucide for new shadcn components; keep each control or feature consistent. Devicon remains dedicated to technology logos. Reuse existing shared controls before adding a second implementation of the same control.
+
+Use Tailwind's native aspect-ratio utilities, `tw-animate-css` for shadcn animations, and focused CSS for existing interactions. Honor `prefers-reduced-motion`. The unused store debugger and its slider/JSON-viewer dependencies have been removed.
+
 ### UI components
 
 [Reka UI](https://reka-ui.com/docs/overview/installation) is installed for accessible, unstyled Vue components. Import the components you need directly in `<script setup>`; no global registration or Vite plugin is required. Style them with the existing Tailwind utilities.
