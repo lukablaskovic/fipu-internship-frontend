@@ -103,7 +103,7 @@ onMounted(async () => {
 			<p class="mb-6">Aktivna godina: <strong>{{ index?.active_year || "2026/2027" }}</strong>. Arhivirani podaci dostupni su samo za pregled.</p>
 			<p v-if="error" role="alert" class="mb-4 text-red-600">{{ error }}</p>
 			<CardBox v-if="index" class="mb-6">
-				<div class="grid items-start gap-4 md:grid-cols-3 [&>*]:mb-0">
+				<div class="grid items-start gap-4 md:grid-cols-3 *:mb-0">
 					<FormField label="Akademska godina"><FormControl v-model="year" :options="index.years.map((item) => item.year)" /></FormField>
 					<FormField label="Tablica"><FormControl v-model="table" :options="Object.keys(snapshot?.tables || { Student: [] })" @update:model-value="changeTable" /></FormField>
 					<FormField label="Pretraži arhivu"><FormControl v-model="search" type="search" :icon-left="mdiMagnify" placeholder="Ime, JMBAG ili drugi podatak" /></FormField>
@@ -115,9 +115,9 @@ onMounted(async () => {
 				<p class="mb-4 text-sm">{{ rows.length }} zapisa · Snimljeno {{ new Date(snapshot.captured_at).toLocaleString("hr") }} · Bez dostupne povijesti: {{ snapshot.missing_history.length }} procesa.</p>
 				<div class="grid gap-6 lg:grid-cols-2">
 					<CardBox>
-						<ul class="max-h-[36rem] overflow-y-auto divide-y divide-gray-200 dark:divide-gray-700">
+						<ul class="max-h-144 overflow-y-auto divide-y divide-gray-200 dark:divide-gray-700">
 							<li v-for="row in rows" :key="row.id">
-								<button type="button" class="w-full text-left p-3 rounded hover:bg-gray-100 dark:hover:bg-slate-700 focus-visible:ring-2 focus-visible:ring-blue-500" :aria-pressed="selected?.id === row.id" @click="selected = row">
+								<button type="button" class="w-full text-left p-3 rounded-sm hover:bg-gray-100 dark:hover:bg-slate-700 focus-visible:ring-2 focus-visible:ring-blue-500" :aria-pressed="selected?.id === row.id" @click="selected = row">
 									<span class="block font-semibold">{{ table === "Student" ? [row.ime, row.prezime].join(" ") : displayArchiveValue(row[primary]) }}</span>
 									<span class="text-sm opacity-70">{{ table === "Student" ? row.JMBAG : `Zapis ${row.id}` }}</span>
 								</button>
@@ -127,7 +127,7 @@ onMounted(async () => {
 					</CardBox>
 					<CardBox v-if="selected">
 						<h2 class="text-xl font-semibold mb-4">{{ table }} · {{ snapshot.year }}</h2>
-						<dl class="space-y-3 break-words">
+						<dl class="space-y-3 wrap-break-word">
 							<div v-for="field in snapshot.fields[table]" :key="field.id">
 								<dt class="text-sm font-semibold">{{ field.name }}</dt>
 								<dd class="whitespace-pre-wrap">{{ displayArchiveValue(selected[field.name]) }}</dd>
@@ -150,7 +150,7 @@ onMounted(async () => {
 							<p v-if="!events.length">Povijest ovog procesa nije dostupna u izvoru. Poslovni zapisi i dokumenti ostaju sačuvani.</p>
 							<details v-for="(event, position) in events" :key="position" class="mb-3">
 								<summary class="cursor-pointer">{{ event.activity_id }} · {{ new Date(event.timestamp).toLocaleString("hr") }}</summary>
-								<dl class="ml-3 mt-2 break-words">
+								<dl class="ml-3 mt-2 wrap-break-word">
 									<div v-for="(value, key) in event.activity_variables" :key="key"><dt class="font-semibold">{{ key }}</dt><dd class="whitespace-pre-wrap">{{ displayArchiveValue(value) }}</dd></div>
 								</dl>
 							</details>

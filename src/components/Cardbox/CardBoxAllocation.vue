@@ -1,5 +1,5 @@
 <template>
-	<article :key="props.data.id_zadatak" class="min-w-0 break-words rounded-xl sm:border border-gray-200 sm:p-4 dark:border-slate-700 text-sm text-gray-700 dark:text-gray-200">
+	<article :key="props.data.id_zadatak" class="min-w-0 wrap-break-word rounded-xl sm:border border-gray-200 sm:p-4 dark:border-slate-700 text-sm text-gray-700 dark:text-gray-200">
 		<header class="flex items-center gap-4">
 			<UserAvatar v-if="companyLogo" :username="props.data.Poslodavac?.[0]?.value" :avatar="companyLogo" class="h-12 w-12 [&_img]:object-contain" />
 			<div class="min-w-0">
@@ -82,6 +82,7 @@ onMounted(async () => {
 </script>
 
 <style scoped>
+@reference "../../css/main.css";
 dt {
 	@apply text-base font-bold text-gray-900 dark:text-white;
 }

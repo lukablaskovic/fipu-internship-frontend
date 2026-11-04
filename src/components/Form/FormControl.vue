@@ -91,7 +91,7 @@ const wrapperClass = computed(() => {
 
 	if (!props.searchBar) {
 		base.push(borderColor.value, wrapperBorder.value ? "dark:bg-slate-800" : "", props.borderless && wrapperBorder.value ? "bg-gray-50" : "");
-		if (wrapperBorder.value) base.push("border-t border-b", !props.firstAddon && !props.lastAddon && !props.middleAddon ? "rounded border-l border-r" : "");
+		if (wrapperBorder.value) base.push("border-t border-b", !props.firstAddon && !props.lastAddon && !props.middleAddon ? "rounded-sm border-l border-r" : "");
 		if (props.firstAddon) base.push("rounded-l border-l");
 		if (props.lastAddon) base.push("rounded-r border-r");
 	}
@@ -99,9 +99,9 @@ const wrapperClass = computed(() => {
 });
 
 const inputElClass = computed(() => {
-	const base = ["px-3 py-2 max-w-full focus:ring focus:ring-fipu_blue focus:outline-none", props.inputW, computedType.value === "textarea" ? "h-24" : "h-12", wrapperBorder.value ? "border-0" : "border"];
+	const base = ["px-3 py-2 max-w-full focus:ring-3 focus:ring-fipu_blue focus:outline-hidden", props.inputW, computedType.value === "textarea" ? "h-24" : "h-12", wrapperBorder.value ? "border-0" : "border"];
 	base.push(textColor.value, placeholderColor.value || "placeholder-gray-500", computedIconLeft.value && "pl-10", computedIconRight.value && "pr-10");
-	if (!props.firstAddon && !props.lastAddon && !props.middleAddon) base.push("rounded");
+	if (!props.firstAddon && !props.lastAddon && !props.middleAddon) base.push("rounded-sm");
 	return base;
 });
 

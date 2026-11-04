@@ -144,7 +144,7 @@ onMounted(async () => {
 <template>
 	<Combobox.Root v-model="selectedValue" v-model:open="open" ignore-filter open-on-focus open-on-click :reset-search-term-on-select="false" :reset-search-term-on-blur="false">
 		<Combobox.Anchor class="flex h-12 w-full items-center gap-3 rounded-xl border border-fipu_blue bg-gray-50 px-4 text-left transition-colors focus-within:ring-2 focus-within:ring-fipu_blue dark:bg-neutral-900 md:w-96">
-			<Combobox.Trigger class="flex shrink-0 items-center text-gray-500 hover:text-gray-900 focus-visible:outline focus-visible:outline-fipu_blue dark:text-neutral-400 dark:hover:text-neutral-200" aria-label="Upute za pretraživanje" @click="showHelp">
+			<Combobox.Trigger class="flex shrink-0 items-center text-gray-500 hover:text-gray-900 focus-visible:outline-solid focus-visible:outline-fipu_blue dark:text-neutral-400 dark:hover:text-neutral-200" aria-label="Upute za pretraživanje" @click="showHelp">
 				<MdiMagnify :size="22" aria-hidden="true" />
 			</Combobox.Trigger>
 			<Combobox.Input
@@ -153,7 +153,7 @@ onMounted(async () => {
 				aria-label="Pretraživanje"
 				placeholder="Pretraživanje"
 				aria-describedby="search-keyboard-help"
-				class="min-w-0 flex-1 caret-fipu_blue border-0 bg-transparent p-0 text-base text-gray-900 placeholder:text-gray-500 focus:outline-none focus:ring-0 dark:text-neutral-200 dark:placeholder:text-neutral-400"
+				class="min-w-0 flex-1 caret-fipu_blue border-0 bg-transparent p-0 text-base text-gray-900 placeholder:text-gray-500 focus:outline-hidden focus:ring-0 dark:text-neutral-200 dark:placeholder:text-neutral-400"
 				@keydown="handleKeyDown" />
 			<kbd class="pointer-events-none shrink-0 whitespace-nowrap font-sans text-sm text-gray-500 dark:text-neutral-400" aria-hidden="true">{{ osKey }} K</kbd>
 		</Combobox.Anchor>
@@ -162,7 +162,7 @@ onMounted(async () => {
 				position="popper"
 				:side-offset="8"
 				align="start"
-				class="search-panel reka-animated z-[10000] w-[var(--reka-combobox-trigger-width)] overflow-hidden rounded-xl border border-gray-200 bg-white text-sm text-gray-900 focus:outline-none dark:border-neutral-700 dark:bg-neutral-900 dark:text-neutral-200">
+				class="search-panel reka-animated z-10000 w-(--reka-combobox-trigger-width) overflow-hidden rounded-xl border border-gray-200 bg-white text-sm text-gray-900 focus:outline-hidden dark:border-neutral-700 dark:bg-neutral-900 dark:text-neutral-200">
 				<Combobox.Viewport class="max-h-[min(24rem,var(--reka-combobox-content-available-height))] overflow-y-auto p-1.5">
 					<p v-if="!query" class="px-3 py-2 text-gray-500 dark:text-neutral-400">Upišite stranicu ili odaberite filter.</p>
 					<Combobox.Item
@@ -170,7 +170,7 @@ onMounted(async () => {
 						:key="helpItem.prefix"
 						:value="helpItem"
 						:text-value="helpItem.description"
-						class="flex cursor-pointer items-center justify-between gap-3 rounded-lg px-3 py-2.5 outline-none data-[highlighted]:bg-gray-100 dark:data-[highlighted]:bg-neutral-800"
+						class="flex cursor-pointer items-center justify-between gap-3 rounded-lg px-3 py-2.5 outline-hidden data-highlighted:bg-gray-100 dark:data-highlighted:bg-neutral-800"
 						@select.prevent="insertPrefix(helpItem.prefix)">
 						<span>{{ helpItem.description }}</span>
 						<code class="shrink-0 text-gray-500 dark:text-neutral-400">{{ helpItem.prefix }}</code>
@@ -180,7 +180,7 @@ onMounted(async () => {
 						<p class="mt-1">Primjer: <code class="text-gray-700 dark:text-neutral-200">{{ activeFilter.prefix }}{{ activeFilter.example }}</code></p>
 					</div>
 					<div v-else-if="query && !suggestedFilters.length && !filteredResults.length" role="status" class="px-3 py-3 text-gray-500 dark:text-neutral-400">Nema rezultata. Pokušajte s drugim pojmom ili filterom.</div>
-					<Combobox.Item v-for="(result, index) in filteredResults" :key="result.id || index" :value="result" class="relative cursor-pointer select-none rounded-lg py-2.5 pl-10 pr-3 outline-none data-[highlighted]:bg-gray-100 dark:data-[highlighted]:bg-neutral-800">
+					<Combobox.Item v-for="(result, index) in filteredResults" :key="result.id || index" :value="result" class="relative cursor-pointer select-none rounded-lg py-2.5 pl-10 pr-3 outline-hidden data-highlighted:bg-gray-100 dark:data-highlighted:bg-neutral-800">
 						<MdiAccount v-if="result.ime && result.prezime" class="absolute left-3 h-5 w-5" aria-hidden="true" />
 						<MdiPagePreviousOutline v-else-if="routes.includes(result)" class="absolute left-3 h-5 w-5" aria-hidden="true" />
 						<MdiClipboardText v-else-if="result.id_zadatak" class="absolute left-3 h-5 w-5" aria-hidden="true" />

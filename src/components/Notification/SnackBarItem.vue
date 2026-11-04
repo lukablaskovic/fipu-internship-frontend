@@ -30,10 +30,10 @@ const emit = defineEmits(["cancel"]);
 	<Toast.Root
 		:duration="lifetime"
 		:class="getButtonColor(color === 'error' ? 'danger' : color, false, true)"
-		class="reka-animated pointer-events-auto flex w-full items-center gap-4 self-end overflow-hidden px-6 py-4 shadow md:w-auto md:max-w-full md:rounded-xl"
+		class="reka-animated pointer-events-auto flex w-full items-center gap-4 self-end overflow-hidden px-6 py-4 shadow-sm md:w-auto md:max-w-full md:rounded-xl"
 		@update:open="!$event && emit('cancel', timestamp)"
 	>
-		<Toast.Description class="min-w-0 break-words">{{ text }}</Toast.Description>
-		<Toast.Close aria-label="Zatvori obavijest" class="shrink-0 rounded px-2 py-1 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2">×</Toast.Close>
+		<Toast.Description class="min-w-0 wrap-break-word">{{ text }}</Toast.Description>
+		<Toast.Close aria-label="Zatvori obavijest" class="shrink-0 rounded-sm px-2 py-1 focus-visible:outline-solid focus-visible:outline-2 focus-visible:outline-offset-2">×</Toast.Close>
 	</Toast.Root>
 </template>

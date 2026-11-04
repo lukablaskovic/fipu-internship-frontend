@@ -47,6 +47,18 @@ For Companies:
 - **BPMN Display**: The shared `@fipu/bpmn` XML toolkit and SVG renderer from FIPU BPMN Studio display the authoritative models served by the Python engine.
 - **Backend Engine**: Custom-built [Python BPMN Engine](https://github.com/lukablaskovic/fipu-internship-bpmn-engine) (originally developed by [ntankovic](https://github.com/ntankovic/python-bpmn-engine)).
 
+### Development
+
+Use Node.js 22.12+ (22.x) or 24+ and run `npm ci`, then `npm run dev`. The production Docker build uses Node 22.
+
+The UI uses Tailwind CSS 4 with its PostCSS plugin and Vite 8. Tailwind 4 requires Safari 16.4+, Chrome 111+, or Firefox 128+. Component style blocks using `@apply` must reference `src/css/main.css` using a relative `@reference` path.
+
+Run the logic and SSR checks with `for test in tests/*.mjs tests/ui-reuse.cjs tests/icon-text-link.cjs tests/table-cell-text.cjs; do node "$test" || break; done`. Browser checks are `tests/tooltips.cjs`, `tests/ui-styles.cjs`, and (after `npm run build`) `tests/guest-production.cjs`. They use `@playwright/test`; set `PLAYWRIGHT_PACKAGE` to an external installation and `CHROME_PATH` to a Chrome executable if needed. Production smoke tests mock external services and do not verify real Google sign-in or submit data.
+
+### shadcn-vue
+
+shadcn-vue is initialized with the Reka Nova style and neutral light/dark tokens. Add components with `npx shadcn-vue add button` (replace `button` with the component name). Generated components go in `src/components/ui`, and the class-merging utility is `src/lib/utils.ts`. The theme lives in `src/css/_shadcn.css`; existing FIPU fonts, radii, and global styles are retained.
+
 ### UI components
 
 [Reka UI](https://reka-ui.com/docs/overview/installation) is installed for accessible, unstyled Vue components. Import the components you need directly in `<script setup>`; no global registration or Vite plugin is required. Style them with the existing Tailwind utilities.

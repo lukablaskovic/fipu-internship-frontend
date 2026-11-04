@@ -38,7 +38,7 @@
 
 	.selected-row,
 	.selected-row:nth-child(odd) {
-		@apply lg:bg-fipu_light_blue lg:dark:bg-fipu_blue !important;
+		@apply lg:bg-fipu_light_blue! lg:dark:bg-fipu_blue!;
 	}
 
 	:where(table:not(.date-grid)) > tbody > tr:nth-child(odd) {

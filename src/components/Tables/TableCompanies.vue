@@ -118,19 +118,19 @@ const goToCompanyWeb = (url) => {
 					</td>
 
 				<td data-label="Naziv" class="compact-title">
-					<div class="min-w-0 break-words">
+					<div class="min-w-0 wrap-break-word">
 						<TableCellText :value="company['naziv']" />
 					</div>
 				</td>
 
 				<td data-label="Web">
-					<div class="min-w-0 break-words">
+					<div class="min-w-0 wrap-break-word">
 						<TableCellText :value="company['web']"><a class="underline" :href="company['web']" target="_blank">{{ company["web"] }}</a></TableCellText>
 					</div>
 				</td>
 
 				<td data-label="Adresa">
-					<div class="min-w-0 break-words">
+					<div class="min-w-0 wrap-break-word">
 						<TableCellText :value="company['adresa']" />
 					</div>
 				</td>
@@ -156,35 +156,35 @@ const goToCompanyWeb = (url) => {
 					</td>
 
 				<td data-label="Naziv" class="compact-title">
-					<div class="min-w-0 break-words">
+					<div class="min-w-0 wrap-break-word">
 						<TableCellText :value="company['naziv']" />
 					</div>
 				</td>
 				<td data-label="Web">
-					<div class="min-w-0 break-words">
+					<div class="min-w-0 wrap-break-word">
 						<TableCellText :value="company['web']"><a class="underline" :href="company['web']" target="_blank">{{ company["web"] }}</a></TableCellText>
 					</div>
 				</td>
 				<td data-label="Direktor">
-					<div class="min-w-0 break-words">
+					<div class="min-w-0 wrap-break-word">
 						<TableCellText :value="company['direktor']" />
 					</div>
 				</td>
 
 				<td data-label="Matični broj">
-					<div class="min-w-0 break-words">
+					<div class="min-w-0 wrap-break-word">
 						<TableCellText :value="company['maticni_broj']" />
 					</div>
 				</td>
 
 				<td data-label="OIB">
-					<div class="min-w-0 break-words">
+					<div class="min-w-0 wrap-break-word">
 						<TableCellText :value="company['OIB']" />
 					</div>
 				</td>
 
 				<td data-label="Adresa">
-					<div class="min-w-0 break-words">
+					<div class="min-w-0 wrap-break-word">
 						<TableCellText :value="company['adresa']" />
 					</div>
 				</td>

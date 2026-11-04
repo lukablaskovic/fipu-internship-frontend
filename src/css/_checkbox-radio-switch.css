@@ -27,7 +27,7 @@
 	.radio .check:focus-visible,
 	.switch input[type="checkbox"]:focus + .check,
 	.switch .check:focus-visible {
-		@apply ring ring-fipu_blue;
+		@apply ring-3 ring-fipu_blue;
 	}
 
 	.checkbox input[type="checkbox"] + .check,
@@ -39,7 +39,7 @@
 
 	.checkbox input[type="checkbox"] + .check,
 	.checkbox .check {
-		@apply rounded;
+		@apply rounded-sm;
 	}
 
 	.switch input[type="checkbox"] + .check,

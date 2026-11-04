@@ -82,15 +82,15 @@ function handleOptionSelect(option) {
 				<DropdownMenu.Content
 					:align="left ? 'start' : 'end'"
 					:side-offset="8"
-					:class="label ? 'w-[var(--reka-dropdown-menu-trigger-width)]' : 'w-56'"
-					class="reka-animated z-[99999] max-h-[var(--reka-dropdown-menu-content-available-height)] divide-y divide-gray-100 overflow-y-auto rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none dark:divide-gray-700 dark:bg-slate-800">
+					:class="label ? 'w-(--reka-dropdown-menu-trigger-width)' : 'w-56'"
+					class="reka-animated z-99999 max-h-(--reka-dropdown-menu-content-available-height) divide-y divide-gray-100 overflow-y-auto rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-hidden dark:divide-gray-700 dark:bg-slate-800">
 					<DropdownMenu.Group v-for="(optionsGroup, index) in options" :key="index" class="px-1 py-1">
 						<DropdownMenu.Item
 							v-for="option in optionsGroup"
 							:key="option.id"
 							:disabled="option.disabled || option.unavailable"
 							:text-value="option.label"
-							class="group flex w-full cursor-pointer items-center rounded-md px-2 py-2 text-sm outline-none data-[disabled]:pointer-events-none data-[highlighted]:bg-gray-100 data-[disabled]:opacity-50 dark:data-[highlighted]:bg-slate-700"
+							class="group flex w-full cursor-pointer items-center rounded-md px-2 py-2 text-sm outline-hidden data-disabled:pointer-events-none data-highlighted:bg-gray-100 data-disabled:opacity-50 dark:data-highlighted:bg-slate-700"
 							@select="handleOptionSelect(option)">
 							<BaseIcon v-if="option.icon" :path="option.icon" class="mr-3 shrink-0" />
 							<span>{{ option.label }}</span>

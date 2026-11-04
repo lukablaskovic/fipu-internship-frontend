@@ -1,12 +1,12 @@
 # multi stage dockerfile build, first stage is to build the app and second stage is to run the app in nginx server
 
-FROM node:18 as build-stage
+FROM node:22-bookworm-slim AS build-stage
 
 WORKDIR /app
 
 COPY package*.json ./
 COPY vendor ./vendor
-RUN npm install
+RUN npm ci
 
 COPY . .
 ARG FRONTEND_CHANNEL=latest

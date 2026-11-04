@@ -22,6 +22,7 @@ defineProps({
 </template>
 
 <style scoped>
+@reference "../css/main.css";
 .loader {
 	border-top-color: theme("colors.fipu_blue");
 	-webkit-animation: spinner 1.5s linear infinite;

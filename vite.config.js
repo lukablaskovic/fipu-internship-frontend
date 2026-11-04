@@ -1,17 +1,10 @@
-import { fileURLToPath } from "url";
-import path from "path";
-
-// import vueDevTools from "vite-plugin-vue-devtools"; // Temporarily disabled due to localStorage error
-import vue from "@vitejs/plugin-vue";
-
-import { defineConfig } from "vite";
-
-const __filename = fileURLToPath(import.meta.url);
-
-const __dirname = path.dirname(__filename);
+/* eslint-env node */
+const path = require("node:path");
+const vue = require("@vitejs/plugin-vue").default;
+const { defineConfig } = require("vite");
 
 // https://vitejs.dev/config/
-export default defineConfig({
+module.exports = defineConfig({
 	//base: "/fipu/",
 	assetsInclude: "**/*.xml",
 	plugins: [vue()],
@@ -34,13 +27,5 @@ export default defineConfig({
 	build: {
 		// Keep the technology catalog's SVGs as assets so browsers load only visible icons.
 		assetsInlineLimit: 0,
-		rollupOptions: {
-			output: {
-				manualChunks: {
-					vue: ["vue"],
-					vendor: ["axios"],
-				},
-			},
-		},
 	},
 });

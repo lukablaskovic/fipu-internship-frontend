@@ -96,6 +96,7 @@ function openModal(assignmentDetails) {
 </template>
 
 <style scoped>
+@reference "../../css/main.css";
 .ghost {
 	opacity: 0.5;
 	background: theme("colors.fipu_light_blue / 25%");

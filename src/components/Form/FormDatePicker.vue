@@ -32,17 +32,17 @@ const selected = computed({
 <template>
 	<DatePicker.Root :id="id" v-model="selected" :name="name" locale="hr-HR" :week-starts-on="1" :disabled="disabled" :readonly="readonly" :required="required" :min-value="date(min)" :max-value="date(max)" close-on-select>
 		<DatePicker.Field v-slot="{ segments }" :class="inputClass" class="form-control-surface flex items-center border-gray-700 bg-white dark:bg-slate-800">
-			<DatePicker.Input v-for="item in segments" :key="item.part" :part="item.part" class="rounded focus:bg-fipu_blue/20 focus:outline-none">{{ item.value }}</DatePicker.Input>
-			<DatePicker.Trigger v-if="!readonly" :disabled="disabled" aria-label="Otvori kalendar" class="-my-2 flex flex-1 items-center justify-end self-stretch rounded focus-visible:ring focus-visible:ring-fipu_blue">
+			<DatePicker.Input v-for="item in segments" :key="item.part" :part="item.part" class="rounded-sm focus:bg-fipu_blue/20 focus:outline-hidden">{{ item.value }}</DatePicker.Input>
+			<DatePicker.Trigger v-if="!readonly" :disabled="disabled" aria-label="Otvori kalendar" class="-my-2 flex flex-1 items-center justify-end self-stretch rounded-sm focus-visible:ring-3 focus-visible:ring-fipu_blue">
 				<BaseIcon :path="mdiCalendarMonthOutline" :size="20" aria-hidden="true" />
 			</DatePicker.Trigger>
 		</DatePicker.Field>
-		<DatePicker.Content side="bottom" align="end" :collision-padding="8" :side-offset="4" class="reka-animated z-[10000] rounded border border-gray-200 bg-white p-3 text-gray-700 shadow-lg dark:bg-slate-800 dark:text-white">
+		<DatePicker.Content side="bottom" align="end" :collision-padding="8" :side-offset="4" class="reka-animated z-10000 rounded-sm border border-gray-200 bg-white p-3 text-gray-700 shadow-lg dark:bg-slate-800 dark:text-white">
 			<DatePicker.Calendar v-slot="{ grid, weekDays }">
 				<DatePicker.Header class="mb-2 flex items-center justify-between gap-3">
-					<DatePicker.Prev aria-label="Prethodni mjesec" class="rounded p-2 hover:bg-gray-100 focus-visible:ring">‹</DatePicker.Prev>
+					<DatePicker.Prev aria-label="Prethodni mjesec" class="rounded-sm p-2 hover:bg-gray-100 focus-visible:ring-3">‹</DatePicker.Prev>
 					<DatePicker.Heading class="font-semibold" />
-					<DatePicker.Next aria-label="Sljedeći mjesec" class="rounded p-2 hover:bg-gray-100 focus-visible:ring">›</DatePicker.Next>
+					<DatePicker.Next aria-label="Sljedeći mjesec" class="rounded-sm p-2 hover:bg-gray-100 focus-visible:ring-3">›</DatePicker.Next>
 				</DatePicker.Header>
 				<DatePicker.Grid v-for="month in grid" :key="month.value.toString()" class="date-grid">
 					<DatePicker.GridHead
@@ -56,7 +56,7 @@ const selected = computed({
 								<DatePicker.CellTrigger
 									:day="day"
 									:month="month.value"
-									class="flex h-9 w-9 items-center justify-center rounded data-[disabled]:pointer-events-none data-[selected]:bg-fipu_blue data-[today]:font-bold data-[outside-view]:text-gray-400 data-[selected]:text-white data-[disabled]:opacity-30 hover:bg-gray-100 focus-visible:ring focus-visible:ring-fipu_blue" />
+									class="flex h-9 w-9 items-center justify-center rounded-sm data-disabled:pointer-events-none data-selected:bg-fipu_blue data-today:font-bold data-outside-view:text-gray-400 data-selected:text-white data-disabled:opacity-30 hover:bg-gray-100 focus-visible:ring-3 focus-visible:ring-fipu_blue" />
 							</DatePicker.Cell>
 						</DatePicker.GridRow>
 					</DatePicker.GridBody>

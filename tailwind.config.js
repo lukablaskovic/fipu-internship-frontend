@@ -1,9 +1,8 @@
 /* eslint-env node */
 
-const plugin = require("tailwind-scrollbar");
+const plugin = require("tailwindcss/plugin");
 
 module.exports = {
-	mode: "jit",
 	content: ["./index.html", "./src/**/*.{vue,js,ts,jsx,tsx}"],
 	darkMode: "class",
 	theme: {
@@ -18,14 +17,10 @@ module.exports = {
 			danger: "red",
 		},
 
-		corePlugins: {
-			aspectRatio: false,
-		},
-
 		extend: {
 			screens: {
-				"3xl": "1600px",
-				ultrawide: "2560px",
+				"3xl": "100rem",
+				ultrawide: "160rem",
 			},
 			maxWidth: {
 				"8xl": "90rem",

@@ -291,10 +291,10 @@ watch(partnerType, () => {
 					<Stepper.Root :model-value="currentStep" class="-mx-6 mb-4 grid grid-cols-4 items-start sm:mx-0 sm:mb-8" aria-label="Koraci prijave zadatka" @update:model-value="goToStep">
 						<Stepper.Item v-for="(step, index) in steps" :key="step.title" :step="index + 1" :disabled="isLoading" class="group relative flex min-w-0 flex-col items-center">
 							<Stepper.Trigger
-								class="relative z-10 flex w-full flex-col items-center gap-2 rounded p-1 text-center focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-fipu_blue disabled:cursor-not-allowed"
+								class="relative z-10 flex w-full flex-col items-center gap-2 rounded-sm p-1 text-center focus-visible:outline-solid focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-fipu_blue disabled:cursor-not-allowed"
 								@mousedown.left.prevent>
 								<Stepper.Indicator
-									class="flex h-10 w-10 items-center justify-center rounded-full border-2 border-gray-300 bg-white font-semibold text-gray-600 transition-colors duration-200 group-data-[state=active]:border-fipu_blue group-data-[state=completed]:border-fipu_blue group-data-[state=active]:bg-fipu_blue group-data-[state=completed]:bg-cyan-50 group-data-[state=active]:text-slate-900 group-data-[state=completed]:text-slate-900 motion-reduce:transition-none dark:border-slate-600 dark:bg-slate-900 dark:text-slate-300 group-data-[state=active]:dark:bg-fipu_blue group-data-[state=completed]:dark:bg-cyan-950 group-data-[state=active]:dark:text-slate-900 group-data-[state=completed]:dark:text-slate-100"
+									class="flex h-10 w-10 items-center justify-center rounded-full border-2 border-gray-300 bg-white font-semibold text-gray-600 transition-colors duration-200 group-data-[state=active]:border-fipu_blue group-data-[state=completed]:border-fipu_blue group-data-[state=active]:bg-fipu_blue group-data-[state=completed]:bg-cyan-50 group-data-[state=active]:text-slate-900 group-data-[state=completed]:text-slate-900 motion-reduce:transition-none dark:border-slate-600 dark:bg-slate-900 dark:text-slate-300 dark:group-data-[state=active]:bg-fipu_blue dark:group-data-[state=completed]:bg-cyan-950 dark:group-data-[state=active]:text-slate-900 dark:group-data-[state=completed]:text-slate-100"
 									>{{ index + 1 }}</Stepper.Indicator
 								>
 								<Stepper.Title class="sr-only font-semibold sm:not-sr-only">{{ step.title }}</Stepper.Title>
@@ -305,10 +305,10 @@ watch(partnerType, () => {
 					</Stepper.Root>
 
 					<div :key="currentStep" ref="stepPanel" class="assignment-step-panel">
-						<h2 id="assignment-step-title" tabindex="-1" class="mb-6 text-xl font-semibold focus:outline-none">{{ currentStep }}. {{ steps[currentStep - 1].title }}</h2>
+						<h2 id="assignment-step-title" tabindex="-1" class="mb-6 text-xl font-semibold focus:outline-hidden">{{ currentStep }}. {{ steps[currentStep - 1].title }}</h2>
 						<fieldset v-if="currentStep === 1" :disabled="isLoading" aria-labelledby="assignment-step-title" class="min-w-0">
 							<FormField name="partnerType" label="Prijavljujem zadatak*" :error="getFirstErrorForField(v$, 'partnerType')">
-								<FormControl v-model="partnerType" class="[&_button]:!h-auto [&_button]:min-h-[3rem]" :options="partnerOptions" placeholder="Odaberite status partnerstva" required />
+								<FormControl v-model="partnerType" class="[&_button]:h-auto! [&_button]:min-h-12" :options="partnerOptions" placeholder="Odaberite status partnerstva" required />
 							</FormField>
 						</fieldset>
 						<fieldset v-if="currentStep === 2" :disabled="isLoading" aria-labelledby="assignment-step-title" class="min-w-0">

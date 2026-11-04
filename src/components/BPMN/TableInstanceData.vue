@@ -33,7 +33,7 @@ const rows = computed(() => completedTaskRows(task.value?.form_fields, props.var
 	<dl v-else class="divide-y divide-slate-200 text-sm dark:divide-slate-700">
 		<div v-for="row in rows" :key="row.key" class="grid gap-1 py-3 first:pt-0 last:pb-0 sm:grid-cols-[minmax(0,2fr)_minmax(0,3fr)] sm:gap-6">
 			<dt class="font-medium text-slate-600 dark:text-slate-300">{{ row.label }}</dt>
-			<dd class="min-w-0 break-words text-slate-900 dark:text-slate-100">
+			<dd class="min-w-0 wrap-break-word text-slate-900 dark:text-slate-100">
 				<TableCellText :value="row.value" />
 			</dd>
 		</div>

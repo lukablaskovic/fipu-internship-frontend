@@ -80,8 +80,8 @@ const cancel = () => confirmCancel("cancel");
 <template>
 	<Dialog.Root :open="!!value" @update:open="!$event && cancel()">
 		<Dialog.Portal>
-			<Dialog.Overlay class="reka-animated fixed inset-0 z-[5000]" :class="isLogout || isBpmn ? 'bg-slate-950/50' : 'bg-gradient-to-tr from-gray-700 via-gray-800 to-gray-900 opacity-90'" />
-			<div class="pointer-events-none fixed inset-0 z-[5001] flex items-center justify-center"><Dialog.Content class="reka-animated" as-child v-bind="description ? {} : { 'aria-describedby': undefined }" @close-auto-focus="restoreFocus">
+			<Dialog.Overlay class="reka-animated fixed inset-0 z-5000" :class="isLogout || isBpmn ? 'bg-slate-950/50' : 'bg-linear-to-tr from-gray-700 via-gray-800 to-gray-900 opacity-90'" />
+			<div class="pointer-events-none fixed inset-0 z-5001 flex items-center justify-center"><Dialog.Content class="reka-animated" as-child v-bind="description ? {} : { 'aria-describedby': undefined }" @close-auto-focus="restoreFocus">
 				<CardBox
 					class="pointer-events-auto rounded-2xl [&>div]:min-w-0"
 					:class="{

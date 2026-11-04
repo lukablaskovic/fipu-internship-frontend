@@ -148,7 +148,7 @@ const details = computed(() => [
 									align="start"
 									:side-offset="8"
 									:collision-padding="16"
-									class="reka-animated z-[10000] max-h-[var(--reka-popover-content-available-height)] w-96 max-w-[calc(100vw-2rem)] overflow-y-auto rounded-lg border border-gray-200 bg-white p-4 text-gray-900 shadow-lg dark:border-slate-700 dark:bg-slate-800 dark:text-white"
+									class="reka-animated z-10000 max-h-(--reka-popover-content-available-height) w-96 max-w-[calc(100vw-2rem)] overflow-y-auto rounded-lg border border-gray-200 bg-white p-4 text-gray-900 shadow-lg dark:border-slate-700 dark:bg-slate-800 dark:text-white"
 									@escape-key-down="saving && $event.preventDefault()"
 									@interact-outside="saving && $event.preventDefault()">
 									<form id="avatar-editor" @submit.prevent="saveAvatar()" @dragover.prevent="!saving && (dragging = true)" @dragleave.prevent="dragging = false" @drop.prevent="selectFile($event.dataTransfer.files)">
@@ -184,7 +184,7 @@ const details = computed(() => [
 						</Popover.Root>
 					</div>
 					<div class="min-w-0">
-						<h2 class="break-words text-xl font-semibold">{{ mainStore.currentUser.ime }} {{ mainStore.currentUser.prezime }}</h2>
+						<h2 class="wrap-break-word text-xl font-semibold">{{ mainStore.currentUser.ime }} {{ mainStore.currentUser.prezime }}</h2>
 						<div class="mt-1 flex flex-wrap gap-2 text-sm text-fipu_gray dark:text-gray-300">
 							<PillTagPlain :reverse-dark="true" :label="mainStore.userAdmin ? 'Admin' : 'Student'" :icon="mdiAccountCircle" />
 							<PillTagPlain :reverse-dark="true" label="FIPU" :icon="mdiDomain" />
@@ -200,7 +200,7 @@ const details = computed(() => [
 				<dl class="my-5 grid grid-cols-1 gap-x-6 gap-y-4 border-y border-gray-100 py-5 dark:border-slate-700 sm:grid-cols-2 lg:grid-cols-3">
 					<div v-for="[label, value] in details" :key="label" class="min-w-0">
 						<dt class="text-sm text-gray-500 dark:text-gray-400">{{ label }}</dt>
-						<dd class="mt-1 break-words font-medium">{{ value || "—" }}</dd>
+						<dd class="mt-1 wrap-break-word font-medium">{{ value || "—" }}</dd>
 					</div>
 				</dl>
 
@@ -214,6 +214,7 @@ const details = computed(() => [
 </template>
 
 <style scoped>
+@reference "../../css/main.css";
 .profile-avatar,
 .profile-avatar :deep(img),
 .profile-avatar :deep([role="img"]) {

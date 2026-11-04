@@ -216,7 +216,7 @@ const { perPage, currentPage, itemsPaginated } = usePagination(logGroups);
 				<p class="mb-4"><b>Akademska godina:</b> {{ appConfig.academicYear }}</p>
 				<Tabs.Root v-model="statisticsModel">
 					<Tabs.List aria-label="Statistika po modelu prakse" class="mb-4 inline-flex rounded-lg bg-white p-1 text-sm dark:bg-slate-800">
-						<Tabs.Trigger v-for="model in [{ id: 'A', label: 'A' }, { id: 'B', label: 'B' }, { id: 'AB', label: 'Sve' }]" :key="model.id" :value="model.id" class="rounded px-3 py-1.5 focus-visible:outline focus-visible:outline-2 focus-visible:outline-fipu_blue data-[state=active]:bg-fipu_blue data-[state=active]:text-white">{{ model.label }}</Tabs.Trigger>
+						<Tabs.Trigger v-for="model in [{ id: 'A', label: 'A' }, { id: 'B', label: 'B' }, { id: 'AB', label: 'Sve' }]" :key="model.id" :value="model.id" class="rounded-sm px-3 py-1.5 focus-visible:outline-solid focus-visible:outline-2 focus-visible:outline-fipu_blue data-[state=active]:bg-fipu_blue data-[state=active]:text-white">{{ model.label }}</Tabs.Trigger>
 					</Tabs.List>
 					<Tabs.Content v-for="group in statisticGroups" :key="group.id" :value="group.id">
 						<p class="mb-4"><b>Statistika | <template v-if="group.id === 'AB'">Općenito</template><template v-else>Model prakse <PillTag :color="group.pill" :label="group.id" /></template></b></p>
@@ -245,10 +245,10 @@ const { perPage, currentPage, itemsPaginated } = usePagination(logGroups);
 					<p class="mb-4 text-sm text-gray-500 dark:text-slate-400">Broj procesa u trenutačnoj fazi</p>
 					<div v-if="!adminStore.studentsFetched" role="status" aria-label="Učitavanje praksi…" class="space-y-3">
 						<div v-for="width in ['80%', '55%', '65%', '35%']" :key="width" class="grid gap-2 p-1 motion-safe:animate-pulse sm:grid-cols-[16rem_1fr] sm:items-center" aria-hidden="true">
-							<div class="h-5 w-4/5 rounded bg-gray-200 dark:bg-slate-700"></div>
+							<div class="h-5 w-4/5 rounded-sm bg-gray-200 dark:bg-slate-700"></div>
 							<div class="flex items-center gap-3">
-								<div class="flex-1"><div class="h-6 rounded bg-gray-200 dark:bg-slate-700" :style="{ width }"></div></div>
-								<div class="h-5 w-10 rounded bg-gray-200 dark:bg-slate-700"></div>
+								<div class="flex-1"><div class="h-6 rounded-sm bg-gray-200 dark:bg-slate-700" :style="{ width }"></div></div>
+								<div class="h-5 w-10 rounded-sm bg-gray-200 dark:bg-slate-700"></div>
 							</div>
 						</div>
 					</div>
@@ -256,10 +256,10 @@ const { perPage, currentPage, itemsPaginated } = usePagination(logGroups);
 					<p v-else-if="!stageCounts.length" role="status">Nema praksi za odabrani model.</p>
 					<ul v-else class="space-y-3">
 						<li v-for="{ stage, count } in stageCounts" :key="stage">
-							<RouterLink :to="{ path: '/studenti', query: { model: statisticsModel, stage, instances: 'all' } }" :aria-label="`${stage}: ${count} — Prikaži studente`" class="grid gap-2 rounded p-1 hover:bg-fipu_blue/10 focus-visible:outline focus-visible:outline-2 focus-visible:outline-fipu_blue sm:grid-cols-[16rem_1fr] sm:items-center">
+							<RouterLink :to="{ path: '/studenti', query: { model: statisticsModel, stage, instances: 'all' } }" :aria-label="`${stage}: ${count} — Prikaži studente`" class="grid gap-2 rounded-sm p-1 hover:bg-fipu_blue/10 focus-visible:outline-solid focus-visible:outline-2 focus-visible:outline-fipu_blue sm:grid-cols-[16rem_1fr] sm:items-center">
 								<span class="text-sm">{{ stage }}</span>
 								<span class="flex items-center gap-3">
-									<span class="h-6 flex-1 rounded bg-slate-100 dark:bg-slate-800" aria-hidden="true"><span class="block h-full rounded" :class="statisticsModel === 'A' ? 'bg-rose-600' : statisticsModel === 'B' ? 'bg-emerald-500' : 'bg-fipu_blue'" :style="{ width: `${count / maxStageCount * 100}%` }"></span></span>
+									<span class="h-6 flex-1 rounded-sm bg-slate-100 dark:bg-slate-800" aria-hidden="true"><span class="block h-full rounded-sm" :class="statisticsModel === 'A' ? 'bg-rose-600' : statisticsModel === 'B' ? 'bg-emerald-500' : 'bg-fipu_blue'" :style="{ width: `${count / maxStageCount * 100}%` }"></span></span>
 									<span class="w-10 text-right text-sm font-semibold tabular-nums">{{ count }}</span>
 								</span>
 							</RouterLink>
@@ -293,7 +293,7 @@ const { perPage, currentPage, itemsPaginated } = usePagination(logGroups);
 							</thead>
 							<tbody v-if="eventsLoading" aria-hidden="true">
 								<tr v-for="row in 3" :key="row" class="motion-safe:animate-pulse">
-									<td v-for="column in logColumns" :key="column.id" class="px-3 py-3"><div class="h-4 w-20 rounded bg-gray-200 dark:bg-slate-700"></div></td>
+									<td v-for="column in logColumns" :key="column.id" class="px-3 py-3"><div class="h-4 w-20 rounded-sm bg-gray-200 dark:bg-slate-700"></div></td>
 									<td v-if="groupByStudent"></td>
 								</tr>
 							</tbody>
@@ -306,7 +306,7 @@ const { perPage, currentPage, itemsPaginated } = usePagination(logGroups);
 									<td class="px-3 py-2"><TableCellText :value="event.model_version == null ? '—' : 'v' + event.model_version" /></td>
 									<td class="px-3 py-2"><TableCellText :value="ActivityEventMappings.getEvent(event.activity_id)?.message || event.activity_id" /></td><td class="whitespace-nowrap px-3 py-2"><TableCellText :value="formattedDate(event.timestamp)" /></td>
 									<td v-if="groupByStudent" class="px-3 py-2 text-right">
-										<button v-if="index === 0 && group.events.length > 1" type="button" class="inline-flex items-center gap-1 rounded px-2 py-1 text-fipu_blue hover:bg-fipu_blue/10" :aria-expanded="expandedGroups.has(group.key)" :aria-label="`Događaji za studenta: ${studentName(event)} (${group.events.length})`" @click="toggleGroup(group.key)">
+										<button v-if="index === 0 && group.events.length > 1" type="button" class="inline-flex items-center gap-1 rounded-sm px-2 py-1 text-fipu_blue hover:bg-fipu_blue/10" :aria-expanded="expandedGroups.has(group.key)" :aria-label="`Događaji za studenta: ${studentName(event)} (${group.events.length})`" @click="toggleGroup(group.key)">
 											{{ group.events.length }}
 											<BaseIcon :path="mdiChevronDown" :size="18" :class="{ 'rotate-180': expandedGroups.has(group.key) }" aria-hidden="true" />
 										</button>

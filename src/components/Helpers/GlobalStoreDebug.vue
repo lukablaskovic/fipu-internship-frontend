@@ -46,8 +46,8 @@ const newValueFormatted = computed(() => {
 </script>
 
 <template>
-	<div v-if="debug" class="fixed z-[1000] flex h-screen w-screen items-center justify-center px-[8%] py-16 backdrop-blur-sm">
-		<div class="flex h-full w-full flex-col rounded-xl bg-black bg-opacity-90 p-4 text-slate-400 shadow-xl">
+	<div v-if="debug" class="fixed z-1000 flex h-screen w-screen items-center justify-center px-[8%] py-16 backdrop-blur-xs">
+		<div class="flex h-full w-full flex-col rounded-xl bg-black/90 p-4 text-slate-400 shadow-xl">
 			<div class="text-center text-2xl font-bold">DEBUG INFO</div>
 			<Tooltip :content="String(depth)"><div tabindex="0" class="self-center"><Slider v-model="depth" class="slider my-4 h-[8px] min-h-[8px] w-64 self-center" :min="1" :max="8" :show-tooltip="false" :merge="1" :lazy="false" /></div></Tooltip>
 			<div class="fipu_vertical_scrollbar flex w-full items-center justify-start overflow-x-auto overflow-y-hidden py-1 pb-4">
@@ -59,13 +59,15 @@ const newValueFormatted = computed(() => {
 			</div>
 		</div>
 	</div>
-	<div class="fixed bottom-2 right-2 z-[2000]" @click="debug = !debug">
+	<div class="fixed bottom-2 right-2 z-2000" @click="debug = !debug">
 		<BaseIcon :path="mdiHelpCircle" h="40" w="40" :size="40" class="text-main_lighttext hover:text-main_cyan mr-2 text-4xl opacity-50 hover:cursor-pointer" />
 	</div>
 </template>
 
-<style src="@vueform/slider/themes/default.css"></style>
+<style src="@vueform/slider/themes/default.css">
+@reference "../../css/main.css";</style>
 <style>
+@reference "../../css/main.css";
 input:-webkit-autofill,
 input:-webkit-autofill:hover,
 input:-webkit-autofill:focus,

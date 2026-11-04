@@ -33,8 +33,9 @@ watchEffect(() => {
 </template>
 
 <style scoped>
+@reference "../../css/main.css";
 .pagination :deep(button) {
-	@apply inline-flex h-9 min-w-[2.25rem] items-center justify-center rounded border border-fipu_blue bg-white px-2 text-sm transition-colors hover:bg-gray-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-fipu_blue focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-40 dark:bg-slate-900 dark:hover:bg-slate-800;
+	@apply inline-flex h-9 min-w-9 items-center justify-center rounded-sm border border-fipu_blue bg-white px-2 text-sm transition-colors hover:bg-gray-100 focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-fipu_blue focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-40 dark:bg-slate-900 dark:hover:bg-slate-800;
 }
 .pagination :deep(button[data-selected]) {
 	@apply border-fipu_blue bg-fipu_blue text-white hover:bg-fipu_blue dark:border-fipu_blue dark:bg-fipu_blue dark:hover:bg-fipu_blue;

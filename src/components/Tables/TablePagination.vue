@@ -20,7 +20,7 @@ function changePerPage(option) {
 <template>
 	<div v-if="total > 0" class="flex flex-wrap items-center justify-between gap-2 border-t border-gray-100 p-3 dark:border-slate-800 lg:gap-3 lg:px-6">
 		<ButtonMenu v-if="showPerPage" class="pagination-page-size" :options="tableButtonMenuOptions" :label="`${perPage} stavki po stranici`" small left @update:model-value="changePerPage" />
-		<BasePagination class="order-last w-full lg:order-none lg:w-auto" :page="page + 1" :total="total" :items-per-page="perPage" @update:page="emit('update:page', $event - 1)" />
+		<BasePagination class="order-last w-full lg:order-0 lg:w-auto" :page="page + 1" :total="total" :items-per-page="perPage" @update:page="emit('update:page', $event - 1)" />
 		<small class="ml-auto"><slot />Stranica {{ page + 1 }} od {{ Math.ceil(total / perPage) }}</small>
 	</div>
 </template>

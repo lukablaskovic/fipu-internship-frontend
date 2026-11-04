@@ -14,7 +14,7 @@ const { renderToString } = require("vue/server-renderer");
 	const cacheDir = mkdtempSync(join(tmpdir(), "fipu-ui-reuse-test-"));
 	const server = await createServer({
 		cacheDir,
-		server: { middlewareMode: true, hmr: { server: createHttpServer() } }, appType: "custom",
+		server: { middlewareMode: true, ws: { server: createHttpServer() } }, appType: "custom",
 		plugins: [{
 			name: "test-company-store",
 			load(id) {

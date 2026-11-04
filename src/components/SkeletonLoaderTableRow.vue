@@ -1,30 +1,30 @@
 <template>
 	<tr>
 		<td>
-			<div class="h-6 w-32 animate-pulse rounded bg-gray-200 dark:bg-slate-700"></div>
+			<div class="h-6 w-32 animate-pulse rounded-sm bg-gray-200 dark:bg-slate-700"></div>
 		</td>
 		<td>
-			<div class="h-6 w-32 animate-pulse rounded bg-gray-200 dark:bg-slate-700"></div>
+			<div class="h-6 w-32 animate-pulse rounded-sm bg-gray-200 dark:bg-slate-700"></div>
 		</td>
 		<td>
-			<div class="h-6 w-12 animate-pulse rounded bg-gray-200 dark:bg-slate-700"></div>
+			<div class="h-6 w-12 animate-pulse rounded-sm bg-gray-200 dark:bg-slate-700"></div>
 		</td>
 		<td>
-			<div class="h-6 w-12 animate-pulse rounded bg-gray-200 dark:bg-slate-700"></div>
+			<div class="h-6 w-12 animate-pulse rounded-sm bg-gray-200 dark:bg-slate-700"></div>
 		</td>
 		<td>
-			<div class="h-6 w-24 animate-pulse rounded bg-gray-200 dark:bg-slate-700"></div>
+			<div class="h-6 w-24 animate-pulse rounded-sm bg-gray-200 dark:bg-slate-700"></div>
 		</td>
 		<td class="lg:w-32">
-			<div class="h-4 w-32 animate-pulse rounded bg-gray-200 dark:bg-slate-700"></div>
+			<div class="h-4 w-32 animate-pulse rounded-sm bg-gray-200 dark:bg-slate-700"></div>
 		</td>
 		<td>
-			<div class="h-6 w-40 animate-pulse rounded bg-gray-200 dark:bg-slate-700"></div>
+			<div class="h-6 w-40 animate-pulse rounded-sm bg-gray-200 dark:bg-slate-700"></div>
 		</td>
 		<td class="whitespace-nowrap before:hidden lg:w-1">
 			<div class="flex space-x-2">
-				<div class="h-8 w-8 animate-pulse rounded bg-gray-200 dark:bg-slate-700"></div>
-				<div class="h-8 w-8 animate-pulse rounded bg-gray-200 dark:bg-slate-700"></div>
+				<div class="h-8 w-8 animate-pulse rounded-sm bg-gray-200 dark:bg-slate-700"></div>
+				<div class="h-8 w-8 animate-pulse rounded-sm bg-gray-200 dark:bg-slate-700"></div>
 			</div>
 		</td>
 	</tr>

@@ -12,8 +12,8 @@ const words = computed(() => text.value.match(/\S+/g) || []);
 	<span v-if="words.length <= 25"><slot>{{ text }}</slot></span>
 	<span v-else class="block min-w-0 max-w-full whitespace-normal">
 		<Popover.Root>
-			<Popover.Trigger type="button" class="block max-w-full rounded text-left focus-visible:outline focus-visible:outline-2 focus-visible:outline-fipu_blue" @click.stop>
-				<span class="preview break-words">{{ words.slice(0, 25).join(" ") }}…</span>
+			<Popover.Trigger type="button" class="block max-w-full rounded-sm text-left focus-visible:outline-solid focus-visible:outline-2 focus-visible:outline-fipu_blue" @click.stop>
+				<span class="preview wrap-break-word">{{ words.slice(0, 25).join(" ") }}…</span>
 				<span class="mt-1 block text-sm font-medium text-fipu_blue underline dark:text-sky-300">Prikaži više<span class="sr-only"> — cijeli tekst</span></span>
 			</Popover.Trigger>
 			<Popover.Portal>
@@ -22,9 +22,9 @@ const words = computed(() => text.value.match(/\S+/g) || []);
 					:side-offset="8"
 					:collision-padding="16"
 					aria-label="Cijeli tekst"
-					class="reka-animated z-[10000] max-h-[min(70vh,var(--reka-popover-content-available-height))] w-96 max-w-[calc(100vw-2rem)] overflow-y-auto rounded-lg border border-gray-200 bg-white p-4 text-left text-sm text-gray-900 shadow-lg dark:border-slate-700 dark:bg-slate-800 dark:text-white"
+					class="reka-animated z-10000 max-h-[min(70vh,var(--reka-popover-content-available-height))] w-96 max-w-[calc(100vw-2rem)] overflow-y-auto rounded-lg border border-gray-200 bg-white p-4 text-left text-sm text-gray-900 shadow-lg dark:border-slate-700 dark:bg-slate-800 dark:text-white"
 					@click.stop>
-					<div class="whitespace-pre-wrap [overflow-wrap:anywhere]"><slot>{{ text }}</slot></div>
+					<div class="whitespace-pre-wrap wrap-anywhere"><slot>{{ text }}</slot></div>
 					<Popover.Close as-child><BaseButton class="mt-3" label="Zatvori" small /></Popover.Close>
 				</Popover.Content>
 			</Popover.Portal>

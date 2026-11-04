@@ -54,7 +54,7 @@ onMounted(async () => {
 				<Accordion.Item value="about">
 					<Accordion.Header as="h2">
 						<Accordion.Trigger
-							class="group flex w-full items-center gap-3 rounded py-4 text-left text-2xl hover:text-sky-800 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-fipu_blue dark:hover:text-sky-300">
+							class="group flex w-full items-center gap-3 rounded-sm py-4 text-left text-2xl hover:text-sky-800 focus-visible:outline-solid focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-fipu_blue dark:hover:text-sky-300">
 							<BaseIcon :path="mdiInformation" size="24" aria-hidden="true" />
 							<span class="grow">O praksi</span>
 							<BaseIcon :path="mdiChevronDown" size="24" class="group-data-[state=open]:rotate-180 motion-safe:transition-transform" aria-hidden="true" />
@@ -81,7 +81,7 @@ onMounted(async () => {
 				<Accordion.Item value="communication">
 					<Accordion.Header as="h2">
 						<Accordion.Trigger
-							class="group flex w-full items-center gap-3 rounded py-4 text-left text-2xl hover:text-sky-800 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-fipu_blue dark:hover:text-sky-300">
+							class="group flex w-full items-center gap-3 rounded-sm py-4 text-left text-2xl hover:text-sky-800 focus-visible:outline-solid focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-fipu_blue dark:hover:text-sky-300">
 							<BaseIcon :path="mdiChatQuestionOutline" size="24" aria-hidden="true" />
 							<span class="grow">Komunikacija</span>
 							<BaseIcon :path="mdiChevronDown" size="24" class="group-data-[state=open]:rotate-180 motion-safe:transition-transform" aria-hidden="true" />
@@ -132,7 +132,7 @@ onMounted(async () => {
 						<span class="text-sm">Imam dogovorenu tvrtku</span>
 					</Tabs.Trigger>
 				</Tabs.List>
-				<Tabs.Content value="A" class="rounded focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-fipu_blue">
+				<Tabs.Content value="A" class="rounded-sm focus-visible:outline-solid focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-fipu_blue">
 					<SectionTitleLineWithButton :icon="mdiAlphaACircle" main title="Model A"> </SectionTitleLineWithButton>
 					<h2 class="my-2 text-xl font-bold underline">Student nema ugovorenu tvrtku</h2>
 
@@ -179,7 +179,7 @@ onMounted(async () => {
 						<li>Uspješno ste odradili stručnu praksu! Čestitamo! 🎊</li>
 					</ol>
 				</Tabs.Content>
-				<Tabs.Content value="B" class="rounded focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-fipu_blue">
+				<Tabs.Content value="B" class="rounded-sm focus-visible:outline-solid focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-fipu_blue">
 					<SectionTitleLineWithButton :icon="mdiAlphaBCircle" main title="Model B"></SectionTitleLineWithButton>
 
 					<h2 class="my-2 text-xl font-bold underline">Već ugovorena/obavljena praksa (u dogovoru s voditeljem!)</h2>
@@ -231,7 +231,8 @@ onMounted(async () => {
 </template>
 
 <style scoped>
+@reference "../../css/main.css";
 .instructions-tab {
-	@apply flex min-w-0 flex-col gap-1 rounded px-3 py-3 text-left transition-colors data-[state=active]:bg-sky-100 data-[state=active]:text-sky-900 data-[state=inactive]:hover:bg-gray-100 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-fipu_blue dark:data-[state=active]:bg-sky-900 dark:data-[state=active]:text-sky-100 dark:data-[state=inactive]:hover:bg-slate-800;
+	@apply flex min-w-0 flex-col gap-1 rounded-sm px-3 py-3 text-left transition-colors data-[state=active]:bg-sky-100 data-[state=active]:text-sky-900 data-[state=inactive]:hover:bg-gray-100 focus-visible:outline-solid focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-fipu_blue dark:data-[state=active]:bg-sky-900 dark:data-[state=active]:text-sky-100 dark:data-[state=inactive]:hover:bg-slate-800;
 }
 </style>

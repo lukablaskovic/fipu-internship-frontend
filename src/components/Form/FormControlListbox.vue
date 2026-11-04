@@ -45,7 +45,7 @@ function update(value) {
 			<Select.Value :placeholder="placeholder" /><Select.Icon aria-hidden="true" class="inline-flex shrink-0 items-center text-gray-500 dark:text-slate-400"><BaseIcon :path="mdiChevronDown" w="w-4" h="h-4" :size="16" /></Select.Icon>
 		</Select.Trigger>
 		<Select.Portal>
-			<Select.Content position="popper" :side-offset="4" class="reka-animated z-[10000] max-h-60 min-w-[var(--reka-select-trigger-width)] max-w-[calc(100vw-2rem)] overflow-auto rounded bg-white text-gray-700 shadow-lg ring-1 ring-black/10 dark:bg-slate-800 dark:text-white">
+			<Select.Content position="popper" :side-offset="4" class="reka-animated z-10000 max-h-60 min-w-(--reka-select-trigger-width) max-w-[calc(100vw-2rem)] overflow-auto rounded-sm bg-white text-gray-700 shadow-lg ring-1 ring-black/10 dark:bg-slate-800 dark:text-white">
 				<Select.Viewport>
 					<Select.Item
 						v-for="(option, index) in options"
@@ -53,8 +53,8 @@ function update(value) {
 						:value="String(index)"
 						:disabled="!!(option?.unavailable || option?.disabled)"
 						:text-value="String(option?.label ?? option)"
-						class="relative flex cursor-default select-none items-center gap-2 px-3 py-2 outline-none data-[highlighted]:bg-gray-100 data-[disabled]:opacity-50 dark:data-[highlighted]:bg-slate-700">
-						<Select.ItemIndicator class="absolute left-2">✓</Select.ItemIndicator><Select.ItemText class="min-w-0 break-words whitespace-normal pl-5">{{ option?.label ?? option }}</Select.ItemText>
+						class="relative flex cursor-default select-none items-center gap-2 px-3 py-2 outline-hidden data-highlighted:bg-gray-100 data-disabled:opacity-50 dark:data-highlighted:bg-slate-700">
+						<Select.ItemIndicator class="absolute left-2">✓</Select.ItemIndicator><Select.ItemText class="min-w-0 wrap-break-word whitespace-normal pl-5">{{ option?.label ?? option }}</Select.ItemText>
 					</Select.Item>
 				</Select.Viewport>
 			</Select.Content>

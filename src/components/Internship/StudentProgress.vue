@@ -45,7 +45,7 @@ onBeforeUnmount(() => clearTimeout(closeTimer));
 	<div v-if="progress" class="sticky top-14 z-20 w-full bg-gray-50 dark:bg-slate-800">
 		<Popover.Root v-model:open="open">
 			<Popover.Trigger as-child>
-				<button type="button" :aria-label="`Napredak prakse: ${status}. Prikaži faze prakse.`" class="block min-h-[44px] w-full py-4 outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-cyan-700 dark:focus-visible:ring-fipu_blue" @pointerenter="show" @pointerleave="close">
+				<button type="button" :aria-label="`Napredak prakse: ${status}. Prikaži faze prakse.`" class="block min-h-[44px] w-full py-4 outline-hidden focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-cyan-700 dark:focus-visible:ring-fipu_blue" @pointerenter="show" @pointerleave="close">
 					<Progress.Root :model-value="progress.value" :get-value-label="() => status" aria-label="Napredak stručne prakse" class="relative h-2 w-full overflow-hidden bg-slate-200 dark:bg-slate-700">
 						<Progress.Indicator class="h-full bg-fipu_blue motion-safe:transition-transform motion-safe:duration-500" :style="{ transform: `translateX(-${100 - (progress.value ?? 0)}%)` }" />
 						<span aria-hidden="true" class="pointer-events-none absolute inset-0 flex">
@@ -55,7 +55,7 @@ onBeforeUnmount(() => clearTimeout(closeTimer));
 				</button>
 			</Popover.Trigger>
 			<Popover.Portal>
-				<Popover.Content side="bottom" :side-offset="0" :collision-padding="12" :class="{ dark: uiStore.darkMode }" class="reka-animated z-40 max-h-[var(--reka-popover-content-available-height)] w-[36rem] max-w-[calc(100vw-24px)] overflow-y-auto rounded-xl outline-none" aria-label="Faze stručne prakse" @open-auto-focus.prevent @close-auto-focus.prevent @pointerenter="show" @pointerleave="close">
+				<Popover.Content side="bottom" :side-offset="0" :collision-padding="12" :class="{ dark: uiStore.darkMode }" class="reka-animated z-40 max-h-(--reka-popover-content-available-height) w-xl max-w-[calc(100vw-24px)] overflow-y-auto rounded-xl outline-hidden" aria-label="Faze stručne prakse" @open-auto-focus.prevent @close-auto-focus.prevent @pointerenter="show" @pointerleave="close">
 					<div class="rounded-xl bg-white p-5 text-slate-900 shadow-lg dark:bg-slate-900 dark:text-slate-100">
 						<div class="mb-4 flex items-start justify-between gap-4">
 							<div>

@@ -35,7 +35,7 @@
 					<TableCheckboxCell v-if="checkable" class="compact-check" :value="isCheckedAssignment(assignment)" :disabled="disableUnchecked && !isCheckedAssignment(assignment)" @checked="checked($event, assignment)" />
 
 					<td class="compact-logo border-b-0 before:hidden lg:w-6 lg:text-center">
-						<RouterLink v-if="getLinkedCompany(assignment)?.value" :to="{ name: 'poslodavci', query: { p: getLinkedCompany(assignment).value } }" :aria-label="`Poslodavac ${getLinkedCompany(assignment).value}`" class="inline-block rounded-full focus-visible:outline focus-visible:outline-2 focus-visible:outline-fipu_blue">
+						<RouterLink v-if="getLinkedCompany(assignment)?.value" :to="{ name: 'poslodavci', query: { p: getLinkedCompany(assignment).value } }" :aria-label="`Poslodavac ${getLinkedCompany(assignment).value}`" class="inline-block rounded-full focus-visible:outline-solid focus-visible:outline-2 focus-visible:outline-fipu_blue">
 							<UserAvatar :avatar="getCompanyLogo(assignment)" class="mx-auto h-8 w-8 lg:h-6 lg:w-6" />
 						</RouterLink>
 						<UserAvatar v-else :avatar="getCompanyLogo(assignment)" class="mx-auto h-8 w-8 lg:h-6 lg:w-6" />
@@ -47,7 +47,7 @@
 					<td data-label="Kontakt email" class="break-all">
 						<TableCellText :value="assignment['poslodavac_email']" />
 					</td>
-					<td data-label="Preferirane tehnologije" class="break-words lg:max-w-[200px]">
+					<td data-label="Preferirane tehnologije" class="wrap-break-word lg:max-w-[200px]">
 						<TableCellText :value="assignment['preferirane_tehnologije']" />
 					</td>
 
@@ -235,6 +235,7 @@ const checked = (value, assignment) => {
 </script>
 
 <style scoped>
+@reference "../../css/main.css";
 @media (max-width: 1023px) {
 	.assignment-filters {
 		display: grid;

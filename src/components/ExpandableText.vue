@@ -31,10 +31,10 @@ watch(() => props.text, async () => {
 
 <template>
 	<div class="min-w-0">
-		<div :id="id" class="whitespace-pre-line break-words leading-7">
+		<div :id="id" class="whitespace-pre-line wrap-break-word leading-7">
 			<p v-show="!expanded" ref="content" class="text-preview">{{ text }}</p>
 			<ScrollAreaRoot v-if="expanded" type="auto" class="relative">
-				<ScrollAreaViewport class="max-h-[8.75rem] overscroll-contain pr-4 focus-visible:outline-fipu_blue">
+				<ScrollAreaViewport class="max-h-35 overscroll-contain pr-4 focus-visible:outline-fipu_blue">
 					<p>{{ text }}</p>
 				</ScrollAreaViewport>
 				<ScrollAreaScrollbar orientation="vertical" class="flex w-2.5 touch-none select-none rounded-full bg-slate-100 p-0.5 dark:bg-slate-700">
@@ -45,7 +45,7 @@ watch(() => props.text, async () => {
 		<button
 			v-if="overflowing"
 			type="button"
-			class="inline-flex min-h-11 items-center rounded text-sm font-semibold text-fipu_blue underline-offset-4 hover:underline focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-fipu_blue"
+			class="inline-flex min-h-11 items-center rounded-sm text-sm font-semibold text-fipu_blue underline-offset-4 hover:underline focus-visible:outline-solid focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-fipu_blue"
 			:aria-expanded="expanded"
 			:aria-controls="id"
 			@click="expanded = !expanded">

@@ -49,8 +49,8 @@
 					<AlertDialogTitle class="text-lg font-semibold">Potvrda odabira prakse</AlertDialogTitle>
 					<AlertDialogDescription class="my-4">Želite li započeti stručnu praksu prema modelu {{ selectedProcess }}?</AlertDialogDescription>
 					<div class="flex justify-end gap-3">
-						<AlertDialogCancel class="rounded px-4 py-2">Odustani</AlertDialogCancel>
-						<AlertDialogAction class="rounded bg-fipu_blue px-4 py-2 font-semibold" @click="startProcess">Započni praksu</AlertDialogAction>
+						<AlertDialogCancel class="rounded-sm px-4 py-2">Odustani</AlertDialogCancel>
+						<AlertDialogAction class="rounded-sm bg-fipu_blue px-4 py-2 font-semibold" @click="startProcess">Započni praksu</AlertDialogAction>
 					</div>
 				</AlertDialogContent>
 			</AlertDialogPortal>
@@ -198,6 +198,7 @@ const selectedProcess = ref("");
 </script>
 
 <style scoped>
+@reference "../../css/main.css";
 .process-page {
 	position: relative;
 	isolation: isolate;

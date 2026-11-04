@@ -71,7 +71,7 @@ const checked = computed({
 					:aria-labelledby="label ? labelId : undefined"
 					class="check min-w-[20px]" />
 			</component>
-			<span :id="labelId" class="break-words pl-2">{{ label }}</span>
+			<span :id="labelId" class="wrap-break-word pl-2">{{ label }}</span>
 		</label>
 	</component>
 </template>

@@ -52,7 +52,7 @@ watchEffect(() => {
 			</FormField>
 			<p v-else-if="approvalDeclined && key === 'id_zadatak'" role="status">Zadatak ostaje na čekanju dok ga ne odobrite.</p>
 			<FormField v-else-if="checkAssignment && key === 'id_zadatak' && field.type === 'input'" :name="key" label="Zadatak za ovog studenta">
-				<FormControlListbox v-model="selectedAssignment" button-class="form-control-surface w-full rounded border px-3 py-2 text-left" :name="key" :options="assignmentOptions" :placeholder="assignmentPlaceholder" :disabled="!assignmentOptions.length" required aria-label="Zadatak za ovog studenta" />
+				<FormControlListbox v-model="selectedAssignment" button-class="form-control-surface w-full rounded-sm border px-3 py-2 text-left" :name="key" :options="assignmentOptions" :placeholder="assignmentPlaceholder" :disabled="!assignmentOptions.length" required aria-label="Zadatak za ovog studenta" />
 			</FormField>
 			<FormField v-else-if="field.type === 'input'" :name="key" :label="field.label">
 				<FormControl v-model="values[key]" class="my-2" type="text" />

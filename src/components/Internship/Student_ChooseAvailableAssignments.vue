@@ -162,7 +162,7 @@ const moveAssignment = async (index, offset, button) => {
 							<span class="sr-only">{{ index + 1 }}. izbor</span>
 							<UserAvatar v-if="isAssignment(element)" class="my-2 h-12 w-12" :avatar="getCompanyLogo(element)" :username="element.Poslodavac?.[0]?.value || 'Poslodavac'" />
 							<img v-else class="mx-auto my-2 h-12 w-12 dark:brightness-0 dark:invert" :src="getDefaultImage(index)" alt="" />
-							<p class="break-words text-sm">{{ isAssignment(element) ? element.id_zadatak : "Slobodno mjesto" }}</p>
+							<p class="wrap-break-word text-sm">{{ isAssignment(element) ? element.id_zadatak : "Slobodno mjesto" }}</p>
 						</div>
 						<div v-if="isDraggableEnabled" class="mt-2 flex flex-wrap justify-center gap-1">
 							<button type="button" class="rank-arrow" :disabled="index === 0" :aria-label="`Pomakni zadatak ${element.id_zadatak} na više mjesto`" @click="moveAssignment(index, -1, $event.currentTarget)">←</button>
@@ -178,7 +178,7 @@ const moveAssignment = async (index, offset, button) => {
 					<FormControl v-model="napomena" type="textarea" placeholder="Slobodno dodaj napomenu za voditelja prakse." />
 				</FormField>
 				<BaseButtons class="mb-16 mt-6 items-center justify-center space-y-2">
-					<BaseButton type="submit" color="fipu_blue" class="dark:!bg-fipu_blue hover:!bg-fipu_blue !text-neutral-900 hover:underline" label="Prijavi preferencije" :loading="isLoading" @click="modalConfirmPreferences = true" />
+					<BaseButton type="submit" color="fipu_blue" class="dark:bg-fipu_blue! hover:bg-fipu_blue! text-neutral-900! hover:underline" label="Prijavi preferencije" :loading="isLoading" @click="modalConfirmPreferences = true" />
 				</BaseButtons>
 			</div>
 
@@ -195,6 +195,7 @@ const moveAssignment = async (index, offset, button) => {
 </template>
 
 <style scoped>
+@reference "../../css/main.css";
 .assignment-picker {
 	--rank-accent: theme("colors.fipu_blue");
 }
@@ -244,6 +245,6 @@ const moveAssignment = async (index, offset, button) => {
 	}
 }
 .rank-arrow {
-	@apply rounded border px-2 py-1 leading-none enabled:hover:bg-gray-100 disabled:opacity-30 focus-visible:outline-fipu_blue dark:enabled:hover:bg-neutral-700;
+	@apply rounded-sm border px-2 py-1 leading-none enabled:hover:bg-gray-100 disabled:opacity-30 focus-visible:outline-fipu_blue dark:enabled:hover:bg-neutral-700;
 }
 </style>

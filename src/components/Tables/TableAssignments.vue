@@ -158,7 +158,7 @@ const cancelTaskAction = () => {
 			</thead>
 			<tbody>
 				<tr v-for="assignment in assignmentsPaginated" :key="assignment.id_zadatak" :class="{ 'selected-row': route.params.id_zadatak === String(assignment.id_zadatak) }">
-					<td v-for="column in columns" :key="column.key" :data-label="column.label" class="break-words" :class="{ 'lg:max-w-[200px]': ['id_zadatak', 'poslodavac_email', 'preferirane_tehnologije'].includes(column.key) }">
+					<td v-for="column in columns" :key="column.key" :data-label="column.label" class="wrap-break-word" :class="{ 'lg:max-w-[200px]': ['id_zadatak', 'poslodavac_email', 'preferirane_tehnologije'].includes(column.key) }">
 						<PillTag v-if="column.key === 'voditelj_odobrio'" :label="statuses[assignment.voditelj_odobrio?.value]?.label || 'Nepoznat'" :color="statuses[assignment.voditelj_odobrio?.value]?.color || 'info'" small />
 						<TableCellText v-else :value="assignment[column.key] ?? '—'" />
 					</td>

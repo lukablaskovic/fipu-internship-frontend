@@ -116,6 +116,7 @@ const loginCallback = async (response) => {
 </script>
 
 <style scoped>
+@reference "../../css/main.css";
 .login-page {
 	position: relative;
 	isolation: isolate;

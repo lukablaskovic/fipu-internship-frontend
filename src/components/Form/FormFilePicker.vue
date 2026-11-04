@@ -128,11 +128,11 @@ type="file" accept=".pdf,application/pdf" class="absolute inset-0 h-full w-full 
 				<button type="button" class="shrink-0 underline" :disabled="disabled" :aria-label="`Ukloni ${modelValue.name}`" @click="removePdf">Ukloni</button>
 			</div>
 		</div>
-		<div v-else class="relative flex items-stretch justify-start rounded focus-within:ring focus-within:ring-fipu_blue">
+		<div v-else class="relative flex items-stretch justify-start rounded-sm focus-within:ring-3 focus-within:ring-fipu_blue">
 			<label class="inline-flex">
 				<BaseButton as="a" :class="{ 'h-12 w-12': isRoundIcon, 'rounded-r-none': showFilename }" :icon-size="isRoundIcon ? 24 : undefined" :label="isRoundIcon ? null : label" :icon="icon" :color="color" :rounded-full="isRoundIcon" />
 				<FieldControl as-child :name="name" :required="required" :disabled="disabled">
-					<input ref="root" type="file" class="absolute left-0 top-0 -z-1 h-full w-full cursor-pointer opacity-0 outline-none" :accept="accept" @input="upload" />
+					<input ref="root" type="file" class="absolute left-0 top-0 -z-1 h-full w-full cursor-pointer opacity-0 outline-hidden" :accept="accept" @input="upload" />
 				</FieldControl>
 			</label>
 			<div v-if="showFilename" class="rounded-r border border-gray-200 bg-gray-100 px-4 py-2 dark:border-slate-700 dark:bg-slate-800">

@@ -110,7 +110,7 @@ onMounted(async () => {
 						left
 						@update:model-value="showAttempt" />
 				</div>
-				<p v-if="process_instance_data" class="mb-4 break-words" aria-live="polite">
+				<p v-if="process_instance_data" class="mb-4 wrap-break-word" aria-live="polite">
 					ID instance procesa: <code>{{ process_instance_data.id }}</code>
 				</p>
 				<p class="mb-4">Ovdje možete pronaći BPMN graf koji prikazuje aktualno stanje vašeg procesa prakse.</p>
@@ -128,7 +128,7 @@ onMounted(async () => {
 						<BaseButton class="mx-4 mb-4" :icon="mdiFullscreen" label="Otvori dijagram preko cijelog zaslona" />
 					</Dialog.Trigger>
 					<Dialog.Portal>
-						<Dialog.Content class="fixed inset-0 z-[4001] overflow-hidden bg-white [container-type:size]" :aria-describedby="undefined">
+						<Dialog.Content class="fixed inset-0 z-4001 overflow-hidden bg-white @container-size" :aria-describedby="undefined">
 							<Dialog.Title class="sr-only">BPMN dijagram prakse</Dialog.Title>
 							<Dialog.Close as-child>
 								<BaseButton class="diagram-close absolute z-10 h-11 w-11" :icon="mdiClose" aria-label="Zatvori dijagram" />

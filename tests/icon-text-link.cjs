@@ -6,16 +6,16 @@ const { createServer: createHttpServer } = require("node:http");
 const { createServer } = require("vite");
 const { createSSRApp, h } = require("vue");
 const { renderToString } = require("vue/server-renderer");
-const { createRouter, createMemoryHistory } = require("vue-router");
 
 (async () => {
 	const cacheDir = mkdtempSync(join(tmpdir(), "fipu-link-test-"));
 	const server = await createServer({
 		cacheDir,
-		server: { middlewareMode: true, hmr: { server: createHttpServer() } },
+		server: { middlewareMode: true, ws: { server: createHttpServer() } },
 		appType: "custom",
 	});
 	try {
+		const { createRouter, createMemoryHistory } = await import("vue-router");
 		const { default: IconTextLink } = await server.ssrLoadModule("/src/components/IconTextLink.vue");
 		const { routes } = await server.ssrLoadModule("/src/router/routes.js");
 		const router = createRouter({

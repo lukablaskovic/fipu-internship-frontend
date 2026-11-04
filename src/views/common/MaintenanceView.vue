@@ -1,5 +1,5 @@
 <template>
-	<div class="flex min-h-screen w-full flex-col items-center justify-between bg-gray-50 transition-all duration-300 sm:justify-center sm:bg-opacity-70 sm:bg-[url('/background-blue.jpg')] sm:bg-cover sm:bg-center">
+	<div class="flex min-h-screen w-full flex-col items-center justify-between bg-gray-50 transition-all duration-300 sm:justify-center sm:bg-gray-50/70 sm:bg-[url('/background-blue.jpg')] sm:bg-cover sm:bg-center">
 		<!-- Mobile only heading -->
 		<div class="flex flex-col items-center sm:flex-row sm:items-start md:hidden">
 			<!-- Welcome texts -->
@@ -19,7 +19,7 @@
 		<div class="flex w-full flex-1 flex-col items-center justify-center transition-all duration-300 sm:flex-none">
 			<CardBox vertical-centered class="mx-0 flex w-full flex-col px-0 transition-all duration-300 sm:mx-6 sm:w-auto sm:flex-none sm:rounded-2xl sm:p-10 sm:pt-8 md:px-12 lg:mx-60 lg:p-12" is-form>
 				<!-- Content area -->
-				<div class="flex flex-grow flex-col items-center">
+				<div class="flex grow flex-col items-center">
 					<!-- Logo, shown only on larger screens -->
 					<a href="https://fipu.unipu.hr/" target="_blank" class="mx-auto hidden w-max sm:block">
 						<img :src="fipu_unipu" alt="Fakultet informatike u Puli - logotip" class="mb-4 h-24 object-contain transition-all duration-300 lg:h-24" />

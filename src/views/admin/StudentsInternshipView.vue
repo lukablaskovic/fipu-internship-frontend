@@ -259,9 +259,9 @@ onMounted(loadDataForStudent);
 
 			<Dialog.Root v-model:open="bpmn_diagram_active">
 				<Dialog.Portal>
-					<Dialog.Overlay class="reka-animated fixed inset-0 z-[4000] bg-slate-950/80" />
+					<Dialog.Overlay class="reka-animated fixed inset-0 z-4000 bg-slate-950/80" />
 					<Dialog.Content
-						class="process-dialog reka-animated fixed inset-2 z-[4001] flex min-h-0 flex-col overflow-hidden rounded-2xl bg-white text-slate-900 shadow-lg dark:bg-slate-900 dark:text-slate-100 sm:inset-4"
+						class="process-dialog reka-animated fixed inset-2 z-4001 flex min-h-0 flex-col overflow-hidden rounded-2xl bg-white text-slate-900 shadow-lg dark:bg-slate-900 dark:text-slate-100 sm:inset-4"
 						:aria-describedby="undefined"
 						@close-auto-focus="restoreDiagramFocus">
 						<header class="flex shrink-0 items-center justify-between gap-4 border-b border-slate-200 p-4 dark:border-slate-700">

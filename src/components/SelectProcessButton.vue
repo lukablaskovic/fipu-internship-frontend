@@ -23,6 +23,7 @@ defineProps({
 </script>
 
 <style scoped>
+@reference "../css/main.css";
 .select-process-button {
 	width: 100%;
 	padding: 24px;

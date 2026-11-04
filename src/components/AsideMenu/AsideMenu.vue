@@ -124,7 +124,7 @@ router.afterEach(() => {
 						:aria-label="isPrimaryMenuCompact ? 'Proširi izbornik' : 'Smanji izbornik'"
 						:aria-expanded="!isPrimaryMenuCompact"
 						color="border-transparent bg-fipu_blue/10 text-fipu_blue hover:bg-fipu_blue/20 hover:text-fipu_light_blue"
-						class="h-11 w-full !rounded-xl text-sm font-medium focus:ring-inset motion-reduce:transition-none"
+						class="h-11 w-full rounded-xl! text-sm font-medium focus:ring-inset motion-reduce:transition-none"
 						@click="isPrimaryMenuCompact ? (manuallyExpanded = true) : collapsePrimaryMenu()" />
 				</Tooltip>
 			</div>

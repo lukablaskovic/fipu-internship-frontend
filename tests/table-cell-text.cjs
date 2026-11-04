@@ -5,7 +5,7 @@ const { createSSRApp, h } = require('vue');
 const { renderToString } = require('vue/server-renderer');
 
 (async () => {
-	const server = await createServer({ server: { middlewareMode: true, hmr: { server: createHttpServer() } }, appType: 'custom' });
+	const server = await createServer({ server: { middlewareMode: true, ws: { server: createHttpServer() } }, appType: 'custom' });
 	try {
 		const { default: TableCellText } = await server.ssrLoadModule('/src/components/Tables/TableCellText.vue');
 		const render = (value, slots) => renderToString(createSSRApp({ render: () => h(TableCellText, { value }, slots) }));

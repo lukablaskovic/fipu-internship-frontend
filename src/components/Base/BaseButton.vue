@@ -98,13 +98,13 @@ const componentClass = computed(() => {
 		"justify-center",
 		"items-center",
 		"whitespace-nowrap",
-		"focus:outline-none",
+		"focus:outline-hidden",
 		"transition-colors",
-		"focus:ring focus:ring-fipu_blue",
+		"focus:ring-3 focus:ring-fipu_blue",
 		"duration-150",
 		"border",
 		props.disabled ? "cursor-not-allowed" : "cursor-pointer",
-		props.roundedFull ? "rounded-full" : "rounded",
+		props.roundedFull ? "rounded-full" : "rounded-sm",
 		getButtonColor(props.color, props.outline, !props.disabled, props.active),
 	];
 

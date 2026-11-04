@@ -1,5 +1,5 @@
 <template>
-	<RouterLink :to="to" class="inline-flex items-center whitespace-normal text-fipu_blue hover:underline focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-fipu_blue">
+	<RouterLink :to="to" class="inline-flex items-center whitespace-normal text-fipu_blue hover:underline focus-visible:outline-solid focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-fipu_blue">
 		<BaseIcon :path="icon" class="flex-none align-middle" :size="18" aria-hidden="true"></BaseIcon>
 		{{ text }}
 	</RouterLink>
