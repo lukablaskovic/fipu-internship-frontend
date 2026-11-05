@@ -12,7 +12,6 @@ import { Stepper } from "reka-ui/namespaced";
 
 import SectionTitleLineWithButton from "@/components/Section/SectionTitleLineWithButton.vue";
 
-import SnackBar from "@/components/Notification/SnackBar.vue";
 import BaseButton from "@/components/Base/BaseButton.vue";
 import FooterBar from "@/components/FooterBar.vue";
 
@@ -464,7 +463,6 @@ watch(partnerType, () => {
 			><br />
 			Made with <span style="color: #e25555">&#9829;</span> at <a :href="appConfig.fipulab_web" target="_blank" class="hover-underline-animation cursor-pointer text-fipu_text_blue hover:text-fipu_blue">FIPUlab</a></FooterBar
 		>
-		<SnackBar />
 	</div>
 </template>
 

@@ -64,13 +64,11 @@
 			</a>
 		</div>
 
-		<SnackBar />
 	</div>
 </template>
 
 <script setup>
 import BaseButton from "@/components/Base/BaseButton.vue";
-import SnackBar from "@/components/Notification/SnackBar.vue";
 import CardBox from "@/components/Cardbox/CardBox.vue";
 import fipu_unipu from "/fipu_unipu.png";
 import { ref } from "vue";

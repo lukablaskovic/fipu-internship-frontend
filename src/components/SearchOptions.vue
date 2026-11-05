@@ -3,7 +3,7 @@ import { fetchAvailableAssignments } from "@/services/baserow_client_api";
 
 import BaseIcon from "@/components/Base/BaseIcon.vue";
 import { mdiPagePreviousOutline, mdiClipboardText, mdiMagnify, mdiAccount, mdiDomain } from "@mdi/js";
-import { Combobox } from "reka-ui/namespaced";
+import { Combobox, ComboboxAnchor, ComboboxInput, ComboboxItem, ComboboxList, ComboboxTrigger, ComboboxViewport } from "@/components/ui/combobox";
 import { ref, computed, onMounted, onUnmounted, watch, nextTick } from "vue";
 import { useAdminStore } from "@/stores/admin_store";
 import { useMainStore } from "@/stores/main_store";
@@ -139,61 +139,65 @@ onMounted(async () => {
 </script>
 
 <template>
-	<Combobox.Root v-model="selectedValue" v-model:open="open" ignore-filter open-on-focus open-on-click :reset-search-term-on-select="false" :reset-search-term-on-blur="false">
-		<Combobox.Anchor class="flex h-12 w-full items-center gap-3 rounded-xl border border-fipu_blue bg-gray-50 px-4 text-left transition-colors focus-within:ring-2 focus-within:ring-fipu_blue dark:bg-neutral-900 md:w-96">
-			<Combobox.Trigger class="flex shrink-0 items-center text-gray-500 hover:text-gray-900 focus-visible:outline-solid focus-visible:outline-fipu_blue dark:text-neutral-400 dark:hover:text-neutral-200" aria-label="Upute za pretraživanje" @click="showHelp">
+	<Combobox v-model="selectedValue" v-model:open="open" ignore-filter open-on-focus open-on-click :reset-search-term-on-select="false" :reset-search-term-on-blur="false">
+		<ComboboxAnchor class="flex h-12 w-full items-center gap-3 rounded-xl border border-[#dce4ea] dark:border-[#475569] bg-gray-50 px-4 text-left transition-colors focus-within:ring-2 focus-within:ring-fipu_blue dark:bg-neutral-900 md:w-96">
+			<ComboboxTrigger class="flex shrink-0 items-center text-gray-500 hover:text-gray-900 focus-visible:outline-solid focus-visible:outline-fipu_blue dark:text-neutral-400 dark:hover:text-neutral-200" aria-label="Upute za pretraživanje" @click="showHelp">
 				<BaseIcon :path="mdiMagnify" :size="22" aria-hidden="true" />
-			</Combobox.Trigger>
-			<Combobox.Input
+			</ComboboxTrigger>
+			<ComboboxInput
 				ref="searchInput"
 				v-model="displayValue"
 				aria-label="Pretraživanje"
 				placeholder="Pretraživanje"
 				aria-describedby="search-keyboard-help"
-				class="min-w-0 flex-1 caret-fipu_blue border-0 bg-transparent p-0 text-base text-gray-900 placeholder:text-gray-500 focus:outline-hidden focus:ring-0 dark:text-neutral-200 dark:placeholder:text-neutral-400"
+				class="search-input min-w-0 flex-1 caret-fipu_blue border-0 bg-transparent p-0 text-base text-gray-900 placeholder:text-gray-500 focus:outline-hidden focus:ring-0 dark:text-neutral-200 dark:placeholder:text-neutral-400"
 				@keydown="handleKeyDown" />
 			<kbd class="pointer-events-none shrink-0 whitespace-nowrap font-sans text-sm text-gray-500 dark:text-neutral-400" aria-hidden="true">{{ osKey }} K</kbd>
-		</Combobox.Anchor>
-		<Combobox.Portal>
-			<Combobox.Content
-				position="popper"
-				:side-offset="8"
-				align="start"
-				class="search-panel reka-animated z-10000 w-(--reka-combobox-trigger-width) overflow-hidden rounded-xl border border-gray-200 bg-white text-sm text-gray-900 focus:outline-hidden dark:border-neutral-700 dark:bg-neutral-900 dark:text-neutral-200">
-				<Combobox.Viewport class="max-h-[min(24rem,var(--reka-combobox-content-available-height))] overflow-y-auto p-1.5">
-					<p v-if="!query" class="px-3 py-2 text-gray-500 dark:text-neutral-400">Upišite stranicu ili odaberite filter.</p>
-					<Combobox.Item
-						v-for="helpItem in suggestedFilters"
-						:key="helpItem.prefix"
-						:value="helpItem"
-						:text-value="helpItem.description"
-						class="flex cursor-pointer items-center justify-between gap-3 rounded-lg px-3 py-2.5 outline-hidden data-highlighted:bg-gray-100 dark:data-highlighted:bg-neutral-800"
-						@select.prevent="insertPrefix(helpItem.prefix)">
-						<span>{{ helpItem.description }}</span>
-						<code class="shrink-0 text-gray-500 dark:text-neutral-400">{{ helpItem.prefix }}</code>
-					</Combobox.Item>
-					<div v-if="activeFilter && query === currentPrefix" role="status" class="px-3 py-3 text-gray-500 dark:text-neutral-400">
-						<p>{{ activeFilter.description }}</p>
-						<p class="mt-1">Primjer: <code class="text-gray-700 dark:text-neutral-200">{{ activeFilter.prefix }}{{ activeFilter.example }}</code></p>
-					</div>
-					<div v-else-if="query && !suggestedFilters.length && !filteredResults.length" role="status" class="px-3 py-3 text-gray-500 dark:text-neutral-400">Nema rezultata. Pokušajte s drugim pojmom ili filterom.</div>
-					<Combobox.Item v-for="(result, index) in filteredResults" :key="result.id || index" :value="result" class="relative cursor-pointer select-none rounded-lg py-2.5 pl-10 pr-3 outline-hidden data-highlighted:bg-gray-100 dark:data-highlighted:bg-neutral-800">
-						<BaseIcon v-if="result.ime && result.prezime" :path="mdiAccount" w="w-5" h="h-5" :size="24" class="absolute left-3 h-5 w-5" aria-hidden="true" />
-						<BaseIcon v-else-if="routes.includes(result)" :path="mdiPagePreviousOutline" w="w-5" h="h-5" :size="24" class="absolute left-3 h-5 w-5" aria-hidden="true" />
-						<BaseIcon v-else-if="result.id_zadatak" :path="mdiClipboardText" w="w-5" h="h-5" :size="24" class="absolute left-3 h-5 w-5" aria-hidden="true" />
-						<BaseIcon v-else :path="mdiDomain" w="w-5" h="h-5" :size="24" class="absolute left-3 h-5 w-5" aria-hidden="true" />
-						<span v-if="typeof result === 'string'" class="block truncate capitalize">{{ result }}</span>
-						<span v-else-if="result.ime && result.prezime" class="block truncate">{{ result.ime }} {{ result.prezime }} ({{ result.JMBAG }}) - {{ result.email }}</span>
-						<span v-else-if="result.id_zadatak" class="block truncate">Zadatak ID: {{ result.id_zadatak }}</span>
-						<span v-else class="block truncate">{{ result.naziv }}</span>
-					</Combobox.Item>
-				</Combobox.Viewport>
-				<div id="search-keyboard-help" class="flex flex-wrap gap-x-4 gap-y-1 border-t border-gray-200 px-4 py-2.5 text-xs text-gray-500 dark:border-neutral-700 dark:text-neutral-400">
-					<span><kbd>↑ ↓</kbd> odabir</span>
-					<span><kbd>Enter</kbd> potvrda</span>
-					<span><kbd>Esc</kbd> zatvori</span>
+		</ComboboxAnchor>
+		<ComboboxList
+			position="popper"
+			:side-offset="8"
+			align="start"
+			class="z-10000 flex flex-col max-h-[min(24rem,var(--reka-combobox-content-available-height))] max-w-[calc(100vw-2rem)]">
+			<ComboboxViewport class="min-h-0 max-h-[min(24rem,var(--reka-combobox-content-available-height))] overflow-y-auto p-1.5">
+				<p v-if="!query" class="px-3 py-2 text-gray-500 dark:text-neutral-400">Upišite stranicu ili odaberite filter.</p>
+				<ComboboxItem
+					v-for="helpItem in suggestedFilters"
+					:key="helpItem.prefix"
+					:value="helpItem"
+					:text-value="helpItem.description"
+					class="cursor-pointer justify-between gap-3 py-2"
+					@select.prevent="insertPrefix(helpItem.prefix)">
+					<span>{{ helpItem.description }}</span>
+					<code class="shrink-0 text-gray-500 dark:text-neutral-400">{{ helpItem.prefix }}</code>
+				</ComboboxItem>
+				<div v-if="activeFilter && query === currentPrefix" role="status" class="px-3 py-3 text-gray-500 dark:text-neutral-400">
+					<p>{{ activeFilter.description }}</p>
+					<p class="mt-1">Primjer: <code class="text-gray-700 dark:text-neutral-200">{{ activeFilter.prefix }}{{ activeFilter.example }}</code></p>
 				</div>
-			</Combobox.Content>
-		</Combobox.Portal>
-	</Combobox.Root>
+				<div v-else-if="query && !suggestedFilters.length && !filteredResults.length" role="status" class="px-3 py-3 text-gray-500 dark:text-neutral-400">Nema rezultata. Pokušajte s drugim pojmom ili filterom.</div>
+				<ComboboxItem v-for="(result, index) in filteredResults" :key="result.id || index" :value="result" class="cursor-pointer py-2 pl-10">
+					<BaseIcon v-if="result.ime && result.prezime" :path="mdiAccount" w="w-5" h="h-5" :size="24" class="absolute left-3 h-5 w-5" aria-hidden="true" />
+					<BaseIcon v-else-if="routes.includes(result)" :path="mdiPagePreviousOutline" w="w-5" h="h-5" :size="24" class="absolute left-3 h-5 w-5" aria-hidden="true" />
+					<BaseIcon v-else-if="result.id_zadatak" :path="mdiClipboardText" w="w-5" h="h-5" :size="24" class="absolute left-3 h-5 w-5" aria-hidden="true" />
+					<BaseIcon v-else :path="mdiDomain" w="w-5" h="h-5" :size="24" class="absolute left-3 h-5 w-5" aria-hidden="true" />
+					<span v-if="typeof result === 'string'" class="block truncate capitalize">{{ result }}</span>
+					<span v-else-if="result.ime && result.prezime" class="block truncate">{{ result.ime }} {{ result.prezime }} ({{ result.JMBAG }}) - {{ result.email }}</span>
+					<span v-else-if="result.id_zadatak" class="block truncate">Zadatak ID: {{ result.id_zadatak }}</span>
+					<span v-else class="block truncate">{{ result.naziv }}</span>
+				</ComboboxItem>
+			</ComboboxViewport>
+			<div id="search-keyboard-help" class="flex shrink-0 flex-wrap gap-x-4 gap-y-1 border-t border-gray-200 px-4 py-2.5 text-xs text-gray-500 dark:border-neutral-700 dark:text-neutral-400">
+				<span><kbd>↑ ↓</kbd> odabir</span>
+				<span><kbd>Enter</kbd> potvrda</span>
+				<span><kbd>Esc</kbd> zatvori</span>
+			</div>
+		</ComboboxList>
+	</Combobox>
 </template>
+
+<style scoped>
+.search-input:focus {
+	outline: none;
+}
+</style>

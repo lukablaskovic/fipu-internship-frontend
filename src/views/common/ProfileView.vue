@@ -185,9 +185,9 @@ const details = computed(() => [
 					</div>
 					<div class="min-w-0">
 						<h2 class="wrap-break-word text-xl font-semibold">{{ mainStore.currentUser.ime }} {{ mainStore.currentUser.prezime }}</h2>
-						<div class="mt-1 flex flex-wrap gap-2 text-sm text-fipu_gray dark:text-gray-300">
-							<PillTagPlain :reverse-dark="true" :label="mainStore.userAdmin ? 'Admin' : 'Student'" :icon="mdiAccountCircle" />
-							<PillTagPlain :reverse-dark="true" label="FIPU" :icon="mdiDomain" />
+						<div class="mt-1 flex flex-wrap gap-4 text-sm text-fipu_gray dark:text-gray-300">
+							<PillTagPlain class="px-0!" :reverse-dark="true" :label="mainStore.userAdmin ? 'Admin' : 'Student'" :icon="mdiAccountCircle" />
+							<PillTagPlain class="px-0!" :reverse-dark="true" label="FIPU" :icon="mdiDomain" />
 						</div>
 					</div>
 				</div>

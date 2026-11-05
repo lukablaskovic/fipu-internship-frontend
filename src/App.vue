@@ -1,5 +1,10 @@
 <script setup>
+import "vue-sonner/style.css";
+import { Toaster } from "@/components/ui/sonner";
+import { useUiStore } from "@/stores/ui_store";
 import { Tooltip } from "reka-ui/namespaced";
+
+const uiStore = useUiStore();
 </script>
 
 <template>
@@ -14,6 +19,7 @@ import { Tooltip } from "reka-ui/namespaced";
 			</Transition>
 		</router-view>
 	</Tooltip.Provider>
+	<Toaster :theme="uiStore.darkMode ? 'dark' : 'light'" position="bottom-right" rich-colors close-button :toast-options="{ closeButtonAriaLabel: 'Zatvori obavijest', classes: { toast: 'rounded-2xl' } }" container-aria-label="Obavijesti" />
 </template>
 
 <style scoped>

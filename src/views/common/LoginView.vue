@@ -18,7 +18,6 @@
 
 			<div class="login-content">
 				<section class="welcome relative" aria-labelledby="welcome-title">
-					<ThemeToggle icon-only class="absolute right-1 top-1" />
 					<div class="welcome-heading">
 						<img src="/fipu-praksa-logo.png" alt="FIPU Praksa" class="praksa-logo" width="512" height="512" />
 						<h1 id="welcome-title">Dobrodošli na <span>FIPU Praksu</span></h1>
@@ -50,14 +49,11 @@
 		<a class="faculty-footer-link" href="https://fipu.unipu.hr/" target="_blank" rel="noopener noreferrer" aria-label="Fakultet informatike u Puli (otvara se u novoj kartici)">
 			<img :src="fipu_unipu" alt="Fakultet informatike u Puli - logotip" class="faculty-logo" />
 		</a>
-		<SnackBar />
 	</div>
 </template>
 
 <script setup>
 import { decodeCredential, GoogleLogin } from "vue3-google-login";
-import ThemeToggle from "@/components/Navbar/ThemeToggle.vue";
-import SnackBar from "@/components/Notification/SnackBar.vue";
 import { useMainStore } from "@/stores/main_store";
 import { useUiStore } from "@/stores/ui_store";
 import { useSnackBarStore } from "@/stores/snackbar_store";

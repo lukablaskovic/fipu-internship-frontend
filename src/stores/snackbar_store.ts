@@ -1,36 +1,13 @@
 import { defineStore } from "pinia";
+import { toast } from "vue-sonner";
 
-interface Message {
-	timestamp: number;
-	text: string;
-	color: string;
-	lifetime: number;
-}
+const notifications: Record<string, typeof toast.success> = { success: toast.success, info: toast.info, warning: toast.warning, danger: toast.error, error: toast.error };
 
 export const useSnackBarStore = defineStore("snackBar", {
-	state: () => ({
-		messages: [] as Message[],
-	}),
 	actions: {
 		pushMessage(text: string, color: string, lifetime: number = 3000) {
-			this.messages.push({
-				timestamp: Date.now(),
-				text,
-				color,
-				lifetime: parseInt(lifetime.toString()),
-			});
-		},
-
-		cancelMessage(timestamp: number) {
-			const newMessages: Message[] = [];
-
-			this.messages.forEach((message) => {
-				if (timestamp !== message.timestamp) {
-					newMessages.push(message);
-				}
-			});
-
-			this.messages = newMessages;
+			const notify = notifications[color] ?? toast;
+			return notify(text, { duration: lifetime === 0 ? Infinity : lifetime });
 		},
 	},
 });

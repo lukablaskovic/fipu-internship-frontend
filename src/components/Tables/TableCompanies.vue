@@ -1,9 +1,9 @@
 <script setup>
+import TableSearch from "@/components/Tables/TableSearch.vue";
 import TableCellText from "@/components/Tables/TableCellText.vue";
 import CardBoxComponentEmpty from "@/components/Cardbox/CardBoxComponentEmpty.vue";
 import TablePagination from "@/components/Tables/TablePagination.vue";
 import { usePagination } from "@/composables/usePagination.js";
-import BaseIcon from "@/components/Base/BaseIcon.vue";
 import { filterByCompany, normalizeString } from "@/helpers/search-utils.js";
 import { computed, ref, onMounted, watch } from "vue";
 
@@ -13,7 +13,7 @@ import BaseButton from "@/components/Base/BaseButton.vue";
 import UserAvatar from "@/components/User/UserAvatar.vue";
 import { DEFAULT_COMPANY_LOGO, getCompanyLogoUrl } from "@/helpers/company-logo.js";
 import LoadingOverlay from "../LoadingOverlay.vue";
-import { mdiMagnify, mdiWeb } from "@mdi/js";
+import { mdiWeb } from "@mdi/js";
 
 import { useRoute, useRouter } from "vue-router";
 import { useMainStore } from "@/stores/main_store";
@@ -83,10 +83,7 @@ const goToCompanyWeb = (url) => {
 <template>
 	<LoadingOverlay :is-active="!dataLoaded" title="Učitavanje..." description="Može potrajati nekoliko sekundi, molimo ne zatvarajte stranicu."> </LoadingOverlay>
 	<div class="table-filter-bar p-3 lg:px-6">
-		<div class="relative w-full">
-			<BaseIcon :path="mdiMagnify" :size="20" class="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-gray-500 dark:text-slate-400" aria-hidden="true" />
-			<input v-model="searchQuery" type="search" aria-label="Pretraži poslodavce" placeholder="Pretraži poslodavce po nazivu…" class="table-filter-search w-full pl-10" />
-		</div>
+		<TableSearch v-model="searchQuery" label="Pretraži poslodavce" placeholder="Pretraži poslodavce po nazivu…" class="w-full" />
 	</div>
 	<table v-if="filteredCompanies.length || !dataLoaded" class="compact-table w-full table-fixed">
 		<thead>

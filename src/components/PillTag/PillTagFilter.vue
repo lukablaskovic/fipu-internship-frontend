@@ -1,8 +1,8 @@
 <script setup>
-import { mdiChevronUp, mdiChevronDown, mdiAlertCircleOutline, mdiFilter, mdiFilterCheck, mdiCheck, mdiRestore } from "@mdi/js";
+import { mdiChevronUp, mdiChevronDown, mdiAlertCircleOutline, mdiFilter, mdiFilterCheck, mdiRestore } from "@mdi/js";
 import { computed, ref, onMounted } from "vue";
 
-import { DropdownMenu } from "reka-ui/namespaced";
+import { DropdownMenu, DropdownMenuCheckboxItem, DropdownMenuContent, DropdownMenuGroup, DropdownMenuItem, DropdownMenuLabel, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import BaseIcon from "@/components/Base/BaseIcon.vue";
 import { useAdminStore } from "@/stores/admin_store";
 
@@ -134,44 +134,39 @@ const toggleSelection = (option) => {
 
 <template>
 	<div class="relative inline-block text-left">
-		<DropdownMenu.Root v-model:open="open">
-			<DropdownMenu.Trigger :disabled="disabled" class="flex items-center gap-2 rounded-[10px] border border-fipu_blue bg-white px-3 py-2 text-left focus-visible:outline-solid focus-visible:outline-2 focus-visible:outline-fipu_blue disabled:cursor-not-allowed disabled:opacity-50 dark:bg-slate-800" :aria-label="trend">
-				<BaseIcon :path="trendStyle.icon" w="w-4" h="h-4" :size="16" :class="{ 'text-fipu_blue': !defualtEventsSet }" aria-hidden="true" />
+		<DropdownMenu v-model:open="open">
+			<DropdownMenuTrigger :disabled="disabled" class="flex items-center gap-2 rounded-[10px] border border-fipu_blue bg-white px-3 py-2 text-left focus-visible:outline-solid focus-visible:outline-2 focus-visible:outline-fipu_blue disabled:cursor-not-allowed disabled:opacity-50 dark:bg-slate-800" :aria-label="trend">
+				<BaseIcon :path="trendStyle.icon" w="w-4" h="h-4" :size="16" class="text-fipu_blue" aria-hidden="true" />
 				<span>{{ trend }}</span>
 				<BaseIcon :path="mdiChevronDown" w="w-4" h="h-4" :size="16" class="shrink-0 text-gray-500 dark:text-slate-400" aria-hidden="true" />
-			</DropdownMenu.Trigger>
-			<DropdownMenu.Portal>
-				<DropdownMenu.Content
-					:align="left ? 'start' : 'end'"
-					:side-offset="8"
-					class="reka-animated z-10000 flex max-h-[min(24rem,var(--reka-dropdown-menu-content-available-height))] w-96 max-w-[calc(100vw-2rem)] flex-col divide-y divide-gray-100 overflow-hidden rounded-sm bg-white text-gray-700 shadow-lg ring-1 ring-black/10 focus:outline-hidden dark:divide-gray-700 dark:bg-slate-800 dark:text-white">
-					<DropdownMenu.Label class="shrink-0 px-3 py-2 text-sm">Odaberite događaje koje želite prikazivati</DropdownMenu.Label>
-					<div class="fipu_vertical_scrollbar min-h-0 overflow-y-auto">
-						<DropdownMenu.Group v-for="(optionsGroup, index) in options" :key="index" class="px-1 py-1">
-							<DropdownMenu.CheckboxItem
-								v-for="option in optionsGroup"
-								:key="option.id"
-								:model-value="selectedOptions.includes(option.id)"
-								:text-value="option.label"
-								:disabled="option.disabled"
-								class="relative flex w-full cursor-default select-none items-center gap-2 rounded-sm px-3 py-2 text-sm outline-hidden data-disabled:pointer-events-none data-highlighted:bg-gray-100 data-disabled:opacity-50 dark:data-highlighted:bg-slate-700"
-								@select.prevent="toggleSelection(option)">
-								<BaseIcon v-if="option.icon" :path="option.icon" class="shrink-0" aria-hidden="true" />
-								<span class="flex grow items-center justify-start text-left">{{ option.label }}</span>
-								<span class="h-4 w-4 shrink-0 text-fipu_blue" aria-hidden="true">
-									<DropdownMenu.ItemIndicator><BaseIcon :path="mdiCheck" w="w-4" h="h-4" :size="16" /></DropdownMenu.ItemIndicator>
-								</span>
-							</DropdownMenu.CheckboxItem>
-						</DropdownMenu.Group>
-					</div>
-					<div class="flex shrink-0 justify-end px-2 py-1.5">
-						<DropdownMenu.Item class="flex cursor-pointer select-none items-center gap-1.5 rounded-sm px-2 py-1.5 text-sm outline-hidden data-highlighted:bg-gray-100 dark:data-highlighted:bg-slate-700" @select.prevent="setDefaultFilters">
-							<BaseIcon :path="mdiRestore" w="w-4" h="h-4" :size="16" aria-hidden="true" />
-							<span>Resetiraj</span>
-						</DropdownMenu.Item>
-					</div>
-				</DropdownMenu.Content>
-			</DropdownMenu.Portal>
-		</DropdownMenu.Root>
+			</DropdownMenuTrigger>
+			<DropdownMenuContent
+				:align="left ? 'start' : 'end'"
+				:side-offset="8"
+				class="z-10000 flex max-h-[min(24rem,var(--reka-dropdown-menu-content-available-height))] w-96 max-w-[calc(100vw-2rem)] flex-col overflow-hidden">
+				<DropdownMenuLabel class="shrink-0 px-3 py-2 text-sm">Odaberite događaje koje želite prikazivati</DropdownMenuLabel>
+				<div class="fipu_vertical_scrollbar min-h-0 overflow-y-auto">
+					<DropdownMenuGroup v-for="(optionsGroup, index) in options" :key="index" class="px-1 py-1">
+						<DropdownMenuCheckboxItem
+							v-for="option in optionsGroup"
+							:key="option.id"
+							:model-value="selectedOptions.includes(option.id)"
+							:text-value="option.label"
+							:disabled="option.disabled"
+							class="w-full gap-2 py-2"
+							@select.prevent="toggleSelection(option)">
+							<BaseIcon v-if="option.icon" :path="option.icon" class="shrink-0" aria-hidden="true" />
+							<span class="flex grow items-center justify-start text-left">{{ option.label }}</span>
+						</DropdownMenuCheckboxItem>
+					</DropdownMenuGroup>
+				</div>
+				<div class="flex shrink-0 justify-end px-2 py-1.5">
+					<DropdownMenuItem class="cursor-pointer gap-1.5" @select.prevent="setDefaultFilters">
+						<BaseIcon :path="mdiRestore" w="w-4" h="h-4" :size="16" aria-hidden="true" />
+						<span>Resetiraj</span>
+					</DropdownMenuItem>
+				</div>
+			</DropdownMenuContent>
+		</DropdownMenu>
 	</div>
 </template>

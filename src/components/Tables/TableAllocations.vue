@@ -1,4 +1,5 @@
 <script setup>
+import TableSearch from "@/components/Tables/TableSearch.vue";
 import TableCellText from "@/components/Tables/TableCellText.vue";
 import Tooltip from "@/components/Base/Tooltip.vue";
 import CardBoxComponentEmpty from "@/components/Cardbox/CardBoxComponentEmpty.vue";
@@ -8,8 +9,6 @@ import { computed, ref, onMounted, watch } from "vue";
 import SortableTableHeader from "@/components/Tables/SortableTableHeader.vue";
 import FormControlListbox from "@/components/Form/FormControlListbox.vue";
 import { compareValues } from "@/helpers/available-assignment-search.mjs";
-import BaseIcon from "@/components/Base/BaseIcon.vue";
-import { mdiMagnify } from "@mdi/js";
 import { normalizeString } from "@/helpers/search-utils.js";
 import { appConfig } from "@/config";
 import { ProcessInstance } from "@/services/bpmn_engine_api";
@@ -119,10 +118,7 @@ watch(filteredAllocations, () => { currentPage.value = 0; });
 <template>
 	<LoadingOverlay :is-active="!allocations.length && !dataLoaded" title="Učitavanje..." description="Može potrajati nekoliko sekundi, molimo ne zatvarajte stranicu."> </LoadingOverlay>
 	<div class="table-filter-bar p-3 lg:px-6">
-		<div class="relative min-w-0 basis-full sm:flex-1 sm:basis-0">
-			<BaseIcon :path="mdiMagnify" :size="20" class="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-gray-500 dark:text-slate-400" aria-hidden="true" />
-			<input v-model="search" type="search" aria-label="Pretraži alokacije" placeholder="Ime, JMBAG, zadatak ili ID instance…" class="table-filter-search w-full pl-10" />
-		</div>
+		<TableSearch v-model="search" label="Pretraži alokacije" placeholder="Ime, JMBAG, zadatak ili ID instance…" class="min-w-0 basis-full sm:flex-1 sm:basis-0" />
 		<FormControlListbox v-model="modelFilter" :options="['Svi modeli', 'A', 'B']" aria-label="Model" button-class="table-filter-select" />
 		<FormControlListbox v-model="versionFilter" :options="versionOptions" aria-label="Verzija modela" button-class="table-filter-select" />
 		<FormControlListbox v-if="mainStore.userAdmin" v-model="statusFilter" :options="statusOptions" aria-label="Status zahtjeva" button-class="table-filter-select" />

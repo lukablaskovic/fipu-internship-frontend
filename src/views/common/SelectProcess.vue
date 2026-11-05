@@ -55,7 +55,6 @@
 				</AlertDialogContent>
 			</AlertDialogPortal>
 		</AlertDialogRoot>
-		<SnackBar />
 	</div>
 </template>
 
@@ -64,7 +63,6 @@ import { useUnsavedChangesWarning } from "@/composables/useUnsavedChangesWarning
 import { AlertDialogRoot, AlertDialogPortal, AlertDialogOverlay, AlertDialogContent, AlertDialogTitle, AlertDialogDescription, AlertDialogCancel, AlertDialogAction } from "reka-ui";
 import { mdiEmail, mdiAccount, mdiCardAccountDetails, mdiLogin, mdiBookOpenPageVariantOutline } from "@mdi/js";
 import { required, helpers } from "@vuelidate/validators";
-import SnackBar from "@/components/Notification/SnackBar.vue";
 
 import { getFirstErrorForField, exactLength } from "@/helpers/validators";
 import FormControl from "@/components/Form/FormControl.vue";

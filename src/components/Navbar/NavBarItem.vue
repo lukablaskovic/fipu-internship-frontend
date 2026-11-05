@@ -1,9 +1,9 @@
 <script setup>
 import { RovingFocusItem } from "reka-ui";
 import UserAvatarCurrentUser from "@/components/User/UserAvatarCurrentUser.vue";
-import NavBarMenuList from "@/components/Navbar/NavBarMenuList.vue";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import ThemeToggle from "@/components/Navbar/ThemeToggle.vue";
-import { computed, ref, onMounted, onBeforeUnmount } from "vue";
+import { computed, ref } from "vue";
 import BaseDivider from "@/components/Base/BaseDivider.vue";
 import { mdiChevronUp, mdiChevronDown } from "@mdi/js";
 import BaseIcon from "@/components/Base/BaseIcon.vue";
@@ -14,7 +14,6 @@ import { useMainStore } from "@/stores/main_store";
 
 const uiStore = useUiStore();
 const mainStore = useMainStore();
-
 
 const props = defineProps({
 	isSubmenu: Boolean,
@@ -37,7 +36,7 @@ const is = computed(() => {
 		return RouterLink;
 	}
 
-	return props.item.menu ? "div" : "button";
+	return "button";
 });
 
 const componentClass = computed(() => {
@@ -71,10 +70,6 @@ const menuClick = (event) => {
 		window.open(props.item.externalURL, "_blank");
 		return;
 	}
-
-	if (props.item.menu) {
-		isDropdownActive.value = !isDropdownActive.value;
-	}
 };
 
 const menuClickDropdown = (event, item) => {
@@ -82,73 +77,53 @@ const menuClickDropdown = (event, item) => {
 	emit("menu-click", event, item);
 };
 
-const root = ref(null);
-
-const closeDropdown = (event) => {
-	if (!isDropdownActive.value) return;
-	event.preventDefault();
-	event.stopPropagation();
-	isDropdownActive.value = false;
-	root.value?.focus();
-};
-
-const forceClose = (event) => {
-	if (root.value && !root.value.contains(event.target)) {
-		isDropdownActive.value = false;
-	}
-};
-
-onMounted(() => {
-	if (props.item.menu) {
-		window.addEventListener("click", forceClose);
-	}
-});
-
-onBeforeUnmount(() => {
-	if (props.item.menu) {
-		window.removeEventListener("click", forceClose);
-	}
-});
 </script>
 
 <template>
 	<BaseDivider v-if="item.isDivider" nav-bar />
 
+	<DropdownMenu v-else-if="item.menu" v-model:open="isDropdownActive">
+		<RovingFocusItem as-child>
+			<DropdownMenuTrigger :aria-label="itemLabel" :class="componentClass" class="navbar-control flex items-center">
+				<UserAvatarCurrentUser v-if="item.isCurrentUser" class="h-6 w-6" />
+				<BaseIcon v-if="item.icon" :path="item.icon" />
+				<span class="px-2">{{ itemLabel }}</span>
+				<BaseIcon :path="isDropdownActive ? mdiChevronUp : mdiChevronDown" />
+			</DropdownMenuTrigger>
+		</RovingFocusItem>
+		<DropdownMenuContent class="z-10000 min-w-48">
+			<template v-for="(child, index) in item.menu" :key="index">
+				<DropdownMenuSeparator v-if="child.isDivider" />
+				<DropdownMenuItem v-else :disabled="child.disabled" as-child @select="menuClickDropdown($event, child)">
+					<component :is="child.to ? RouterLink : child.href || child.externalURL ? 'a' : 'button'" :to="child.to" :href="child.href || child.externalURL" :target="child.target || (child.externalURL ? '_blank' : undefined)" :type="!child.to && !child.href && !child.externalURL ? 'button' : undefined">
+						<BaseIcon v-if="child.icon" :path="child.icon" />
+						{{ child.label }}
+					</component>
+				</DropdownMenuItem>
+			</template>
+		</DropdownMenuContent>
+	</DropdownMenu>
 	<Tooltip v-else :content="itemLabel" :disabled="!item.isDesktopNoLabel">
 		<RovingFocusItem as-child>
 			<component
 				:is="is"
-				ref="root"
 				:type="is === 'button' ? 'button' : undefined"
-				:role="is === 'div' ? 'button' : undefined"
 				:aria-label="itemLabel"
-				:aria-expanded="item.menu ? isDropdownActive : undefined"
 				class="navbar-control relative block cursor-pointer items-center lg:flex"
 				:class="[componentClass, { 'max-lg:mt-1 max-lg:w-full max-lg:border-t max-lg:border-gray-300 dark:max-lg:border-slate-600': item.isLogin || item.isLogout, 'lg:mx-1 lg:h-11 lg:self-center': !isSubmenu }]"
 				:to="item.to ?? null"
 				v-bind="item.to ? {} : { href: item.href }"
 				:target="item.target ?? null"
-				@keydown.esc="closeDropdown"
-				@keydown.enter.self="is === 'div' && menuClick($event)"
-				@keydown.space.self="is === 'div' && ($event.preventDefault(), menuClick($event))"
 				@click.stop="menuClick">
-				<div class="flex items-center" :class="{ 'p-3 lg:p-0': item.menu }">
+				<div class="flex items-center">
 					<UserAvatarCurrentUser v-if="item.isCurrentUser" class="inline-flex h-6 w-6 shrink-0" />
 					<BaseIcon v-if="item.icon" :size="item.size ? item.size : 19" :path="item.icon" :class="{ 'text-fipu_gray dark:text-white': !item.isLogout }" />
 
-					<span class="px-2 text-base transition-colors" :class="{ 'whitespace-nowrap leading-none': item.isCurrentUser, 'lg:hidden': item.isDesktopNoLabel && item.icon }">
+					<span class="px-2 text-base transition-colors" :class="{ 'whitespace-nowrap leading-none dark:text-white': item.isCurrentUser, 'lg:hidden': item.isDesktopNoLabel && item.icon }">
 						{{ itemLabel }}
 					</span>
-					<BaseIcon v-if="item.menu != undefined" :path="isDropdownActive ? mdiChevronUp : mdiChevronDown" class="hidden transition-colors lg:inline-flex" />
 				</div>
 
-				<div
-					v-if="item.menu"
-					v-show="isDropdownActive"
-					:style="isDropdownActive ? 'height: ' + item.menu.length * 42 + 'px;' : 'height: 0px;'"
-					class="overflow-hidden bg-gray-100 text-sm transition-size duration-300 dark:bg-slate-800 lg:absolute lg:left-0 lg:top-full lg:z-20 lg:min-w-full lg:rounded-lg lg:shadow-lg">
-					<NavBarMenuList :is-submenu="true" :menu="item.menu" @menu-click="menuClickDropdown" />
-				</div>
 			</component>
 		</RovingFocusItem>
 	</Tooltip>

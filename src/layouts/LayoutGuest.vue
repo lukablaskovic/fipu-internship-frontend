@@ -17,7 +17,6 @@ import NavBar from "@/components/Navbar/NavBar.vue";
 import menuNavBarGuest from "@/menus/menuNavBarGuest";
 import FooterBar from "@/components/FooterBar.vue";
 
-import SnackBar from "@/components/Notification/SnackBar.vue";
 
 const uiStore = useUiStore();
 
@@ -59,7 +58,6 @@ const menuClick = (event, item) => {
 			<div class="mt-6">
 				<FooterBar />
 			</div>
-			<SnackBar />
 		</div>
 	</div>
 </template>

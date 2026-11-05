@@ -25,7 +25,6 @@ import FooterBar from "@/components/FooterBar.vue";
 import StudentProgress from "@/components/Internship/StudentProgress.vue";
 
 
-import SnackBar from "@/components/Notification/SnackBar.vue";
 
 const layoutAsidePadding = computed(() => (uiStore.isAsideLgActive ? "lg:pl-22" : "xl:pl-22"));
 
@@ -74,7 +73,7 @@ const menuClick = (event, item) => {
 				<NavBarItemPlain display="hidden lg:flex xl:hidden" @click.prevent="uiStore.asideLgToggle()">
 					<BaseIcon :path="uiStore.isAsideLgActive ? mdiBackburger : mdiMenu" size="24" />
 				</NavBarItemPlain>
-				<div v-if="mainStore.userAdmin" class="min-w-0 flex-1 self-center px-3 lg:flex-none">
+				<div v-if="mainStore.userAdmin" class="min-w-0 flex-1 self-center px-3 lg:flex-none xl:pl-0">
 					<FormControl :icon="mdiMagnify" search-bar />
 				</div>
 			</NavBar>
@@ -262,7 +261,6 @@ const menuClick = (event, item) => {
 			<div class="mt-6">
 				<FooterBar />
 			</div>
-			<SnackBar />
 		</div>
 	</div>
 </template>

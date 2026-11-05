@@ -1,4 +1,5 @@
 <script setup>
+import TableSearch from "@/components/Tables/TableSearch.vue";
 import BaseIcon from "@/components/Base/BaseIcon.vue";
 import SortableTableHeader from "@/components/Tables/SortableTableHeader.vue";
 import TableCellText from "@/components/Tables/TableCellText.vue";
@@ -12,7 +13,7 @@ import { groupEventsByStudent, searchAndSortEvents } from "@/helpers/log-events.
 import CardBoxComponentEmpty from "@/components/Cardbox/CardBoxComponentEmpty.vue";
 import TablePagination from "@/components/Tables/TablePagination.vue";
 import { usePagination } from "@/composables/usePagination.js";
-import { mdiNoteAlert, mdiAccountTie, mdiAccountMultiple, mdiAccountSchoolOutline, mdiProgressClock, mdiViewDashboard, mdiCardSearch, mdiAccountCancel, mdiAlphaSBox, mdiSourceBranch, mdiPlayCircleOutline, mdiClockOutline, mdiMagnify, mdiChevronDown } from "@mdi/js";
+import { mdiNoteAlert, mdiAccountTie, mdiAccountMultiple, mdiAccountSchoolOutline, mdiProgressClock, mdiViewDashboard, mdiCardSearch, mdiAccountCancel, mdiAlphaSBox, mdiSourceBranch, mdiPlayCircleOutline, mdiClockOutline, mdiChevronDown } from "@mdi/js";
 import { useAdminStore } from "@/stores/admin_store";
 import { useMainStore } from "@/stores/main_store";
 import { useSnackBarStore } from "@/stores/snackbar_store";
@@ -225,7 +226,7 @@ const { perPage, currentPage, itemsPaginated } = usePagination(logGroups);
 								<CardBoxWidget
 									v-if="adminStore.studentsFetched"
 									:color="group.color"
-									class="rounded-lg"
+									class="rounded-lg bg-linear-to-t from-fipu_blue/5 to-transparent dark:from-fipu_blue/10"
 									:class="{ 'cursor-pointer hover:bg-fipu_blue/10': metric.to }"
 									:icon="metric.icon"
 									:number="metric.number"
@@ -271,10 +272,7 @@ const { perPage, currentPage, itemsPaginated } = usePagination(logGroups);
 
 				<template v-if="!eventsFetchError">
 					<div class="table-filter-bar mb-3">
-						<div class="relative min-w-0 flex-1">
-							<BaseIcon :path="mdiMagnify" :size="20" class="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-gray-500 dark:text-slate-400" aria-hidden="true" />
-							<input v-model="logSearch" type="search" aria-label="Pretraži događaje" placeholder="Ime, JMBAG ili email…" class="table-filter-search w-full pl-10" />
-						</div>
+						<TableSearch v-model="logSearch" label="Pretraži događaje" placeholder="Ime, JMBAG ili email…" class="min-w-0 flex-1" />
 						<FormControlListbox v-model="modelFilter" :icon="mdiSourceBranch" :options="modelOptions" aria-label="Model prakse" button-class="table-filter-select" />
 						<FormControlListbox v-model="processFilter" :icon="mdiPlayCircleOutline" :options="processOptions" aria-label="Status instance" button-class="table-filter-select" />
 						<FormControlListbox v-model="dateFormat" :icon="mdiClockOutline" :options="dateOptions" aria-label="Format vremena" button-class="table-filter-select" />
@@ -283,7 +281,7 @@ const { perPage, currentPage, itemsPaginated } = usePagination(logGroups);
 					<FormCheckRadio v-model="groupByStudent" name="group-by-student" label="Grupiraj po studentu" class="mb-3 text-sm [&_.check]:border-fipu_blue [&_.check[data-state=checked]]:border" />
 					<p v-if="!eventsLoading" class="mb-2 text-xs text-gray-500 dark:text-slate-400" role="status">{{ filteredEvents.length }} događaja</p>
 					<div class="overflow-x-auto rounded-lg bg-white dark:bg-slate-900/70">
-						<table v-if="eventsLoading || filteredEvents.length" :aria-busy="eventsLoading" class="w-full text-left text-xs">
+						<table v-if="eventsLoading || filteredEvents.length" :aria-busy="eventsLoading" class="dashboard-logs compact-table w-full text-left text-xs">
 							<caption class="sr-only">Događaji (BPMN engine logs)</caption>
 							<thead class="border-b dark:border-slate-700">
 								<tr>
@@ -299,13 +297,13 @@ const { perPage, currentPage, itemsPaginated } = usePagination(logGroups);
 							</tbody>
 							<tbody v-for="group in itemsPaginated" :key="group.key" class="border-b last:border-0 dark:border-slate-700">
 								<tr v-for="(event, index) in expandedGroups.has(group.key) ? group.events : [group.events[0]]" :key="index" class="hover:bg-fipu_blue/10" :class="{ 'bg-slate-50 dark:bg-slate-800/50': index > 0 }">
-									<td class="px-3 py-2"><TableCellText :value="event.instance_id ?? '—'" /></td>
-									<td class="px-3 py-2"><TableCellText :value="studentName(event)"><RouterLink :to="`/studenti/${event.instance_id}`" class="font-semibold text-fipu_blue underline">{{ studentName(event) }}</RouterLink></TableCellText></td>
-									<td class="px-3 py-2"><TableCellText :value="event.student_JMBAG || '—'" /></td><td class="px-3 py-2"><TableCellText :value="event.student_email || '—'" /></td>
-									<td class="px-3 py-2"><TableCellText :value="event.model_name === appConfig.bpmn_process_name_A + '.bpmn' ? 'A' : 'B'" /></td>
-									<td class="px-3 py-2"><TableCellText :value="event.model_version == null ? '—' : 'v' + event.model_version" /></td>
-									<td class="px-3 py-2"><TableCellText :value="ActivityEventMappings.getEvent(event.activity_id)?.message || event.activity_id" /></td><td class="whitespace-nowrap px-3 py-2"><TableCellText :value="formattedDate(event.timestamp)" /></td>
-									<td v-if="groupByStudent" class="px-3 py-2 text-right">
+									<td data-label="ID instance" class="px-3 py-2"><TableCellText :value="event.instance_id ?? '—'" /></td>
+									<td data-label="Student" class="compact-title px-3 py-2"><TableCellText :value="studentName(event)"><RouterLink :to="`/studenti/${event.instance_id}`" class="font-semibold text-fipu_blue underline">{{ studentName(event) }}</RouterLink></TableCellText></td>
+									<td data-label="JMBAG" class="px-3 py-2"><TableCellText :value="event.student_JMBAG || '—'" /></td><td data-label="Email" class="px-3 py-2"><TableCellText :value="event.student_email || '—'" /></td>
+									<td data-label="Model" class="px-3 py-2"><TableCellText :value="event.model_name === appConfig.bpmn_process_name_A + '.bpmn' ? 'A' : 'B'" /></td>
+									<td data-label="Verzija modela" class="px-3 py-2"><TableCellText :value="event.model_version == null ? '—' : 'v' + event.model_version" /></td>
+									<td data-label="Događaj" class="px-3 py-2"><TableCellText :value="ActivityEventMappings.getEvent(event.activity_id)?.message || event.activity_id" /></td><td data-label="Vrijeme" class="whitespace-nowrap px-3 py-2"><TableCellText :value="formattedDate(event.timestamp)" /></td>
+									<td v-if="groupByStudent" data-label="Događaji" class="compact-actions px-3 py-2 text-right">
 										<button v-if="index === 0 && group.events.length > 1" type="button" class="inline-flex items-center gap-1 rounded-sm px-2 py-1 text-fipu_blue hover:bg-fipu_blue/10" :aria-expanded="expandedGroups.has(group.key)" :aria-label="`Događaji za studenta: ${studentName(event)} (${group.events.length})`" @click="toggleGroup(group.key)">
 											{{ group.events.length }}
 											<BaseIcon :path="mdiChevronDown" :size="18" :class="{ 'rotate-180': expandedGroups.has(group.key) }" aria-hidden="true" />
@@ -325,3 +323,20 @@ const { perPage, currentPage, itemsPaginated } = usePagination(logGroups);
 		</LayoutAuthenticated>
 	</div>
 </template>
+
+<style scoped>
+@media (max-width: 1023px) {
+	.dashboard-logs .compact-title {
+		grid-column: 1 / -1;
+	}
+	.dashboard-logs td {
+		white-space: normal;
+	}
+	.dashboard-logs td::before {
+		white-space: normal;
+	}
+	.dashboard-logs td > * {
+		min-width: 0;
+	}
+}
+</style>

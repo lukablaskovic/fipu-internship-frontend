@@ -6,11 +6,7 @@
 	<AssignmentDetailsModal v-model="isModalActive" />
 
 	<div class="assignment-filters table-filter-bar p-3 lg:px-6">
-		<div class="assignment-search relative min-w-0 basis-full sm:flex-1 sm:basis-0">
-			<BaseIcon :path="mdiMagnify" :size="20" class="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-gray-500 dark:text-slate-400" aria-hidden="true" />
-			<input v-model="searchQuery" type="search" aria-label="Pretraži zadatke" placeholder="Zadatak, poslodavac, tehnologija ili lokacija…" class="table-filter-search w-full pl-10" />
-		</div>
-		<FormControlListbox v-model="location" :options="locationOptions" aria-label="Lokacija" button-class="table-filter-select" />
+		<TableSearch v-model="searchQuery" label="Pretraži zadatke" placeholder="Zadatak, poslodavac, tehnologija ili lokacija…" class="assignment-search min-w-0 basis-full sm:flex-1 sm:basis-0" />
 		<div class="assignment-sort flex items-center gap-1 lg:hidden">
 			<FormControlListbox v-model="sortColumn" :options="columns" aria-label="Poredaj po" button-class="table-filter-select" />
 			<BaseButton color="bg-transparent border-transparent text-gray-700 dark:text-white" :icon="descending ? mdiSortDescending : mdiSortAscending" :aria-label="descending ? 'Poredaj uzlazno' : 'Poredaj silazno'" small @click="descending = !descending" />
@@ -81,12 +77,12 @@
 </template>
 
 <script setup>
-import BaseIcon from "@/components/Base/BaseIcon.vue";
+import TableSearch from "@/components/Tables/TableSearch.vue";
 import { useCompanyLogos } from "@/composables/useCompanyLogos.js";
 import { getLinkedCompany } from "@/helpers/company-logo.js";
 import AssignmentDetailsModal from "@/components/Internship/AssignmentDetailsModal.vue";
 import SortableTableHeader from "@/components/Tables/SortableTableHeader.vue";
-import { compareValues, findAssignments } from "@/helpers/available-assignment-search.mjs";
+import { findAssignments } from "@/helpers/available-assignment-search.mjs";
 import FormControlListbox from "@/components/Form/FormControlListbox.vue";
 import TableCellText from "@/components/Tables/TableCellText.vue";
 import { fetchAvailableAssignments } from "@/services/baserow_client_api";
@@ -105,7 +101,7 @@ import UserAvatar from "@/components/User/UserAvatar.vue";
 import BaseButton from "@/components/Base/BaseButton.vue";
 import { useMainStore } from "@/stores/main_store";
 
-import { mdiEye, mdiSortAscending, mdiSortDescending, mdiMagnify } from "@mdi/js";
+import { mdiEye, mdiSortAscending, mdiSortDescending } from "@mdi/js";
 
 import { RouterLink, useRoute } from "vue-router";
 
@@ -132,17 +128,11 @@ function toggleSort(column) {
 	sortColumn.value = column;
 }
 
-function filterOptions(key, label, suffix = "") {
-	const values = allAvailableAssignments.value.map(task => String(task[key] ?? "").trim()).filter(Boolean);
-	return [{ id: "", label }, ...Array.from(new Set(values)).sort(compareValues).map(id => ({ id, label: id + suffix }))];
-}
-const locationOptions = computed(() => filterOptions("lokacija", "Sve lokacije"));
-const location = ref(locationOptions.value[0]);
-const filteredAssignments = computed(() => findAssignments(allAvailableAssignments.value, searchQuery.value, location.value.id, "", sortColumn.value.id, descending.value));
+const filteredAssignments = computed(() => findAssignments(allAvailableAssignments.value, searchQuery.value, "", "", sortColumn.value.id, descending.value));
 
 const { perPage, currentPage, itemsPaginated: paginatedAssignments } = usePagination(filteredAssignments);
 
-watch([searchQuery, location, sortColumn, descending], () => { currentPage.value = 0; });
+watch([searchQuery, sortColumn, descending], () => { currentPage.value = 0; });
 
 const MAX_NUM_ASSIGNMENTS = 3;
 
