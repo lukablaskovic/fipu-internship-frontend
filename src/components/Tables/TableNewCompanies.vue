@@ -142,7 +142,8 @@ const confirmationModal = ref({
 	isActive: false,
 });
 
-function previewCompany(companyId) {
+async function previewCompany(companyId) {
+	if (!(await v$.value[companyId].$validate())) return;
 	selectedCompany.value = companyId;
 	confirmationModal.value.isActive = true;
 }
@@ -156,7 +157,7 @@ async function saveUpdatedCompany() {
 	isLoading.value = true;
 	let saved = false;
 	try {
-		if (!(await v$.value.$validate())) return;
+		if (!(await v$.value[selectedCompany.value].$validate())) return;
 		const postData = companyForms.value[selectedCompany.value];
 		const result = await adminStore.saveUpdatedCompany(postData);
 		if (!result) throw new Error("Company update failed");
