@@ -101,12 +101,12 @@ function touchEnd(event) {
   tap = null;
 }
 function wheel(event) {
+  const unit = event.deltaMode === 1 ? 16 : event.deltaMode === 2 ? svg.value.clientHeight : 1;
   if (event.ctrlKey || event.metaKey) {
-    if (event.deltaY) zoom(event.deltaY > 0 ? 1.1 : 0.9, point(event));
+    if (event.deltaY) zoom(Math.exp(Math.max(-0.1, Math.min(0.1, event.deltaY * unit * 0.008))), point(event));
     return;
   }
   const { x, y, width, height } = view.value;
-  const unit = event.deltaMode === 1 ? 16 : event.deltaMode === 2 ? svg.value.clientHeight : 1;
   const scale = unit / svg.value.getScreenCTM().a;
   setView(x + event.deltaX * scale, y + event.deltaY * scale, width, height);
 }
