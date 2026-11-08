@@ -9,8 +9,7 @@ COPY vendor ./vendor
 RUN npm ci
 
 COPY . .
-ARG FRONTEND_CHANNEL=latest
-RUN VITE_FRONTEND_CHANNEL="$FRONTEND_CHANNEL" npm run build
+RUN npm run build
 
 FROM nginx:alpine
 

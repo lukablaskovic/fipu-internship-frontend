@@ -5,11 +5,10 @@ export const darkModeKey = "darkMode";
 export const containerMaxW = "xl:max-w-8xl xl:mx-auto";
 
 export const DEV_MODE = import.meta.env.DEV;
-const testDeployment = import.meta.env.PROD && import.meta.env.VITE_FRONTEND_CHANNEL === "test";
 export const BASEROW_URL = "https://baserow.unipu.hr/dashboard";
 
 export const endpoints = {
-	VITE_FRONTEND_URL: DEV_MODE || testDeployment ? window.location.origin : "https://fipu-praksa.unipu.hr",
+	VITE_FRONTEND_URL: DEV_MODE ? window.location.origin : "https://fipu-praksa.unipu.hr",
 
 	VITE_BPMN_ENGINE_API_URL: "https://fipubot.unipu.hr/api/python-bpmn-engine",
 
