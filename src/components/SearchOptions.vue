@@ -29,10 +29,10 @@ const allAssignments = ref([]);
 const routes = ["dashboard", "studenti", "alokacije", "zadaci", "poslodavci", "profil", "poruke", "poslodavci/novi-zadatak"];
 const helpItems = [
 	{ prefix: "student:", aliases: ["studenti", "ime", "name", "s"], description: "Student po imenu", example: "Ana Anić" },
-	{ prefix: "jmbag:", aliases: ["sj"], description: "Student po JMBAG-u", example: "0303000000" },
-	{ prefix: "email:", aliases: ["e-mail", "eposta", "e-pošta", "e-posta", "se"], description: "Student po e-mailu", example: "ana@unipu.hr" },
-	{ prefix: "company:", aliases: ["poduzeće", "poduzece", "tvrtka", "poslodavac", "p"], description: "Poduzeće", example: "Naziv poduzeća" },
-	{ prefix: "task:", aliases: ["zadatak", "z"], description: "Zadatak", example: "ID zadatka" },
+	{ prefix: "jmbag:", aliases: ["sj", "j"], description: "Student po JMBAG-u", example: "0303000000" },
+	{ prefix: "email:", aliases: ["e-mail", "eposta", "e-pošta", "e-posta", "se", "e"], description: "Student po e-mailu", example: "ana@unipu.hr" },
+	{ prefix: "company:", aliases: ["poduzeće", "poduzece", "tvrtka", "poslodavac", "p", "c"], description: "Poduzeće", example: "Naziv poduzeća" },
+	{ prefix: "task:", aliases: ["zadatak", "z", "t"], description: "Zadatak", example: "ID zadatka" },
 ];
 const suggestedFilters = computed(() => {
 	if (query.value.includes(":")) return [];

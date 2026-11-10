@@ -100,7 +100,7 @@ const componentClass = computed(() => {
 		"whitespace-nowrap",
 		"focus:outline-hidden",
 		"transition-colors",
-		"focus:ring-3 focus:ring-fipu_blue",
+		"focus:ring-3",
 		"duration-150",
 		"border",
 		props.disabled ? "cursor-not-allowed" : "cursor-pointer",

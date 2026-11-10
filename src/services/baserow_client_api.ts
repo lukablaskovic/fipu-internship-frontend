@@ -77,6 +77,12 @@ const Admin = {
 	listAdministrators() {
 		return safeRequest(() => AxiosWrapper.get<string[]>("/administratori"));
 	},
+	addAdministrator(email: string) {
+		return AxiosWrapper.post<string[]>("/administratori", { email });
+	},
+	removeAdministrator(email: string) {
+		return AxiosWrapper.delete<string[]>("/administratori", { email });
+	},
 
 	getAllocations() {
 		return safeRequest(() => AxiosWrapper.get("/alokacija").then((res: any) => res.results));

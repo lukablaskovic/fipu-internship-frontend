@@ -38,7 +38,7 @@ const vas_odabir = ref(null);
 const hasScrolledForFirstTime = ref(false);
 
 const registerPreferences = async () => {
-	if (isLoading.value) return;
+	if (isLoading.value || mainStore.userAdmin) return;
 	isLoading.value = true;
 	if (!mainStore.userAuthenticated) {
 		snackBarStore.pushMessage("Morate biti prijavljeni da biste prijavili preferencije.", "warning");
@@ -126,6 +126,10 @@ const moveAssignment = async (index, offset, button) => {
 			<div class="flex items-start gap-6">
 				<div class="assignment-intro min-w-0 flex-1">
 					<InternshipPageHeader />
+					<div v-if="mainStore.userAdmin" class="mt-4 flex flex-wrap items-center gap-3">
+						<BaseButton to="/zadaci" label="Natrag na zadatke" color="whiteDark" />
+						<p>Pregled studentskog odabira. Odabir i redoslijed zadataka ne spremaju se.</p>
+					</div>
 
 					<br />
 					<SectionTitleLineWithButton :icon="mdiClipboardTextOutline" main title="Dostupni zadaci" />
@@ -133,7 +137,7 @@ const moveAssignment = async (index, offset, button) => {
 					<br />
 					<p>Molimo da <b>ne prijavljujete</b> zadatke gdje su poslodavci naveli ime i prezime studenta u <b>Preferencijama za studenta</b>.</p>
 					<br />
-					<p><b>Napomena:</b> Da biste prijavili preferencije, morate biti prijavljeni u aplikaciji!</p>
+					<p v-if="!mainStore.userAdmin"><b>Napomena:</b> Da biste prijavili preferencije, morate biti prijavljeni u aplikaciji!</p>
 					<br />
 				</div>
 				<img src="/illustrations/selection.svg" alt="" class="hidden h-auto w-1/4 shrink-0 md:block" />
@@ -173,7 +177,7 @@ const moveAssignment = async (index, offset, button) => {
 				</template>
 			</draggable>
 
-			<div v-if="isDraggableEnabled" class="mt-6">
+			<div v-if="isDraggableEnabled && !mainStore.userAdmin" class="mt-6">
 				<FormField class="lg:mt-4" label="Napomena (nije obavezno)">
 					<FormControl v-model="napomena" type="textarea" placeholder="Slobodno dodaj napomenu za voditelja prakse." />
 				</FormField>
@@ -182,14 +186,14 @@ const moveAssignment = async (index, offset, button) => {
 				</BaseButtons>
 			</div>
 
-			<CardBoxModal v-model="modalConfirmPreferences" title="Molimo potvrdite vaš odabir" button-label="Potvrđujem" has-cancel @confirm="registerPreferences">
+			<CardBoxModal v-if="!mainStore.userAdmin" v-model="modalConfirmPreferences" title="Molimo potvrdite vaš odabir" button-label="Potvrđujem" has-cancel @confirm="registerPreferences">
 				<p>Provjerite još jednom odabrane zadatke i njihov redoslijed:</p>
 				<p v-for="(assignment, index) in checkedAssignments" :key="assignment.id_zadatak">
 					<b>Odabir {{ index + 1 }}:</b> {{ assignment.id_zadatak }}
 				</p>
 				<p class="mb-2"><b>Napomena:</b> {{ napomena || "Nema napomene." }}</p>
 			</CardBoxModal>
-			<StudentWithdrawAction />
+			<StudentWithdrawAction v-if="!mainStore.userAdmin" />
 		</SectionMain>
 	</component>
 </template>

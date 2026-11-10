@@ -76,10 +76,13 @@ services:
       - BASE_URL=${BASEROW_BASE_URL}
       - WORKFLOW_SERVICE_TOKEN=${WORKFLOW_SERVICE_TOKEN:?set shared workflow credential}
       - COORDINATOR_EMAILS=${COORDINATOR_EMAILS:?set coordinator email allowlist}
+      - ADMINISTRATORS_DB_PATH=/administrator-data/administrators.sqlite3
       - FRONTEND_URL=${FRONTEND_URL}
       - ALLOW_LOCAL_DEMO=false
       - PORT=${BCS_PORT}
       - DEBUG=1
+    volumes:
+      - ./volumes/administrators:/administrator-data
 
     depends_on:
       - postgres-db

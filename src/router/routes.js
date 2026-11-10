@@ -89,6 +89,12 @@ const routes = [
 		component: () => import("@/views/admin/AvailableAssignments.vue"),
 	},
 	{
+		path: "/moj-odabir",
+		name: "moj-odabir",
+		meta: { title: "Moj odabir", requiresAuth: true, requiresAdmin: true },
+		component: () => import("@/components/Internship/Student_ChooseAvailableAssignments.vue"),
+	},
+	{
 		meta: {
 			title: "Zadatak",
 			requiresAuth: true,

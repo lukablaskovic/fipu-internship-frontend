@@ -23,8 +23,8 @@
 						<h1 id="welcome-title">Dobrodošli na <span>FIPU Praksu</span></h1>
 					</div>
 					<p>Prijavite se kako biste pregledali stanje vaše prakse ili prijavili zadatke.</p>
-					<button type="button" class="illustration-button" aria-label="Animiraj ilustraciju" @click="startBounce">
-						<img src="/illustrations/small_character_illustrations.svg" alt="" :class="{ 'bounce-6': isBouncing }" width="280" height="160" />
+					<button type="button" class="illustration-button" aria-label="Animiraj ilustraciju" @click="bounceCount++">
+						<img :key="bounceCount" src="/illustrations/small_character_illustrations.svg" alt="" :class="{ 'bounce-6': bounceCount > 0 }" width="280" height="160" />
 					</button>
 				</section>
 
@@ -79,14 +79,7 @@ onMounted(() => {
 });
 onUnmounted(() => buttonObserver.disconnect());
 
-const isBouncing = ref(false);
-const startBounce = () => {
-	isBouncing.value = true;
-
-	setTimeout(() => {
-		isBouncing.value = false;
-	}, 2000);
-};
+const bounceCount = ref(0);
 
 const loginCallback = async (response) => {
 	try {

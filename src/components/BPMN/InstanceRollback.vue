@@ -43,7 +43,7 @@ async function move() {
 
 <template>
 	<div>
-		<BaseButton color="info" outline label="Rollback" :icon-right="mdiUndo" :disabled="loading || moving" @click="choose" />
+		<BaseButton color="danger" outline label="Rollback" :icon="mdiUndo" :disabled="loading || moving" @click="choose" />
 		<CardBoxModal v-model="open" is-bpmn title="Rollback" description="Odaberite ranije dovršeni zadatak na koji želite vratiti ovu praksu." has-cancel button-label="Rollback" :disabled-condition="loading || moving || !target" @confirm="move">
 			<p v-if="loading" role="status">Učitavanje prethodnih zadataka…</p>
 			<p v-else-if="!options" role="alert">Dohvat prethodnih zadataka nije uspio.</p>
